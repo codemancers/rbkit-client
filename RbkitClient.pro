@@ -1,14 +1,9 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2014-04-24T20:12:56
-#
-#-------------------------------------------------
-
 QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = MsgpackExample
+VERSION = 0.0.0.pre
+TARGET = RbkitClient
 TEMPLATE = app
 
 SOURCES +=  client.cpp\
