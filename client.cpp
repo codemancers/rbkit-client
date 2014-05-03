@@ -1,24 +1,23 @@
 #include <QtGui>
 #include <QVBoxLayout>
-#include <QtNetwork>
 #include <QMessageBox>
+
+#include <msgpack.hpp>
 
 #include "client.h"
 
 Client::Client(QWidget *parent)
     :   QDialog(parent)
 {
-
-    ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
-
+    context = new zmq::context_t(1);
+    socket = new zmq::socket_t(*context, ZMQ_SUB);
+    socket->setsockopt(ZMQ_SUBSCRIBE, "", 0);
 
     connectButton = new QPushButton(tr("Connect"));
-
     connectButton->setDefault(true);
     connectButton->setEnabled(true);
     connectButton->setCheckable(true);
-    // false status means currently
-    // disconnected
+    // false status means currently disconnected
     connectButton->setChecked(false);
 
 
@@ -28,58 +27,37 @@ Client::Client(QWidget *parent)
     buttonBox->addButton(connectButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
 
-    tcpSocket = new QTcpSocket(this);
-
     connect(connectButton, SIGNAL(clicked(bool)), this, SLOT(toggleButton(bool)));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
-    connect(tcpSocket, SIGNAL(connected()), this, SLOT(connectedToSocket()));
-    connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(disconnectedFromSocket()));
-    connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readData()));
-    connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
-            this, SLOT(displayError(QAbstractSocket::SocketError)));
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(buttonBox);
     setLayout(mainLayout);
 
     setWindowTitle(tr("rbkit"));
-
-//    QNetworkConfigurationManager manager;
-//    if (manager.capabilities() & QNetworkConfigurationManager::NetworkSessionRequired) {
-//        // Get saved network configuration
-//        QSettings settings(QSettings::UserScope, QLatin1String("Trolltech"));
-//        settings.beginGroup(QLatin1String("QtNetwork"));
-//        const QString id = settings.value(QLatin1String("DefaultNetworkConfiguration")).toString();
-//        settings.endGroup();
-
-//        // If the saved network configuration is not currently discovered use the system default
-//        QNetworkConfiguration config = manager.configurationFromIdentifier(id);
-//        if ((config.state() & QNetworkConfiguration::Discovered) !=
-//                QNetworkConfiguration::Discovered) {
-//            config = manager.defaultConfiguration();
-//        }
-
-//        networkSession = new QNetworkSession(config, this);
-//        connect(networkSession, SIGNAL(opened()), this, SLOT(sessionOpened()));
-
-//        connectButton->setEnabled(false);
-//        statusLabel->setText(tr("Opening network session."));
-//        networkSession->open();
-//    }
 }
 
 void Client::connectToSocket()
 {
     connectButton->setEnabled(false);
     connectButton->setText(tr("Connecting.."));
-    tcpSocket->abort();
-    tcpSocket->connectToHost(ipAddress, PORT);
+    try
+    {
+        socket->connect("tcp://127.0.0.1:5555");
+        connectedToSocket();
+    }
+    catch(zmq::error_t err)
+    {
+        qDebug() << err.what() ;
+        displayError(err.what());
+        disconnectFromSocket();
+    }
 }
 
 void Client::disconnectFromSocket()
 {
-
-    tcpSocket->disconnectFromHost();
+    socket->close();
+    disconnectedFromSocket();
 }
 
 void Client::connectedToSocket()
@@ -87,6 +65,7 @@ void Client::connectedToSocket()
     connectButton->setEnabled(true);
     connectButton->setText(tr("Disconnect"));
     connectButton->setChecked(true);
+    readData();
 }
 
 void Client::disconnectedFromSocket()
@@ -99,13 +78,15 @@ void Client::disconnectedFromSocket()
 void Client::readData()
 {
 
-    while(tcpSocket->canReadLine())
+    while(true)
     {
-        QString line = tcpSocket->readLine();
-        qDebug() << line;
+        zmq::message_t message;
+        if(socket->recv(&message, ZMQ_NOBLOCK))
+        {
+            QString x = QString::fromUtf8((const char *)message.data(), message.size());
+            qDebug() << x;
+        }
     }
-
-    connectButton->setEnabled(true);
 }
 
 void Client::toggleButton(bool checked)
@@ -119,26 +100,9 @@ void Client::toggleButton(bool checked)
 
 }
 
-void Client::displayError(QAbstractSocket::SocketError socketError)
+void Client::displayError(const char * error)
 {
-    switch (socketError) {
-    case QAbstractSocket::RemoteHostClosedError:
-        break;
-    case QAbstractSocket::HostNotFoundError:
-        QMessageBox::information(this, tr("rbkit"),
-                                 tr("The host was not found."));
-        break;
-    case QAbstractSocket::ConnectionRefusedError:
-        QMessageBox::information(this, tr("rbkit"),
-                                 tr("The connection was refused by the peer. "
-                                    "Make sure the server is running, "));
-        break;
-    default:
-        QMessageBox::information(this, tr("rbkit"),
-                                 tr("The following error occurred: %1.")
-                                 .arg(tcpSocket->errorString()));
-    }
-
+    QMessageBox::information(this, tr("rbkit"), error);
     disconnectedFromSocket();
 }
 

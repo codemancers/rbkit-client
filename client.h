@@ -4,11 +4,11 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QPushButton>
-#include <QTcpSocket>
+
+#include <zmq.hpp>
 
 class QDialogButtonBox;
 class QPushButton;
-class QTcpSocket;
 
 class Client : public QDialog
 {
@@ -18,22 +18,21 @@ public:
     Client(QWidget *parent = 0);
 
 private slots:
-    void connectToSocket();
-    void disconnectFromSocket();
-    void readData();
-    void displayError(QAbstractSocket::SocketError socketError);
     void toggleButton(bool);
-    void connectedToSocket();
-    void disconnectedFromSocket();
 
 private:
     QPushButton *connectButton;
     QPushButton *quitButton;
     QDialogButtonBox *buttonBox;
+    zmq::socket_t *socket;
+    zmq::context_t *context;
 
-    QString ipAddress;
-    QTcpSocket *tcpSocket;
-    static const int PORT = 3333;
+    void connectToSocket();
+    void disconnectFromSocket();
+    void readData();
+    void displayError(const char *error);
+    void connectedToSocket();
+    void disconnectedFromSocket();
 };
 
 #endif // CLIENT_H
