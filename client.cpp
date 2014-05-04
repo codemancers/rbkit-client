@@ -83,8 +83,11 @@ void Client::readData()
         zmq::message_t message;
         if(socket->recv(&message, ZMQ_NOBLOCK))
         {
-            QString x = QString::fromUtf8((const char *)message.data(), message.size());
-            qDebug() << x;
+            msgpack::unpacked unpackedMessage;
+            msgpack::unpack(&unpackedMessage, (const char *)message.data(), message.size());
+            msgpack::object_raw rawMessage = unpackedMessage.get().via.raw;
+            QString strMessage = QString::fromUtf8(rawMessage.ptr, rawMessage.size);
+            qDebug() << strMessage;
         }
     }
 }
