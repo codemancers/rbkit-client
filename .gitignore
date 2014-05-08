@@ -1,3 +1,7 @@
 /*.pro.user
 /*.app
 /*.dmg
+.qmake.stash
+/*.o
+moc_client.cpp
+Makefile
