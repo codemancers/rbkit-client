@@ -7,9 +7,11 @@ TARGET = RbkitClient
 TEMPLATE = app
 
 SOURCES +=  client.cpp\
-            main.cpp
+            main.cpp \
+    subscriber.cpp
 
-HEADERS +=  client.h
+HEADERS +=  client.h \
+    subscriber.h
 
 # Include MsgPack
 LIBS     += $$PWD/msgpack-c/lib/libmsgpack.a
