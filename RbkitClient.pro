@@ -8,10 +8,12 @@ TEMPLATE = app
 
 SOURCES +=  client.cpp\
             main.cpp \
-    subscriber.cpp
+    subscriber.cpp \
+    qcustomplot.cpp
 
 HEADERS +=  client.h \
-    subscriber.h
+    subscriber.h \
+    qcustomplot.h
 
 # Include MsgPack
 LIBS     += $$PWD/msgpack-c/lib/libmsgpack.a
