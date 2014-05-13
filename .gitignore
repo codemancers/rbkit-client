@@ -4,4 +4,5 @@
 .qmake.stash
 /*.o
 moc_client.cpp
+moc_*.cpp
 Makefile
