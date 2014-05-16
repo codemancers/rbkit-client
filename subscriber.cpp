@@ -41,7 +41,6 @@ void Subscriber::startListening()
         {
             msgpack::unpacked unpackedMessage;
             msgpack::unpack(&unpackedMessage, (const char *)message.data(), message.size());
-            qDebug() << (const char *)message.data();
             msgpack::object_raw rawMessage = unpackedMessage.get().via.raw;
             QString strMessage = QString::fromUtf8(rawMessage.ptr, rawMessage.size);
             //qDebug() << strMessage;

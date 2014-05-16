@@ -23,6 +23,7 @@ class Client : public QDialog
     Subscriber *subscriber;
 
     void setupSubscriber();
+    void disconnectFromSocket();
 
 public:
     Client(QWidget *parent = 0);
@@ -32,7 +33,6 @@ private slots:
     void handleMessage(const QString &);
     void connectedToSocket();
     void disconnectedFromSocket();
-    void disconnectFromSocket();
     void onError(const QString &);
     void quitApp();
 
