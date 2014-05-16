@@ -5,4 +5,4 @@
 .qmake.stash
 /*.o
 moc_*.cpp
-Makefile
+/Makefile
