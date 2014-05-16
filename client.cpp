@@ -2,17 +2,11 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 
-#include <msgpack.hpp>
-
 #include "client.h"
 
 Client::Client(QWidget *parent)
     :   QDialog(parent)
 {
-    context = new zmq::context_t(1);
-    socket = new zmq::socket_t(*context, ZMQ_SUB);
-    socket->setsockopt(ZMQ_SUBSCRIBE, "", 0);
-
     connectButton = new QPushButton(tr("Connect"));
     connectButton->setDefault(true);
     connectButton->setEnabled(true);
@@ -27,8 +21,9 @@ Client::Client(QWidget *parent)
     buttonBox->addButton(connectButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
 
+    //Set event for buttons
     connect(connectButton, SIGNAL(clicked(bool)), this, SLOT(toggleButton(bool)));
-    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(quitButton, SIGNAL(clicked()), this, SLOT(quitApp()));
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(buttonBox);
@@ -37,27 +32,26 @@ Client::Client(QWidget *parent)
     setWindowTitle(tr("rbkit"));
 }
 
-void Client::connectToSocket()
+void Client::setupSubscriber()
 {
-    connectButton->setEnabled(false);
-    connectButton->setText(tr("Connecting.."));
-    try
-    {
-        socket->connect("tcp://127.0.0.1:5555");
-        connectedToSocket();
-    }
-    catch(zmq::error_t err)
-    {
-        qDebug() << err.what() ;
-        displayError(err.what());
-        disconnectFromSocket();
-    }
+    //Create a subscriber and move it to it's own thread
+    subscriber = new Subscriber;
+    subscriber->moveToThread(&subscriberThread);
+
+    //Events to/from parent/subcriber thread
+    connect(&subscriberThread, &QThread::finished, subscriber, &QObject::deleteLater);
+    connect(this, &Client::connectToSocket, subscriber, &Subscriber::startListening);
+    connect(subscriber, &Subscriber::messageReady, this, &Client::handleMessage);
+    connect(subscriber, &Subscriber::errored, this, &Client::onError);
+    connect(subscriber, &Subscriber::connected, this, &Client::connectedToSocket);
+    connect(subscriber, &Subscriber::disconnected, this, &Client::disconnectedFromSocket);
+
+    subscriberThread.start();
 }
 
-void Client::disconnectFromSocket()
+void Client::handleMessage(const QString &msg)
 {
-    socket->close();
-    disconnectedFromSocket();
+   qDebug() << msg;
 }
 
 void Client::connectedToSocket()
@@ -65,7 +59,6 @@ void Client::connectedToSocket()
     connectButton->setEnabled(true);
     connectButton->setText(tr("Disconnect"));
     connectButton->setChecked(true);
-    readData();
 }
 
 void Client::disconnectedFromSocket()
@@ -75,37 +68,34 @@ void Client::disconnectedFromSocket()
     connectButton->setChecked(false);
 }
 
-void Client::readData()
-{
-
-    while(true)
-    {
-        zmq::message_t message;
-        if(socket->recv(&message, ZMQ_NOBLOCK))
-        {
-            msgpack::unpacked unpackedMessage;
-            msgpack::unpack(&unpackedMessage, (const char *)message.data(), message.size());
-            msgpack::object_raw rawMessage = unpackedMessage.get().via.raw;
-            QString strMessage = QString::fromUtf8(rawMessage.ptr, rawMessage.size);
-            qDebug() << strMessage;
-        }
-    }
-}
-
 void Client::toggleButton(bool checked)
 {
 
     if( checked ) {
-        connectToSocket();
+        setupSubscriber();
+        emit connectToSocket();
     } else {
         disconnectFromSocket();
     }
 
 }
 
-void Client::displayError(const char * error)
+void Client::onError(const QString &error)
 {
-    QMessageBox::information(this, tr("rbkit"), error);
-    disconnectedFromSocket();
+    disconnectFromSocket();
+    QMessageBox::critical(this, tr("rbkit"), error);
 }
 
+
+void Client::disconnectFromSocket()
+{
+    subscriberThread.requestInterruption();
+    subscriberThread.exit();
+    subscriberThread.wait();
+}
+
+void Client::quitApp()
+{
+    disconnectFromSocket();
+    close();
+}

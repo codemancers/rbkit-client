@@ -1,15 +1,19 @@
 QT       += core gui network
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 VERSION = 0.0.0.pre
 TARGET = RbkitClient
 TEMPLATE = app
 
 SOURCES +=  client.cpp\
-            main.cpp
+            main.cpp \
+    subscriber.cpp \
+    qcustomplot.cpp
 
-HEADERS +=  client.h
+HEADERS +=  client.h \
+    subscriber.h \
+    qcustomplot.h
 
 # Include MsgPack
 LIBS     += $$PWD/msgpack-c/lib/libmsgpack.a
