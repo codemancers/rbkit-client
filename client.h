@@ -2,13 +2,15 @@
 #define CLIENT_H
 
 #include <QDialog>
-#include <QDialogButtonBox>
 #include <QPushButton>
 #include <QThread>
 
 #include "subscriber.h"
 
-class QDialogButtonBox;
+namespace Ui {
+class Dialog;
+}
+
 class QPushButton;
 
 class Client : public QDialog
@@ -17,10 +19,10 @@ class Client : public QDialog
 
     QPushButton *connectButton;
     QPushButton *quitButton;
-    QDialogButtonBox *buttonBox;
 
     QThread subscriberThread;
     Subscriber *subscriber;
+    Ui::Dialog *ui;
 
     void setupSubscriber();
     void disconnectFromSocket();
