@@ -1,11 +1,11 @@
 #include <QtGui>
-#include <QVBoxLayout>
 #include <QMessageBox>
 
 #include "client.h"
+#include "ui_dialog.h"
 
 Client::Client(QWidget *parent)
-    :   QDialog(parent)
+    :   QDialog(parent), ui(new Ui::Dialog)
 {
     connectButton = new QPushButton(tr("Connect"));
     connectButton->setDefault(true);
@@ -17,17 +17,15 @@ Client::Client(QWidget *parent)
 
     quitButton = new QPushButton(tr("Quit"));
 
-    buttonBox = new QDialogButtonBox;
-    buttonBox->addButton(connectButton, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
+    ui->setupUi(this);
+
+
+    ui->buttonBox->addButton(connectButton, QDialogButtonBox::ActionRole);
+    ui->buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
 
     //Set event for buttons
     connect(connectButton, SIGNAL(clicked(bool)), this, SLOT(toggleButton(bool)));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(quitApp()));
-
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->addWidget(buttonBox);
-    setLayout(mainLayout);
 
     setWindowTitle(tr("rbkit"));
 }
