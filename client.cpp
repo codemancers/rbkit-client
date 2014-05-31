@@ -51,9 +51,10 @@ void Client::setupSubscriber()
     subscriberThread.start();
 }
 
-void Client::handleMessage(const QString &msg)
+void Client::handleMessage(const QVariantMap& map)
 {
-   qDebug() << msg;
+   qDebug() << map;
+   emit sendDatatoJs(map);
 }
 
 void Client::connectedToSocket()

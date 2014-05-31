@@ -49,13 +49,15 @@ void Subscriber::startListening()
             m_objId2Type[eventInfo[2]] = eventInfo[1];
             ++m_event2Count[eventInfo[0]];
 
+            m_type2Count[eventInfo[1]] = QVariant(0);
             if (!eventInfo[0].compare(QString("obj_created"))) {
-               ++m_type2Count[eventInfo[1]];
+               // ++m_type2Count[eventInfo[1]];
             } else {
-               --m_type2Count[eventInfo[1]];
+               // --m_type2Count[eventInfo[1]];
             }
 
-            qDebug() << m_type2Count;
+            // qDebug() << m_type2Count;
+            emit messageReady(m_type2Count);
         }
     }
 }

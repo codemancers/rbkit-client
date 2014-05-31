@@ -2,7 +2,7 @@
 #define SUBSCRIBER_H
 
 #include <QObject>
-#include <QMap>
+#include <QVariantMap>
 
 #include <zmq.hpp>
 
@@ -17,14 +17,14 @@ class Subscriber : public QObject
     QMap<QString, int> m_event2Count;
 
     // we are interested in this count.
-    QMap<QString, int> m_type2Count;
+    QVariantMap m_type2Count;
 
 public:
     explicit Subscriber(QObject *parent = 0);
     ~Subscriber();
 
 signals:
-    void messageReady(const QString &);
+    void messageReady(const QVariantMap& map);
     void connected();
     void disconnected();
     void errored(const QString &);

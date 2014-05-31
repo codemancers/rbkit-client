@@ -30,9 +30,12 @@ class Client : public QDialog
 public:
     Client(QWidget *parent = 0);
 
+signals:
+    void sendDatatoJs(const QVariantMap& map);
+
 private slots:
     void toggleButton(bool);
-    void handleMessage(const QString &);
+    void handleMessage(const QVariantMap& map);
     void connectedToSocket();
     void disconnectedFromSocket();
     void onError(const QString &);
