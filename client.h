@@ -37,6 +37,7 @@ private slots:
     void disconnectedFromSocket();
     void onError(const QString &);
     void quitApp();
+    void onPageLoad(bool ok);
 
 signals:
     void connectToSocket();

@@ -1,5 +1,6 @@
 #include <QtGui>
 #include <QMessageBox>
+#include <QWebFrame>
 
 #include "client.h"
 #include "ui_dialog.h"
@@ -28,6 +29,9 @@ Client::Client(QWidget *parent)
     connect(quitButton, SIGNAL(clicked()), this, SLOT(quitApp()));
 
     setWindowTitle(tr("rbkit"));
+
+    connect(ui->webView, SIGNAL(loadFinished(bool)), this, SLOT(onPageLoad(bool)));
+    ui->webView->setHtml(QString("<!DOCTYPE html><html><head></head><body>RbKit</body></html>"));
 }
 
 void Client::setupSubscriber()
@@ -96,4 +100,12 @@ void Client::quitApp()
 {
     disconnectFromSocket();
     close();
+}
+
+void Client::onPageLoad(bool ok)
+{
+    qDebug() << ok;
+
+    QWebFrame *frame = ui->webView->page()->mainFrame();
+    frame->addToJavaScriptWindowObject(QString("rbkitClient"), this);
 }
