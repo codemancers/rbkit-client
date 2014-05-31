@@ -43,9 +43,19 @@ void Subscriber::startListening()
             msgpack::unpack(&unpackedMessage, (const char *)message.data(), message.size());
             msgpack::object_raw rawMessage = unpackedMessage.get().via.raw;
             QString strMessage = QString::fromUtf8(rawMessage.ptr, rawMessage.size);
-            //qDebug() << strMessage;
-            emit messageReady(strMessage);
+
+            QStringList eventInfo = strMessage.split(QChar(' '));
+
+            m_objId2Type[eventInfo[2]] = eventInfo[1];
+            ++m_event2Count[eventInfo[0]];
+
+            if (!eventInfo[0].compare(QString("obj_created"))) {
+               ++m_type2Count[eventInfo[1]];
+            } else {
+               --m_type2Count[eventInfo[1]];
+            }
+
+            qDebug() << m_type2Count;
         }
     }
 }
-

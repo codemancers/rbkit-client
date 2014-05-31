@@ -2,6 +2,7 @@
 #define SUBSCRIBER_H
 
 #include <QObject>
+#include <QMap>
 
 #include <zmq.hpp>
 
@@ -11,6 +12,12 @@ class Subscriber : public QObject
 
     zmq::socket_t *socket;
     zmq::context_t *context;
+
+    QMap<QString, QString> m_objId2Type;
+    QMap<QString, int> m_event2Count;
+
+    // we are interested in this count.
+    QMap<QString, int> m_type2Count;
 
 public:
     explicit Subscriber(QObject *parent = 0);
