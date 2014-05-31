@@ -31,7 +31,7 @@ Client::Client(QWidget *parent)
     setWindowTitle(tr("rbkit"));
 
     connect(ui->webView, SIGNAL(loadFinished(bool)), this, SLOT(onPageLoad(bool)));
-    ui->webView->setHtml(QString("<!DOCTYPE html><html><head></head><body>RbKit</body></html>"));
+    ui->webView->setUrl(QUrl("qrc:/web/graph.html"));
 }
 
 void Client::setupSubscriber()
@@ -108,4 +108,12 @@ void Client::onPageLoad(bool ok)
 
     QWebFrame *frame = ui->webView->page()->mainFrame();
     frame->addToJavaScriptWindowObject(QString("rbkitClient"), this);
+
+    // get the contents for graphjs, and evaluate it.
+    QFile file(":/web/graph.js");
+    file.open(QIODevice::ReadOnly);
+    QString graphjs = file.readAll();
+    file.close();
+
+    frame->evaluateJavaScript(graphjs);
 }

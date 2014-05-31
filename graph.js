@@ -1,3 +1,1 @@
-window.onload = function() {
-  alert(rbkitClient);
-};
+alert(rbkitClient);

@@ -27,3 +27,6 @@ HEADERS += $$PWD/zeromq-4.0.4/include/zmq.hpp
 
 FORMS += \
     dialog.ui
+
+RESOURCES += \
+    RbkitClient.qrc
