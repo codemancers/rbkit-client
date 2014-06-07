@@ -109,12 +109,4 @@ void Client::onPageLoad(bool ok)
 
     QWebFrame *frame = ui->webView->page()->mainFrame();
     frame->addToJavaScriptWindowObject(QString("rbkitClient"), this);
-
-    // get the contents for graphjs, and evaluate it.
-    QFile file(":/web/graph.js");
-    file.open(QIODevice::ReadOnly);
-    QString graphjs = file.readAll();
-    file.close();
-
-    frame->evaluateJavaScript(graphjs);
 }
