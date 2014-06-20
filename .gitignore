@@ -6,3 +6,17 @@
 /*.o
 moc_*.cpp
 /Makefile
+/zeromq/bin/
+/zeromq/include/zmq.h
+/zeromq/include/zmq_utils.h
+/zeromq/lib/
+/zeromq/share/
+/msgpack-c/lib/
+*.o
+*.lo
+/zeromq-4.0.4/tests
+/zeromq-4.0.4/perf
+/zeromq-4.0.4/src/.libs/
+/zeromq-4.0.4/src/libzmq.la
+/zeromq-4.0.4/tools/.libs/
+/zeromq-4.0.4/tools/curve_keygen
