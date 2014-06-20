@@ -29,3 +29,14 @@ moc_*.cpp
 /zeromq-4.0.4/tools/curve_keygen
 /ui_dialog.h
 /RbkitClient
+/zeromq-4.0.4/Makefile
+/zeromq-4.0.4/builds/msvc/Makefile
+/zeromq-4.0.4/builds/redhat/zeromq.spec
+/zeromq-4.0.4/config.log
+/zeromq-4.0.4/config.status
+/zeromq-4.0.4/doc/Makefile
+/zeromq-4.0.4/foreign/openpgm/Makefile
+/zeromq-4.0.4/libtool
+/zeromq-4.0.4/src/libzmq.pc
+/zeromq-4.0.4/src/platform.hpp
+/zeromq-4.0.4/src/stamp-h1
