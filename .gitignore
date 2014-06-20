@@ -20,3 +20,4 @@ moc_*.cpp
 /zeromq-4.0.4/src/libzmq.la
 /zeromq-4.0.4/tools/.libs/
 /zeromq-4.0.4/tools/curve_keygen
+/ui_dialog.h
