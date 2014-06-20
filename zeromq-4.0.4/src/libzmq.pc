@@ -1,4 +1,4 @@
-prefix=/home/gnufied/nomads/rbkit-client/zeromq
+prefix=/Users/gnufied/nomads/rbkit-client/zeromq
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include

@@ -14,7 +14,7 @@ HEADERS +=  client.h \
     subscriber.h
 
 msgpack.target = $$PWD/msgpack-c/lib/libmsgpack.a
-msgpack.commands = cd $$PWD/msgpack-c; ./configure --prefix=$$PWD/msgpack-c; make; make install
+msgpack.commands = cd $$PWD/msgpack-c; ./bootstrap ; ./configure --prefix=$$PWD/msgpack-c; make; make install
 
 zeromq.target = $$PWD/zeromq/lib/libzmq.a
 zeromq.commands = cd $$PWD/zeromq-4.0.4; ./configure --prefix=$$PWD/zeromq; make; make install
