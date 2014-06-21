@@ -8,25 +8,13 @@
 Client::Client(QWidget *parent)
     :   QDialog(parent), ui(new Ui::Dialog)
 {
-    connectButton = new QPushButton(tr("Connect"));
-    connectButton->setDefault(true);
-    connectButton->setEnabled(true);
-    connectButton->setCheckable(true);
-    // false status means currently disconnected
-    connectButton->setChecked(false);
-
-
-    quitButton = new QPushButton(tr("Quit"));
-
+    this->connected = false;
     ui->setupUi(this);
 
 
-    ui->buttonBox->addButton(connectButton, QDialogButtonBox::ActionRole);
-    ui->buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
-
     //Set event for buttons
-    connect(connectButton, SIGNAL(clicked(bool)), this, SLOT(toggleButton(bool)));
-    connect(quitButton, SIGNAL(clicked()), this, SLOT(quitApp()));
+    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(toggleButton()));
+    connect(ui->quitButton, SIGNAL(clicked()), this, SLOT(quitApp()));
 
     setWindowTitle(tr("rbkit"));
 
@@ -53,34 +41,31 @@ void Client::setupSubscriber()
 
 void Client::handleMessage(const QVariantMap& map)
 {
-   qDebug() << map;
    emit sendDatatoJs(map);
 }
 
 void Client::connectedToSocket()
 {
-    connectButton->setEnabled(true);
-    connectButton->setText(tr("Disconnect"));
-    connectButton->setChecked(true);
+    ui->connectButton->setEnabled(true);
+    ui->connectButton->setText(tr("Disconnect"));
+    this->connected = true;
 }
 
 void Client::disconnectedFromSocket()
 {
-    connectButton->setEnabled(true);
-    connectButton->setText(tr("Connect"));
-    connectButton->setChecked(false);
+    ui->connectButton->setEnabled(true);
+    ui->connectButton->setText(tr("Connect"));
+    this->connected = false;
 }
 
-void Client::toggleButton(bool checked)
+void Client::toggleButton()
 {
-
-    if( checked ) {
+    if( !this->connected ) {
         setupSubscriber();
         emit connectToSocket();
     } else {
         disconnectFromSocket();
     }
-
 }
 
 void Client::onError(const QString &error)

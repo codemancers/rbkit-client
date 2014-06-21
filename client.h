@@ -17,9 +17,6 @@ class Client : public QDialog
 {
     Q_OBJECT
 
-    QPushButton *connectButton;
-    QPushButton *quitButton;
-
     QThread subscriberThread;
     Subscriber *subscriber;
     Ui::Dialog *ui;
@@ -32,9 +29,11 @@ public:
 
 signals:
     void sendDatatoJs(const QVariantMap& map);
+private:
+    bool connected;
 
 private slots:
-    void toggleButton(bool);
+    void toggleButton();
     void handleMessage(const QVariantMap& map);
     void connectedToSocket();
     void disconnectedFromSocket();
