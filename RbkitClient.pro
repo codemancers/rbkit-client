@@ -36,3 +36,10 @@ HEADERS += $$PWD/zeromq/include/zmq.hpp
 
 FORMS += \
     dialog.ui
+
+RESOURCES += \
+    RbkitClient.qrc
+
+OTHER_FILES += \
+    graph.html \
+    graph.js

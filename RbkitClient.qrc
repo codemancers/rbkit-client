@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/web">
+        <file>graph.html</file>
+        <file>graph.js</file>
+    </qresource>
+</RCC>

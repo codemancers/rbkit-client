@@ -1,5 +1,6 @@
 #include <QtGui>
 #include <QMessageBox>
+#include <QWebFrame>
 
 #include "client.h"
 #include "ui_dialog.h"
@@ -7,27 +8,18 @@
 Client::Client(QWidget *parent)
     :   QDialog(parent), ui(new Ui::Dialog)
 {
-    connectButton = new QPushButton(tr("Connect"));
-    connectButton->setDefault(true);
-    connectButton->setEnabled(true);
-    connectButton->setCheckable(true);
-    // false status means currently disconnected
-    connectButton->setChecked(false);
-
-
-    quitButton = new QPushButton(tr("Quit"));
-
+    this->connected = false;
     ui->setupUi(this);
 
 
-    ui->buttonBox->addButton(connectButton, QDialogButtonBox::ActionRole);
-    ui->buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
-
     //Set event for buttons
-    connect(connectButton, SIGNAL(clicked(bool)), this, SLOT(toggleButton(bool)));
-    connect(quitButton, SIGNAL(clicked()), this, SLOT(quitApp()));
+    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(toggleButton()));
+    connect(ui->quitButton, SIGNAL(clicked()), this, SLOT(quitApp()));
 
     setWindowTitle(tr("rbkit"));
+
+    connect(ui->webView, SIGNAL(loadFinished(bool)), this, SLOT(onPageLoad(bool)));
+    ui->webView->setUrl(QUrl("qrc:/web/graph.html"));
 }
 
 void Client::setupSubscriber()
@@ -47,35 +39,33 @@ void Client::setupSubscriber()
     subscriberThread.start();
 }
 
-void Client::handleMessage(const QString &msg)
+void Client::handleMessage(const QVariantMap& map)
 {
-   qDebug() << msg;
+   emit sendDatatoJs(map);
 }
 
 void Client::connectedToSocket()
 {
-    connectButton->setEnabled(true);
-    connectButton->setText(tr("Disconnect"));
-    connectButton->setChecked(true);
+    ui->connectButton->setEnabled(true);
+    ui->connectButton->setText(tr("Disconnect"));
+    this->connected = true;
 }
 
 void Client::disconnectedFromSocket()
 {
-    connectButton->setEnabled(true);
-    connectButton->setText(tr("Connect"));
-    connectButton->setChecked(false);
+    ui->connectButton->setEnabled(true);
+    ui->connectButton->setText(tr("Connect"));
+    this->connected = false;
 }
 
-void Client::toggleButton(bool checked)
+void Client::toggleButton()
 {
-
-    if( checked ) {
+    if( !this->connected ) {
         setupSubscriber();
         emit connectToSocket();
     } else {
         disconnectFromSocket();
     }
-
 }
 
 void Client::onError(const QString &error)
@@ -96,4 +86,12 @@ void Client::quitApp()
 {
     disconnectFromSocket();
     close();
+}
+
+void Client::onPageLoad(bool ok)
+{
+    qDebug() << ok;
+
+    QWebFrame *frame = ui->webView->page()->mainFrame();
+    frame->addToJavaScriptWindowObject(QString("rbkitClient"), this);
 }
