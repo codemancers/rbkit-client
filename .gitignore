@@ -505,3 +505,4 @@ zeromq-4.0.4/tools/curve_keygen.o
 zeromq-4.0.4/builds/msvc/Makefile
 zeromq-4.0.4/autom4te.cache/
 zeromq-4.0.4/src/.libs/
+qrc_RbkitClient.cpp
