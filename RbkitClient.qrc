@@ -2,5 +2,9 @@
     <qresource prefix="/web">
         <file>graph.html</file>
         <file>graph.js</file>
+        <file>web/chart.js</file>
+        <file>web/highchart.js</file>
+        <file>web/index.html</file>
+        <file>web/jquery.js</file>
     </qresource>
 </RCC>
