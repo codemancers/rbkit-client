@@ -1,5 +1,7 @@
 var knownClasses = {"String": true};
 var legendIndex = 1;
+var lastTypeCount = {"String": 0};
+var typeAsOther = {};
 
 function makeDummySeries() {
   var data = [];
@@ -17,9 +19,36 @@ function getRandomArbitrary(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
+function addToTypeCollection(typeCollection) {
+    var totalKeys = Object.keys(typeCollection).length;
+
+    for(typeIndex in typeCollection) {
+        var count = typeCollection[typeIndex];
+        if(lastTypeCount[typeIndex]) {
+            lastTypeCount[typeIndex] = count;
+        } else {
+            if(typeAsOther[typeIndex]) {
+                addToOther(typeIndex, count);
+            } else {
+                if(totalKeys < 8) {
+                    lastTypeCount[typeIndex] = count;
+                } else {
+                    addToOther(typeIndex, count);
+                }
+            }
+        }
+    }
+}
+
+function addToOther(key, count) {
+    var otherTotalCount = lastTypeCount["Other"] || 0;
+    lastTypeCount["Other"] = otherTotalCount + count;
+    typeAsOther[key] = count;
+}
+
 var chart = $('#container').highcharts({
   chart: {
-    type: 'column',
+    type: 'area',
   },
   title: {
     text: 'Live Objects'
@@ -45,7 +74,7 @@ var chart = $('#container').highcharts({
     }
   },
   plotOptions: {
-    column: {
+    area: {
       stacking: 'normal',
       dataLabels: {
         enabled: false,
@@ -74,11 +103,11 @@ function addNewSeriesData(chart, time, value) {
   return data;
 }
 
-function receiveTypeCount(typeCounts) {
-    console.info(typeCounts);
+updateChart = function() {
+  console.info(lastTypeCount);
   var time1 = (new Date()).getTime();
-  for(objectType in typeCounts) {
-    var data = typeCounts[objectType];
+  for(objectType in lastTypeCount) {
+    var data = lastTypeCount[objectType];
     if(knownClasses[objectType]) {
       var selectedSeries = null;
       for(index in chart.series) {
@@ -96,13 +125,21 @@ function receiveTypeCount(typeCounts) {
       legendIndex = legendIndex + 1;
     }
   }
-};
-
-function establishBridge() {
-    if(rbkitClient) {
-      clearInterval(interval);
-      rbkitClient.sendDatatoJs.connect(receiveTypeCount);
-    }
 }
 
-var interval = setInterval(establishBridge, 1000);
+receiveTypeCount = function(typeCounts) {
+    addToTypeCollection(typeCounts);
+};
+
+var interval = null;
+
+function establishBridge() {
+  console.info("Calling establish bridge");
+  setInterval(updateChart, 1000);
+  if(rbkitClient) {
+    clearInterval(interval);
+    rbkitClient.sendDatatoJs.connect(receiveTypeCount);
+  }
+}
+
+interval = setInterval(establishBridge, 1000);

@@ -11,7 +11,7 @@ Client::Client(QWidget *parent)
     this->connected = false;
     ui->setupUi(this);
 
-
+    QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
     //Set event for buttons
     connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(toggleButton()));
     connect(ui->quitButton, SIGNAL(clicked()), this, SLOT(quitApp()));
@@ -20,7 +20,7 @@ Client::Client(QWidget *parent)
 
     connect(ui->webView, SIGNAL(loadFinished(bool)), this, SLOT(onPageLoad(bool)));
     ui->webView->setUrl(QUrl("qrc:/web/web/index.html"));
-    QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+
 }
 
 void Client::setupSubscriber()

@@ -6,6 +6,7 @@ receiveTypeCount = function(typeCounts) {
 };
 
 function establishBridge() {
+    console.info("Calling establish bridge");
   if(rbkitClient) {
     clearInterval(interval);
     rbkitClient.sendDatatoJs.connect(receiveTypeCount);
