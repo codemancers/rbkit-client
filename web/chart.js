@@ -48,7 +48,7 @@ function addToOther(key, count) {
 
 var chart = $('#container').highcharts({
   chart: {
-    type: 'area',
+    type: 'column',
   },
   title: {
     text: 'Live Objects'
@@ -74,7 +74,7 @@ var chart = $('#container').highcharts({
     }
   },
   plotOptions: {
-    area: {
+    column: {
       stacking: 'normal',
       dataLabels: {
         enabled: false,
