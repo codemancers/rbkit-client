@@ -19,7 +19,8 @@ Client::Client(QWidget *parent)
     setWindowTitle(tr("rbkit"));
 
     connect(ui->webView, SIGNAL(loadFinished(bool)), this, SLOT(onPageLoad(bool)));
-    ui->webView->setUrl(QUrl("qrc:/web/graph.html"));
+    ui->webView->setUrl(QUrl("qrc:/web/web/index.html"));
+    QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
 }
 
 void Client::setupSubscriber()

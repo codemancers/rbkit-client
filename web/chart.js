@@ -1,4 +1,4 @@
-var knownClasses = {String: true};
+var knownClasses = {"String": true};
 var legendIndex = 1;
 
 function makeDummySeries() {
@@ -75,6 +75,7 @@ function addNewSeriesData(chart, time, value) {
 }
 
 function receiveTypeCount(typeCounts) {
+    console.info(typeCounts);
   var time1 = (new Date()).getTime();
   for(objectType in typeCounts) {
     var data = typeCounts[objectType];
