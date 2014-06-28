@@ -6,12 +6,14 @@ VERSION = 0.0.0.pre
 TARGET = RbkitClient
 TEMPLATE = app
 
-SOURCES +=  client.cpp\
+SOURCES += \
             main.cpp \
-    subscriber.cpp
+    subscriber.cpp \
+    rbkitmainwindow.cpp
 
-HEADERS +=  client.h \
-    subscriber.h
+HEADERS +=  \
+    subscriber.h \
+    rbkitmainwindow.h
 
 msgpack.target = $$PWD/msgpack-c/lib/libmsgpack.a
 msgpack.commands = cd $$PWD/msgpack-c; ./bootstrap ; ./configure --prefix=$$PWD/msgpack-c; make; make install
@@ -35,7 +37,7 @@ DEPENDPATH += $$PWD/zeromq/include
 HEADERS += $$PWD/zeromq/include/zmq.hpp
 
 FORMS += \
-    dialog.ui
+    rbkitmainwindow.ui
 
 RESOURCES += \
     RbkitClient.qrc
