@@ -6,7 +6,7 @@ var typeAsOther = {};
 function makeDummySeries() {
   var data = [];
 
-  for (i = -19; i <= 0; i++) {
+  for (i = -9; i <= 0; i++) {
     var time = (new Date()).getTime() + i*1000;
     data.push([time, 0]);
   }
@@ -96,7 +96,7 @@ var chart = $('#container').highcharts({
 function addNewSeriesData(chart, time, value) {
   var selectedSeriesData = chart.series[0].data;
   var data = [];
-  for(i = 0; i < 19; i++) {
+  for(i = 0; i < 9; i++) {
     data.push([selectedSeriesData[i].x, 0]);
   }
   data.push([time, value]);

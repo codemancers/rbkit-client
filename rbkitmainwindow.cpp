@@ -8,7 +8,7 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     this->connected = false;
     ui->setupUi(this);
     connect(ui->chartingView, SIGNAL(loadFinished(bool)), this, SLOT(onPageLoad(bool)));
-    ui->chartingView->setUrl(QUrl("qrc:/web/graph.html"));
+    ui->chartingView->setUrl(QUrl("qrc:/web/web/index.html"));
 }
 
 RbkitMainWindow::~RbkitMainWindow()

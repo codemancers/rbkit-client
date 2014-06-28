@@ -42,6 +42,3 @@ FORMS += \
 RESOURCES += \
     RbkitClient.qrc
 
-OTHER_FILES += \
-    graph.html \
-    graph.js
