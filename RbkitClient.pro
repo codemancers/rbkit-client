@@ -17,11 +17,11 @@ HEADERS +=  \
     rbkitmainwindow.h \
     askhost.h
 
-msgpack.target = $$PWD/msgpack-c/lib/libmsgpack.a
-msgpack.commands = cd $$PWD/msgpack-c; ./bootstrap ; ./configure --prefix=$$PWD/msgpack-c; make; make install
+msgpack.target = $$OUT_PWD/msgpack/lib/libmsgpack.a
+msgpack.commands = mkdir -p $$OUT_PWD/msgpack; cd $$OUT_PWD/msgpack; $$PWD/msgpack-c/configure --prefix=$$OUT_PWD/msgpack; make; make install
 
-zeromq.target = $$PWD/zeromq/lib/libzmq.a
-zeromq.commands = cd $$PWD/zeromq-4.0.4; ./configure --prefix=$$PWD/zeromq; make; make install
+zeromq.target = $$OUT_PWD/zeromq/lib/libzmq.a
+zeromq.commands = mkdir -p $$OUT_PWD/zeromq; cd $$OUT_PWD/zeromq; $$PWD/zeromq-4.0.4/configure --prefix=$$OUT_PWD/zeromq; make; make install
 
 COFFEESCRIPT_FILES += $$PWD/web/*.coffee
 CoffeeMaker.input = COFFEESCRIPT_FILES
@@ -36,17 +36,18 @@ QMAKE_EXTRA_COMPILERS += CoffeeMaker
 
 
 QMAKE_EXTRA_TARGETS += msgpack zeromq charts
-PRE_TARGETDEPS +=$$PWD/msgpack-c/lib/libmsgpack.a $$PWD/zeromq/lib/libzmq.a
+PRE_TARGETDEPS +=$$OUT_PWD/msgpack/lib/libmsgpack.a $$OUT_PWD/zeromq/lib/libzmq.a
 
 
 # Include MsgPack
-LIBS += $$PWD/msgpack-c/lib/libmsgpack.a
-INCLUDEPATH += $$PWD/msgpack-c/include
-DEPENDPATH += $$PWD/msgpack-c/include
-HEADERS += $$PWD/msgpack-c/include/msgpack.hpp
+LIBS += $$OUT_PWD/msgpack/lib/libmsgpack.a
+INCLUDEPATH += $$OUT_PWD/msgpack/include
+DEPENDPATH += $$OUT_PWD/msgpack/include
+HEADERS += $$OUT_PWD/msgpack/include/msgpack.hpp
 
 # Include ZeroMQ
-LIBS += $$PWD/zeromq/lib/libzmq.a
+LIBS += $$OUT_PWD/zeromq/lib/libzmq.a
+INCLUDEPATH += $$OUT_PWD/zeromq/include
 INCLUDEPATH += $$PWD/zeromq/include
 DEPENDPATH += $$PWD/zeromq/include
 HEADERS += $$PWD/zeromq/include/zmq.hpp

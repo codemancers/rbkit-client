@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QVariantMap>
 
-#include <zmq.hpp>
+#include "zmq.hpp"
 
 class Subscriber : public QObject
 {
