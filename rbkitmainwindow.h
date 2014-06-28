@@ -1,49 +1,49 @@
-#ifndef CLIENT_H
-#define CLIENT_H
+#ifndef RBKITMAINWINDOW_H
+#define RBKITMAINWINDOW_H
 
-#include <QDialog>
-#include <QPushButton>
+#include <QMainWindow>
 #include <QThread>
+#include <QWebFrame>
+#include <QMessageBox>
 
 #include "subscriber.h"
 
 namespace Ui {
-class Dialog;
+class RbkitMainWindow;
 }
 
-class QPushButton;
-
-class Client : public QDialog
+class RbkitMainWindow : public QMainWindow
 {
     Q_OBJECT
-
     QThread subscriberThread;
     Subscriber *subscriber;
-    Ui::Dialog *ui;
-
     void setupSubscriber();
     void disconnectFromSocket();
 
 public:
-    Client(QWidget *parent = 0);
+    explicit RbkitMainWindow(QWidget *parent = 0);
+    ~RbkitMainWindow();
 
 signals:
     void sendDatatoJs(const QVariantMap& map);
+    void connectToSocket();
 private:
     bool connected;
 
 private slots:
-    void toggleButton();
+    void on_action_Connect_triggered();
+
+    void on_action_Quit_triggered();
+
+    void on_action_About_Rbkit_triggered();
     void handleMessage(const QVariantMap& map);
     void connectedToSocket();
     void disconnectedFromSocket();
     void onError(const QString &);
-    void quitApp();
     void onPageLoad(bool ok);
 
-signals:
-    void connectToSocket();
-
+private:
+    Ui::RbkitMainWindow *ui;
 };
 
-#endif // CLIENT_H
+#endif // RBKITMAINWINDOW_H

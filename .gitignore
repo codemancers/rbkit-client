@@ -13,6 +13,7 @@ moc_*.cpp
 /zeromq/share/
 /msgpack-c/lib/
 /ui_dialog.h
+/ui_rbkitmainwindow.h
 /RbkitClient
 zeromq-4.0.4/Makefile
 zeromq-4.0.4/builds/redhat/zeromq.spec
