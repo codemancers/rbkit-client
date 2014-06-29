@@ -19,11 +19,14 @@ Subscriber::~Subscriber()
     emit disconnected();
 }
 
-void Subscriber::startListening()
+void Subscriber::startListening(const QString& host)
 {
+    qDebug() << "Got " << host;
+    QByteArray ba = host.toLocal8Bit();
+    const char *hostString = ba.data();
     try
     {
-        socket->connect("tcp://127.0.0.1:5555");
+        socket->connect(hostString);
     }
     catch(zmq::error_t err)
     {
@@ -43,28 +46,29 @@ void Subscriber::startListening()
             msgpack::unpack(&unpackedMessage, (const char *)message.data(), message.size());
             msgpack::object_raw rawMessage = unpackedMessage.get().via.raw;
             QString strMessage = QString::fromUtf8(rawMessage.ptr, rawMessage.size);
-
             QStringList eventInfo = strMessage.split(QChar(' '));
+            if(eventInfo.length() > 2) {
 
-            // just for recording purpose, we are not using it anywhere
-            m_objId2Type[eventInfo[2]] = eventInfo[1];
-            ++m_event2Count[eventInfo[0]];
+                // just for recording purpose, we are not using it anywhere
+                m_objId2Type[eventInfo[2]] = eventInfo[1];
+                ++m_event2Count[eventInfo[0]];
 
-            // initialize the count if not valid
-            if (!m_type2Count[eventInfo[1]].isValid())
-                m_type2Count[eventInfo[1]] = QVariant(0);
+                // initialize the count if not valid
+                if (!m_type2Count[eventInfo[1]].isValid())
+                    m_type2Count[eventInfo[1]] = QVariant(0);
 
-            // increment or decrement the count according the event
-            if (!eventInfo[0].compare(QString("obj_created"))) {
-                int value = m_type2Count[eventInfo[1]].toInt() + 1;
-                m_type2Count[eventInfo[1]].setValue(value);
-            } else {
-                int value = m_type2Count[eventInfo[1]].toInt() - 1;
-                m_type2Count[eventInfo[1]].setValue(value);
+                // increment or decrement the count according the event
+                if (!eventInfo[0].compare(QString("obj_created"))) {
+                    int value = m_type2Count[eventInfo[1]].toInt() + 1;
+                    m_type2Count[eventInfo[1]].setValue(value);
+                } else {
+                    int value = m_type2Count[eventInfo[1]].toInt() - 1;
+                    m_type2Count[eventInfo[1]].setValue(value);
+                }
+
+                // qDebug() << m_type2Count;
+                emit messageReady(m_type2Count);
             }
-
-            // qDebug() << m_type2Count;
-            emit messageReady(m_type2Count);
         }
     }
 }

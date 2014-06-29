@@ -4,6 +4,7 @@
 /.DS_Store
 .qmake.stash
 /*.o
+/ui_askhost.h
 moc_*.cpp
 /Makefile
 /zeromq/bin/
@@ -507,3 +508,4 @@ zeromq-4.0.4/builds/msvc/Makefile
 zeromq-4.0.4/autom4te.cache/
 zeromq-4.0.4/src/.libs/
 qrc_RbkitClient.cpp
+/rbkit-debug-build

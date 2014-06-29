@@ -30,7 +30,7 @@ signals:
     void errored(const QString &);
 
 public slots:
-    void startListening();
+    void startListening(const QString &);
 };
 
 #endif // SUBSCRIBER_H

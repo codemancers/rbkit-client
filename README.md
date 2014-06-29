@@ -31,6 +31,17 @@ CONFIG+=debug CONFIG+=x86_64 CONFIG+=declarative_debug CONFIG+=qml_debug
 Since value of `-spec` is macx-g++, I'll need to add a line with
 `QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9` in `~/Qt5.2.1/5.2.1/clang_64/mkspecs/macx-g++/qmake.conf`
 
+## Debugging Qt Webkit applications.
+
+After adding following line in code,
+
+```cpp
+QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+```
+
+You can debug js applications running inside Qt via simple "inspect element", like we do in Chrome or
+other webkit browsers. Dead simple.
+
 # Releasing a new version
 
 ### Create a dmg for OSX platform

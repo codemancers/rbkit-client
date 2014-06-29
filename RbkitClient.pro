@@ -9,18 +9,33 @@ TEMPLATE = app
 SOURCES += \
             main.cpp \
     subscriber.cpp \
-    rbkitmainwindow.cpp
+    rbkitmainwindow.cpp \
+    askhost.cpp
 
 HEADERS +=  \
     subscriber.h \
-    rbkitmainwindow.h
+    rbkitmainwindow.h \
+    askhost.h
 
 msgpack.target = $$PWD/msgpack-c/lib/libmsgpack.a
 msgpack.commands = cd $$PWD/msgpack-c; ./bootstrap ; ./configure --prefix=$$PWD/msgpack-c; make; make install
 
 zeromq.target = $$PWD/zeromq/lib/libzmq.a
 zeromq.commands = cd $$PWD/zeromq-4.0.4; ./configure --prefix=$$PWD/zeromq; make; make install
-QMAKE_EXTRA_TARGETS += msgpack zeromq
+
+COFFEESCRIPT_FILES += $$PWD/web/*.coffee
+CoffeeMaker.input = COFFEESCRIPT_FILES
+CoffeeMaker.targetdir = $$PWD/web
+CoffeeMaker.output = $$CoffeeScriptCompiler.targetdir\${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+CoffeeMaker.commands =  coffee --bare --compile --output $$PWD/web $$PWD/web
+
+CoffeeMaker.CONFIG += no_link_no_clean
+CoffeeMaker.variable_out = PRE_TARGETDEPS
+
+QMAKE_EXTRA_COMPILERS += CoffeeMaker
+
+
+QMAKE_EXTRA_TARGETS += msgpack zeromq charts
 PRE_TARGETDEPS +=$$PWD/msgpack-c/lib/libmsgpack.a $$PWD/zeromq/lib/libzmq.a
 
 
@@ -37,11 +52,9 @@ DEPENDPATH += $$PWD/zeromq/include
 HEADERS += $$PWD/zeromq/include/zmq.hpp
 
 FORMS += \
-    rbkitmainwindow.ui
+    rbkitmainwindow.ui \
+    askhost.ui
 
 RESOURCES += \
     RbkitClient.qrc
 
-OTHER_FILES += \
-    graph.html \
-    graph.js

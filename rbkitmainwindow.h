@@ -7,6 +7,7 @@
 #include <QMessageBox>
 
 #include "subscriber.h"
+#include "askhost.h"
 
 namespace Ui {
 class RbkitMainWindow;
@@ -19,6 +20,10 @@ class RbkitMainWindow : public QMainWindow
     Subscriber *subscriber;
     void setupSubscriber();
     void disconnectFromSocket();
+    void askForServerInfo();
+    bool connected;
+    QString host;
+    AskHost *askHost;
 
 public:
     explicit RbkitMainWindow(QWidget *parent = 0);
@@ -26,9 +31,7 @@ public:
 
 signals:
     void sendDatatoJs(const QVariantMap& map);
-    void connectToSocket();
-private:
-    bool connected;
+    void connectToSocket(const QString&);
 
 private slots:
     void on_action_Connect_triggered();
@@ -41,6 +44,7 @@ private slots:
     void disconnectedFromSocket();
     void onError(const QString &);
     void onPageLoad(bool ok);
+    void useSelectedHost(const QString& selectedHost);
 
 private:
     Ui::RbkitMainWindow *ui;
