@@ -2,7 +2,7 @@
 #include "ui_askhost.h"
 
 AskHost::AskHost(QWidget *parent) :
-    QWidget(parent),
+    QDialog(parent),
     ui(new Ui::AskHost)
 {
     ui->setupUi(this);

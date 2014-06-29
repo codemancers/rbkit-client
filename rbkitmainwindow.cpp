@@ -50,7 +50,7 @@ void RbkitMainWindow::on_action_Quit_triggered()
 
 void RbkitMainWindow::askForServerInfo() {
     if(host.size() == 0) {
-        this->askHost = new AskHost();
+        this->askHost = new AskHost(this);
         connect(this->askHost, SIGNAL(userHasSelectedHost(QString)), this, SLOT(useSelectedHost(const QString &)));
         askHost->show();
     }
