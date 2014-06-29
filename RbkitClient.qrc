@@ -4,5 +4,6 @@
         <file>web/highchart.js</file>
         <file>web/index.html</file>
         <file>web/jquery.js</file>
+        <file>web/chart.coffee</file>
     </qresource>
 </RCC>
