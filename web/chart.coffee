@@ -50,12 +50,11 @@ class @Chart
     ).highcharts()
 
   tryQtBridge: =>
-    @bridgeTimer = setInterval(@establishQtBridge, 1000)
+    window.setTimeout(@establishQtBridge, 1000)
 
   establishQtBridge: =>
     setInterval(@updateChart, 1000)
     if window.rbkitClient
-      clearInterval(@bridgeTimer);
       window.rbkitClient.sendDatatoJs.connect(@receiveLiveData)
 
   receiveLiveData: (liveObjectCount) =>

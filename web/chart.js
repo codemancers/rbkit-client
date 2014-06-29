@@ -94,13 +94,12 @@ this.Chart = (function() {
   };
 
   Chart.prototype.tryQtBridge = function() {
-    return this.bridgeTimer = setInterval(this.establishQtBridge, 1000);
+    return window.setTimeout(this.establishQtBridge, 1000);
   };
 
   Chart.prototype.establishQtBridge = function() {
     setInterval(this.updateChart, 1000);
     if (window.rbkitClient) {
-      clearInterval(this.bridgeTimer);
       return window.rbkitClient.sendDatatoJs.connect(this.receiveLiveData);
     }
   };
