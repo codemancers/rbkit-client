@@ -52,7 +52,7 @@ void RbkitMainWindow::useSelectedHost(const QString &selectedHost) {
 
 void RbkitMainWindow::on_action_About_Rbkit_triggered()
 {
-    QMessageBox msgBox;
+    QMessageBox msgBox(this);
     msgBox.setText(tr("Rbkit is low overhead profiler for Ruby, brought to you by Codemancers team"));
     msgBox.exec();
 }
