@@ -8,7 +8,20 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
 {
     this->connected = false;
     ui->setupUi(this);
-    QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+    QWebSettings *settings = ui->chartingView->settings();
+    settings->setAttribute(QWebSettings::DeveloperExtrasEnabled, false);
+    settings->setAttribute(QWebSettings::AutoLoadImages, true);
+    settings->setMaximumPagesInCache(0);
+    settings->setObjectCacheCapacities(0, 0, 0);
+    settings->setIconDatabasePath("");
+
+    settings->setAttribute(QWebSettings::JavascriptEnabled, true);
+    settings->setAttribute(QWebSettings::PluginsEnabled, false);
+    settings->setAttribute(QWebSettings::JavaEnabled, false);
+    settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
+    settings->setAttribute(QWebSettings::JavascriptCanOpenWindows, false);
+    settings->setAttribute(QWebSettings::JavascriptCanAccessClipboard, false);
+
     connect(ui->chartingView, SIGNAL(loadFinished(bool)), this, SLOT(onPageLoad(bool)));
     ui->chartingView->setUrl(QUrl("qrc:/web/web/index.html"));
 }

@@ -172,7 +172,6 @@ this.Chart = (function() {
       }
       return _results;
     }).call(this))[0];
-    console.info(selectedSeries);
     return selectedSeries.addPoint([currentTime, count], true, true);
   };
 

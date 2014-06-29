@@ -93,7 +93,6 @@ class @Chart
 
   addNewDataPoint: (objectType, count, currentTime) ->
     selectedSeries = (series for series in @chart.series when series.name == objectType)[0]
-    console.info(selectedSeries)
     selectedSeries.addPoint([currentTime, count], true, true)
 
   addNewSeries: (objectType, count, currentTime) ->
