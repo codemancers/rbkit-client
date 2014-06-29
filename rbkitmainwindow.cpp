@@ -8,6 +8,7 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
 {
     this->connected = false;
     ui->setupUi(this);
+    QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
     connect(ui->chartingView, SIGNAL(loadFinished(bool)), this, SLOT(onPageLoad(bool)));
     ui->chartingView->setUrl(QUrl("qrc:/web/web/index.html"));
 }
