@@ -9,11 +9,13 @@ TEMPLATE = app
 SOURCES += \
             main.cpp \
     subscriber.cpp \
-    rbkitmainwindow.cpp
+    rbkitmainwindow.cpp \
+    askhost.cpp
 
 HEADERS +=  \
     subscriber.h \
-    rbkitmainwindow.h
+    rbkitmainwindow.h \
+    askhost.h
 
 msgpack.target = $$PWD/msgpack-c/lib/libmsgpack.a
 msgpack.commands = cd $$PWD/msgpack-c; ./bootstrap ; ./configure --prefix=$$PWD/msgpack-c; make; make install
@@ -37,7 +39,8 @@ DEPENDPATH += $$PWD/zeromq/include
 HEADERS += $$PWD/zeromq/include/zmq.hpp
 
 FORMS += \
-    rbkitmainwindow.ui
+    rbkitmainwindow.ui \
+    askhost.ui
 
 RESOURCES += \
     RbkitClient.qrc

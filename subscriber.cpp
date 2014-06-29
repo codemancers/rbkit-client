@@ -19,11 +19,14 @@ Subscriber::~Subscriber()
     emit disconnected();
 }
 
-void Subscriber::startListening()
+void Subscriber::startListening(const QString& host)
 {
+    qDebug() << "Got " << host;
+    QByteArray ba = host.toLocal8Bit();
+    const char *hostString = ba.data();
     try
     {
-        socket->connect("tcp://127.0.0.1:5555");
+        socket->connect(hostString);
     }
     catch(zmq::error_t err)
     {
