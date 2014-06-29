@@ -18,7 +18,6 @@ RbkitMainWindow::~RbkitMainWindow()
 }
 
 
-
 void RbkitMainWindow::on_action_Connect_triggered()
 {
     if( !this->connected ) {

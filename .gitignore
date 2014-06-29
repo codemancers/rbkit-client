@@ -4,6 +4,7 @@
 /.DS_Store
 .qmake.stash
 /*.o
+/ui_askhost.h
 moc_*.cpp
 /Makefile
 /zeromq/bin/
