@@ -16,6 +16,7 @@ moc_*.cpp
 /ui_dialog.h
 /ui_rbkitmainwindow.h
 /RbkitClient
+/builds
 zeromq-4.0.4/Makefile
 zeromq-4.0.4/builds/redhat/zeromq.spec
 zeromq-4.0.4/config.log
