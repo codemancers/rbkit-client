@@ -42,6 +42,14 @@ QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnable
 You can debug js applications running inside Qt via simple "inspect element", like we do in Chrome or
 other webkit browsers. Dead simple.
 
+## Cleaning up build files
+If you suspect that there are build files left over in msgpack and zeromq folders,
+run this command to clean them up.
+
+```sh
+  $ git clean -dxf msgpack-c zeromq zeromq-4.0.4
+```
+
 # Releasing a new version
 
 ### Create a dmg for OSX platform
