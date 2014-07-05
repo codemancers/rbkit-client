@@ -52,6 +52,9 @@ INCLUDEPATH += $$PWD/zeromq/include
 DEPENDPATH += $$PWD/zeromq/include
 HEADERS += $$PWD/zeromq/include/zmq.hpp
 
+# Include nzmqt via pri file
+include(./nzmqt/nzmqt.pri)
+
 FORMS += \
     rbkitmainwindow.ui \
     askhost.ui
