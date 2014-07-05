@@ -4,7 +4,19 @@
 #include <QObject>
 #include <QVariantMap>
 
-#include "zmq.hpp"
+// forward declaration of zmq classes.
+namespace zmq
+{
+   class context_t;
+   class socket_t;
+}
+
+// forward declaration of nzmqt classes
+namespace nzmqt
+{
+   class ZMQContext;
+   class ZMQSocket;
+}
 
 class Subscriber : public QObject
 {
@@ -12,6 +24,9 @@ class Subscriber : public QObject
 
     zmq::socket_t *socket;
     zmq::context_t *context;
+
+    nzmqt::ZMQContext* m_context;
+    nzmqt::ZMQSocket* m_socket;
 
     QMap<QString, QString> m_objId2Type;
     QMap<QString, int> m_event2Count;

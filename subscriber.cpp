@@ -1,9 +1,13 @@
 #include <QDebug>
 #include <QThread>
 
+#include "nzmqt/nzmqt.hpp"
+
 #include <msgpack.hpp>
 
 #include "subscriber.h"
+
+static const int rbkcZmqTotalIoThreads = 1;
 
 Subscriber::Subscriber(QObject *parent) :
     QObject(parent)
@@ -11,11 +15,19 @@ Subscriber::Subscriber(QObject *parent) :
     context = new zmq::context_t(1);
     socket = new zmq::socket_t(*context, ZMQ_SUB);
     socket->setsockopt(ZMQ_SUBSCRIBE, "", 0);
+
+    // second argument to creating a context is number of io threads. right
+    // now, we are using only 1 thread, so defaulting to 1 for now.
+    m_context = new nzmqt::SocketNotifierZMQContext(this, rbkcZmqTotalIoThreads);
+    m_socket = m_context->createSocket(nzmqt::ZMQSocket::TYP_SUB, this);
+    m_socket->setOption(nzmqt::ZMQSocket::OPT_SUBSCRIBE, "", 0);
 }
 
 Subscriber::~Subscriber()
 {
-    socket->close();
+    m_socket->close();
+    delete m_socket;
+    delete m_context;
     emit disconnected();
 }
 
@@ -26,7 +38,7 @@ void Subscriber::startListening(const QString& host)
     const char *hostString = ba.data();
     try
     {
-        socket->connect(hostString);
+        m_socket->connectTo(hostString);
     }
     catch(zmq::error_t err)
     {
@@ -37,17 +49,18 @@ void Subscriber::startListening(const QString& host)
 
     emit connected();
 
-    while(!QThread::currentThread()->isInterruptionRequested())
+    while (!QThread::currentThread()->isInterruptionRequested())
     {
-        zmq::message_t message;
-        if(socket->recv(&message, ZMQ_NOBLOCK))
+        nzmqt::ZMQMessage message;
+        if (m_socket->receiveMessage(&message))
         {
             msgpack::unpacked unpackedMessage;
             msgpack::unpack(&unpackedMessage, (const char *)message.data(), message.size());
             msgpack::object_raw rawMessage = unpackedMessage.get().via.raw;
             QString strMessage = QString::fromUtf8(rawMessage.ptr, rawMessage.size);
             QStringList eventInfo = strMessage.split(QChar(' '));
-            if(eventInfo.length() > 2) {
+
+            if (eventInfo.length() > 2) {
 
                 // just for recording purpose, we are not using it anywhere
                 m_objId2Type[eventInfo[2]] = eventInfo[1];
