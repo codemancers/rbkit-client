@@ -48,9 +48,6 @@ HEADERS += $$OUT_PWD/msgpack/include/msgpack.hpp
 # Include ZeroMQ
 LIBS += $$OUT_PWD/zeromq/lib/libzmq.a
 INCLUDEPATH += $$OUT_PWD/zeromq/include
-INCLUDEPATH += $$PWD/zeromq/include
-DEPENDPATH += $$PWD/zeromq/include
-HEADERS += $$PWD/zeromq/include/zmq.hpp
 
 # Include nzmqt via pri file
 include(./nzmqt/nzmqt.pri)

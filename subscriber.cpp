@@ -12,10 +12,6 @@ static const int rbkcZmqTotalIoThreads = 1;
 Subscriber::Subscriber(QObject *parent) :
     QObject(parent)
 {
-    context = new zmq::context_t(1);
-    socket = new zmq::socket_t(*context, ZMQ_SUB);
-    socket->setsockopt(ZMQ_SUBSCRIBE, "", 0);
-
     // second argument to creating a context is number of io threads. right
     // now, we are using only 1 thread, so defaulting to 1 for now.
     m_context = new nzmqt::SocketNotifierZMQContext(this, rbkcZmqTotalIoThreads);

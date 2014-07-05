@@ -4,13 +4,6 @@
 #include <QObject>
 #include <QVariantMap>
 
-// forward declaration of zmq classes.
-namespace zmq
-{
-   class context_t;
-   class socket_t;
-}
-
 // forward declaration of nzmqt classes
 namespace nzmqt
 {
@@ -21,9 +14,6 @@ namespace nzmqt
 class Subscriber : public QObject
 {
     Q_OBJECT
-
-    zmq::socket_t *socket;
-    zmq::context_t *context;
 
     nzmqt::ZMQContext* m_context;
     nzmqt::ZMQSocket* m_socket;
