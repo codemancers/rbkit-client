@@ -1,7 +1,7 @@
 /*
- * MessagePack for C
+ * MessagePack for C FILE* buffer adaptor
  *
- * Copyright (C) 2008-2009 FURUHASHI Sadayuki
+ * Copyright (C) 2013 Vladimir Volodko
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,17 +15,33 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+#ifndef MSGPACK_FBUFFER_H__
+#define MSGPACK_FBUFFER_H__
+
+#include <stdio.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 /**
- * @defgroup msgpack MessagePack C
+ * @defgroup msgpack_fbuffer FILE* buffer
+ * @ingroup msgpack_buffer
  * @{
- * @}
  */
 
-#include "msgpack/object.h"
-#include "msgpack/zone.h"
-#include "msgpack/pack.h"
-#include "msgpack/unpack.h"
-#include "msgpack/sbuffer.h"
-#include "msgpack/vrefbuffer.h"
-#include "msgpack/version.h"
+static inline int msgpack_fbuffer_write(void* data, const char* buf, unsigned int len)
+{
+	return (1 == fwrite(buf, len, 1, (FILE *)data)) ? 0 : -1;
+}
+
+/** @} */
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* msgpack/fbuffer.h */
 
