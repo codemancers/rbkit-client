@@ -11,6 +11,8 @@ namespace nzmqt
    class ZMQSocket;
 }
 
+class QTimer;
+
 class Subscriber : public QObject
 {
     Q_OBJECT
@@ -23,6 +25,9 @@ class Subscriber : public QObject
 
     // we are interested in this count.
     QVariantMap m_type2Count;
+
+    // add a timer to emit stats
+    QTimer* m_timer;
 
 public:
     explicit Subscriber(QObject *parent = 0);
@@ -37,6 +42,7 @@ signals:
 public slots:
     void startListening(const QString &);
     void onMessageReceived(const QList<QByteArray>&);
+    void onTimerExpiry();
 };
 
 #endif // SUBSCRIBER_H
