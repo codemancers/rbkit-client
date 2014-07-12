@@ -61,16 +61,11 @@ class @Chart
     @addToCurrentObjects(liveObjectCount)
 
   addToOther: (objectType, count) ->
-    existingCount = @objectsAsOther[objectType]
-    if existingCount
-      @objectsAsOther[objectType] = existingCount + count
-    else
-      @objectsAsOther[objectType] = count
+    @objectsAsOther[objectType] = count
 
   addToCurrentObjects: (liveObjectCount) ->
-    knownClassesCount = Object.keys(@currentObjectCount).length
-
     for objectType, count of liveObjectCount
+      knownClassesCount = Object.keys(@currentObjectCount).length
       if @currentObjectCount[objectType]?
         @currentObjectCount[objectType] = count
       else
@@ -89,6 +84,14 @@ class @Chart
         @addNewDataPoint(objectType, count, currentTime)
       else
         @addNewSeries(objectType, count, currentTime)
+    otherCount = 0
+    for objectType, count of @objectsAsOther
+      otherCount += count
+    if(otherCount > 0 )
+      if @knownClasses["Other"]?
+        @addNewDataPoint("Other", otherCount, currentTime)
+      else
+        @addNewSeries("Other", otherCount, currentTime)
 
   addNewDataPoint: (objectType, count, currentTime) ->
     selectedSeries = (series for series in @chart.series when series.name == objectType)[0]

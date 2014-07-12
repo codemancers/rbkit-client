@@ -9,7 +9,7 @@
 #include "subscriber.h"
 
 static const int rbkcZmqTotalIoThreads = 1;
-static const int timerIntervalInMs = 500;
+static const int timerIntervalInMs = 2000;
 
 Subscriber::Subscriber(QObject *parent) :
     QObject(parent)
@@ -92,7 +92,13 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
                 int value = m_type2Count[eventInfo[1]].toInt() + 1;
                 m_type2Count[eventInfo[1]].setValue(value);
             } else {
-                int value = m_type2Count[eventInfo[1]].toInt() - 1;
+                int oldCount = m_type2Count[eventInfo[1]].toInt();
+                int value;
+                if(oldCount > 0) {
+                    value = oldCount - 1;
+                } else {
+                    value = 0;
+                }
                 m_type2Count[eventInfo[1]].setValue(value);
             }
 

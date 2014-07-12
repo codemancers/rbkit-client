@@ -109,21 +109,15 @@ this.Chart = (function() {
   };
 
   Chart.prototype.addToOther = function(objectType, count) {
-    var existingCount;
-    existingCount = this.objectsAsOther[objectType];
-    if (existingCount) {
-      return this.objectsAsOther[objectType] = existingCount + count;
-    } else {
-      return this.objectsAsOther[objectType] = count;
-    }
+    return this.objectsAsOther[objectType] = count;
   };
 
   Chart.prototype.addToCurrentObjects = function(liveObjectCount) {
     var count, knownClassesCount, objectType, _results;
-    knownClassesCount = Object.keys(this.currentObjectCount).length;
     _results = [];
     for (objectType in liveObjectCount) {
       count = liveObjectCount[objectType];
+      knownClassesCount = Object.keys(this.currentObjectCount).length;
       if (this.currentObjectCount[objectType] != null) {
         _results.push(this.currentObjectCount[objectType] = count);
       } else {
@@ -142,19 +136,30 @@ this.Chart = (function() {
   };
 
   Chart.prototype.updateChart = function() {
-    var count, currentTime, objectType, _ref, _results;
+    var count, currentTime, objectType, otherCount, _ref, _ref1;
     currentTime = (new Date()).getTime();
     _ref = this.currentObjectCount;
-    _results = [];
     for (objectType in _ref) {
       count = _ref[objectType];
       if (this.knownClasses[objectType] != null) {
-        _results.push(this.addNewDataPoint(objectType, count, currentTime));
+        this.addNewDataPoint(objectType, count, currentTime);
       } else {
-        _results.push(this.addNewSeries(objectType, count, currentTime));
+        this.addNewSeries(objectType, count, currentTime);
       }
     }
-    return _results;
+    otherCount = 0;
+    _ref1 = this.objectsAsOther;
+    for (objectType in _ref1) {
+      count = _ref1[objectType];
+      otherCount += count;
+    }
+    if (otherCount > 0) {
+      if (this.knownClasses["Other"] != null) {
+        return this.addNewDataPoint("Other", otherCount, currentTime);
+      } else {
+        return this.addNewSeries("Other", otherCount, currentTime);
+      }
+    }
   };
 
   Chart.prototype.addNewDataPoint = function(objectType, count, currentTime) {

@@ -23,11 +23,11 @@ msgpack.commands = mkdir -p $$OUT_PWD/msgpack; cd $$OUT_PWD/msgpack; $$PWD/msgpa
 zeromq.target = $$OUT_PWD/zeromq/lib/libzmq.a
 zeromq.commands = mkdir -p $$OUT_PWD/zeromq; cd $$OUT_PWD/zeromq; $$PWD/zeromq-4.0.4/configure --prefix=$$OUT_PWD/zeromq; make; make install
 
-COFFEESCRIPT_FILES += $$PWD/web/*.coffee
+COFFEESCRIPT_FILES += $$PWD/web/src/*.coffee
 CoffeeMaker.input = COFFEESCRIPT_FILES
-CoffeeMaker.targetdir = $$PWD/web
+CoffeeMaker.targetdir = $$PWD/web/src
 CoffeeMaker.output = $$CoffeeScriptCompiler.targetdir\${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
-CoffeeMaker.commands =  coffee --bare --compile --output $$PWD/web $$PWD/web
+CoffeeMaker.commands =  coffee --bare --compile --output $$PWD/web/src $$PWD/web/src
 
 CoffeeMaker.CONFIG += no_link_no_clean
 CoffeeMaker.variable_out = PRE_TARGETDEPS
