@@ -4,14 +4,19 @@
 #include <QObject>
 #include <QVariantMap>
 
-#include "zmq.hpp"
+// forward declaration of nzmqt classes
+namespace nzmqt
+{
+   class ZMQContext;
+   class ZMQSocket;
+}
 
 class Subscriber : public QObject
 {
     Q_OBJECT
 
-    zmq::socket_t *socket;
-    zmq::context_t *context;
+    nzmqt::ZMQContext* m_context;
+    nzmqt::ZMQSocket* m_socket;
 
     QMap<QString, QString> m_objId2Type;
     QMap<QString, int> m_event2Count;
@@ -31,6 +36,7 @@ signals:
 
 public slots:
     void startListening(const QString &);
+    void onMessageReceived(const QList<QByteArray>&);
 };
 
 #endif // SUBSCRIBER_H
