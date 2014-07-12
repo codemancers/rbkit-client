@@ -17,6 +17,9 @@ Subscriber::Subscriber(QObject *parent) :
     m_context = new nzmqt::SocketNotifierZMQContext(this, rbkcZmqTotalIoThreads);
     m_socket = m_context->createSocket(nzmqt::ZMQSocket::TYP_SUB, this);
     m_socket->setOption(nzmqt::ZMQSocket::OPT_SUBSCRIBE, "", 0);
+
+    connect(m_socket, SIGNAL(messageReceived(const QList<QByteArray>&)),
+            this, SLOT(onMessageReceived(const QList<QByteArray>&)));
 }
 
 Subscriber::~Subscriber()
@@ -45,39 +48,48 @@ void Subscriber::startListening(const QString& host)
 
     emit connected();
 
-    while (!QThread::currentThread()->isInterruptionRequested())
+    qDebug() << m_context->isStopped();
+    if (!m_context->isStopped())
+        m_context->start();
+    qDebug() << "started";
+
+}
+
+
+void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
+{
+    for (QList<QByteArray>::ConstIterator iter = rawMessage.begin();
+         rawMessage.end() != iter; ++iter)
     {
-        nzmqt::ZMQMessage message;
-        if (m_socket->receiveMessage(&message))
-        {
-            msgpack::unpacked unpackedMessage;
-            msgpack::unpack(&unpackedMessage, (const char *)message.data(), message.size());
-            msgpack::object_raw rawMessage = unpackedMessage.get().via.raw;
-            QString strMessage = QString::fromUtf8(rawMessage.ptr, rawMessage.size);
-            QStringList eventInfo = strMessage.split(QChar(' '));
+        const QByteArray& message = *iter;
+        msgpack::unpacked unpackedMessage;
+        msgpack::unpack(&unpackedMessage, (const char *)message.data(), message.size());
+        msgpack::object_raw rawMessage = unpackedMessage.get().via.raw;
+        QString strMessage = QString::fromUtf8(rawMessage.ptr, rawMessage.size);
+        QStringList eventInfo = strMessage.split(QChar(' '));
 
-            if (eventInfo.length() > 2) {
+        if (eventInfo.length() > 2) {
 
-                // just for recording purpose, we are not using it anywhere
-                m_objId2Type[eventInfo[2]] = eventInfo[1];
-                ++m_event2Count[eventInfo[0]];
+            // just for recording purpose, we are not using it anywhere
+            m_objId2Type[eventInfo[2]] = eventInfo[1];
+            ++m_event2Count[eventInfo[0]];
 
-                // initialize the count if not valid
-                if (!m_type2Count[eventInfo[1]].isValid())
-                    m_type2Count[eventInfo[1]] = QVariant(0);
+            // initialize the count if not valid
+            if (!m_type2Count[eventInfo[1]].isValid())
+                m_type2Count[eventInfo[1]] = QVariant(0);
 
-                // increment or decrement the count according the event
-                if (!eventInfo[0].compare(QString("obj_created"))) {
-                    int value = m_type2Count[eventInfo[1]].toInt() + 1;
-                    m_type2Count[eventInfo[1]].setValue(value);
-                } else {
-                    int value = m_type2Count[eventInfo[1]].toInt() - 1;
-                    m_type2Count[eventInfo[1]].setValue(value);
-                }
-
-                // qDebug() << m_type2Count;
-                emit messageReady(m_type2Count);
+            // increment or decrement the count according the event
+            if (!eventInfo[0].compare(QString("obj_created"))) {
+                int value = m_type2Count[eventInfo[1]].toInt() + 1;
+                m_type2Count[eventInfo[1]].setValue(value);
+            } else {
+                int value = m_type2Count[eventInfo[1]].toInt() - 1;
+                m_type2Count[eventInfo[1]].setValue(value);
             }
+
         }
     }
+
+    // qDebug() << m_type2Count;
+    emit messageReady(m_type2Count);
 }

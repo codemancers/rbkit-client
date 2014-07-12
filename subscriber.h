@@ -36,6 +36,7 @@ signals:
 
 public slots:
     void startListening(const QString &);
+    void onMessageReceived(const QList<QByteArray>&);
 };
 
 #endif // SUBSCRIBER_H
