@@ -34,14 +34,11 @@ this.Chart = (function() {
     this.receiveLiveData = __bind(this.receiveLiveData, this);
     this.establishQtBridge = __bind(this.establishQtBridge, this);
     this.tryQtBridge = __bind(this.tryQtBridge, this);
+    this.objectCounter = new ObjectCount();
     this.knownClasses = {
       "String": true
     };
     this.legendIndex = 1;
-    this.currentObjectCount = {
-      "String": 0
-    };
-    this.objectsAsOther = {};
   }
 
   Chart.prototype.plotChart = function() {
@@ -108,58 +105,24 @@ this.Chart = (function() {
     return this.addToCurrentObjects(liveObjectCount);
   };
 
-  Chart.prototype.addToOther = function(objectType, count) {
-    return this.objectsAsOther[objectType] = count;
-  };
-
   Chart.prototype.addToCurrentObjects = function(liveObjectCount) {
-    var count, knownClassesCount, objectType, _results;
-    _results = [];
-    for (objectType in liveObjectCount) {
-      count = liveObjectCount[objectType];
-      knownClassesCount = Object.keys(this.currentObjectCount).length;
-      if (this.currentObjectCount[objectType] != null) {
-        _results.push(this.currentObjectCount[objectType] = count);
-      } else {
-        if ((this.objectsAsOther[objectType] != null)) {
-          _results.push(this.addToOther(objectType, count));
-        } else {
-          if (knownClassesCount < 8) {
-            _results.push(this.currentObjectCount[objectType] = count);
-          } else {
-            _results.push(this.addToOther(objectType, count));
-          }
-        }
-      }
-    }
-    return _results;
+    return this.objectCounter.addToCurrentObjects(liveObjectCount);
   };
 
   Chart.prototype.updateChart = function() {
-    var count, currentTime, objectType, otherCount, _ref, _ref1;
+    var count, currentTime, objectType, timeSeries, _results;
     currentTime = (new Date()).getTime();
-    _ref = this.currentObjectCount;
-    for (objectType in _ref) {
-      count = _ref[objectType];
+    timeSeries = this.objectCounter.timeSeries();
+    _results = [];
+    for (objectType in timeSeries) {
+      count = timeSeries[objectType];
       if (this.knownClasses[objectType] != null) {
-        this.addNewDataPoint(objectType, count, currentTime);
+        _results.push(this.addNewDataPoint(objectType, count, currentTime));
       } else {
-        this.addNewSeries(objectType, count, currentTime);
+        _results.push(this.addNewSeries(objectType, count, currentTime));
       }
     }
-    otherCount = 0;
-    _ref1 = this.objectsAsOther;
-    for (objectType in _ref1) {
-      count = _ref1[objectType];
-      otherCount += count;
-    }
-    if (otherCount > 0) {
-      if (this.knownClasses["Other"] != null) {
-        return this.addNewDataPoint("Other", otherCount, currentTime);
-      } else {
-        return this.addNewSeries("Other", otherCount, currentTime);
-      }
-    }
+    return _results;
   };
 
   Chart.prototype.addNewDataPoint = function(objectType, count, currentTime) {

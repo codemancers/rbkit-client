@@ -5,5 +5,8 @@
         <file>web/index.html</file>
         <file>web/lib/jquery.js</file>
         <file>web/src/chart.coffee</file>
+        <file>web/lib/underscore.js</file>
+        <file>web/src/objectcount.coffee</file>
+        <file>web/src/objectcount.js</file>
     </qresource>
 </RCC>
