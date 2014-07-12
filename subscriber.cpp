@@ -1,5 +1,6 @@
 #include <QDebug>
 #include <QThread>
+#include <QTimer>
 
 #include "nzmqt/nzmqt.hpp"
 
@@ -8,6 +9,7 @@
 #include "subscriber.h"
 
 static const int rbkcZmqTotalIoThreads = 1;
+static const int timerIntervalInMs = 500;
 
 Subscriber::Subscriber(QObject *parent) :
     QObject(parent)
@@ -20,6 +22,11 @@ Subscriber::Subscriber(QObject *parent) :
 
     connect(m_socket, SIGNAL(messageReceived(const QList<QByteArray>&)),
             this, SLOT(onMessageReceived(const QList<QByteArray>&)));
+
+    // initialize the timer, mark it a periodic one, and connect to timeout.
+    m_timer = new QTimer(this);
+    m_timer->setInterval(timerIntervalInMs);
+    connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimerExpiry()));
 }
 
 Subscriber::~Subscriber()
@@ -49,8 +56,10 @@ void Subscriber::startListening(const QString& host)
     emit connected();
 
     qDebug() << m_context->isStopped();
-    if (!m_context->isStopped())
+    if (!m_context->isStopped()) {
         m_context->start();
+        m_timer->start();
+    }
     qDebug() << "started";
 
 }
@@ -89,7 +98,11 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
 
         }
     }
+}
 
-    // qDebug() << m_type2Count;
+
+void Subscriber::onTimerExpiry()
+{
+    qDebug() << m_type2Count;
     emit messageReady(m_type2Count);
 }
