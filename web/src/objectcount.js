@@ -4,6 +4,7 @@ this.ObjectCount = (function() {
     this.currentObjectCount = {
       "String": 0
     };
+    this.otherObjects = {};
   }
 
   ObjectCount.prototype.resetObjectCount = function() {
@@ -23,21 +24,31 @@ this.ObjectCount = (function() {
   };
 
   ObjectCount.prototype.timeSeries = function() {
-    var count, objectType, otherCount, sortedData, top8, _ref;
-    sortedData = _.sortBy(_.pairs(this.currentObjectCount), function(element) {
-      return element[1];
-    });
-    top8 = _.object(_.last(sortedData, 8));
+    var atomicData, count, finalData, objectType, otherCount, sortedData;
+    sortedData = _.object(_.sortBy(_.pairs(this.currentObjectCount), function(element) {
+      return element[1] * -1;
+    }));
     otherCount = 0;
-    _ref = this.currentObjectCount;
-    for (objectType in _ref) {
-      count = _ref[objectType];
-      if (!top8[objectType]) {
-        otherCount += 0;
+    atomicData = 0;
+    finalData = {};
+    for (objectType in sortedData) {
+      count = sortedData[objectType];
+      if (this.otherObjects[objectType]) {
+        otherCount += count;
+      } else {
+        if (atomicData < 10) {
+          finalData[objectType] = count;
+          atomicData += 1;
+        } else {
+          otherCount += count;
+          this.otherObjects[objectType] = true;
+        }
       }
     }
-    top8["Other"] = otherCount;
-    return top8;
+    if (otherCount > 0) {
+      finalData["Other"] = otherCount;
+    }
+    return finalData;
   };
 
   return ObjectCount;

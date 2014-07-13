@@ -9,7 +9,7 @@
 #include "subscriber.h"
 
 static const int rbkcZmqTotalIoThreads = 1;
-static const int timerIntervalInMs = 2000;
+static const int timerIntervalInMs = 1000;
 
 Subscriber::Subscriber(QObject *parent) :
     QObject(parent)
@@ -109,6 +109,5 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
 
 void Subscriber::onTimerExpiry()
 {
-    qDebug() << m_type2Count;
     emit messageReady(m_type2Count);
 }

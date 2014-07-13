@@ -1,6 +1,7 @@
 class @ObjectCount
   constructor: ->
     @currentObjectCount = {"String": 0}
+    @otherObjects = {}
 
   resetObjectCount: ->
     @currentObjectCount = {"String": 0}
@@ -11,11 +12,20 @@ class @ObjectCount
 
   # return time series data
   timeSeries: ->
-    sortedData = _.sortBy(_.pairs(@currentObjectCount), (element) -> element[1])
-    top8 = _.object(_.last(sortedData, 8))
+    sortedData = _.object(_.sortBy(_.pairs(@currentObjectCount), (element) -> element[1]*-1 ))
     otherCount = 0
-    for objectType, count of @currentObjectCount
-      unless top8[objectType]
-        otherCount += 0
-    top8["Other"] = otherCount
-    top8
+    atomicData = 0
+    finalData = {}
+    for objectType, count of sortedData
+      if @otherObjects[objectType]
+        otherCount += count
+      else
+        if atomicData < 10
+          finalData[objectType] = count
+          atomicData += 1
+        else
+          otherCount += count
+          @otherObjects[objectType] = true
+    if otherCount > 0
+      finalData["Other"] = otherCount
+    finalData
