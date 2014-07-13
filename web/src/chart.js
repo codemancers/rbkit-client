@@ -34,14 +34,11 @@ this.Chart = (function() {
     this.receiveLiveData = __bind(this.receiveLiveData, this);
     this.establishQtBridge = __bind(this.establishQtBridge, this);
     this.tryQtBridge = __bind(this.tryQtBridge, this);
+    this.objectCounter = new ObjectCount();
     this.knownClasses = {
       "String": true
     };
     this.legendIndex = 1;
-    this.currentObjectCount = {
-      "String": 0
-    };
-    this.objectsAsOther = {};
   }
 
   Chart.prototype.plotChart = function() {
@@ -108,46 +105,17 @@ this.Chart = (function() {
     return this.addToCurrentObjects(liveObjectCount);
   };
 
-  Chart.prototype.addToOther = function(objectType, count) {
-    var existingCount;
-    existingCount = this.objectsAsOther[objectType];
-    if (existingCount) {
-      return this.objectsAsOther[objectType] = existingCount + count;
-    } else {
-      return this.objectsAsOther[objectType] = count;
-    }
-  };
-
   Chart.prototype.addToCurrentObjects = function(liveObjectCount) {
-    var count, knownClassesCount, objectType, _results;
-    knownClassesCount = Object.keys(this.currentObjectCount).length;
-    _results = [];
-    for (objectType in liveObjectCount) {
-      count = liveObjectCount[objectType];
-      if (this.currentObjectCount[objectType] != null) {
-        _results.push(this.currentObjectCount[objectType] = count);
-      } else {
-        if ((this.objectsAsOther[objectType] != null)) {
-          _results.push(this.addToOther(objectType, count));
-        } else {
-          if (knownClassesCount < 8) {
-            _results.push(this.currentObjectCount[objectType] = count);
-          } else {
-            _results.push(this.addToOther(objectType, count));
-          }
-        }
-      }
-    }
-    return _results;
+    return this.objectCounter.addToCurrentObjects(liveObjectCount);
   };
 
   Chart.prototype.updateChart = function() {
-    var count, currentTime, objectType, _ref, _results;
+    var count, currentTime, objectType, timeSeries, _results;
     currentTime = (new Date()).getTime();
-    _ref = this.currentObjectCount;
+    timeSeries = this.objectCounter.timeSeries();
     _results = [];
-    for (objectType in _ref) {
-      count = _ref[objectType];
+    for (objectType in timeSeries) {
+      count = timeSeries[objectType];
       if (this.knownClasses[objectType] != null) {
         _results.push(this.addNewDataPoint(objectType, count, currentTime));
       } else {

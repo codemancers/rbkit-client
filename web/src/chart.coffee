@@ -9,10 +9,9 @@ class @Chart
     newData
 
   constructor: ->
+    @objectCounter = new ObjectCount()
     @knownClasses = {"String": true}
     @legendIndex = 1
-    @currentObjectCount = {"String": 0}
-    @objectsAsOther = {}
 
   plotChart: ->
     @chart = $("#container").highcharts(
@@ -60,31 +59,13 @@ class @Chart
   receiveLiveData: (liveObjectCount) =>
     @addToCurrentObjects(liveObjectCount)
 
-  addToOther: (objectType, count) ->
-    existingCount = @objectsAsOther[objectType]
-    if existingCount
-      @objectsAsOther[objectType] = existingCount + count
-    else
-      @objectsAsOther[objectType] = count
-
   addToCurrentObjects: (liveObjectCount) ->
-    knownClassesCount = Object.keys(@currentObjectCount).length
-
-    for objectType, count of liveObjectCount
-      if @currentObjectCount[objectType]?
-        @currentObjectCount[objectType] = count
-      else
-        if(@objectsAsOther[objectType]?)
-          @addToOther(objectType, count)
-        else
-          if(knownClassesCount < 8)
-            @currentObjectCount[objectType] = count
-          else
-            @addToOther(objectType, count)
+    @objectCounter.addToCurrentObjects(liveObjectCount)
 
   updateChart: =>
     currentTime = (new Date()).getTime()
-    for objectType, count of @currentObjectCount
+    timeSeries = @objectCounter.timeSeries()
+    for objectType, count of timeSeries
       if @knownClasses[objectType]?
         @addNewDataPoint(objectType, count, currentTime)
       else
