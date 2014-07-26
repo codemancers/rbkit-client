@@ -5,10 +5,10 @@ zeromq.subdir   = zeromq-4.0.4
 zeromq.makefile = Makefile.zeromq
 
 TEMPLATE = subdirs
-SUBDIRS =   \
-    msgpack \
-    zeromq  \
-    rbkit   \
-    client
+SUBDIRS =     \
+    msgpack   \
+    zeromq    \
+    rbkit-lib \
+    rbkit-app
 
 CONFIG += ordered
