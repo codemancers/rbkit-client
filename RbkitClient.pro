@@ -9,6 +9,7 @@ SUBDIRS =     \
     msgpack   \
     zeromq    \
     rbkit-lib \
-    rbkit-app
+    rbkit-app \
+    tests
 
 CONFIG += ordered
