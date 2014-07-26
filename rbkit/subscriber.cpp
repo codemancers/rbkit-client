@@ -109,5 +109,6 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
 
 void Subscriber::onTimerExpiry()
 {
+    qDebug() << m_type2Count;
     emit messageReady(m_type2Count);
 }

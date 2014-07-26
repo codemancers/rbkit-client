@@ -1,16 +1,13 @@
-RBKIT_BUILD_ROOT = $$OUT_PWD/..
-RBKIT_SRC_ROOT = $$PWD/..
-
 MAKEFILE = Makefile.zeromq
 
 Makefile.target   = Makefile
-Makefile.commands = $$PWD/configure --prefix=$${RBKIT_BUILD_ROOT}/zeromq
+Makefile.commands = $$PWD/configure --prefix=$$RC_ROOT_BUILD_DIR/zeromq
 
 all.commands = make && make install
 all.depends  = Makefile
 all.CONFIG   = phony
 
-TARGET = $${RBKIT_BUILD_ROOT}/zeromq/lib/zeromq.a
+TARGET = $$RC_ROOT_BUILD_DIR/zeromq/lib/zeromq.a
 TEMPLATE = lib
 
 QMAKE_DISTCLEAN += Makefile
