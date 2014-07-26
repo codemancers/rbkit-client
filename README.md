@@ -31,6 +31,8 @@ CONFIG+=debug CONFIG+=x86_64 CONFIG+=declarative_debug CONFIG+=qml_debug
 Since value of `-spec` is macx-g++, I'll need to add a line with
 `QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9` in `~/Qt5.2.1/5.2.1/clang_64/mkspecs/macx-g++/qmake.conf`
 
+*Note* - Above special syntax is usually not required on Linux systems.
+
 Running a shadow build, i.e building from a separate directory is very
 simple. Just create a build directory, say `~/rbkit-build`. Lets say
 source code is cloned at `~/rbkit-client`
