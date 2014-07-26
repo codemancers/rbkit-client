@@ -19,14 +19,7 @@ HEADERS +=  \
     askhost.h
 
 # Include msgpack via pri file
-include($$RC_ROOT_SOURCE_DIR/msgpack.pri)
-
-# Include nzmqt via pri file
-include($$RC_ROOT_SOURCE_DIR/nzmqt/nzmqt.pri)
-
-# Include zeromq via pri file
-include($$RC_ROOT_SOURCE_DIR/zeromq.pri)
-
+include($$RC_ROOT_SOURCE_DIR/common.pri)
 
 FORMS += \
     rbkitmainwindow.ui \

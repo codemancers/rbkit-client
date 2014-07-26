@@ -7,7 +7,7 @@ all.commands = make && make install
 all.depends  = Makefile
 all.CONFIG   = phony
 
-TARGET   = $$RC_ROOT_BUILD_DIR/msgpack/lib/libmsgpack.a
+TARGET   = $$RC_ROOT_BUILD_DIR/msgpack/lib
 TEMPLATE = lib
 
 QMAKE_DISTCLEAN += Makefile

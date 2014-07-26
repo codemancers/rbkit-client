@@ -7,7 +7,7 @@ all.commands = make && make install
 all.depends  = Makefile
 all.CONFIG   = phony
 
-TARGET = $$RC_ROOT_BUILD_DIR/zeromq/lib/zeromq.a
+TARGET = $$RC_ROOT_BUILD_DIR/zeromq/lib
 TEMPLATE = lib
 
 QMAKE_DISTCLEAN += Makefile
