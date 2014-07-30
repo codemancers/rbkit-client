@@ -31,9 +31,9 @@ allCapturedSeries = [
 ]
 
 class @Graph
-  constructor: (element) ->
+  constructor: (element, allCapturedSeries) ->
     @element = document.getElementById element
-    @series = allCapturedSeries
+    @allCapturedSeries = allCapturedSeries
   init: ->
     hash =
       element: @element
@@ -44,6 +44,7 @@ class @Graph
       preserve: true,
       series: @allCapturedSeries
     @graph = new Rickshaw.Graph(hash)
+    debugger
   render: ->
     @graph.render()
   update: ->
@@ -51,7 +52,7 @@ class @Graph
 
 
 
-graph = new @Graph('chart').init()
+graph = new @Graph('#chart', allCapturedSeries).init()
 
 new Rickshaw.Graph.HoverDetail(
   graph: graph.graph,
@@ -94,9 +95,9 @@ new Rickshaw.Graph.Axis.Time(
 window.counter = 0
 
 receiveObjectData = (objectData) ->
+  console.log objectData
   for className, count of objectData
-    if classAlreadyRegistered(className)
-      seriesToPushTo = findSeries(className)
+    if seriesToPushTo = findSeries(className)
       dataToPush = {
         x: counter,
         y: count
@@ -108,11 +109,6 @@ receiveObjectData = (objectData) ->
 
   window.counter += 1
   graph.update()
-
-classAlreadyRegistered = (className) ->
-  filteredClasses = allCapturedSeries.filter (element, index) ->
-    element.className == className
-  filteredClasses.length > 0
 
 findSeries = (className) ->
   filteredClasses = allCapturedSeries.filter (element, index) ->
