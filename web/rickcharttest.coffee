@@ -21,19 +21,15 @@ isRegistered = (klass) ->
   names.length
 
 receiveObjectData = (objectData) ->
-  console.log 'receiving data'
   for klass, count of objectData
     if isRegistered(klass)
       dataArray = findSeriesFor(klass)
-      console.log "the color for data array is #{dataArray.color}"
       dataArray.data.push { x: counter, y: count }
     else
-      console.log 'Got an new Class, pushing to mapped Classes'
       newColor = colorPalette.color()
       mappedClasses.push klass: klass, color: newColor, name: klass
       seriesData.push({ color: newColor, data: [ x: counter, y: count], name: klass })
 
-  console.log "incrementing counter to #{counter}"
   counter += 1
 
 graph = new Rickshaw.Graph(
@@ -44,9 +40,12 @@ graph = new Rickshaw.Graph(
   series: seriesData
 )
 
+new Rickshaw.Graph.Axis.Time(graph: graph)
+new Rickshaw.Graph.Axis.Y(graph: graph)
+
 tryQtBridge = ->
   if window.rbkitClient
     window.rbkitClient.sendDatatoJs.connect(receiveObjectData)
     graph.render()
 
-setInterval(tryQtBridge, 1000)
+setInterval(tryQtBridge, 100)

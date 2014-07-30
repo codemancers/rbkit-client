@@ -12,9 +12,7 @@ data = [
 
 mappedClasses = [];
 
-colorPalette = new Rickshaw.Color.Palette({
-  scheme: 'classic9'
-});
+colorPalette = new Rickshaw.Color.Palette();
 
 seriesData = [
   {
@@ -93,6 +91,14 @@ graph = new Rickshaw.Graph({
   series: seriesData
 });
 
+new Rickshaw.Graph.Axis.Time({
+  graph: graph
+});
+
+new Rickshaw.Graph.Axis.Y({
+  graph: graph
+});
+
 tryQtBridge = function() {
   if (window.rbkitClient) {
     window.rbkitClient.sendDatatoJs.connect(receiveObjectData);
@@ -100,4 +106,4 @@ tryQtBridge = function() {
   }
 };
 
-setInterval(tryQtBridge, 1000);
+setInterval(tryQtBridge, 100);
