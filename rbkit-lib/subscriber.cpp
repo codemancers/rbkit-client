@@ -37,13 +37,14 @@ Subscriber::~Subscriber()
     emit disconnected();
 }
 
-void Subscriber::startListening(const QString& host)
+void Subscriber::startListening(QString commandsSocket, QString eventsSocket)
 {
-    qDebug() << "Got " << host;
-    QByteArray ba = host.toLocal8Bit();
-    const char *hostString = ba.data();
+    qDebug() << "Got " << eventsSocket;
+
     try
     {
+        QByteArray ba = eventsSocket.toLocal8Bit();
+        const char *hostString = ba.data();
         m_socket->connectTo(hostString);
     }
     catch(zmq::error_t err)
@@ -67,6 +68,8 @@ void Subscriber::startListening(const QString& host)
 
 void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
 {
+    qDebug() << rawMessage;
+
     for (QList<QByteArray>::ConstIterator iter = rawMessage.begin();
          rawMessage.end() != iter; ++iter)
     {
@@ -77,6 +80,7 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
         QString strMessage = QString::fromUtf8(rawMessage.ptr, rawMessage.size);
         QStringList eventInfo = strMessage.split(QChar(' '));
 
+        qDebug() << strMessage;
         if (eventInfo.length() > 2) {
 
             // just for recording purpose, we are not using it anywhere
@@ -109,6 +113,6 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
 
 void Subscriber::onTimerExpiry()
 {
-    qDebug() << m_type2Count;
+    // qDebug() << m_type2Count;
     emit messageReady(m_type2Count);
 }

@@ -51,16 +51,17 @@ void RbkitMainWindow::on_action_Quit_triggered()
 void RbkitMainWindow::askForServerInfo() {
     if(host.size() == 0) {
         this->askHost = new AskHost(this);
-        connect(this->askHost, SIGNAL(userHasSelectedHost(QString)), this, SLOT(useSelectedHost(const QString &)));
+        connect(this->askHost, SIGNAL(userHasSelectedHost(QString, QString)),
+                this, SLOT(useSelectedHost(QString, QString)));
         askHost->show();
     }
 }
 
-void RbkitMainWindow::useSelectedHost(const QString &selectedHost) {
-    host = selectedHost;
+void RbkitMainWindow::useSelectedHost(QString commandsSocket, QString eventsSocket)
+{
     askHost->close();
-    qDebug() << "Emitting signal with " << host;
-    emit connectToSocket(host);
+    qDebug() << "Emitting signal with " << eventsSocket;
+    emit connectToSocket(commandsSocket, eventsSocket);
 }
 
 void RbkitMainWindow::on_action_About_Rbkit_triggered()
@@ -91,7 +92,8 @@ void RbkitMainWindow::setupSubscriber()
 
     //Events to/from parent/subcriber thread
     connect(&subscriberThread, &QThread::finished, subscriber, &QObject::deleteLater);
-    connect(this, SIGNAL(connectToSocket(const QString&)), subscriber, SLOT(startListening(const QString&)));
+    connect(this, SIGNAL(connectToSocket(QString, QString)),
+            subscriber, SLOT(startListening(QString, QString)));
 
     connect(subscriber, &Subscriber::messageReady, this, &RbkitMainWindow::handleMessage);
     connect(subscriber, &Subscriber::errored, this, &RbkitMainWindow::onError);

@@ -40,7 +40,7 @@ signals:
     void errored(const QString &);
 
 public slots:
-    void startListening(const QString &);
+    void startListening(QString, QString);
     void onMessageReceived(const QList<QByteArray>&);
     void onTimerExpiry();
 };

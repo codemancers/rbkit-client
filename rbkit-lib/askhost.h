@@ -11,7 +11,6 @@ class AskHost;
 class AskHost : public QDialog
 {
     Q_OBJECT
-    QString selectedHost;
 
 public:
     explicit AskHost(QWidget *parent = 0);
@@ -21,7 +20,7 @@ private slots:
     void userSelectedHost();
 
 signals:
-    void userHasSelectedHost(const QString&);
+    void userHasSelectedHost(QString, QString);
 
 private:
     Ui::AskHost *ui;

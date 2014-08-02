@@ -1,3 +1,4 @@
+#include <QDebug>
 #include "askhost.h"
 #include "ui_askhost.h"
 
@@ -14,8 +15,11 @@ AskHost::~AskHost()
     delete ui;
 }
 
-void AskHost::userSelectedHost() {
-    selectedHost = ui->hostName->text();
-    emit userHasSelectedHost(selectedHost);
-}
+void AskHost::userSelectedHost()
+{
+    QString commandsSocket = ui->commandsSocket->text();
+    QString eventsSocket = ui->eventsSocket->text();
 
+    qDebug() << commandsSocket << eventsSocket;
+    emit userHasSelectedHost(commandsSocket, eventsSocket);
+}
