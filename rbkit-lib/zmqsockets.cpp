@@ -27,9 +27,7 @@ RBKit::ZmqCommandSocket::~ZmqCommandSocket()
 
 bool RBKit::ZmqCommandSocket::sendCommand(RBKit::CommandBase& cmd)
 {
-    QByteArray commandStr(cmd.serialize());
-    nzmqt::ZMQMessage msg(commandStr);
-
+    nzmqt::ZMQMessage msg(cmd.serialize().toLocal8Bit());
     bool sent = socket->sendMessage(msg);
     qDebug() << sent;
 

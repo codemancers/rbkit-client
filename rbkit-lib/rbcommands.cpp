@@ -1,24 +1,24 @@
 #include "rbcommands.h"
 
-const char* RBKit::CmdStartProfile::serialize()
+QString RBKit::CmdStartProfile::serialize()
 {
-    return "start_memory_profile";
+    return QString("start_memory_profile");
 }
 
 
-const char* RBKit::CmdStopProfile::serialize()
+QString RBKit::CmdStopProfile::serialize()
 {
-    return "stop_memory_profile";
+    return QString("stop_memory_profile");
 }
 
 
-const char* RBKit::CmdObjSnapshot::serialize()
+QString RBKit::CmdObjSnapshot::serialize()
 {
-    return "objectspace_snapshot";
+    return QString("objectspace_snapshot");
 }
 
 
-const char* RBKit::CmdTriggerGC::serialize()
+QString RBKit::CmdTriggerGC::serialize()
 {
-    return "trigger_gc";
+    return QString("trigger_gc");
 }
