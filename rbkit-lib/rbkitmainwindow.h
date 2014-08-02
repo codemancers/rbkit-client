@@ -32,6 +32,7 @@ public:
 signals:
     void sendDatatoJs(const QVariantMap& map);
     void connectToSocket(QString, QString);
+    void disconnectSubscriber();
 
 private slots:
     void on_action_Connect_triggered();

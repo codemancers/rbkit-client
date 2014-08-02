@@ -34,7 +34,9 @@ RbkitMainWindow::~RbkitMainWindow()
 
 void RbkitMainWindow::on_action_Connect_triggered()
 {
-    if( !this->connected ) {
+    qDebug() << "main-window" << connected;
+
+    if (!connected) {
         setupSubscriber();
         askForServerInfo();
     } else {
@@ -94,6 +96,8 @@ void RbkitMainWindow::setupSubscriber()
     connect(&subscriberThread, &QThread::finished, subscriber, &QObject::deleteLater);
     connect(this, SIGNAL(connectToSocket(QString, QString)),
             subscriber, SLOT(startListening(QString, QString)));
+
+    connect(this, SIGNAL(disconnectSubscriber()), subscriber, SLOT(stop()));
 
     connect(subscriber, &Subscriber::messageReady, this, &RbkitMainWindow::handleMessage);
     connect(subscriber, &Subscriber::errored, this, &RbkitMainWindow::onError);

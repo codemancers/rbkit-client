@@ -13,12 +13,18 @@ namespace nzmqt
 
 class QTimer;
 
+namespace RBKit
+{
+    class ZmqCommandSocket;
+    class ZmqEventSocket;
+}
+
 class Subscriber : public QObject
 {
     Q_OBJECT
 
-    nzmqt::ZMQContext* m_context;
-    nzmqt::ZMQSocket* m_socket;
+    RBKit::ZmqCommandSocket* commandSocket;
+    RBKit::ZmqEventSocket* eventSocket;
 
     QMap<QString, QString> m_objId2Type;
     QMap<QString, int> m_event2Count;
@@ -41,6 +47,7 @@ signals:
 
 public slots:
     void startListening(QString, QString);
+    void stop();
     void onMessageReceived(const QList<QByteArray>&);
     void onTimerExpiry();
 };

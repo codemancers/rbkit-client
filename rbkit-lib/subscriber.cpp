@@ -7,6 +7,8 @@
 #include <msgpack.hpp>
 
 #include "subscriber.h"
+#include "zmqsockets.h"
+#include "rbcommands.h"
 
 static const int rbkcZmqTotalIoThreads = 1;
 static const int timerIntervalInMs = 1000;
@@ -16,12 +18,18 @@ Subscriber::Subscriber(QObject *parent) :
 {
     // second argument to creating a context is number of io threads. right
     // now, we are using only 1 thread, so defaulting to 1 for now.
-    m_context = new nzmqt::SocketNotifierZMQContext(this, rbkcZmqTotalIoThreads);
-    m_socket = m_context->createSocket(nzmqt::ZMQSocket::TYP_SUB, this);
-    m_socket->setOption(nzmqt::ZMQSocket::OPT_SUBSCRIBE, "", 0);
+    // m_context = new nzmqt::SocketNotifierZMQContext(this, rbkcZmqTotalIoThreads);
+    // m_socket = m_context->createSocket(nzmqt::ZMQSocket::TYP_SUB, this);
+    // m_socket->setOption(nzmqt::ZMQSocket::OPT_SUBSCRIBE, "", 0);
 
-    connect(m_socket, SIGNAL(messageReceived(const QList<QByteArray>&)),
-            this, SLOT(onMessageReceived(const QList<QByteArray>&)));
+    // connect(m_socket, SIGNAL(messageReceived(const QList<QByteArray>&)),
+    //         this, SLOT(onMessageReceived(const QList<QByteArray>&)));
+
+    commandSocket = new RBKit::ZmqCommandSocket(this);
+    eventSocket   = new RBKit::ZmqEventSocket(this);
+
+    // connect(eventSocket->socket, SIGNAL(messageReceived(const QList<QByteArray>&)),
+    //        this, SLOT(onMessageReceived(const QList<QByteArray>&)));
 
     // initialize the timer, mark it a periodic one, and connect to timeout.
     m_timer = new QTimer(this);
@@ -31,38 +39,47 @@ Subscriber::Subscriber(QObject *parent) :
 
 Subscriber::~Subscriber()
 {
-    m_socket->close();
-    delete m_socket;
-    delete m_context;
+    stop();
+
+    commandSocket->stop();
+    delete commandSocket;
+
+    eventSocket->stop();
+    delete eventSocket;
+
     emit disconnected();
 }
 
-void Subscriber::startListening(QString commandsSocket, QString eventsSocket)
+void Subscriber::startListening(QString commandsUrl, QString eventsUrl)
 {
-    qDebug() << "Got " << eventsSocket;
+    qDebug() << "Got " << commandsUrl << eventsUrl;
 
     try
     {
-        QByteArray ba = eventsSocket.toLocal8Bit();
-        const char *hostString = ba.data();
-        m_socket->connectTo(hostString);
+        commandSocket->start(commandsUrl);
+        eventSocket->start(eventsUrl);
     }
     catch(zmq::error_t err)
     {
         QString str = QString::fromUtf8(err.what());
         qDebug() << str ;
-        emit  errored(str);
+        emit errored(str);
+        return;
     }
+
+    RBKit::CmdStartProfile startCmd;
+    commandSocket->sendCommand(startCmd);
 
     emit connected();
-
-    qDebug() << m_context->isStopped();
-    if (!m_context->isStopped()) {
-        m_context->start();
-        m_timer->start();
-    }
     qDebug() << "started";
+}
 
+void Subscriber::stop()
+{
+    RBKit::CmdStopProfile stopCmd;
+    commandSocket->sendCommand(stopCmd);
+
+    qDebug() << "stopped";
 }
 
 
