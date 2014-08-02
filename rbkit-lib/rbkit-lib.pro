@@ -11,7 +11,8 @@ CONFIG += staticlib
 SOURCES += \
     subscriber.cpp \
     rbkitmainwindow.cpp \
-    askhost.cpp
+    askhost.cpp \
+    rbcommands.cpp
 
 HEADERS +=  \
     subscriber.h \
