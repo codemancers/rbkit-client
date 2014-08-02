@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>100</height>
+    <width>395</width>
+    <height>194</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -28,29 +28,47 @@
      <item>
       <widget class="QLabel" name="hostInfo">
        <property name="text">
-        <string>Enter connection information of your Ruby App</string>
+        <string>Enter connection information for events</string>
        </property>
       </widget>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QLineEdit" name="hostName">
+        <widget class="QLineEdit" name="eventsSocket">
          <property name="text">
           <string>tcp://127.0.0.1:5555</string>
          </property>
         </widget>
        </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Enter connection information for commands</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
-        <widget class="QPushButton" name="hostSelectedButton">
+        <widget class="QLineEdit" name="commandsSocket">
          <property name="text">
-          <string>&amp;Ok</string>
+          <string>tcp://127.0.0.1:5556</string>
          </property>
         </widget>
        </item>
       </layout>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QPushButton" name="hostSelectedButton">
+     <property name="text">
+      <string>&amp;Ok</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

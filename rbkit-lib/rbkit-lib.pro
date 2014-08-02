@@ -11,12 +11,15 @@ CONFIG += staticlib
 SOURCES += \
     subscriber.cpp \
     rbkitmainwindow.cpp \
-    askhost.cpp
+    askhost.cpp \
+    rbcommands.cpp \
+    zmqsockets.cpp
 
 HEADERS +=  \
     subscriber.h \
     rbkitmainwindow.h \
-    askhost.h
+    askhost.h \
+    zmqsockets.h
 
 # Include msgpack via pri file
 include($$RC_ROOT_SOURCE_DIR/common.pri)

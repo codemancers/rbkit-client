@@ -31,7 +31,8 @@ public:
 
 signals:
     void sendDatatoJs(const QVariantMap& map);
-    void connectToSocket(const QString&);
+    void connectToSocket(QString, QString);
+    void disconnectSubscriber();
 
 private slots:
     void on_action_Connect_triggered();
@@ -44,7 +45,7 @@ private slots:
     void disconnectedFromSocket();
     void onError(const QString &);
     void onPageLoad(bool ok);
-    void useSelectedHost(const QString& selectedHost);
+    void useSelectedHost(QString, QString);
 
 private:
     Ui::RbkitMainWindow *ui;
