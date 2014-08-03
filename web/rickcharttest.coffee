@@ -27,7 +27,7 @@ receiveObjectData = (objectData) ->
   unMappedClasses = notMappedClasses(objectData)
 
   for klass in unMappedClasses
-    graph.series.addItem(name: klass, color: colorPalette.color())
+    graph.series.addItem({name: klass, color: colorPalette.color()})
     mappedClasses.push klass
   graph.series.addData(objectData)
 
@@ -36,9 +36,15 @@ graph = new Rickshaw.Graph(
   width: document.width - 30
   height: document.height - 30
   renderer: 'bar'
-  series: new Rickshaw.Series([
-    { name: '', color: colorPalette.color() },
-  ])
+  series: new Rickshaw.Series.FixedDuration(
+    [{ name: '', color: colorPalette.color() }],
+    undefined,
+    {
+      timeInterval: 100
+      maxDataPoints: 100
+      timeBase: new Date().getTime() / 1000
+    }
+  )
 )
 
 tryQtBridge = ->
