@@ -11,6 +11,15 @@ static inline QString rawToQString(msgpack::object obj)
     return QString::fromUtf8(raw.ptr, raw.size);
 }
 
+static inline quint64 hextoInt(const QString &string) {
+    bool ok;
+    quint64 hex = string.toULongLong(&ok, 16);
+    if(ok) {
+        return hex;
+    } else {
+        return 0;
+    }
+}
 
 // NOTE: This can be improved with the version that hemant is writing for GCStats.
 static QVariantMap parseMsgpackObjectMap(msgpack::object_map obj)
@@ -79,9 +88,10 @@ RBKit::EventDataBase::EventDataBase(QDateTime ts, QString eventName)
 
 RBKit::EvtNewObject::EvtNewObject(QDateTime ts, QString eventName, QVariantMap payload)
     : EventDataBase(ts, eventName)
-    , objectId(payload["object_id"].toULongLong())
+    , objectId(hextoInt(payload["object_id"].toString()))
     , className(payload["class"].toString())
 {
+
 }
 
 void RBKit::EvtNewObject::process(Subscriber& processor) const
@@ -91,7 +101,7 @@ void RBKit::EvtNewObject::process(Subscriber& processor) const
 
 RBKit::EvtDelObject::EvtDelObject(QDateTime ts, QString eventName, QVariantMap payload)
     : EventDataBase(ts, eventName)
-    , objectId(payload["object_id"].toULongLong())
+    , objectId(hextoInt(payload["object_id"].toString()))
 { }
 
 void RBKit::EvtDelObject::process(Subscriber& processor) const

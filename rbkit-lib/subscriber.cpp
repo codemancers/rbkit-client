@@ -92,7 +92,7 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
 
 void Subscriber::processEvent(const RBKit::EvtNewObject& objCreated)
 {
-    qDebug() << "processing obj created";
+    qDebug() << "processing obj created : " << objCreated.className << " with id" << objCreated.objectId;
     int value = m_type2Count[objCreated.className].toInt() + 1;
     m_type2Count[objCreated.className].setValue(value);
 }
