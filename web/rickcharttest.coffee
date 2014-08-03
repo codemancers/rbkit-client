@@ -66,8 +66,6 @@ graph = new Rickshaw.Graph(
   series: seriesData
 )
 
-new Rickshaw.Graph.Axis.Time(graph: graph)
-new Rickshaw.Graph.Axis.Y(graph: graph)
 
 tryQtBridge = ->
   if window.rbkitClient
@@ -75,3 +73,14 @@ tryQtBridge = ->
     graph.render()
 
 setInterval(tryQtBridge, 1000)
+
+new Rickshaw.Graph.Axis.Time(graph: graph)
+new Rickshaw.Graph.Axis.Y.Scaled(
+  graph: graph
+  tickFormat: Rickshaw.Fixtures.Number.formatKMBT
+  scale: d3.scale.log()
+)
+new Rickshaw.Graph.HoverDetail(
+  graph: graph
+  yFormatter: (y) -> "Count: #{y}"
+)
