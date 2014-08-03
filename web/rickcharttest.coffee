@@ -5,16 +5,11 @@ seriesData = [
   { color: colorPalette.color(), data: [x: 0, y: 0], name: '' }
 ]
 
-findSeriesFor = (klass) ->
-  colors = mappedClasses.filter (element) ->
-    element.klass == klass
-  color = colors[0].color
-  series = seriesData.filter (element) ->
-    element.color == color
-  series[0]
-
 # To make stacked series in rickshaw happy, we need to ensure that all the older
-# data points are initialized with zero. This does the same.
+# data points are initialized with zero. This does the same. If the data array
+# for the new series is zero, we just return the empty array because that gets
+# filled with the data later. Otherwise we instantiate the series with zero
+# values up till the current counter value.
 generateFillerSeries = (count) ->
   return [] if count == 0
 
@@ -25,7 +20,7 @@ generateFillerSeries = (count) ->
 
 isRegistered = (klass) ->
   names = mappedClasses.filter (element) ->
-    element.klass == klass
+    element.name == klass
   names.length
 
 #TODO: All data series arrays should be pushed with {0, counter} to ensure 
@@ -46,19 +41,20 @@ receiveObjectData = (objectData) ->
           series.data.push { x: counter, y: 0 }
     else
       newColor = colorPalette.color()
-      mappedClasses.push klass: klass, color: newColor, name: klass
+      mappedClasses.push color: newColor, name: klass
 
-      console.log "counter is #{counter}"
       fillerSeries = generateFillerSeries(counter)
       fillerSeries.push { x: counter, y: count }
-      console.log "new series data count is #{fillerSeries.length}"
 
+      seriesData.push({ color: newColor, data: fillerSeries, name: klass })
+
+
+      # For the rest of the already registered classes and those which are not
+      # present in the objectData object, increment the data by 1 item
       for series in seriesData
         if series.data.length < counter
           series.data.push { x: counter, y: 0 }
-        console.log "old series data count is #{series.data.length}"
 
-      seriesData.push({ color: newColor, data: fillerSeries, name: klass })
 
   counter += 1
 
@@ -78,4 +74,4 @@ tryQtBridge = ->
     window.rbkitClient.sendDatatoJs.connect(receiveObjectData)
     graph.render()
 
-setInterval(tryQtBridge, 100)
+setInterval(tryQtBridge, 1000)
