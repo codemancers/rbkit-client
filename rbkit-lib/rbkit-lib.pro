@@ -14,14 +14,18 @@ SOURCES += \
     askhost.cpp \
     rbcommands.cpp \
     zmqsockets.cpp \
-    rbevents.cpp
+    rbevents.cpp \
+    objectdetail.cpp \
+    objectstore.cpp
 
 HEADERS +=  \
     subscriber.h \
     rbkitmainwindow.h \
     askhost.h \
     zmqsockets.h \
-    rbevents.h
+    rbevents.h \
+    objectdetail.h \
+    objectstore.h
 
 
 # Include msgpack via pri file

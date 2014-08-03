@@ -6,7 +6,8 @@ TARGET = rctests
 CONFIG -= app_bundle
 CONFIG += console
 
-SOURCES += testqstring.cpp
+SOURCES += testqstring.cpp \
+    testobjectstore.cpp
 
 # Include everything via one common pri file
 include($$RC_ROOT_SOURCE_DIR/common.pri)
