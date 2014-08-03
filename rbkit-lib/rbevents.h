@@ -12,16 +12,17 @@ namespace RBKit
     class EventDataBase
     {
     public:
-        EventDataBase(QDateTime ts);
+        EventDataBase(QDateTime ts, QString eventName);
         virtual void process(Subscriber& processor) const = 0;
 
         QDateTime timestamp;
+        QString eventName;
     };
 
     class EvtNewObject : public EventDataBase
     {
     public:
-        EvtNewObject(QDateTime ts, QVariantMap payload);
+        EvtNewObject(QDateTime ts, QString eventName, QVariantMap payload);
         void process(Subscriber& processor) const;
 
         QString className;
@@ -31,7 +32,7 @@ namespace RBKit
     class EvtDelObject : public EventDataBase
     {
     public:
-        EvtDelObject(QDateTime ts, QVariantMap payload);
+        EvtDelObject(QDateTime ts, QString eventName, QVariantMap payload);
         void process(Subscriber& processor) const;
 
         quint64 objectId;

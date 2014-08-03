@@ -37,7 +37,7 @@ static QVariantMap parseMsgpackObjectMap(msgpack::object_map obj)
             map[keyStr] = val.via.dec;
             break;
         case msgpack::type::POSITIVE_INTEGER :
-            map[keyStr] = val.via.u64;
+            map[keyStr] = (unsigned long long int)(val.via.u64);
             break;
         default:
             throw "unknown object type";
@@ -61,9 +61,9 @@ const RBKit::EventDataBase* RBKit::parseEvent(const QByteArray& message)
 
     QDateTime timestamp = QDateTime::fromMSecsSinceEpoch(map["timestamp"].toULongLong());
     if (map["event_type"] == "obj_created") {
-        return new RBKit::EvtNewObject(timestamp, map["payload"].toMap());
+        return new RBKit::EvtNewObject(timestamp, map["event_type"].toString(), map["payload"].toMap());
     } else if (map["event_type"] == "obj_destroyed") {
-        return new RBKit::EvtNewObject(timestamp, map["payload"].toMap());
+        return new RBKit::EvtNewObject(timestamp, map["event_type"].toString(), map["payload"].toMap());
     } else {
         return NULL;
     }
@@ -71,14 +71,14 @@ const RBKit::EventDataBase* RBKit::parseEvent(const QByteArray& message)
 
 
 
-RBKit::EventDataBase::EventDataBase(QDateTime ts)
-    : timestamp(ts)
+RBKit::EventDataBase::EventDataBase(QDateTime ts, QString eventName)
+    : timestamp(ts), eventName(eventName)
 {
 }
 
 
-RBKit::EvtNewObject::EvtNewObject(QDateTime ts, QVariantMap payload)
-    : EventDataBase(ts)
+RBKit::EvtNewObject::EvtNewObject(QDateTime ts, QString eventName, QVariantMap payload)
+    : EventDataBase(ts, eventName)
     , objectId(payload["object_id"].toULongLong())
     , className(payload["class"].toString())
 {
@@ -89,8 +89,8 @@ void RBKit::EvtNewObject::process(Subscriber& processor) const
     processor.processEvent(*this);
 }
 
-RBKit::EvtDelObject::EvtDelObject(QDateTime ts, QVariantMap payload)
-    : EventDataBase(ts)
+RBKit::EvtDelObject::EvtDelObject(QDateTime ts, QString eventName, QVariantMap payload)
+    : EventDataBase(ts, eventName)
     , objectId(payload["object_id"].toULongLong())
 { }
 
