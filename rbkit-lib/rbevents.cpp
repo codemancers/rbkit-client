@@ -58,7 +58,7 @@ static QVariantMap parseMsgpackObjectMap(msgpack::object_map obj)
     return map;
 }
 
-const RBKit::EventDataBase* RBKit::parseEvent(const QByteArray& message)
+RBKit::EventDataBase* RBKit::parseEvent(const QByteArray& message)
 {
     msgpack::unpacked unpackedMessage;
     msgpack::unpack(&unpackedMessage, message.data(), message.size());

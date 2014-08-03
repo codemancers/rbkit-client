@@ -38,7 +38,7 @@ namespace RBKit
         quint64 objectId;
     };
 
-    const EventDataBase* parseEvent(const QByteArray& rawMessage);
+    EventDataBase* parseEvent(const QByteArray& rawMessage);
 }
 
 
