@@ -76,9 +76,8 @@ RBKit::ZmqEventSocket::~ZmqEventSocket()
 
 void RBKit::ZmqEventSocket::start(QString socketUrl)
 {
-    if (!context->isStopped()) {
-        return;
-    }
+    // There is something wrong with the way how contexts are shared!
+    // calling context->isStopped() returned false
 
     QByteArray ba   = socketUrl.toLocal8Bit();
     const char *url = ba.data();

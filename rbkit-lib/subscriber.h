@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QVariantMap>
 
+#include "rbevents.h"
+
 // forward declaration of nzmqt classes
 namespace nzmqt
 {
@@ -29,6 +31,7 @@ class Subscriber : public QObject
     QMap<QString, QString> m_objId2Type;
     QMap<QString, int> m_event2Count;
 
+
     // we are interested in this count.
     QVariantMap m_type2Count;
 
@@ -38,6 +41,11 @@ class Subscriber : public QObject
 public:
     explicit Subscriber(QObject *parent = 0);
     ~Subscriber();
+
+public:
+    // function overloading
+    void processEvent(const RBKit::EvtNewObject&);
+    void processEvent(const RBKit::EvtDelObject&);
 
 signals:
     void messageReady(const QVariantMap& map);

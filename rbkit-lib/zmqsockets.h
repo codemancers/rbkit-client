@@ -46,6 +46,11 @@ namespace RBKit
         explicit ZmqEventSocket(QObject* parent = 0);
         ~ZmqEventSocket();
 
+        // hack, not sure how to bind socket receive message.
+        inline nzmqt::ZMQSocket* getSocket() {
+            return socket;
+        }
+
     public:
         void start(QString socketUrl);
         void stop();
