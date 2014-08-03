@@ -35,7 +35,7 @@ graph = new Rickshaw.Graph(
   element: document.querySelector('#chart')
   width: document.width - 30
   height: document.height - 30
-  renderer: 'area'
+  renderer: 'bar'
   series: new Rickshaw.Series([
     { name: '', color: colorPalette.color() },
   ])
