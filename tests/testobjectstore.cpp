@@ -2,20 +2,44 @@
 
 TestObjectStore::TestObjectStore()
 {
+    this->objectStore = new ObjectStore();
+}
+
+void TestObjectStore::initTestCase()
+{
+}
+
+void TestObjectStore::cleanupTestCase()
+{
+    this->objectStore->reset();
 }
 
 void TestObjectStore::testGetObject()
 {
-    ObjectStore *objectStore = new ObjectStore();
     ObjectDetail *objectDetail = new ObjectDetail("String", 12345);
 
     objectStore->addObject(objectDetail);
 
     ObjectDetail *foundObject = objectStore->getObject(12345);
     QVERIFY(foundObject);
+    QVERIFY2(objectStore->getObjectTypeCount("String") == 1, "does not have correct String count");
 
     QCOMPARE(objectDetail->className, foundObject->className);
 
     ObjectDetail *nullObject = objectStore->getObject(1234);
     QVERIFY2(nullObject == NULL, "result value was not null");
+}
+
+void TestObjectStore::testRemoveObject()
+{
+    this->objectStore->reset();
+    ObjectDetail *objectDetail = new ObjectDetail("String", 12345);
+    objectStore->addObject(objectDetail);
+
+    QVERIFY2(objectStore->getObject(12345) != NULL, "fetching valid object is NULL");
+    QVERIFY2(objectStore->getObjectTypeCount("String") == 1, "does not have correct String count");
+
+    objectStore->removeObject(12345);
+    QVERIFY2(objectStore->getObject(12345) == NULL, "fetching invalid is not NULL");
+    QVERIFY2(objectStore->getObjectTypeCount("String") == 0, "does not have correct String count");
 }

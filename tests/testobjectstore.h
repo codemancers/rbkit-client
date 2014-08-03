@@ -9,8 +9,12 @@ class TestObjectStore : public QObject
     Q_OBJECT
 public:
     TestObjectStore();
+    ObjectStore *objectStore;
 private slots:
+    void initTestCase();
+    void cleanupTestCase();
     void testGetObject();
+    void testRemoveObject();
 };
 DECLARE_TEST(TestObjectStore)
 #endif // TESTOBJECTSTORE_H
