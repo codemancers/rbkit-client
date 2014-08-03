@@ -4,12 +4,17 @@ ObjectStore::ObjectStore()
 {
 }
 
-void ObjectStore::addObject(const ObjectDetail &object)
+void ObjectStore::addObject(ObjectDetail *objectDetail)
 {
-   this->objectStore[object.objectId] = object;
+  objectStore[objectDetail->objectId] = objectDetail;
 }
 
-const ObjectDetail ObjectStore::getObject(quint64 key)
+ObjectDetail *ObjectStore::getObject(quint64 key)
 {
-   return objectStore.value(key, NULL);
+    QHash<quint64, ObjectDetail*>::const_iterator i = objectStore.find(key);
+    if(i != objectStore.end()) {
+        return i.value();
+    } else {
+        return NULL;
+    }
 }

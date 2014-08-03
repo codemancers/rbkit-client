@@ -2,16 +2,15 @@
 #define OBJECTSTORE_H
 
 #include "objectdetail.h"
-#include <QMap>
+#include <QHash>
 
 class ObjectStore
 {
 public:
     ObjectStore();
-    QMap<quint64, ObjectDetail> objectStore;
-    void addObject(const ObjectDetail& object);
-    const ObjectDetail getObject(quint64);
+    QHash<quint64, ObjectDetail*> objectStore;
+    void addObject(ObjectDetail *objectDetails);
+    ObjectDetail *getObject(quint64 key);
 };
-
 
 #endif // OBJECTSTORE_H

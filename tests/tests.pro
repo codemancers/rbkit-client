@@ -6,8 +6,10 @@ TARGET = rctests
 CONFIG -= app_bundle
 CONFIG += console
 
-SOURCES += testqstring.cpp \
-    testobjectstore.cpp
+SOURCES += \
+    testobjectstore.cpp \
+    main.cpp \
+    testqtstring.cpp
 
 # Include everything via one common pri file
 include($$RC_ROOT_SOURCE_DIR/common.pri)
@@ -15,3 +17,8 @@ include($$RC_ROOT_SOURCE_DIR/common.pri)
 # install
 target.path = $$OUT_PWD/test
 INSTALLS += target
+
+HEADERS += \
+    AutoTest.h \
+    testobjectstore.h \
+    testqtstring.h

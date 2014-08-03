@@ -1,22 +1,21 @@
-#include <QtTest/QtTest>
-#include <QThread>
+#include "testobjectstore.h"
 
-#include "objectstore.h"
-#include "objectdetail.h"
-
-class TestObjectStore : public QObject
+TestObjectStore::TestObjectStore()
 {
-    Q_OBJECT
+}
 
-private slots:
-    void testAddObject();
-};
-
-void TestObjectStore::testAddObject() {
-    ObjectStore *store = new ObjectStore();
+void TestObjectStore::testGetObject()
+{
+    ObjectStore *objectStore = new ObjectStore();
     ObjectDetail *objectDetail = new ObjectDetail("String", 12345);
 
-    store->addObject(objectDetail);
+    objectStore->addObject(objectDetail);
 
-    ObjectDetail objectDetail = store->getObject(12345);
+    ObjectDetail *foundObject = objectStore->getObject(12345);
+    QVERIFY(foundObject);
+
+    QCOMPARE(objectDetail->className, foundObject->className);
+
+    ObjectDetail *nullObject = objectStore->getObject(1234);
+    QVERIFY2(nullObject == NULL, "result value was not null");
 }

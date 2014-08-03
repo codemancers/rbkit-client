@@ -7,8 +7,8 @@
 class ObjectDetail
 {
 public:
-    ObjectDetail(const QString className, quint64 objectId);
-    const QString className;
+    ObjectDetail(QString className, quint64 objectId);
+    QString className;
     quint64 objectId;
     QString fileName;
     quint32 lineNumber;
