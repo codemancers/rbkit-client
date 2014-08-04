@@ -106,7 +106,7 @@ void Subscriber::processEvent(const RBKit::EvtNewObject& objCreated)
 
 void Subscriber::processEvent(const RBKit::EvtDelObject& objDeleted)
 {
-    qDebug() << "processing obj destroyed";
+    qDebug() << "processing obj destroyed " << objDeleted.objectId;
     quint64 objectId = objDeleted.objectId;
     objectStore->removeObject(objectId);
 }
@@ -116,6 +116,5 @@ void Subscriber::onTimerExpiry()
 {
     // qDebug() << m_type2Count;
     QVariantMap data = objectStore->getObjectTypeCountMap();
-    qDebug() << data;
     emit messageReady(data);
 }
