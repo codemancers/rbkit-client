@@ -8,5 +8,11 @@
         <file>lib/underscore.js</file>
         <file>src/objectcount.coffee</file>
         <file>src/objectcount.js</file>
+
+        <file>lib/d3.js</file>
+        <file>lib/rickshaw.js</file>
+        <file>lib/rickshaw.css</file>
+        <file>src/rickchart.coffee</file>
+        <file>src/rickchart.js</file>
     </qresource>
 </RCC>
