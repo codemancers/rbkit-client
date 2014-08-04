@@ -52,6 +52,7 @@ public slots:
     void stop();
     void onMessageReceived(const QList<QByteArray>&);
     void onTimerExpiry();
+    void triggerGc();
 };
 
 #endif // SUBSCRIBER_H

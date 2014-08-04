@@ -32,6 +32,7 @@ public:
 signals:
     void sendDatatoJs(const QVariantMap& map);
     void connectToSocket(QString, QString);
+    void triggerGc();
     void disconnectSubscriber();
 
 private slots:
@@ -46,6 +47,8 @@ private slots:
     void onError(const QString &);
     void onPageLoad(bool ok);
     void useSelectedHost(QString, QString);
+
+    void on_action_Trigger_GC_triggered();
 
 private:
     Ui::RbkitMainWindow *ui;

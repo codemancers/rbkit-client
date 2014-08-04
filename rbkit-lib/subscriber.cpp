@@ -28,6 +28,12 @@ Subscriber::Subscriber(QObject *parent) :
     connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimerExpiry()));
 }
 
+void Subscriber::triggerGc() {
+    RBKit::CmdTriggerGC triggerGC_Command;
+    qDebug() << "Triggering GC";
+    commandSocket->sendCommand(triggerGC_Command);
+}
+
 Subscriber::~Subscriber()
 {
     stop();
@@ -100,14 +106,16 @@ void Subscriber::processEvent(const RBKit::EvtNewObject& objCreated)
 
 void Subscriber::processEvent(const RBKit::EvtDelObject& objDeleted)
 {
+    qDebug() << "processing obj destroyed";
     quint64 objectId = objDeleted.objectId;
     objectStore->removeObject(objectId);
-    qDebug() << "processing obj destroyed";
 }
 
 
 void Subscriber::onTimerExpiry()
 {
     // qDebug() << m_type2Count;
-    emit messageReady(objectStore->getObjectTypeCountMap());
+    QVariantMap data = objectStore->getObjectTypeCountMap();
+    qDebug() << data;
+    emit messageReady(data);
 }

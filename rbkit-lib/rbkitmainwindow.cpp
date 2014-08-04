@@ -96,6 +96,7 @@ void RbkitMainWindow::setupSubscriber()
     connect(&subscriberThread, &QThread::finished, subscriber, &QObject::deleteLater);
     connect(this, SIGNAL(connectToSocket(QString, QString)),
             subscriber, SLOT(startListening(QString, QString)));
+    connect(this, SIGNAL(triggerGc()), subscriber, SLOT(triggerGc()));
 
     connect(this, SIGNAL(disconnectSubscriber()), subscriber, SLOT(stop()));
 
@@ -128,4 +129,9 @@ void RbkitMainWindow::onError(const QString &error)
 {
     disconnectFromSocket();
     QMessageBox::critical(this, tr("rbkit"), error);
+}
+
+void RbkitMainWindow::on_action_Trigger_GC_triggered()
+{
+    emit triggerGc();
 }
