@@ -18,7 +18,7 @@ Subscriber::Subscriber(QObject *parent) :
 {
     commandSocket = new RBKit::ZmqCommandSocket(this);
     eventSocket   = new RBKit::ZmqEventSocket(this);
-
+    objectStore = new RBKit::ObjectStore();
     connect(eventSocket->getSocket(), SIGNAL(messageReceived(const QList<QByteArray>&)),
            this, SLOT(onMessageReceived(const QList<QByteArray>&)));
 
@@ -26,6 +26,12 @@ Subscriber::Subscriber(QObject *parent) :
     m_timer = new QTimer(this);
     m_timer->setInterval(timerIntervalInMs);
     connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimerExpiry()));
+}
+
+void Subscriber::triggerGc() {
+    RBKit::CmdTriggerGC triggerGC_Command;
+    qDebug() << "Triggering GC";
+    commandSocket->sendCommand(triggerGC_Command);
 }
 
 Subscriber::~Subscriber()
@@ -94,19 +100,21 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
 
 void Subscriber::processEvent(const RBKit::EvtNewObject& objCreated)
 {
-    qDebug() << "processing obj created : " << objCreated.className << " with id" << objCreated.objectId;
-    int value = m_type2Count[objCreated.className].toInt() + 1;
-    m_type2Count[objCreated.className].setValue(value);
+    RBKit::ObjectDetail *objectDetail = new RBKit::ObjectDetail(objCreated.className, objCreated.objectId);
+    objectStore->addObject(objectDetail);
 }
 
 void Subscriber::processEvent(const RBKit::EvtDelObject& objDeleted)
 {
-    qDebug() << "processing obj destroyed";
+    qDebug() << "processing obj destroyed " << objDeleted.objectId;
+    quint64 objectId = objDeleted.objectId;
+    objectStore->removeObject(objectId);
 }
 
 
 void Subscriber::onTimerExpiry()
 {
     // qDebug() << m_type2Count;
-    emit messageReady(m_type2Count);
+    QVariantMap data = objectStore->getObjectTypeCountMap();
+    emit messageReady(data);
 }

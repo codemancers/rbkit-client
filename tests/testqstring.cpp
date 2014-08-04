@@ -1,5 +1,6 @@
 #include <QtTest/QtTest>
 #include <QThread>
+#include "AutoTest.h"
 
 class TestQString: public QObject
 {
@@ -16,5 +17,4 @@ void TestQString::toUpper()
     QThread::usleep(1000 * 1000 * 10);
 }
 
-QTEST_MAIN(TestQString)
-#include "testqstring.moc"
+DECLARE_TEST(TestQString)

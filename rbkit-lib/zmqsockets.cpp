@@ -27,12 +27,13 @@ RBKit::ZmqCommandSocket::~ZmqCommandSocket()
 
 bool RBKit::ZmqCommandSocket::sendCommand(RBKit::CommandBase& cmd)
 {
+    qDebug() << "Sending " << cmd.serialize().toLocal8Bit();
     nzmqt::ZMQMessage msg(cmd.serialize().toLocal8Bit());
     bool sent = socket->sendMessage(msg);
-    qDebug() << sent;
 
+    qDebug() << "Waiting for response";
     QList<QByteArray> resp = socket->receiveMessage();
-    qDebug() << resp;
+    qDebug() << "Got a response " << resp;
 
     return true;
 }
@@ -49,7 +50,6 @@ void RBKit::ZmqCommandSocket::start(QString socketUrl)
 
     context->start();
 }
-
 
 void RBKit::ZmqCommandSocket::stop()
 {
