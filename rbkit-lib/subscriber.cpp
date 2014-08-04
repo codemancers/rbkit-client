@@ -18,7 +18,7 @@ Subscriber::Subscriber(QObject *parent) :
 {
     commandSocket = new RBKit::ZmqCommandSocket(this);
     eventSocket   = new RBKit::ZmqEventSocket(this);
-
+    objectStore = new ObjectStore();
     connect(eventSocket->getSocket(), SIGNAL(messageReceived(const QList<QByteArray>&)),
            this, SLOT(onMessageReceived(const QList<QByteArray>&)));
 
@@ -94,13 +94,14 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
 
 void Subscriber::processEvent(const RBKit::EvtNewObject& objCreated)
 {
-    qDebug() << "processing obj created : " << objCreated.className << " with id" << objCreated.objectId;
-    int value = m_type2Count[objCreated.className].toInt() + 1;
-    m_type2Count[objCreated.className].setValue(value);
+    ObjectDetail *objectDetail = new ObjectDetail(objCreated.className, objCreated.objectId);
+    objectStore->addObject(objectDetail);
 }
 
 void Subscriber::processEvent(const RBKit::EvtDelObject& objDeleted)
 {
+    quint64 objectId = objDeleted.objectId;
+    objectStore->removeObject(objectId);
     qDebug() << "processing obj destroyed";
 }
 
@@ -108,5 +109,5 @@ void Subscriber::processEvent(const RBKit::EvtDelObject& objDeleted)
 void Subscriber::onTimerExpiry()
 {
     // qDebug() << m_type2Count;
-    emit messageReady(m_type2Count);
+    emit messageReady(objectStore->getObjectTypeCountMap());
 }

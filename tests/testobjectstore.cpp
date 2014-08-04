@@ -43,3 +43,16 @@ void TestObjectStore::testRemoveObject()
     QVERIFY2(objectStore->getObject(12345) == NULL, "fetching invalid is not NULL");
     QVERIFY2(objectStore->getObjectTypeCount("String") == 0, "does not have correct String count");
 }
+
+void TestObjectStore::testObjectTypeMap()
+{
+    this->objectStore->reset();
+
+    ObjectDetail *objectDetail = new ObjectDetail("String", 12345);
+    objectStore->addObject(objectDetail);
+
+    QVariantMap map = objectStore->getObjectTypeCountMap();
+    QVERIFY(map.size() == 1);
+    quint32 count = map["String"].toInt();
+    QVERIFY(count == 1);
+}
