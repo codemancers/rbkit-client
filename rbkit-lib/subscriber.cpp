@@ -18,7 +18,7 @@ Subscriber::Subscriber(QObject *parent) :
 {
     commandSocket = new RBKit::ZmqCommandSocket(this);
     eventSocket   = new RBKit::ZmqEventSocket(this);
-    objectStore = new ObjectStore();
+    objectStore = new RBKit::ObjectStore();
     connect(eventSocket->getSocket(), SIGNAL(messageReceived(const QList<QByteArray>&)),
            this, SLOT(onMessageReceived(const QList<QByteArray>&)));
 
@@ -100,7 +100,7 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
 
 void Subscriber::processEvent(const RBKit::EvtNewObject& objCreated)
 {
-    ObjectDetail *objectDetail = new ObjectDetail(objCreated.className, objCreated.objectId);
+    RBKit::ObjectDetail *objectDetail = new RBKit::ObjectDetail(objCreated.className, objCreated.objectId);
     objectStore->addObject(objectDetail);
 }
 

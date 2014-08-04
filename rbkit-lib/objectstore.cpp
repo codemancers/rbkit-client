@@ -1,21 +1,18 @@
 #include "objectstore.h"
 
-ObjectStore::ObjectStore()
+RBKit::ObjectStore::ObjectStore()
 {
-    this->objectStore = new QHash<quint64, ObjectDetail *>();
 }
 
-void ObjectStore::addObject(ObjectDetail *objectDetail)
+void RBKit::ObjectStore::addObject(RBKit::ObjectDetail *objectDetail)
 {
-    (*objectStore)[objectDetail->objectId] = objectDetail;
-    quint32 oldCount = objectTypeCount[objectDetail->className];
-    oldCount += 1;
-    objectTypeCount[objectDetail->className] = oldCount;
+    objectStore[objectDetail->objectId] = objectDetail;
+    ++objectTypeCount[objectDetail->className];
 }
 
-void ObjectStore::removeObject(quint64 key)
+void RBKit::ObjectStore::removeObject(quint64 key)
 {
-    ObjectDetail *objectDetail = getObject(key);
+    RBKit::ObjectDetail *objectDetail = getObject(key);
     if(objectDetail != NULL) {
         quint32 oldCount = objectTypeCount[objectDetail->className];
         if(oldCount > 0) {
@@ -23,35 +20,35 @@ void ObjectStore::removeObject(quint64 key)
         }
         objectTypeCount[objectDetail->className] = oldCount;
     }
-    objectStore->remove(key);
+    objectStore.remove(key);
 }
 
-void ObjectStore::reset() {
-    objectStore->clear();
+void RBKit::ObjectStore::reset() {
+    objectStore.clear();
     objectTypeCount.clear();
 }
 
-ObjectDetail *ObjectStore::getObject(quint64 key)
+RBKit::ObjectDetail *RBKit::ObjectStore::getObject(quint64 key)
 {
-    QHash<quint64, ObjectDetail*>::const_iterator i = objectStore->find(key);
-    if(i != objectStore->end()) {
+    QHash<quint64, RBKit::ObjectDetail*>::const_iterator i = objectStore.find(key);
+    if(i != objectStore.end()) {
         return i.value();
     } else {
         return NULL;
     }
 }
 
-quint32 ObjectStore::getObjectTypeCount(const QString &className)
+quint32 RBKit::ObjectStore::getObjectTypeCount(const QString &className)
 {
     return objectTypeCount[className];
 }
 
-quint32 ObjectStore::liveObjectCount()
+quint32 RBKit::ObjectStore::liveObjectCount()
 {
-    return objectStore->size();
+    return objectStore.size();
 }
 
-const QVariantMap ObjectStore::getObjectTypeCountMap()
+const QVariantMap RBKit::ObjectStore::getObjectTypeCountMap()
 {
     QVariantMap map;
     QHash<QString, quint32>::const_iterator typeIter;

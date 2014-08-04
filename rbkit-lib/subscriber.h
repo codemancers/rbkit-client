@@ -31,7 +31,7 @@ class Subscriber : public QObject
 
     // add a timer to emit stats
     QTimer* m_timer;
-    ObjectStore *objectStore;
+    RBKit::ObjectStore *objectStore;
 public:
     explicit Subscriber(QObject *parent = 0);
     ~Subscriber();

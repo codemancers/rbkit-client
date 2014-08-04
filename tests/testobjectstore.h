@@ -9,7 +9,7 @@ class TestObjectStore : public QObject
     Q_OBJECT
 public:
     TestObjectStore();
-    ObjectStore *objectStore;
+    RBKit::ObjectStore *objectStore;
 private slots:
     void initTestCase();
     void cleanupTestCase();

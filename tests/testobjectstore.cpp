@@ -2,7 +2,7 @@
 
 TestObjectStore::TestObjectStore()
 {
-    this->objectStore = new ObjectStore();
+    this->objectStore = new RBKit::ObjectStore();
 }
 
 void TestObjectStore::initTestCase()
@@ -16,24 +16,24 @@ void TestObjectStore::cleanupTestCase()
 
 void TestObjectStore::testGetObject()
 {
-    ObjectDetail *objectDetail = new ObjectDetail("String", 12345);
+    RBKit::ObjectDetail *objectDetail = new RBKit::ObjectDetail("String", 12345);
 
     objectStore->addObject(objectDetail);
 
-    ObjectDetail *foundObject = objectStore->getObject(12345);
+    RBKit::ObjectDetail *foundObject = objectStore->getObject(12345);
     QVERIFY(foundObject);
     QVERIFY2(objectStore->getObjectTypeCount("String") == 1, "does not have correct String count");
 
     QCOMPARE(objectDetail->className, foundObject->className);
 
-    ObjectDetail *nullObject = objectStore->getObject(1234);
+    RBKit::ObjectDetail *nullObject = objectStore->getObject(1234);
     QVERIFY2(nullObject == NULL, "result value was not null");
 }
 
 void TestObjectStore::testRemoveObject()
 {
     this->objectStore->reset();
-    ObjectDetail *objectDetail = new ObjectDetail("String", 12345);
+    RBKit::ObjectDetail *objectDetail = new RBKit::ObjectDetail("String", 12345);
     objectStore->addObject(objectDetail);
 
     QVERIFY2(objectStore->getObject(12345) != NULL, "fetching valid object is NULL");
@@ -48,7 +48,7 @@ void TestObjectStore::testObjectTypeMap()
 {
     this->objectStore->reset();
 
-    ObjectDetail *objectDetail = new ObjectDetail("String", 12345);
+    RBKit::ObjectDetail *objectDetail = new RBKit::ObjectDetail("String", 12345);
     objectStore->addObject(objectDetail);
 
     QVariantMap map = objectStore->getObjectTypeCountMap();
