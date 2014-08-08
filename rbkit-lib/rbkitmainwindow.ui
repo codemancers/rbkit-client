@@ -30,17 +30,21 @@
        <attribute name="title">
         <string>Object Charts</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QWebView" name="chartingView">
-          <property name="url">
-           <url>
-            <string>about:blank</string>
-           </url>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QWebView" name="chartingView">
+        <property name="geometry">
+         <rect>
+          <x>9</x>
+          <y>9</y>
+          <width>810</width>
+          <height>483</height>
+         </rect>
+        </property>
+        <property name="url">
+         <url>
+          <string>about:blank</string>
+         </url>
+        </property>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -60,6 +64,7 @@
      <string>&amp;File</string>
     </property>
     <addaction name="action_Connect"/>
+    <addaction name="action_Trigger_GC"/>
     <addaction name="action_Quit"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
@@ -85,6 +90,11 @@
   <action name="action_About_Rbkit">
    <property name="text">
     <string>&amp;About Rbkit</string>
+   </property>
+  </action>
+  <action name="action_Trigger_GC">
+   <property name="text">
+    <string>&amp;Trigger GC</string>
    </property>
   </action>
  </widget>

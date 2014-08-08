@@ -5,6 +5,7 @@
 #include <QVariantMap>
 
 #include "rbevents.h"
+#include "objectstore.h"
 
 // forward declaration of nzmqt classes
 namespace nzmqt
@@ -28,16 +29,9 @@ class Subscriber : public QObject
     RBKit::ZmqCommandSocket* commandSocket;
     RBKit::ZmqEventSocket* eventSocket;
 
-    QMap<QString, QString> m_objId2Type;
-    QMap<QString, int> m_event2Count;
-
-
-    // we are interested in this count.
-    QVariantMap m_type2Count;
-
     // add a timer to emit stats
     QTimer* m_timer;
-
+    RBKit::ObjectStore *objectStore;
 public:
     explicit Subscriber(QObject *parent = 0);
     ~Subscriber();
@@ -58,6 +52,7 @@ public slots:
     void stop();
     void onMessageReceived(const QList<QByteArray>&);
     void onTimerExpiry();
+    void triggerGc();
 };
 
 #endif // SUBSCRIBER_H

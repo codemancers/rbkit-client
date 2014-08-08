@@ -48,7 +48,11 @@ static QVariantMap parseMsgpackObjectMap(msgpack::object_map obj)
         case msgpack::type::POSITIVE_INTEGER :
             map[keyStr] = (unsigned long long int)(val.via.u64);
             break;
+        case msgpack::type::NIL :
+            map[keyStr] = "";
+            break;
         default:
+            qDebug() << "throwing error while parsing event" << val.type;
             throw "unknown object type";
         }
 
@@ -72,7 +76,7 @@ RBKit::EventDataBase* RBKit::parseEvent(const QByteArray& message)
     if (map["event_type"] == "obj_created") {
         return new RBKit::EvtNewObject(timestamp, map["event_type"].toString(), map["payload"].toMap());
     } else if (map["event_type"] == "obj_destroyed") {
-        return new RBKit::EvtNewObject(timestamp, map["event_type"].toString(), map["payload"].toMap());
+        return new RBKit::EvtDelObject(timestamp, map["event_type"].toString(), map["payload"].toMap());
     } else {
         return NULL;
     }
