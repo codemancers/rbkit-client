@@ -77,7 +77,10 @@ RBKit::EventDataBase* RBKit::parseEvent(const QByteArray& message)
         return new RBKit::EvtNewObject(timestamp, map["event_type"].toString(), map["payload"].toMap());
     } else if (map["event_type"] == "obj_destroyed") {
         return new RBKit::EvtDelObject(timestamp, map["event_type"].toString(), map["payload"].toMap());
+    } else if (map["event_type"] == "gc_stats") {
+        return new RBKit::EvtGcStats(timestamp, map["event_type"].toString(), map["payload"].toMap());
     } else {
+        qDebug() << map["event_type"];
         return NULL;
     }
 }
@@ -109,6 +112,17 @@ RBKit::EvtDelObject::EvtDelObject(QDateTime ts, QString eventName, QVariantMap p
 { }
 
 void RBKit::EvtDelObject::process(Subscriber& processor) const
+{
+    processor.processEvent(*this);
+}
+
+
+RBKit::EvtGcStats::EvtGcStats(QDateTime ts, QString eventName, QVariantMap _payload)
+    : EventDataBase(ts, eventName)
+    , payload(_payload)
+{ }
+
+void RBKit::EvtGcStats::process(Subscriber& processor) const
 {
     processor.processEvent(*this);
 }

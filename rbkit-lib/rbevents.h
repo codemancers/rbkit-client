@@ -38,6 +38,15 @@ namespace RBKit
         quint64 objectId;
     };
 
+    class EvtGcStats : public EventDataBase
+    {
+    public:
+        EvtGcStats(QDateTime ts, QString eventName, QVariantMap payload);
+        void process(Subscriber& processor) const;
+
+        QVariantMap payload;
+    };
+
     EventDataBase* parseEvent(const QByteArray& rawMessage);
 }
 
