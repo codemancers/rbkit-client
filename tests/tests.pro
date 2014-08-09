@@ -8,6 +8,7 @@ CONFIG += console
 
 SOURCES += \
     testobjectstore.cpp \
+    testrbevents.cpp \
     main.cpp \
     testqtstring.cpp
 
@@ -21,4 +22,8 @@ INSTALLS += target
 HEADERS += \
     AutoTest.h \
     testobjectstore.h \
+    testrbevents.h \
     testqtstring.h
+
+RESOURCES += \
+    tests.qrc
