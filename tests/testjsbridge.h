@@ -14,8 +14,7 @@ private slots:
     void init();
 
     // tests which need to be performed
-    void testSendObjectStats();
-    void testSendGcStats();
+    void testSendMapToJs();
 
 private:
     RBKit::JsBridge* jsBridge;

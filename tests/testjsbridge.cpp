@@ -1,34 +1,24 @@
 #include "testjsbridge.h"
+#include <QDateTime>
 #include <QDebug>
+
 
 using namespace RBKit;
 
 
 // test whether object stats are modified and sent to js bridge.
-void TestJsBridge::testSendObjectStats()
+void TestJsBridge::testSendMapToJs()
 {
+    QDateTime current = QDateTime::currentDateTime();
+
     QVariantMap testStats;
     testStats["String"] = 100;
 
-    jsBridge->sendObjectStats(testStats);
+    jsBridge->sendMapToJs("object_stats", current, testStats);
 
     QVERIFY("object_stats" == receivedData["event_type"]);
     QVariantMap payload = receivedData["payload"].toMap();
     QVERIFY(100 == payload["String"]);
-}
-
-
-// test whether gc-stats are modified and sent to js bridge.
-void TestJsBridge::testSendGcStats()
-{
-    QVariantMap gcStats;
-    gcStats["count"] = 46;
-
-    jsBridge->sendGcStats(gcStats);
-
-    QVERIFY("gc_stats" == receivedData["event_type"]);
-    QVariantMap payload = receivedData["payload"].toMap();
-    QVERIFY(46 == payload["count"]);
 }
 
 

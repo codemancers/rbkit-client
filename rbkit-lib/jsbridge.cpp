@@ -1,19 +1,12 @@
 #include "jsbridge.h"
 
 
-void RBKit::JsBridge::sendObjectStats(const QVariantMap& map)
+void RBKit::JsBridge::sendMapToJs(const QString& event, const QDateTime& ts,
+                                  const QVariantMap& map)
 {
     QVariantMap hash;
-    hash["event_type"] = QString("object_stats");
-    hash["payload"] = map;
-
-    emit jsEvent(hash);
-}
-
-void RBKit::JsBridge::sendGcStats(const QVariantMap& map)
-{
-    QVariantMap hash;
-    hash["event_type"] = QString("gc_stats");
+    hash["event_type"] = event;
+    hash["timestamp"] = ts;
     hash["payload"] = map;
 
     emit jsEvent(hash);

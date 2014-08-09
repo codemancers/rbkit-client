@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QVariantMap>
+#include <QDateTime>
+#include <QString>
 
 
 namespace RBKit
@@ -16,8 +18,8 @@ namespace RBKit
         ~JsBridge() {}
 
     public:
-        void sendObjectStats(const QVariantMap& map);
-        void sendGcStats(const QVariantMap& map);
+        void sendMapToJs(const QString& event, const QDateTime& ts,
+                         const QVariantMap& map);
 
     signals:
         void jsEvent(const QVariantMap& map);

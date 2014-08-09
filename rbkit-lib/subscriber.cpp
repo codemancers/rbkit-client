@@ -114,13 +114,16 @@ void Subscriber::processEvent(const RBKit::EvtDelObject& objDeleted)
 
 void Subscriber::processEvent(const RBKit::EvtGcStats& stats)
 {
-    jsBridge->sendGcStats(stats.payload);
+    static const QString eventName("gc_stats");
+    jsBridge->sendMapToJs(eventName, stats.timestamp, stats.payload);
 }
 
 
 void Subscriber::onTimerExpiry()
 {
+    static const QString eventName("object_stats");
+
     // qDebug() << m_type2Count;
     QVariantMap data = objectStore->getObjectTypeCountMap();
-    jsBridge->sendObjectStats(data);
+    jsBridge->sendMapToJs(eventName, QDateTime(), data);
 }
