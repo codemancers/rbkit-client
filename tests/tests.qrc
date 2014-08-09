@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/tests">
         <file>objcreated.msgpack</file>
+        <file>objdestroyed.msgpack</file>
     </qresource>
 </RCC>

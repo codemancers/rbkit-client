@@ -4,23 +4,33 @@
 
 using namespace RBKit;
 
-void TestRbEvents::testParseObjectCreateEvent()
+static QByteArray msgpackDataFromFile(const QString filename)
 {
-    QString dump(":/tests/objcreated.msgpack");
-    QFile file(dump);
-
-    QVERIFY(file.open(QFile::ReadOnly));
-
-    QByteArray data = file.readAll();
-    qDebug() << data.size();
-
-    EventDataBase* event = parseEvent(data);
-    QVERIFY(event);
-
-    EvtNewObject* evt = dynamic_cast<EvtNewObject*>(event);
-    QVERIFY(evt);
+    QFile file(filename);
+    file.open(QFile::ReadOnly);
+    return file.readAll();
 }
 
+
+// test whether parser is parsing create event properly or not.
+void TestRbEvents::testParseObjectCreateEvent()
+{
+    QByteArray data = msgpackDataFromFile(":/tests/objcreated.msgpack");
+    EventDataBase* base = parseEvent(data);
+    QVERIFY(base);
+
+    EvtNewObject* event = dynamic_cast<EvtNewObject*>(base);
+    QVERIFY(event);
+    QVERIFY(0x7f879309d090 == event->objectId);
+}
+
+// test whether parser is parsing destroy event properly or not.
 void TestRbEvents::testParseObjectDestroyEvent()
 {
+    QByteArray data = msgpackDataFromFile(":/tests/objdestroyed.msgpack");
+    EventDataBase* base = parseEvent(data);
+    QVERIFY(base);
+
+    EvtDelObject* event = dynamic_cast<EvtDelObject*>(base);
+    QVERIFY(event);
 }
