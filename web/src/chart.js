@@ -31,6 +31,7 @@ this.Chart = (function() {
 
   function Chart() {
     this.updateChart = __bind(this.updateChart, this);
+    this.receiveGcStats = __bind(this.receiveGcStats, this);
     this.receiveLiveData = __bind(this.receiveLiveData, this);
     this.establishQtBridge = __bind(this.establishQtBridge, this);
     this.tryQtBridge = __bind(this.tryQtBridge, this);
@@ -97,12 +98,26 @@ this.Chart = (function() {
   Chart.prototype.establishQtBridge = function() {
     setInterval(this.updateChart, 1000);
     if (window.rbkitClient) {
+      window.rbkitClient.sendGcStatsToJs.connect(this.receiveGcStats);
       return window.rbkitClient.sendDatatoJs.connect(this.receiveLiveData);
     }
   };
 
   Chart.prototype.receiveLiveData = function(liveObjectCount) {
     return this.addToCurrentObjects(liveObjectCount);
+  };
+
+  Chart.prototype.receiveGcStats = function(gcStats) {
+    var $stats, key, row, value, _results;
+    $stats = $('#gc-stats tbody');
+    $stats.empty();
+    _results = [];
+    for (key in gcStats) {
+      value = gcStats[key];
+      row = "<tr><td>" + key + "</td><td>" + value + "</td></tr>";
+      _results.push($stats.append(row));
+    }
+    return _results;
   };
 
   Chart.prototype.addToCurrentObjects = function(liveObjectCount) {
