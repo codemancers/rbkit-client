@@ -20,6 +20,7 @@ namespace RBKit
 {
     class ZmqCommandSocket;
     class ZmqEventSocket;
+    class JsBridge;
 }
 
 class Subscriber : public QObject
@@ -32,8 +33,11 @@ class Subscriber : public QObject
     // add a timer to emit stats
     QTimer* m_timer;
     RBKit::ObjectStore *objectStore;
+
+    RBKit::JsBridge* jsBridge;
+
 public:
-    explicit Subscriber(QObject *parent = 0);
+    explicit Subscriber(QObject *parent, RBKit::JsBridge* jsBridge);
     ~Subscriber();
 
 public:
@@ -43,9 +47,6 @@ public:
     void processEvent(const RBKit::EvtGcStats&);
 
 signals:
-    void messageReady(const QVariantMap& map);
-    void gcStats(const QVariantMap& stats);
-
     void disconnected();
     void connected();
     void errored(const QString &);

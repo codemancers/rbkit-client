@@ -53,14 +53,16 @@ class @Chart
 
   establishQtBridge: =>
     setInterval(@updateChart, 1000)
-    if window.rbkitClient
-      window.rbkitClient.sendGcStatsToJs.connect(@receiveGcStats)
-      window.rbkitClient.sendDatatoJs.connect(@receiveLiveData)
+    window.jsBridge?.jsEvent.connect(@receiveLiveData)
 
-  receiveLiveData: (liveObjectCount) =>
-    @addToCurrentObjects(liveObjectCount)
+  receiveLiveData: (data) =>
+    switch data.event_type
+      when "object_stats"
+        @addToCurrentObjects(data.payload)
+      when "gc_stats"
+        @updateGcStats(data.payload)
 
-  receiveGcStats: (gcStats) =>
+  updateGcStats: (gcStats) =>
     $stats = $('#gc-stats tbody')
     $stats.empty()
 

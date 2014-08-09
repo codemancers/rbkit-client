@@ -16,7 +16,8 @@ SOURCES += \
     zmqsockets.cpp \
     rbevents.cpp \
     objectdetail.cpp \
-    objectstore.cpp
+    objectstore.cpp \
+    jsbridge.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -25,7 +26,8 @@ HEADERS +=  \
     zmqsockets.h \
     rbevents.h \
     objectdetail.h \
-    objectstore.h
+    objectstore.h \
+    jsbridge.h
 
 
 # Include msgpack via pri file

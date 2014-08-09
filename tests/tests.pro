@@ -9,6 +9,7 @@ CONFIG += console
 SOURCES += \
     testobjectstore.cpp \
     testrbevents.cpp \
+    testjsbridge.cpp \
     main.cpp
 
 # Include everything via one common pri file
@@ -21,7 +22,8 @@ INSTALLS += target
 HEADERS += \
     AutoTest.h \
     testobjectstore.h \
-    testrbevents.h
+    testrbevents.h \
+    testjsbridge.h
 
 RESOURCES += \
     tests.qrc

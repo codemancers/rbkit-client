@@ -13,26 +13,31 @@ namespace Ui {
 class RbkitMainWindow;
 }
 
+
+namespace RBKit {
+    class JsBridge;
+}
+
+
 class RbkitMainWindow : public QMainWindow
 {
     Q_OBJECT
     QThread subscriberThread;
     Subscriber *subscriber;
+    QString host;
+    AskHost *askHost;
+    RBKit::JsBridge* jsBridge;
+
     void setupSubscriber();
     void disconnectFromSocket();
     void askForServerInfo();
     bool connected;
-    QString host;
-    AskHost *askHost;
 
 public:
     explicit RbkitMainWindow(QWidget *parent = 0);
     ~RbkitMainWindow();
 
 signals:
-    void sendGcStatsToJs(const QVariantMap& map);
-    void sendDatatoJs(const QVariantMap& map);
-
     void connectToSocket(QString, QString);
     void triggerGc();
     void disconnectSubscriber();
@@ -43,8 +48,6 @@ private slots:
     void on_action_Quit_triggered();
 
     void on_action_About_Rbkit_triggered();
-    void handleMessage(const QVariantMap& map);
-    void handleGcStats(const QVariantMap& map);
     void connectedToSocket();
     void disconnectedFromSocket();
     void onError(const QString &);
