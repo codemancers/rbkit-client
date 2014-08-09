@@ -55,10 +55,14 @@ class @Chart
     setInterval(@updateChart, 1000)
     window.jsBridge?.jsEvent.connect(@receiveLiveData)
 
-  receiveLiveData: (liveObjectCount) =>
-    @addToCurrentObjects(liveObjectCount.payload)
+  receiveLiveData: (data) =>
+    switch data.event_type
+      when "object_stats"
+        @addToCurrentObjects(data.payload)
+      when "gc_stats"
+        @updateGcStats(data.payload)
 
-  receiveGcStats: (gcStats) =>
+  updateGcStats: (gcStats) =>
     $stats = $('#gc-stats tbody')
     $stats.empty()
 

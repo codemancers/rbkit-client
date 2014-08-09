@@ -31,7 +31,7 @@ this.Chart = (function() {
 
   function Chart() {
     this.updateChart = __bind(this.updateChart, this);
-    this.receiveGcStats = __bind(this.receiveGcStats, this);
+    this.updateGcStats = __bind(this.updateGcStats, this);
     this.receiveLiveData = __bind(this.receiveLiveData, this);
     this.establishQtBridge = __bind(this.establishQtBridge, this);
     this.tryQtBridge = __bind(this.tryQtBridge, this);
@@ -101,11 +101,16 @@ this.Chart = (function() {
     return (_ref = window.jsBridge) != null ? _ref.jsEvent.connect(this.receiveLiveData) : void 0;
   };
 
-  Chart.prototype.receiveLiveData = function(liveObjectCount) {
-    return this.addToCurrentObjects(liveObjectCount.payload);
+  Chart.prototype.receiveLiveData = function(data) {
+    switch (data.event_type) {
+      case "object_stats":
+        return this.addToCurrentObjects(data.payload);
+      case "gc_stats":
+        return this.updateGcStats(data.payload);
+    }
   };
 
-  Chart.prototype.receiveGcStats = function(gcStats) {
+  Chart.prototype.updateGcStats = function(gcStats) {
     var $stats, key, row, value, _results;
     $stats = $('#gc-stats tbody');
     $stats.empty();

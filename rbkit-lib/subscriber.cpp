@@ -114,7 +114,7 @@ void Subscriber::processEvent(const RBKit::EvtDelObject& objDeleted)
 
 void Subscriber::processEvent(const RBKit::EvtGcStats& stats)
 {
-    // jsBridge->sendGcStats(stats.payload);
+    jsBridge->sendGcStats(stats.payload);
 }
 
 
