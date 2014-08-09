@@ -47,9 +47,6 @@ public:
     void processEvent(const RBKit::EvtGcStats&);
 
 signals:
-    void messageReady(const QVariantMap& map);
-    void gcStats(const QVariantMap& stats);
-
     void disconnected();
     void connected();
     void errored(const QString &);

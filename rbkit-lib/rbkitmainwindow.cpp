@@ -107,9 +107,6 @@ void RbkitMainWindow::setupSubscriber()
 
     connect(this, SIGNAL(disconnectSubscriber()), subscriber, SLOT(stop()));
 
-    connect(subscriber, &Subscriber::messageReady, this, &RbkitMainWindow::handleMessage);
-    connect(subscriber, &Subscriber::gcStats, this, &RbkitMainWindow::handleGcStats);
-
     connect(subscriber, &Subscriber::errored, this, &RbkitMainWindow::onError);
     connect(subscriber, &Subscriber::connected, this, &RbkitMainWindow::connectedToSocket);
     connect(subscriber, &Subscriber::disconnected, this, &RbkitMainWindow::disconnectedFromSocket);
@@ -123,10 +120,6 @@ void RbkitMainWindow::disconnectedFromSocket()
     this->connected = false;
 }
 
-void RbkitMainWindow::handleMessage(const QVariantMap& map)
-{
-    emit sendDatatoJs(map);
-}
 
 void RbkitMainWindow::connectedToSocket()
 {
@@ -143,9 +136,4 @@ void RbkitMainWindow::onError(const QString &error)
 void RbkitMainWindow::on_action_Trigger_GC_triggered()
 {
     emit triggerGc();
-}
-
-void RbkitMainWindow::handleGcStats(const QVariantMap& map)
-{
-    emit sendGcStatsToJs(map);
 }
