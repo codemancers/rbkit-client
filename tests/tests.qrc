@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/tests">
-        <file>objcreated.msgpack</file>
-        <file>objdestroyed.msgpack</file>
-        <file>gcstats.msgpack</file>
+        <file>msgpack/objcreated</file>
+        <file>msgpack/objdestroyed</file>
+        <file>msgpack/gcstats</file>
     </qresource>
 </RCC>

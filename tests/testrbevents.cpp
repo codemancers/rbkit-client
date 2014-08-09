@@ -15,7 +15,7 @@ static QByteArray msgpackDataFromFile(const QString filename)
 // test whether parser is parsing create event properly or not.
 void TestRbEvents::testParseObjectCreateEvent()
 {
-    QByteArray data = msgpackDataFromFile(":/tests/objcreated.msgpack");
+    QByteArray data = msgpackDataFromFile(":/tests/msgpack/objcreated");
     EventDataBase* base = parseEvent(data);
     QVERIFY(base);
 
@@ -27,7 +27,7 @@ void TestRbEvents::testParseObjectCreateEvent()
 // test whether parser is parsing destroy event properly or not.
 void TestRbEvents::testParseObjectDestroyEvent()
 {
-    QByteArray data = msgpackDataFromFile(":/tests/objdestroyed.msgpack");
+    QByteArray data = msgpackDataFromFile(":/tests/msgpack/objdestroyed");
     EventDataBase* base = parseEvent(data);
     QVERIFY(base);
 
@@ -38,7 +38,7 @@ void TestRbEvents::testParseObjectDestroyEvent()
 // test whether parser is parsing gc stats event properly or not.
 void TestRbEvents::testParseGcStatsEvent()
 {
-    QByteArray data = msgpackDataFromFile(":/tests/gcstats.msgpack");
+    QByteArray data = msgpackDataFromFile(":/tests/msgpack/gcstats");
     EventDataBase* base = parseEvent(data);
     QVERIFY(base);
 
