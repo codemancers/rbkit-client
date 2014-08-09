@@ -7,14 +7,16 @@
 #include "subscriber.h"
 #include "zmqsockets.h"
 #include "rbcommands.h"
+#include "jsbridge.h"
 
 
 static const int rbkcZmqTotalIoThreads = 1;
 static const int timerIntervalInMs = 1000;
 
 
-Subscriber::Subscriber(QObject *parent) :
-    QObject(parent)
+Subscriber::Subscriber(QObject *parent, RBKit::JsBridge* bridge)
+    : QObject(parent)
+    , jsBridge(bridge)
 {
     commandSocket = new RBKit::ZmqCommandSocket(this);
     eventSocket   = new RBKit::ZmqEventSocket(this);
@@ -112,7 +114,7 @@ void Subscriber::processEvent(const RBKit::EvtDelObject& objDeleted)
 
 void Subscriber::processEvent(const RBKit::EvtGcStats& stats)
 {
-    emit gcStats(stats.payload);
+    // jsBridge->sendGcStats(stats.payload);
 }
 
 
@@ -120,5 +122,5 @@ void Subscriber::onTimerExpiry()
 {
     // qDebug() << m_type2Count;
     QVariantMap data = objectStore->getObjectTypeCountMap();
-    emit messageReady(data);
+    jsBridge->sendObjectStats(data);
 }

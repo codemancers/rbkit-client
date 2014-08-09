@@ -13,17 +13,25 @@ namespace Ui {
 class RbkitMainWindow;
 }
 
+
+namespace RBKit {
+    class JsBridge;
+}
+
+
 class RbkitMainWindow : public QMainWindow
 {
     Q_OBJECT
     QThread subscriberThread;
     Subscriber *subscriber;
+    QString host;
+    AskHost *askHost;
+    RBKit::JsBridge* jsBridge;
+
     void setupSubscriber();
     void disconnectFromSocket();
     void askForServerInfo();
     bool connected;
-    QString host;
-    AskHost *askHost;
 
 public:
     explicit RbkitMainWindow(QWidget *parent = 0);
