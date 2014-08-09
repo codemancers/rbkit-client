@@ -34,3 +34,14 @@ void TestRbEvents::testParseObjectDestroyEvent()
     EvtDelObject* event = dynamic_cast<EvtDelObject*>(base);
     QVERIFY(event);
 }
+
+// test whether parser is parsing gc stats event properly or not.
+void TestRbEvents::testParseGcStatsEvent()
+{
+    QByteArray data = msgpackDataFromFile(":/tests/gcstats.msgpack");
+    EventDataBase* base = parseEvent(data);
+    QVERIFY(base);
+
+    EvtGcStats* event = dynamic_cast<EvtGcStats*>(base);
+    QVERIFY(event);
+}

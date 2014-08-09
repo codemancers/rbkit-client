@@ -11,6 +11,7 @@ class TestRbEvents : public QObject
 private slots:
     void testParseObjectCreateEvent();
     void testParseObjectDestroyEvent();
+    void testParseGcStatsEvent();
 };
 
 DECLARE_TEST(TestRbEvents)

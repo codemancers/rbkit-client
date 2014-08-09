@@ -2,5 +2,6 @@
     <qresource prefix="/tests">
         <file>objcreated.msgpack</file>
         <file>objdestroyed.msgpack</file>
+        <file>gcstats.msgpack</file>
     </qresource>
 </RCC>
