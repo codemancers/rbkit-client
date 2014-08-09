@@ -106,9 +106,13 @@ void Subscriber::processEvent(const RBKit::EvtNewObject& objCreated)
 
 void Subscriber::processEvent(const RBKit::EvtDelObject& objDeleted)
 {
-    qDebug() << "processing obj destroyed " << objDeleted.objectId;
     quint64 objectId = objDeleted.objectId;
     objectStore->removeObject(objectId);
+}
+
+void Subscriber::processEvent(const RBKit::EvtGcStats& stats)
+{
+    emit gcStats(stats.payload);
 }
 
 

@@ -40,11 +40,14 @@ public:
     // function overloading
     void processEvent(const RBKit::EvtNewObject&);
     void processEvent(const RBKit::EvtDelObject&);
+    void processEvent(const RBKit::EvtGcStats&);
 
 signals:
     void messageReady(const QVariantMap& map);
-    void connected();
+    void gcStats(const QVariantMap& stats);
+
     void disconnected();
+    void connected();
     void errored(const QString &);
 
 public slots:

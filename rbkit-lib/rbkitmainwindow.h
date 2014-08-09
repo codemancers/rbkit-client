@@ -30,7 +30,9 @@ public:
     ~RbkitMainWindow();
 
 signals:
+    void sendGcStatsToJs(const QVariantMap& map);
     void sendDatatoJs(const QVariantMap& map);
+
     void connectToSocket(QString, QString);
     void triggerGc();
     void disconnectSubscriber();
@@ -42,6 +44,7 @@ private slots:
 
     void on_action_About_Rbkit_triggered();
     void handleMessage(const QVariantMap& map);
+    void handleGcStats(const QVariantMap& map);
     void connectedToSocket();
     void disconnectedFromSocket();
     void onError(const QString &);
