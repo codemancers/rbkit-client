@@ -119,6 +119,19 @@ void Subscriber::processEvent(const RBKit::EvtGcStats& stats)
 }
 
 
+void Subscriber::processEvent(const RBKit::EvtGcStart &gcEvent) {
+    static const QString eventName("gc_start");
+    QVariantMap map;
+    jsBridge->sendMapToJs(eventName, gcEvent.timestamp, map);
+}
+
+void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
+{
+    static const QString eventName("gc_stop");
+    QVariantMap map;
+    jsBridge->sendMapToJs(eventName, gcEvent.timestamp, map);
+}
+
 void Subscriber::onTimerExpiry()
 {
     static const QString eventName("object_stats");

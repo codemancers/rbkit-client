@@ -47,6 +47,20 @@ namespace RBKit
         QVariantMap payload;
     };
 
+    class EvtGcStart : public EventDataBase
+    {
+    public:
+        EvtGcStart(QDateTime ts, QString eventName);
+        void process(Subscriber &processor) const;
+    };
+
+    class EvtGcStop : public EventDataBase
+    {
+    public:
+        EvtGcStop(QDateTime ts, QString eventName);
+        void process(Subscriber &processor) const;
+    };
+
     EventDataBase* parseEvent(const QByteArray& rawMessage);
 }
 

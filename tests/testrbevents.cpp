@@ -45,3 +45,16 @@ void TestRbEvents::testParseGcStatsEvent()
     EvtGcStats* event = dynamic_cast<EvtGcStats*>(base);
     QVERIFY(event);
 }
+
+void TestRbEvents::testParseGCStartEvent()
+{
+    QByteArray data = msgpackDataFromFile(":/tests/msgpack/gc_start");
+    EventDataBase *base = parseEvent(data);
+
+    QVERIFY(base);
+
+    EvtGcStart *event = dynamic_cast<EvtGcStart *>(base);
+    QVERIFY(event);
+
+    QVERIFY(event->eventName == "gc_start");
+}

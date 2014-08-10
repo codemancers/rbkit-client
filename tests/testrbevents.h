@@ -12,6 +12,7 @@ private slots:
     void testParseObjectCreateEvent();
     void testParseObjectDestroyEvent();
     void testParseGcStatsEvent();
+    void testParseGCStartEvent();
 };
 
 DECLARE_TEST(TestRbEvents)
