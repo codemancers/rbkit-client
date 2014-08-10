@@ -14,7 +14,7 @@ class @Chart
     @legendIndex = 1
 
   plotChart: ->
-    @chart = $("#container").highcharts(
+    @chart = $("#object-container").highcharts(
       chart: { type: 'column' },
       title: { text: 'Live objects'},
       xAxis: {
@@ -63,10 +63,17 @@ class @Chart
         @updateGcStats(data.payload)
 
   updateGcStats: (gcStats) =>
-    $stats = $('#gc-stats tbody')
+    $stats = $('#gc-stats-table tbody')
     $stats.empty()
-
-    for key, value of gcStats
+    importantFields = [
+      'count', 'minor_gc_count', 'major_gc_count',
+      'heap_length', 'heap_eden_page_length', 'heap_used',
+      'heap_live_slot', 'heap_free_slot', 'heap_swept_slot',
+      'old_object', 'old_object_limit', 'remembered_shady_object',
+      'total_allocated_object', 'total_freed_object'
+    ]
+    for key in importantFields
+      value = gcStats[key]
       row = "<tr><td>#{key}</td><td>#{value}</td></tr>"
       $stats.append(row)
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>850</width>
-    <height>600</height>
+    <width>1100</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -51,7 +51,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>850</width>
+     <width>1100</width>
      <height>22</height>
     </rect>
    </property>
@@ -85,6 +85,7 @@
    </attribute>
    <addaction name="actionConnect"/>
    <addaction name="actionStart_GC"/>
+   <addaction name="actionStop_profiling"/>
   </widget>
   <action name="action_Connect">
    <property name="text">
@@ -114,6 +115,11 @@
   <action name="actionStart_GC">
    <property name="text">
     <string>Start GC</string>
+   </property>
+  </action>
+  <action name="actionStop_profiling">
+   <property name="text">
+    <string>Stop profiling</string>
    </property>
   </action>
  </widget>

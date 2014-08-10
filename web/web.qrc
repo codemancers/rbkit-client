@@ -2,11 +2,15 @@
     <qresource prefix="/web">
         <file>src/chart.js</file>
         <file>lib/highchart.js</file>
+        <file>lib/bootstrap.min.css</file>
+        <file>lib/bootstrap-theme.min.css</file>
+        <file>lib/bootstrap.min.js</file>
         <file>index.html</file>
         <file>lib/jquery.js</file>
         <file>src/chart.coffee</file>
         <file>lib/underscore.js</file>
         <file>src/objectcount.coffee</file>
         <file>src/objectcount.js</file>
+        <file>src/rbkit.css</file>
     </qresource>
 </RCC>

@@ -120,6 +120,7 @@ void Subscriber::processEvent(const RBKit::EvtGcStats& stats)
 
 
 void Subscriber::processEvent(const RBKit::EvtGcStart &gcEvent) {
+    qDebug() << "Received gc start" << gcEvent.timestamp;
     static const QString eventName("gc_start");
     QVariantMap map;
     jsBridge->sendMapToJs(eventName, gcEvent.timestamp, map);
@@ -127,6 +128,7 @@ void Subscriber::processEvent(const RBKit::EvtGcStart &gcEvent) {
 
 void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 {
+    qDebug() << "Received gc stop" << gcEvent.timestamp;
     static const QString eventName("gc_stop");
     QVariantMap map;
     jsBridge->sendMapToJs(eventName, gcEvent.timestamp, map);

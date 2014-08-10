@@ -1,0 +1,18 @@
+#object-container {
+    float: left;
+}
+
+#gc-stats {
+    float: right;
+    width: 250px;
+    margin-top: 10px;
+}
+
+#gc-stats-table {
+    font-size: 12px;
+}
+
+#gc-stats-table caption {
+    font-size: 20px;
+    margin-bottom: 5px;
+}
