@@ -11,12 +11,13 @@ class @Chart
   constructor: ->
     @objectCounter = new ObjectCount()
     @knownClasses = {"String": true}
+    @gcStat = new GcStat()
     @legendIndex = 1
 
   plotChart: ->
     @chart = $("#object-container").highcharts(
       chart: { type: 'column' },
-      title: { text: 'Live objects'},
+      title: { text: null },
       xAxis: {
         type: 'datetime',
         tickPixelInterval: 150,
@@ -47,6 +48,7 @@ class @Chart
       },
       series: [{name: 'String', data: placeHolderSeries()}]
     ).highcharts()
+    @gcStat.plotChart()
 
   tryQtBridge: =>
     window.setTimeout(@establishQtBridge, 1000)
@@ -59,6 +61,10 @@ class @Chart
     switch data.event_type
       when "object_stats"
         @addToCurrentObjects(data.payload)
+      when "gc_start"
+        @gcStat.gcStarted(data)
+      when "gc_stop"
+        @gcStat.gcStopped(data)
       when "gc_stats"
         @updateGcStats(data.payload)
 
@@ -88,6 +94,7 @@ class @Chart
         @addNewDataPoint(objectType, count, currentTime)
       else
         @addNewSeries(objectType, count, currentTime)
+    @gcStat.updateChart()
 
   addNewDataPoint: (objectType, count, currentTime) ->
     selectedSeries = (series for series in @chart.series when series.name == objectType)[0]

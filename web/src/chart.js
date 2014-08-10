@@ -39,16 +39,17 @@ this.Chart = (function() {
     this.knownClasses = {
       "String": true
     };
+    this.gcStat = new GcStat();
     this.legendIndex = 1;
   }
 
   Chart.prototype.plotChart = function() {
-    return this.chart = $("#object-container").highcharts({
+    this.chart = $("#object-container").highcharts({
       chart: {
         type: 'column'
       },
       title: {
-        text: 'Live objects'
+        text: null
       },
       xAxis: {
         type: 'datetime',
@@ -89,6 +90,7 @@ this.Chart = (function() {
         }
       ]
     }).highcharts();
+    return this.gcStat.plotChart();
   };
 
   Chart.prototype.tryQtBridge = function() {
@@ -105,6 +107,10 @@ this.Chart = (function() {
     switch (data.event_type) {
       case "object_stats":
         return this.addToCurrentObjects(data.payload);
+      case "gc_start":
+        return this.gcStat.gcStarted(data);
+      case "gc_stop":
+        return this.gcStat.gcStopped(data);
       case "gc_stats":
         return this.updateGcStats(data.payload);
     }
@@ -130,19 +136,18 @@ this.Chart = (function() {
   };
 
   Chart.prototype.updateChart = function() {
-    var count, currentTime, objectType, timeSeries, _results;
+    var count, currentTime, objectType, timeSeries;
     currentTime = (new Date()).getTime();
     timeSeries = this.objectCounter.timeSeries();
-    _results = [];
     for (objectType in timeSeries) {
       count = timeSeries[objectType];
       if (this.knownClasses[objectType] != null) {
-        _results.push(this.addNewDataPoint(objectType, count, currentTime));
+        this.addNewDataPoint(objectType, count, currentTime);
       } else {
-        _results.push(this.addNewSeries(objectType, count, currentTime));
+        this.addNewSeries(objectType, count, currentTime);
       }
     }
-    return _results;
+    return this.gcStat.updateChart();
   };
 
   Chart.prototype.addNewDataPoint = function(objectType, count, currentTime) {

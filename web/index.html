@@ -3,6 +3,7 @@
     <title> Realtime Graphs </title>
     <script type="text/javascript" src="qrc:/web/lib/jquery.js"></script>
     <script type="text/javascript" src="qrc:/web/lib/highchart.js"></script>
+    <script type="text/javascript" src="qrc:/web/lib/highcharts-more.js"></script>
     <script type="text/javascript" src="qrc:/web/lib/underscore.js"></script>
     <script type="text/javascript" src="qrc:/web/src/objectcount.js"></script>
     <link rel="stylesheet" href="qrc:/web/src/rbkit.css" />
@@ -12,14 +13,21 @@
   </head>
   <body>
     <div class="container-fluid">
-      <div id="object-container" style="width:700px; height:400px;"></div>
-      <div id="gc-stats">
-        <table id="gc-stats-table" class="table table-condensed table-bordered table-striped table-hover">
-          <caption class="text-center"> GC Stats </caption>
-          <tbody></tbody>
-        </table>
+      <div class="row">
+        <div id="object-container" style="width:700px; height:400px;"></div>
+        <div id="gc-stats">
+          <table id="gc-stats-table" class="table table-condensed table-bordered table-striped table-hover">
+            <caption class="text-center"> GC Stats </caption>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+        <div id="gc-container" style="width:700px; height: 100px;"> Hello </div>
+        <div id="gc-average-time"> &nbsp; </div>
       </div>
     </div>
+    <script type="text/javascript" src="qrc:/web/src/gcstat.js"></script>
     <script type="text/javascript" src="qrc:/web/src/chart.js"></script>
   </body>
 </html>
