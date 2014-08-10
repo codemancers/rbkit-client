@@ -164,7 +164,9 @@ this.Chart = (function() {
       }
       return _results;
     }).call(this))[0];
-    return selectedSeries.addPoint([currentTime, count], true, true);
+    if (selectedSeries != null) {
+      return selectedSeries.addPoint([currentTime, count], true, true);
+    }
   };
 
   Chart.prototype.addNewSeries = function(objectType, count, currentTime) {
