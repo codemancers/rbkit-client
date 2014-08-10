@@ -19,10 +19,12 @@ class @GcStat
 
   updateChart: ->
     currentTime = (new Date()).getTime()
-    if @lastGcDuration?
-      @chart.series[0].addPoint([currentTime, @lastGcDuration], true, true)
-    else
-      @chart.series[0].addPoint([currentTime, 0], true, true)
+    selectedSeries = @chart.series[0]
+    if selectedSeries?
+      if @lastGcDuration?
+        @chart.series[0].addPoint([currentTime, @lastGcDuration], true, true)
+      else
+        @chart.series[0].addPoint([currentTime, 0], true, true)
 
   plotChart: ->
     @chart = $("#gc-container").highcharts(

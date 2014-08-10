@@ -29,12 +29,15 @@ this.GcStat = (function() {
   };
 
   GcStat.prototype.updateChart = function() {
-    var currentTime;
+    var currentTime, selectedSeries;
     currentTime = (new Date()).getTime();
-    if (this.lastGcDuration != null) {
-      return this.chart.series[0].addPoint([currentTime, this.lastGcDuration], true, true);
-    } else {
-      return this.chart.series[0].addPoint([currentTime, 0], true, true);
+    selectedSeries = this.chart.series[0];
+    if (selectedSeries != null) {
+      if (this.lastGcDuration != null) {
+        return this.chart.series[0].addPoint([currentTime, this.lastGcDuration], true, true);
+      } else {
+        return this.chart.series[0].addPoint([currentTime, 0], true, true);
+      }
     }
   };
 
