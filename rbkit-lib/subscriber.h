@@ -37,7 +37,7 @@ class Subscriber : public QObject
     RBKit::JsBridge* jsBridge;
 
 public:
-    explicit Subscriber(QObject *parent, RBKit::JsBridge* jsBridge);
+    explicit Subscriber(RBKit::JsBridge* jsBridge);
     ~Subscriber();
 
 public:

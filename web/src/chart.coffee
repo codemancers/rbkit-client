@@ -54,7 +54,7 @@ class @Chart
     window.setTimeout(@establishQtBridge, 1000)
 
   establishQtBridge: =>
-    setInterval(@updateChart, 1000)
+    setInterval(@updateChart, 1500)
     window.jsBridge?.jsEvent.connect(@receiveLiveData)
 
   receiveLiveData: (data) =>

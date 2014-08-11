@@ -14,7 +14,6 @@ namespace RBKit
         Q_OBJECT
 
     public:
-        JsBridge(QObject* parent) : QObject(parent) {}
         ~JsBridge() {}
 
     public:

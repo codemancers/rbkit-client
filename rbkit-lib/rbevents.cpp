@@ -71,6 +71,8 @@ RBKit::EventDataBase* RBKit::parseEvent(const QByteArray& message)
 
     QVariantMap map = parseMsgpackObjectMap(obj);
     // qDebug() << map << map["payload"];
+    if(map["event_type"] != "obj_created" && map["event_type"] != "obj_destroyed")
+        qDebug() << "Received event of type : " << map["event_type"].toString();
 
     QDateTime timestamp = QDateTime::fromMSecsSinceEpoch(map["timestamp"].toULongLong());
     if (map["event_type"] == "obj_created") {
@@ -84,7 +86,7 @@ RBKit::EventDataBase* RBKit::parseEvent(const QByteArray& message)
     } else if (map["event_type"] == "gc_end_s") {
         return new RBKit::EvtGcStop(timestamp, map["event_type"].toString());
     } else {
-        qDebug() << map["event_type"];
+        qDebug() << "Unable to parse event of type" << map["event_type"];
         return NULL;
     }
 }

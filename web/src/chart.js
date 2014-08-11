@@ -99,7 +99,7 @@ this.Chart = (function() {
 
   Chart.prototype.establishQtBridge = function() {
     var _ref;
-    setInterval(this.updateChart, 1000);
+    setInterval(this.updateChart, 1500);
     return (_ref = window.jsBridge) != null ? _ref.jsEvent.connect(this.receiveLiveData) : void 0;
   };
 

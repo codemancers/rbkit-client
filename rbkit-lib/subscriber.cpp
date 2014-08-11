@@ -11,12 +11,11 @@
 
 
 static const int rbkcZmqTotalIoThreads = 1;
-static const int timerIntervalInMs = 1000;
+static const int timerIntervalInMs = 1500;
 
 
-Subscriber::Subscriber(QObject *parent, RBKit::JsBridge* bridge)
-    : QObject(parent)
-    , jsBridge(bridge)
+Subscriber::Subscriber(RBKit::JsBridge* bridge)
+    :jsBridge(bridge)
 {
     commandSocket = new RBKit::ZmqCommandSocket(this);
     eventSocket   = new RBKit::ZmqEventSocket(this);

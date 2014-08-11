@@ -26,7 +26,7 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     connect(ui->chartingView, SIGNAL(loadFinished(bool)), this, SLOT(onPageLoad(bool)));
     ui->chartingView->setUrl(QUrl("qrc:/web/index.html"));
 
-    jsBridge = new RBKit::JsBridge(this);
+    jsBridge = new RBKit::JsBridge();
 }
 
 RbkitMainWindow::~RbkitMainWindow()
@@ -93,10 +93,10 @@ void RbkitMainWindow::disconnectFromSocket()
 void RbkitMainWindow::setupSubscriber()
 {
     // move jsbridge to subscriber thread first.
-    jsBridge->moveToThread(&subscriberThread);
+    //jsBridge->moveToThread(&subscriberThread);
 
     //Create a subscriber and move it to it's own thread
-    subscriber = new Subscriber(this, jsBridge);
+    subscriber = new Subscriber(jsBridge);
     subscriber->moveToThread(&subscriberThread);
 
     //Events to/from parent/subcriber thread
