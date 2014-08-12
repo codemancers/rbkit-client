@@ -65,6 +65,7 @@ RBKit::ZmqEventSocket::ZmqEventSocket(QObject* parent) :
     context = new nzmqt::SocketNotifierZMQContext(this, rbkcZmqTotalIoThreads);
     socket = context->createSocket(nzmqt::ZMQSocket::TYP_SUB, this);
     socket->setOption(nzmqt::ZMQSocket::OPT_SUBSCRIBE, "", 0);
+    socket->setOption(nzmqt::ZMQSocket::OPT_RCVHWM, 500000);
 }
 
 RBKit::ZmqEventSocket::~ZmqEventSocket()

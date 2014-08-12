@@ -176,7 +176,9 @@ namespace nzmqt
             OPT_LINGER = ZMQ_LINGER,
             OPT_RECONNECT_IVL = ZMQ_RECONNECT_IVL,
             OPT_RECONNECT_IVL_MAX = ZMQ_RECONNECT_IVL_MAX,
-            OPT_BACKLOG = ZMQ_BACKLOG
+            OPT_BACKLOG = ZMQ_BACKLOG,
+            OPT_SNDHWM = ZMQ_SNDHWM,
+            OPT_RCVHWM = ZMQ_RCVHWM
         };
 
         ~ZMQSocket();
