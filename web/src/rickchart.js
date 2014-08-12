@@ -6,6 +6,7 @@ this.Graph = (function() {
   function Graph(element) {
     this.render = __bind(this.render, this);
     this.addData = __bind(this.addData, this);
+    this.renderAxes = __bind(this.renderAxes, this);
     this.init = __bind(this.init, this);
     this.element = element;
     this.colorPalette = new Rickshaw.Color.Palette();
@@ -27,14 +28,18 @@ this.Graph = (function() {
         timeBase: new Date().getTime() / 1000
       })
     });
+    return this.renderAxes();
+  };
+
+  Graph.prototype.renderAxes = function() {
     new Rickshaw.Graph.Axis.Time({
       graph: this.graph
-    });
+    }).render();
     new Rickshaw.Graph.Axis.Y.Scaled({
       graph: this.graph,
       tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
       scale: d3.scale.linear()
-    });
+    }).render();
     return new Rickshaw.Graph.HoverDetail({
       graph: this.graph,
       yFormatter: function(y) {

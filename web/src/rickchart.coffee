@@ -20,12 +20,15 @@ class @Graph
       )
     )
 
-    new Rickshaw.Graph.Axis.Time(graph: @graph)
+    @renderAxes()
+
+  renderAxes: =>
+    new Rickshaw.Graph.Axis.Time(graph: @graph).render()
     new Rickshaw.Graph.Axis.Y.Scaled(
       graph: @graph
       tickFormat: Rickshaw.Fixtures.Number.formatKMBT
       scale: d3.scale.linear()
-    )
+    ).render()
 
     new Rickshaw.Graph.HoverDetail(
       graph: @graph
