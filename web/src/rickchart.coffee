@@ -10,12 +10,12 @@ class @Graph
       height: document.height - 30
       renderer: 'bar'
       series: new Rickshaw.Series.FixedDuration(
-        [{ name: '', color: @colorPalette.color() }],
-        undefined,
+        [{ name: 'baseline' }],
+        @colorPalette,
         {
           timeInterval: 100
-          maxDataPoints: 100
-          timeBase: new Date().getTime() / 1000
+          maxDataPoints: 50
+          timeBase: new Date().getTime()/1000
         }
       )
     )
@@ -24,47 +24,35 @@ class @Graph
     new Rickshaw.Graph.Axis.Y.Scaled(
       graph: @graph
       tickFormat: Rickshaw.Fixtures.Number.formatKMBT
-      scale: d3.scale.log()
+      scale: d3.scale.linear()
     )
+
     new Rickshaw.Graph.HoverDetail(
       graph: @graph
       yFormatter: (y) -> "Count: #{y}"
     )
 
-  addItem: (item) =>
-    @graph.series.addItem(name: item.name, color: @colorPalette.color())
-
   addData: (item) =>
     @graph.series.addData(item)
 
-class @Charter
-  mappedClasses: []
+  render: =>
+    @graph.render()
 
+class @Charter
   constructor: (grapher) ->
     @grapher = grapher
 
   receiveObjectData: (objectData) =>
-    unMappedClasses = @notMappedClasses(objectData, @mappedClasses)
-
-    for klass in unMappedClasses
-      @grapher.addItem(name: klass)
-      @mappedClasses.push klass
-
+    console.log("receiving data now #{new Date()}")
     @grapher.addData(objectData)
+    @grapher.graph.render()
 
   tryQtBridge: =>
     if window.rbkitClient
       window.rbkitClient.sendDatatoJs.connect(@receiveObjectData)
-      @grapher.graph.render()
-
-  notMappedClasses: (objectData, mappedClasses) =>
-    klasses = Object.keys objectData
-    klasses.filter (element) =>
-      @mappedClasses.indexOf(element) < 0
-
 
 grapher = new Graph('#chart')
 grapher.init()
 
 charter = new Charter(grapher)
-setInterval(charter.tryQtBridge, 1000)
+setTimeout(charter.tryQtBridge, 1000)

@@ -4,8 +4,8 @@ var charter, grapher,
 
 this.Graph = (function() {
   function Graph(element) {
+    this.render = __bind(this.render, this);
     this.addData = __bind(this.addData, this);
-    this.addItem = __bind(this.addItem, this);
     this.init = __bind(this.init, this);
     this.element = element;
     this.colorPalette = new Rickshaw.Color.Palette();
@@ -19,12 +19,11 @@ this.Graph = (function() {
       renderer: 'bar',
       series: new Rickshaw.Series.FixedDuration([
         {
-          name: '',
-          color: this.colorPalette.color()
+          name: 'baseline'
         }
-      ], void 0, {
+      ], this.colorPalette, {
         timeInterval: 100,
-        maxDataPoints: 100,
+        maxDataPoints: 50,
         timeBase: new Date().getTime() / 1000
       })
     });
@@ -34,7 +33,7 @@ this.Graph = (function() {
     new Rickshaw.Graph.Axis.Y.Scaled({
       graph: this.graph,
       tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-      scale: d3.scale.log()
+      scale: d3.scale.linear()
     });
     return new Rickshaw.Graph.HoverDetail({
       graph: this.graph,
@@ -44,17 +43,12 @@ this.Graph = (function() {
     });
   };
 
-  Graph.prototype.addItem = function(item) {
-    console.log(item);
-    return this.graph.series.addItem({
-      name: item.name,
-      color: this.colorPalette.color()
-    });
+  Graph.prototype.addData = function(item) {
+    return this.graph.series.addData(item);
   };
 
-  Graph.prototype.addData = function(item) {
-    console.log(item);
-    return this.graph.series.addData(item);
+  Graph.prototype.render = function() {
+    return this.graph.render();
   };
 
   return Graph;
@@ -62,47 +56,22 @@ this.Graph = (function() {
 })();
 
 this.Charter = (function() {
-  Charter.prototype.mappedClasses = [];
-
   function Charter(grapher) {
-    this.notMappedClasses = __bind(this.notMappedClasses, this);
     this.tryQtBridge = __bind(this.tryQtBridge, this);
     this.receiveObjectData = __bind(this.receiveObjectData, this);
     this.grapher = grapher;
   }
 
   Charter.prototype.receiveObjectData = function(objectData) {
-    var klass, unMappedClasses, _i, _len;
-    unMappedClasses = this.notMappedClasses(objectData, this.mappedClasses);
-    for (_i = 0, _len = unMappedClasses.length; _i < _len; _i++) {
-      klass = unMappedClasses[_i];
-      try {
-        this.grapher.addItem({
-          name: klass
-        });
-        this.mappedClasses.push(klass);
-      } catch (_error) {
-        console.log(_error);
-      }
-    }
-    return this.grapher.addData(objectData);
+    console.log("receiving data now " + (new Date()));
+    this.grapher.addData(objectData);
+    return this.grapher.graph.render();
   };
 
   Charter.prototype.tryQtBridge = function() {
     if (window.rbkitClient) {
-      window.rbkitClient.sendDatatoJs.connect(this.receiveObjectData);
-      return this.grapher.graph.render();
+      return window.rbkitClient.sendDatatoJs.connect(this.receiveObjectData);
     }
-  };
-
-  Charter.prototype.notMappedClasses = function(objectData, mappedClasses) {
-    var klasses;
-    klasses = Object.keys(objectData);
-    return klasses.filter((function(_this) {
-      return function(element) {
-        return _this.mappedClasses.indexOf(element) < 0;
-      };
-    })(this));
   };
 
   return Charter;
@@ -115,4 +84,4 @@ grapher.init();
 
 charter = new Charter(grapher);
 
-setInterval(charter.tryQtBridge, 1000);
+setTimeout(charter.tryQtBridge, 1000);
