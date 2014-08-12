@@ -37,7 +37,7 @@ class Subscriber : public QObject
     RBKit::JsBridge* jsBridge;
 
 public:
-    explicit Subscriber(QObject *parent, RBKit::JsBridge* jsBridge);
+    explicit Subscriber(RBKit::JsBridge* jsBridge);
     ~Subscriber();
 
 public:
@@ -45,7 +45,8 @@ public:
     void processEvent(const RBKit::EvtNewObject&);
     void processEvent(const RBKit::EvtDelObject&);
     void processEvent(const RBKit::EvtGcStats&);
-
+    void processEvent(const RBKit::EvtGcStart&);
+    void processEvent(const RBKit::EvtGcStop&);
 signals:
     void disconnected();
     void connected();

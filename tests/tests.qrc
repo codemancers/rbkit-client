@@ -3,5 +3,6 @@
         <file>msgpack/objcreated</file>
         <file>msgpack/objdestroyed</file>
         <file>msgpack/gcstats</file>
+        <file>msgpack/gc_start</file>
     </qresource>
 </RCC>

@@ -39,16 +39,17 @@ this.Chart = (function() {
     this.knownClasses = {
       "String": true
     };
+    this.gcStat = new GcStat();
     this.legendIndex = 1;
   }
 
   Chart.prototype.plotChart = function() {
-    return this.chart = $("#container").highcharts({
+    this.chart = $("#object-container").highcharts({
       chart: {
         type: 'column'
       },
       title: {
-        text: 'Live objects'
+        text: null
       },
       xAxis: {
         type: 'datetime',
@@ -89,6 +90,7 @@ this.Chart = (function() {
         }
       ]
     }).highcharts();
+    return this.gcStat.plotChart();
   };
 
   Chart.prototype.tryQtBridge = function() {
@@ -97,7 +99,7 @@ this.Chart = (function() {
 
   Chart.prototype.establishQtBridge = function() {
     var _ref;
-    setInterval(this.updateChart, 1000);
+    setInterval(this.updateChart, 1500);
     return (_ref = window.jsBridge) != null ? _ref.jsEvent.connect(this.receiveLiveData) : void 0;
   };
 
@@ -105,17 +107,23 @@ this.Chart = (function() {
     switch (data.event_type) {
       case "object_stats":
         return this.addToCurrentObjects(data.payload);
+      case "gc_start":
+        return this.gcStat.gcStarted(data);
+      case "gc_stop":
+        return this.gcStat.gcStopped(data);
       case "gc_stats":
         return this.updateGcStats(data.payload);
     }
   };
 
   Chart.prototype.updateGcStats = function(gcStats) {
-    var $stats, key, row, value, _results;
-    $stats = $('#gc-stats tbody');
+    var $stats, importantFields, key, row, value, _i, _len, _results;
+    $stats = $('#gc-stats-table tbody');
     $stats.empty();
+    importantFields = ['count', 'minor_gc_count', 'major_gc_count', 'heap_length', 'heap_eden_page_length', 'heap_used', 'heap_live_slot', 'heap_free_slot', 'heap_swept_slot', 'old_object', 'old_object_limit', 'remembered_shady_object', 'total_allocated_object', 'total_freed_object'];
     _results = [];
-    for (key in gcStats) {
+    for (_i = 0, _len = importantFields.length; _i < _len; _i++) {
+      key = importantFields[_i];
       value = gcStats[key];
       row = "<tr><td>" + key + "</td><td>" + value + "</td></tr>";
       _results.push($stats.append(row));
@@ -128,19 +136,18 @@ this.Chart = (function() {
   };
 
   Chart.prototype.updateChart = function() {
-    var count, currentTime, objectType, timeSeries, _results;
+    var count, currentTime, objectType, timeSeries;
     currentTime = (new Date()).getTime();
     timeSeries = this.objectCounter.timeSeries();
-    _results = [];
     for (objectType in timeSeries) {
       count = timeSeries[objectType];
       if (this.knownClasses[objectType] != null) {
-        _results.push(this.addNewDataPoint(objectType, count, currentTime));
+        this.addNewDataPoint(objectType, count, currentTime);
       } else {
-        _results.push(this.addNewSeries(objectType, count, currentTime));
+        this.addNewSeries(objectType, count, currentTime);
       }
     }
-    return _results;
+    return this.gcStat.updateChart();
   };
 
   Chart.prototype.addNewDataPoint = function(objectType, count, currentTime) {
@@ -157,7 +164,9 @@ this.Chart = (function() {
       }
       return _results;
     }).call(this))[0];
-    return selectedSeries.addPoint([currentTime, count], true, true);
+    if (selectedSeries != null) {
+      return selectedSeries.addPoint([currentTime, count], true, true);
+    }
   };
 
   Chart.prototype.addNewSeries = function(objectType, count, currentTime) {

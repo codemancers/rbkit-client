@@ -29,7 +29,7 @@ void TestJsBridge::receiveData(const QVariantMap& data)
 
 void TestJsBridge::init()
 {
-    jsBridge = new JsBridge(this);
+    jsBridge = new JsBridge();
     connect(jsBridge, SIGNAL(jsEvent(const QVariantMap&)),
             this, SLOT(receiveData(const QVariantMap&)));
 

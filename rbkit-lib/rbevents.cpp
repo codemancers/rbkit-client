@@ -71,6 +71,8 @@ RBKit::EventDataBase* RBKit::parseEvent(const QByteArray& message)
 
     QVariantMap map = parseMsgpackObjectMap(obj);
     // qDebug() << map << map["payload"];
+    if(map["event_type"] != "obj_created" && map["event_type"] != "obj_destroyed")
+        qDebug() << "Received event of type : " << map["event_type"].toString();
 
     QDateTime timestamp = QDateTime::fromMSecsSinceEpoch(map["timestamp"].toULongLong());
     if (map["event_type"] == "obj_created") {
@@ -79,8 +81,12 @@ RBKit::EventDataBase* RBKit::parseEvent(const QByteArray& message)
         return new RBKit::EvtDelObject(timestamp, map["event_type"].toString(), map["payload"].toMap());
     } else if (map["event_type"] == "gc_stats") {
         return new RBKit::EvtGcStats(timestamp, map["event_type"].toString(), map["payload"].toMap());
+    } else if (map["event_type"] == "gc_start") {
+        return new RBKit::EvtGcStart(timestamp, map["event_type"].toString());
+    } else if (map["event_type"] == "gc_end_s") {
+        return new RBKit::EvtGcStop(timestamp, map["event_type"].toString());
     } else {
-        qDebug() << map["event_type"];
+        qDebug() << "Unable to parse event of type" << map["event_type"];
         return NULL;
     }
 }
@@ -123,6 +129,25 @@ RBKit::EvtGcStats::EvtGcStats(QDateTime ts, QString eventName, QVariantMap _payl
 { }
 
 void RBKit::EvtGcStats::process(Subscriber& processor) const
+{
+    processor.processEvent(*this);
+}
+
+RBKit::EvtGcStart::EvtGcStart(QDateTime ts, QString eventName)
+    : EventDataBase(ts, eventName)
+{}
+
+void RBKit::EvtGcStart::process(Subscriber& processor) const
+{
+    processor.processEvent(*this);
+}
+
+
+RBKit::EvtGcStop::EvtGcStop(QDateTime ts, QString eventName)
+    : EventDataBase(ts, eventName)
+{}
+
+void RBKit::EvtGcStop::process(Subscriber& processor) const
 {
     processor.processEvent(*this);
 }

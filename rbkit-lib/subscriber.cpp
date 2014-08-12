@@ -11,12 +11,11 @@
 
 
 static const int rbkcZmqTotalIoThreads = 1;
-static const int timerIntervalInMs = 1000;
+static const int timerIntervalInMs = 1500;
 
 
-Subscriber::Subscriber(QObject *parent, RBKit::JsBridge* bridge)
-    : QObject(parent)
-    , jsBridge(bridge)
+Subscriber::Subscriber(RBKit::JsBridge* bridge)
+    :jsBridge(bridge)
 {
     commandSocket = new RBKit::ZmqCommandSocket(this);
     eventSocket   = new RBKit::ZmqEventSocket(this);
@@ -118,6 +117,21 @@ void Subscriber::processEvent(const RBKit::EvtGcStats& stats)
     jsBridge->sendMapToJs(eventName, stats.timestamp, stats.payload);
 }
 
+
+void Subscriber::processEvent(const RBKit::EvtGcStart &gcEvent) {
+    qDebug() << "Received gc start" << gcEvent.timestamp;
+    static const QString eventName("gc_start");
+    QVariantMap map;
+    jsBridge->sendMapToJs(eventName, gcEvent.timestamp, map);
+}
+
+void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
+{
+    qDebug() << "Received gc stop" << gcEvent.timestamp;
+    static const QString eventName("gc_stop");
+    QVariantMap map;
+    jsBridge->sendMapToJs(eventName, gcEvent.timestamp, map);
+}
 
 void Subscriber::onTimerExpiry()
 {
