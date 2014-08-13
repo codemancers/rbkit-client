@@ -71,13 +71,22 @@ RBKit::EventDataBase* RBKit::parseEvent(const QByteArray& message)
 
     QVariantMap map = parseMsgpackObjectMap(obj);
     // qDebug() << map << map["payload"];
+    if(map["event_type"] != "obj_created" && map["event_type"] != "obj_destroyed")
+        qDebug() << "Received event of type : " << map["event_type"].toString();
 
     QDateTime timestamp = QDateTime::fromMSecsSinceEpoch(map["timestamp"].toULongLong());
     if (map["event_type"] == "obj_created") {
         return new RBKit::EvtNewObject(timestamp, map["event_type"].toString(), map["payload"].toMap());
     } else if (map["event_type"] == "obj_destroyed") {
         return new RBKit::EvtDelObject(timestamp, map["event_type"].toString(), map["payload"].toMap());
+    } else if (map["event_type"] == "gc_stats") {
+        return new RBKit::EvtGcStats(timestamp, map["event_type"].toString(), map["payload"].toMap());
+    } else if (map["event_type"] == "gc_start") {
+        return new RBKit::EvtGcStart(timestamp, map["event_type"].toString());
+    } else if (map["event_type"] == "gc_end_s") {
+        return new RBKit::EvtGcStop(timestamp, map["event_type"].toString());
     } else {
+        qDebug() << "Unable to parse event of type" << map["event_type"];
         return NULL;
     }
 }
@@ -109,6 +118,36 @@ RBKit::EvtDelObject::EvtDelObject(QDateTime ts, QString eventName, QVariantMap p
 { }
 
 void RBKit::EvtDelObject::process(Subscriber& processor) const
+{
+    processor.processEvent(*this);
+}
+
+
+RBKit::EvtGcStats::EvtGcStats(QDateTime ts, QString eventName, QVariantMap _payload)
+    : EventDataBase(ts, eventName)
+    , payload(_payload)
+{ }
+
+void RBKit::EvtGcStats::process(Subscriber& processor) const
+{
+    processor.processEvent(*this);
+}
+
+RBKit::EvtGcStart::EvtGcStart(QDateTime ts, QString eventName)
+    : EventDataBase(ts, eventName)
+{}
+
+void RBKit::EvtGcStart::process(Subscriber& processor) const
+{
+    processor.processEvent(*this);
+}
+
+
+RBKit::EvtGcStop::EvtGcStop(QDateTime ts, QString eventName)
+    : EventDataBase(ts, eventName)
+{}
+
+void RBKit::EvtGcStop::process(Subscriber& processor) const
 {
     processor.processEvent(*this);
 }

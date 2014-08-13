@@ -11,12 +11,13 @@ class @Chart
   constructor: ->
     @objectCounter = new ObjectCount()
     @knownClasses = {"String": true}
+    @gcStat = new GcStat()
     @legendIndex = 1
 
   plotChart: ->
-    @chart = $("#container").highcharts(
+    @chart = $("#object-container").highcharts(
       chart: { type: 'column' },
-      title: { text: 'Live objects'},
+      title: { text: null },
       xAxis: {
         type: 'datetime',
         tickPixelInterval: 150,
@@ -47,17 +48,40 @@ class @Chart
       },
       series: [{name: 'String', data: placeHolderSeries()}]
     ).highcharts()
+    @gcStat.plotChart()
 
   tryQtBridge: =>
     window.setTimeout(@establishQtBridge, 1000)
 
   establishQtBridge: =>
-    setInterval(@updateChart, 1000)
-    if window.rbkitClient
-      window.rbkitClient.sendDatatoJs.connect(@receiveLiveData)
+    setInterval(@updateChart, 1500)
+    window.jsBridge?.jsEvent.connect(@receiveLiveData)
 
-  receiveLiveData: (liveObjectCount) =>
-    @addToCurrentObjects(liveObjectCount)
+  receiveLiveData: (data) =>
+    switch data.event_type
+      when "object_stats"
+        @addToCurrentObjects(data.payload)
+      when "gc_start"
+        @gcStat.gcStarted(data)
+      when "gc_stop"
+        @gcStat.gcStopped(data)
+      when "gc_stats"
+        @updateGcStats(data.payload)
+
+  updateGcStats: (gcStats) =>
+    $stats = $('#gc-stats-table tbody')
+    $stats.empty()
+    importantFields = [
+      'count', 'minor_gc_count', 'major_gc_count',
+      'heap_length', 'heap_eden_page_length', 'heap_used',
+      'heap_live_slot', 'heap_free_slot', 'heap_swept_slot',
+      'old_object', 'old_object_limit', 'remembered_shady_object',
+      'total_allocated_object', 'total_freed_object'
+    ]
+    for key in importantFields
+      value = gcStats[key]
+      row = "<tr><td>#{key}</td><td>#{value}</td></tr>"
+      $stats.append(row)
 
   addToCurrentObjects: (liveObjectCount) ->
     @objectCounter.addToCurrentObjects(liveObjectCount)
@@ -70,10 +94,12 @@ class @Chart
         @addNewDataPoint(objectType, count, currentTime)
       else
         @addNewSeries(objectType, count, currentTime)
+    @gcStat.updateChart()
 
   addNewDataPoint: (objectType, count, currentTime) ->
     selectedSeries = (series for series in @chart.series when series.name == objectType)[0]
-    selectedSeries.addPoint([currentTime, count], true, true)
+    if selectedSeries?
+      selectedSeries.addPoint([currentTime, count], true, true)
 
   addNewSeries: (objectType, count, currentTime) ->
     @chart.addSeries({

@@ -7,14 +7,15 @@
 #include "subscriber.h"
 #include "zmqsockets.h"
 #include "rbcommands.h"
+#include "jsbridge.h"
 
 
 static const int rbkcZmqTotalIoThreads = 1;
-static const int timerIntervalInMs = 1000;
+static const int timerIntervalInMs = 1500;
 
 
-Subscriber::Subscriber(QObject *parent) :
-    QObject(parent)
+Subscriber::Subscriber(RBKit::JsBridge* bridge)
+    :jsBridge(bridge)
 {
     commandSocket = new RBKit::ZmqCommandSocket(this);
     eventSocket   = new RBKit::ZmqEventSocket(this);
@@ -106,15 +107,37 @@ void Subscriber::processEvent(const RBKit::EvtNewObject& objCreated)
 
 void Subscriber::processEvent(const RBKit::EvtDelObject& objDeleted)
 {
-    qDebug() << "processing obj destroyed " << objDeleted.objectId;
     quint64 objectId = objDeleted.objectId;
     objectStore->removeObject(objectId);
 }
 
+void Subscriber::processEvent(const RBKit::EvtGcStats& stats)
+{
+    static const QString eventName("gc_stats");
+    jsBridge->sendMapToJs(eventName, stats.timestamp, stats.payload);
+}
+
+
+void Subscriber::processEvent(const RBKit::EvtGcStart &gcEvent) {
+    qDebug() << "Received gc start" << gcEvent.timestamp;
+    static const QString eventName("gc_start");
+    QVariantMap map;
+    jsBridge->sendMapToJs(eventName, gcEvent.timestamp, map);
+}
+
+void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
+{
+    qDebug() << "Received gc stop" << gcEvent.timestamp;
+    static const QString eventName("gc_stop");
+    QVariantMap map;
+    jsBridge->sendMapToJs(eventName, gcEvent.timestamp, map);
+}
 
 void Subscriber::onTimerExpiry()
 {
+    static const QString eventName("object_stats");
+
     // qDebug() << m_type2Count;
     QVariantMap data = objectStore->getObjectTypeCountMap();
-    emit messageReady(data);
+    jsBridge->sendMapToJs(eventName, QDateTime(), data);
 }

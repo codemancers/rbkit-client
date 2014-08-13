@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>850</width>
-    <height>600</height>
+    <width>1100</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -20,7 +20,7 @@
    <string>Rbkit - A Ruby Profiler</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <widget class="QTabWidget" name="chartingTab">
       <property name="currentIndex">
@@ -30,21 +30,17 @@
        <attribute name="title">
         <string>Object Charts</string>
        </attribute>
-       <widget class="QWebView" name="chartingView">
-        <property name="geometry">
-         <rect>
-          <x>9</x>
-          <y>9</y>
-          <width>810</width>
-          <height>483</height>
-         </rect>
-        </property>
-        <property name="url">
-         <url>
-          <string>about:blank</string>
-         </url>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QWebView" name="chartingView">
+          <property name="url">
+           <url>
+            <string>about:blank</string>
+           </url>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -55,8 +51,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>850</width>
-     <height>24</height>
+     <width>1100</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -77,6 +73,19 @@
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_Connect"/>
+   <addaction name="action_Trigger_GC"/>
+  </widget>
   <action name="action_Connect">
    <property name="text">
     <string>&amp;Connect</string>
@@ -94,7 +103,7 @@
   </action>
   <action name="action_Trigger_GC">
    <property name="text">
-    <string>&amp;Trigger GC</string>
+    <string>&amp;Start GC</string>
    </property>
   </action>
  </widget>

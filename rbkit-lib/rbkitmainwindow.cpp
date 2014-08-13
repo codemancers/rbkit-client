@@ -1,6 +1,7 @@
 #include "rbkitmainwindow.h"
 #include "ui_rbkitmainwindow.h"
 #include "askhost.h"
+#include "jsbridge.h"
 
 RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     QMainWindow(parent), connected(false), host(""),
@@ -24,10 +25,13 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
 
     connect(ui->chartingView, SIGNAL(loadFinished(bool)), this, SLOT(onPageLoad(bool)));
     ui->chartingView->setUrl(QUrl("qrc:/web/index.html"));
+
+    jsBridge = new RBKit::JsBridge();
 }
 
 RbkitMainWindow::~RbkitMainWindow()
 {
+    delete jsBridge;
     delete ui;
 }
 
@@ -76,7 +80,7 @@ void RbkitMainWindow::on_action_About_Rbkit_triggered()
 void RbkitMainWindow::onPageLoad(bool ok)
 {
     QWebFrame *frame = ui->chartingView->page()->mainFrame();
-    frame->addToJavaScriptWindowObject(QString("rbkitClient"), this);
+    frame->addToJavaScriptWindowObject(QString("jsBridge"), jsBridge);
 }
 
 void RbkitMainWindow::disconnectFromSocket()
@@ -88,8 +92,11 @@ void RbkitMainWindow::disconnectFromSocket()
 
 void RbkitMainWindow::setupSubscriber()
 {
+    // move jsbridge to subscriber thread first.
+    //jsBridge->moveToThread(&subscriberThread);
+
     //Create a subscriber and move it to it's own thread
-    subscriber = new Subscriber;
+    subscriber = new Subscriber(jsBridge);
     subscriber->moveToThread(&subscriberThread);
 
     //Events to/from parent/subcriber thread
@@ -100,7 +107,6 @@ void RbkitMainWindow::setupSubscriber()
 
     connect(this, SIGNAL(disconnectSubscriber()), subscriber, SLOT(stop()));
 
-    connect(subscriber, &Subscriber::messageReady, this, &RbkitMainWindow::handleMessage);
     connect(subscriber, &Subscriber::errored, this, &RbkitMainWindow::onError);
     connect(subscriber, &Subscriber::connected, this, &RbkitMainWindow::connectedToSocket);
     connect(subscriber, &Subscriber::disconnected, this, &RbkitMainWindow::disconnectedFromSocket);
@@ -114,10 +120,6 @@ void RbkitMainWindow::disconnectedFromSocket()
     this->connected = false;
 }
 
-void RbkitMainWindow::handleMessage(const QVariantMap& map)
-{
-    emit sendDatatoJs(map);
-}
 
 void RbkitMainWindow::connectedToSocket()
 {

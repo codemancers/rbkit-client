@@ -94,14 +94,16 @@ this.Charter = (function() {
   }
 
   Charter.prototype.receiveObjectData = function(objectData) {
-    this.grapher.addData(objectData);
+    switch (objectData.event_type) {
+      case 'object_stats':
+        this.grapher.addData(objectData.payload);
+    }
     return this.grapher.renderGraphAndLegend();
   };
 
   Charter.prototype.tryQtBridge = function() {
-    if (window.rbkitClient) {
-      return window.rbkitClient.sendDatatoJs.connect(this.receiveObjectData);
-    }
+    var _ref;
+    return (_ref = window.jsBridge) != null ? _ref.jsEvent.connect(this.receiveObjectData) : void 0;
   };
 
   return Charter;

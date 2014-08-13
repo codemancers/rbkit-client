@@ -65,12 +65,14 @@ class @Charter
     @grapher = grapher
 
   receiveObjectData: (objectData) =>
-    @grapher.addData(objectData)
+    switch objectData.event_type
+      when 'object_stats'
+        @grapher.addData(objectData.payload)
+
     @grapher.renderGraphAndLegend()
 
   tryQtBridge: =>
-    if window.rbkitClient
-      window.rbkitClient.sendDatatoJs.connect(@receiveObjectData)
+    window.jsBridge?.jsEvent.connect(@receiveObjectData)
 
 grapher = new Graph('#chart')
 grapher.init()
