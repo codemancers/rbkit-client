@@ -19,6 +19,7 @@ this.Graph = (function() {
       width: document.width - 30,
       height: document.height - 150,
       renderer: 'bar',
+      stack: true,
       series: new Rickshaw.Series.FixedDuration([
         {
           name: 'baseline'
@@ -54,7 +55,15 @@ this.Graph = (function() {
       graph: this.graph,
       element: document.getElementById('legend')
     });
-    return new Rickshaw.Graph.Behavior.Series.Toggle({
+    new Rickshaw.Graph.Behavior.Series.Toggle({
+      graph: this.graph,
+      legend: this.legend
+    });
+    new Rickshaw.Graph.Behavior.Series.Order({
+      graph: this.graph,
+      legend: this.legend
+    });
+    return new Rickshaw.Graph.Behavior.Series.Highlight({
       graph: this.graph,
       legend: this.legend
     });

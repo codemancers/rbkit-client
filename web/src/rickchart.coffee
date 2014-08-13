@@ -9,6 +9,7 @@ class @Graph
       width: document.width - 30
       height: document.height - 150
       renderer: 'bar'
+      stack: true
       series: new Rickshaw.Series.FixedDuration(
         [{ name: 'baseline' }],
         @colorPalette,
@@ -41,6 +42,14 @@ class @Graph
     )
     new Rickshaw.Graph.Behavior.Series.Toggle(
       graph: @graph,
+      legend: @legend
+    )
+    new Rickshaw.Graph.Behavior.Series.Order(
+      graph: @graph,
+      legend: @legend
+    )
+    new Rickshaw.Graph.Behavior.Series.Highlight(
+      graph: @graph
       legend: @legend
     )
 
