@@ -4,8 +4,9 @@ var charter, grapher,
 
 this.Graph = (function() {
   function Graph(element) {
-    this.render = __bind(this.render, this);
+    this.renderGraphAndLegend = __bind(this.renderGraphAndLegend, this);
     this.addData = __bind(this.addData, this);
+    this.renderLegend = __bind(this.renderLegend, this);
     this.renderAxes = __bind(this.renderAxes, this);
     this.init = __bind(this.init, this);
     this.element = element;
@@ -16,7 +17,7 @@ this.Graph = (function() {
     this.graph = new Rickshaw.Graph({
       element: document.querySelector(this.element),
       width: document.width - 30,
-      height: document.height - 30,
+      height: document.height - 150,
       renderer: 'bar',
       series: new Rickshaw.Series.FixedDuration([
         {
@@ -48,12 +49,28 @@ this.Graph = (function() {
     });
   };
 
+  Graph.prototype.renderLegend = function() {
+    this.legend = new Rickshaw.Graph.Legend({
+      graph: this.graph,
+      element: document.getElementById('legend')
+    });
+    return new Rickshaw.Graph.Behavior.Series.Toggle({
+      graph: this.graph,
+      legend: this.legend
+    });
+  };
+
   Graph.prototype.addData = function(item) {
     return this.graph.series.addData(item);
   };
 
-  Graph.prototype.render = function() {
-    return this.graph.render();
+  Graph.prototype.renderGraphAndLegend = function() {
+    this.graph.render();
+    if (this.legend) {
+      return this.legend.render();
+    } else {
+      return this.renderLegend();
+    }
   };
 
   return Graph;
@@ -68,9 +85,8 @@ this.Charter = (function() {
   }
 
   Charter.prototype.receiveObjectData = function(objectData) {
-    console.log("receiving data now " + (new Date()));
     this.grapher.addData(objectData);
-    return this.grapher.graph.render();
+    return this.grapher.renderGraphAndLegend();
   };
 
   Charter.prototype.tryQtBridge = function() {

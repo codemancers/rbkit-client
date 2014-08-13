@@ -7,7 +7,7 @@ class @Graph
     @graph = new Rickshaw.Graph(
       element: document.querySelector(@element)
       width: document.width - 30
-      height: document.height - 30
+      height: document.height - 150
       renderer: 'bar'
       series: new Rickshaw.Series.FixedDuration(
         [{ name: 'baseline' }],
@@ -19,7 +19,6 @@ class @Graph
         }
       )
     )
-
     @renderAxes()
 
   renderAxes: =>
@@ -35,20 +34,30 @@ class @Graph
       yFormatter: (y) -> "Count: #{y}"
     )
 
+  renderLegend: =>
+    @legend = new Rickshaw.Graph.Legend(
+      graph: @graph,
+      element: document.getElementById('legend')
+    )
+    new Rickshaw.Graph.Behavior.Series.Toggle(
+      graph: @graph,
+      legend: @legend
+    )
+
   addData: (item) =>
     @graph.series.addData(item)
 
-  render: =>
+  renderGraphAndLegend: =>
     @graph.render()
+    if @legend then @legend.render() else @renderLegend()
 
 class @Charter
   constructor: (grapher) ->
     @grapher = grapher
 
   receiveObjectData: (objectData) =>
-    console.log("receiving data now #{new Date()}")
     @grapher.addData(objectData)
-    @grapher.graph.render()
+    @grapher.renderGraphAndLegend()
 
   tryQtBridge: =>
     if window.rbkitClient
