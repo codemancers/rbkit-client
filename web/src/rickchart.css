@@ -1,0 +1,75 @@
+.class-color {
+  height: 10px;
+  width: 10px;
+  display: block;
+}
+
+.class-hoverdetail {
+  padding: 15px 10px;
+}
+
+.class-metadata {
+  margin-top: 10px;
+}
+
+.class-name, .class-count {
+  font-family: 'Consolas', 'Menlo', monospace;
+}
+
+.rickshaw_legend {
+  width: 980px;
+  margin: 20px auto 0;
+  font-family: 'Consolas', 'Menlo', monospace;
+  background: #fff;
+  color: #404040;
+  border-top: 1px #555 solid;
+  padding-top: 20px;
+}
+
+.rickshaw_legend .line {
+  display: inline-block;
+  text-align: center;
+}
+
+#chart_container {
+  height: 80%;
+}
+
+#chart_container:before, #chart_container:after {
+  clear: both;
+}
+
+#chart {
+  width: 65%;
+  float: left;
+}
+
+h1, h2, h3 { font-family: 'Tahoma', sans-serif; }
+
+#gcstats {
+  width: 35%;
+  float: right;
+  font-family: 'Consolas', 'Menlo', monospace;
+}
+
+#gcstats table {
+  font-size: 13px;
+}
+
+#gcstats td {
+  padding: 10px 10px 2px;
+}
+
+#gcstats td:first-child {
+  color: #666;
+}
+
+#gcstats td:last-child {
+  padding-left: 40px;
+}
+
+#gcstats td {
+  border-bottom: 1px #bbb dotted;
+}
+
+.stats-title { margin: 0 0 0 100px; }
