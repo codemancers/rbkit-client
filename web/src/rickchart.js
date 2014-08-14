@@ -6,7 +6,8 @@ this.Graph = (function() {
   function Graph(element) {
     this.renderGraphAndLegend = __bind(this.renderGraphAndLegend, this);
     this.addData = __bind(this.addData, this);
-    this.renderLegend = __bind(this.renderLegend, this);
+    this.initLegend = __bind(this.initLegend, this);
+    this.renderHoverDetail = __bind(this.renderHoverDetail, this);
     this.renderAxes = __bind(this.renderAxes, this);
     this.init = __bind(this.init, this);
     this.element = element;
@@ -37,11 +38,14 @@ this.Graph = (function() {
     new Rickshaw.Graph.Axis.Time({
       graph: this.graph
     }).render();
-    new Rickshaw.Graph.Axis.Y.Scaled({
+    return new Rickshaw.Graph.Axis.Y.Scaled({
       graph: this.graph,
       tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
       scale: d3.scale.linear()
     }).render();
+  };
+
+  Graph.prototype.renderHoverDetail = function() {
     return new Rickshaw.Graph.HoverDetail({
       graph: this.graph,
       formatter: function(series, x, y) {
@@ -54,23 +58,22 @@ this.Graph = (function() {
     });
   };
 
-  Graph.prototype.renderLegend = function() {
+  Graph.prototype.initLegend = function() {
+    var shelving;
     this.legend = new Rickshaw.Graph.Legend({
       graph: this.graph,
       element: document.getElementById('legend')
     });
-    new Rickshaw.Graph.Behavior.Series.Toggle({
+    shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
       graph: this.graph,
       legend: this.legend
     });
-    new Rickshaw.Graph.Behavior.Series.Order({
+    new Rickshaw.Graph.Behavior.Series.Highlight({
       graph: this.graph,
       legend: this.legend
     });
-    return new Rickshaw.Graph.Behavior.Series.Highlight({
-      graph: this.graph,
-      legend: this.legend
-    });
+    this.legend.shelving = shelving;
+    return this.graph.series.legend = this.legend;
   };
 
   Graph.prototype.addData = function(item) {
@@ -78,15 +81,11 @@ this.Graph = (function() {
   };
 
   Graph.prototype.renderGraphAndLegend = function() {
-    if (this.legend) {
-      this.legend.render();
-    } else {
-      if (this.graph.series.length > 1) {
-        this.graph.series.shift();
-      }
-      this.renderLegend();
+    this.graph.render();
+    this.renderHoverDetail();
+    if (!this.legend) {
+      return this.initLegend();
     }
-    return this.graph.render();
   };
 
   return Graph;

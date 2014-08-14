@@ -30,6 +30,7 @@ class @Graph
       scale: d3.scale.linear()
     ).render()
 
+  renderHoverDetail:  =>
     new Rickshaw.Graph.HoverDetail(
       graph: @graph
       formatter: (series, x, y) ->
@@ -46,16 +47,12 @@ class @Graph
         '</div>'
     )
 
-  renderLegend: =>
+  initLegend: =>
     @legend = new Rickshaw.Graph.Legend(
       graph: @graph,
       element: document.getElementById('legend')
     )
-    new Rickshaw.Graph.Behavior.Series.Toggle(
-      graph: @graph,
-      legend: @legend
-    )
-    new Rickshaw.Graph.Behavior.Series.Order(
+    shelving = new Rickshaw.Graph.Behavior.Series.Toggle(
       graph: @graph,
       legend: @legend
     )
@@ -64,19 +61,20 @@ class @Graph
       legend: @legend
     )
 
+    # This is required because Rickshaw is dumb for now.
+    # We can't call @legend.render() to update the items because that
+    # would clear the highlighting and toggling setup that's being done.
+    @legend.shelving = shelving
+    @graph.series.legend = @legend
+
   addData: (item) =>
     @graph.series.addData(item)
 
   renderGraphAndLegend: =>
-    if @legend
-      @legend.render()
-    else
-      # Remove the baseline series only if there is one more data item is present
-      # This is to avoid bad rendering
-      @graph.series.shift() if @graph.series.length > 1
-      @renderLegend()
-
     @graph.render()
+    @renderHoverDetail()
+
+    @initLegend() unless @legend
 
 class @Charter
   constructor: (grapher) ->
