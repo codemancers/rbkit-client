@@ -1,0 +1,23 @@
+.class-color {
+  height: 10px;
+  width: 10px;
+  display: block;
+}
+
+.class-metadata { margin-top: 10px; }
+
+.class-name, .class-count {
+  font-family: 'Consolas', 'Menlo', monospace;
+}
+
+.rickshaw_legend {
+  width: 980px;
+  margin: 20px auto 0;
+  font-family: 'Consolas', 'Menlo', monospace;
+  background: #fff;
+  color: #404040;
+  border-top: 1px #555 solid;
+  padding-top: 20px;
+}
+
+.rickshaw_legend .line { display: inline-block; }

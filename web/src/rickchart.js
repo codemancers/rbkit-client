@@ -44,8 +44,12 @@ this.Graph = (function() {
     }).render();
     return new Rickshaw.Graph.HoverDetail({
       graph: this.graph,
-      yFormatter: function(y) {
-        return "Count: " + y;
+      formatter: function(series, x, y) {
+        var colorSwatch, count, name;
+        name = '<div class="class-name">Class Name : <strong>' + series.name + '</strong></div>';
+        count = '<div class="class-count">Class Count: <strong>' + parseInt(y) + '</strong></div>';
+        colorSwatch = '<span class="class-color" style="background-color: ' + series.color + '"></span>';
+        return colorSwatch + '<div class="class-metadata">' + name + count + '</div>';
       }
     });
   };
@@ -74,13 +78,15 @@ this.Graph = (function() {
   };
 
   Graph.prototype.renderGraphAndLegend = function() {
-    this.graph.render();
     if (this.legend) {
-      return this.legend.render();
+      this.legend.render();
     } else {
-      this.graph.series.shift();
-      return this.renderLegend();
+      if (this.graph.series.length > 1) {
+        this.graph.series.shift();
+      }
+      this.renderLegend();
     }
+    return this.graph.render();
   };
 
   return Graph;

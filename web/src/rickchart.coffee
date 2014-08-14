@@ -32,7 +32,12 @@ class @Graph
 
     new Rickshaw.Graph.HoverDetail(
       graph: @graph
-      yFormatter: (y) -> "Count: #{y}"
+      formatter: (series, x, y) ->
+        name  = '<div class="class-name">Class Name : <strong>' + series.name + '</strong></div>'
+        count = '<div class="class-count">Class Count: <strong>' + parseInt(y) + '</strong></div>'
+        colorSwatch = '<span class="class-color" style="background-color: ' + series.color + '"></span>'
+
+        colorSwatch + '<div class="class-metadata">' + name + count + '</div>'
     )
 
   renderLegend: =>
@@ -57,12 +62,15 @@ class @Graph
     @graph.series.addData(item)
 
   renderGraphAndLegend: =>
-    @graph.render()
     if @legend
       @legend.render()
     else
-      @graph.series.shift()
+      # Remove the baseline series only if there is one more data item is present
+      # This is to avoid bad rendering
+      @graph.series.shift() if @graph.series.length > 1
       @renderLegend()
+
+    @graph.render()
 
 class @Charter
   constructor: (grapher) ->
