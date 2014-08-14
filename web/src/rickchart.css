@@ -4,6 +4,7 @@
   display: block;
 }
 
+.class-hoverdetail { padding: 15px 10px; }
 .class-metadata { margin-top: 10px; }
 
 .class-name, .class-count {

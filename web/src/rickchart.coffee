@@ -37,7 +37,13 @@ class @Graph
         count = '<div class="class-count">Class Count: <strong>' + parseInt(y) + '</strong></div>'
         colorSwatch = '<span class="class-color" style="background-color: ' + series.color + '"></span>'
 
-        colorSwatch + '<div class="class-metadata">' + name + count + '</div>'
+        '<div class="class-hoverdetail">' +
+          colorSwatch +
+          '<div class="class-metadata">' +
+            name +
+            count +
+          '</div>' +
+        '</div>'
     )
 
   renderLegend: =>
