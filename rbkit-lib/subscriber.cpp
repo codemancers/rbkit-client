@@ -78,7 +78,7 @@ void Subscriber::stop()
 {
     RBKit::CmdStopProfile stopCmd;
     commandSocket->sendCommand(stopCmd);
-
+    objectStore->reset();
     qDebug() << "stopped";
 }
 

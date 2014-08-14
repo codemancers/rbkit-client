@@ -118,6 +118,7 @@ void RbkitMainWindow::disconnectedFromSocket()
 {
     ui->action_Connect->setText(tr("&Connect"));
     this->connected = false;
+    emit disconnectSubscriber();
 }
 
 
