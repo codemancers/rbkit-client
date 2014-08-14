@@ -6,7 +6,6 @@ class @Graph
   init: =>
     @graph = new Rickshaw.Graph(
       element: document.querySelector(@element)
-      width: document.width - 50
       height: document.height - 150
       renderer: 'bar'
       stack: true
@@ -76,6 +75,21 @@ class @Graph
 
     @initLegend() unless @legend
 
+  updateGcStats: (gcStats) =>
+    stats = $('#gcstats tbody')
+    stats.empty()
+    importantFields = [
+      'count', 'minor_gc_count', 'major_gc_count',
+      'heap_length', 'heap_eden_page_length', 'heap_used',
+      'heap_live_slot', 'heap_free_slot', 'heap_swept_slot',
+      'old_object', 'old_object_limit', 'remembered_shady_object',
+      'total_allocated_object', 'total_freed_object'
+    ]
+    for key in importantFields
+      value = gcStats[key]
+      row = "<tr><td>#{key}</td><td>#{value}</td></tr>"
+      stats.append(row)
+
 class @Charter
   constructor: (grapher) ->
     @grapher = grapher
@@ -84,8 +98,11 @@ class @Charter
     switch objectData.event_type
       when 'object_stats'
         @grapher.addData(objectData.payload)
+      when "gc_stats"
+        @grapher.updateGcStats(objectData.payload)
 
     @grapher.renderGraphAndLegend()
+
 
   tryQtBridge: =>
     window.jsBridge?.jsEvent.connect(@receiveObjectData)

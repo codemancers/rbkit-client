@@ -4,6 +4,7 @@ var charter, grapher,
 
 this.Graph = (function() {
   function Graph(element) {
+    this.updateGcStats = __bind(this.updateGcStats, this);
     this.renderGraphAndLegend = __bind(this.renderGraphAndLegend, this);
     this.addData = __bind(this.addData, this);
     this.initLegend = __bind(this.initLegend, this);
@@ -17,7 +18,6 @@ this.Graph = (function() {
   Graph.prototype.init = function() {
     this.graph = new Rickshaw.Graph({
       element: document.querySelector(this.element),
-      width: document.width - 50,
       height: document.height - 150,
       renderer: 'bar',
       stack: true,
@@ -88,6 +88,21 @@ this.Graph = (function() {
     }
   };
 
+  Graph.prototype.updateGcStats = function(gcStats) {
+    var importantFields, key, row, stats, value, _i, _len, _results;
+    stats = $('#gcstats tbody');
+    stats.empty();
+    importantFields = ['count', 'minor_gc_count', 'major_gc_count', 'heap_length', 'heap_eden_page_length', 'heap_used', 'heap_live_slot', 'heap_free_slot', 'heap_swept_slot', 'old_object', 'old_object_limit', 'remembered_shady_object', 'total_allocated_object', 'total_freed_object'];
+    _results = [];
+    for (_i = 0, _len = importantFields.length; _i < _len; _i++) {
+      key = importantFields[_i];
+      value = gcStats[key];
+      row = "<tr><td>" + key + "</td><td>" + value + "</td></tr>";
+      _results.push(stats.append(row));
+    }
+    return _results;
+  };
+
   return Graph;
 
 })();
@@ -103,6 +118,9 @@ this.Charter = (function() {
     switch (objectData.event_type) {
       case 'object_stats':
         this.grapher.addData(objectData.payload);
+        break;
+      case "gc_stats":
+        this.grapher.updateGcStats(objectData.payload);
     }
     return this.grapher.renderGraphAndLegend();
   };
