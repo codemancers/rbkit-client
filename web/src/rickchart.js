@@ -78,6 +78,7 @@ this.Graph = (function() {
     if (this.legend) {
       return this.legend.render();
     } else {
+      this.graph.series.shift();
       return this.renderLegend();
     }
   };

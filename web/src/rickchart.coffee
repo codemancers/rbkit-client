@@ -58,7 +58,11 @@ class @Graph
 
   renderGraphAndLegend: =>
     @graph.render()
-    if @legend then @legend.render() else @renderLegend()
+    if @legend
+      @legend.render()
+    else
+      @graph.series.shift()
+      @renderLegend()
 
 class @Charter
   constructor: (grapher) ->
