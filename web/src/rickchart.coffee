@@ -6,17 +6,17 @@ class @Graph
   init: =>
     @graph = new Rickshaw.Graph(
       element: document.querySelector(@element)
-      width: document.width - 30
+      width: document.width - 50
       height: document.height - 150
       renderer: 'bar'
       stack: true
+      gapSize: 0.5
       series: new Rickshaw.Series.FixedDuration(
         [{ name: 'baseline' }],
         @colorPalette,
         {
-          timeInterval: 100
-          maxDataPoints: 50
-          timeBase: new Date().getTime()/1000
+          timeInterval: 1000
+          maxDataPoints: 15
         }
       )
     )
