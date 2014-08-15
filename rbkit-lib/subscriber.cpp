@@ -35,6 +35,13 @@ void Subscriber::triggerGc() {
     commandSocket->sendCommand(triggerGC_Command);
 }
 
+void Subscriber::takeSnapshot()
+{
+   RBKit::CmdObjSnapshot triggerSnapshot;
+   qDebug() << "Taking snapshot";
+   commandSocket->sendCommand(triggerSnapshot);
+}
+
 Subscriber::~Subscriber()
 {
     stop();

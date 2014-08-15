@@ -51,6 +51,8 @@ static QVariantMap parseMsgpackObjectMap(msgpack::object_map obj)
         case msgpack::type::NIL :
             map[keyStr] = "";
             break;
+        case msgpack::type::ARRAY :
+
         default:
             qDebug() << "throwing error while parsing event" << val.type;
             throw "unknown object type";

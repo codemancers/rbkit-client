@@ -58,6 +58,7 @@ public slots:
     void onMessageReceived(const QList<QByteArray>&);
     void onTimerExpiry();
     void triggerGc();
+    void takeSnapshot();
 };
 
 #endif // SUBSCRIBER_H

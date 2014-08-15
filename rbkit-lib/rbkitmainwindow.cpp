@@ -104,6 +104,7 @@ void RbkitMainWindow::setupSubscriber()
     connect(this, SIGNAL(connectToSocket(QString, QString)),
             subscriber, SLOT(startListening(QString, QString)));
     connect(this, SIGNAL(triggerGc()), subscriber, SLOT(triggerGc()));
+    connect(this, SIGNAL(takeSnapshot()), subscriber, SLOT(takeSnapshot()));
 
     connect(this, SIGNAL(disconnectSubscriber()), subscriber, SLOT(stop()));
 
@@ -137,4 +138,10 @@ void RbkitMainWindow::onError(const QString &error)
 void RbkitMainWindow::on_action_Trigger_GC_triggered()
 {
     emit triggerGc();
+}
+
+void RbkitMainWindow::on_actionHeap_Snapshot_triggered()
+{
+    qDebug() << "Emitting take snapshot signal";
+    emit takeSnapshot();
 }
