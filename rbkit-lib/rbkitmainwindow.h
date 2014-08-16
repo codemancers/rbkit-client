@@ -53,6 +53,7 @@ private slots:
     void disconnectedFromSocket();
     void onError(const QString &);
     void onPageLoad(bool ok);
+    void objectDumpAvailable();
     void useSelectedHost(QString, QString);
 
     void on_action_Trigger_GC_triggered();

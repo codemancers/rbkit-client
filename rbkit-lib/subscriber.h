@@ -53,6 +53,7 @@ signals:
     void disconnected();
     void connected();
     void errored(const QString &);
+    void objectDumpAvailable();
 
 public slots:
     void startListening(QString, QString);

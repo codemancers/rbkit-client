@@ -83,6 +83,11 @@ void RbkitMainWindow::onPageLoad(bool ok)
     frame->addToJavaScriptWindowObject(QString("jsBridge"), jsBridge);
 }
 
+void RbkitMainWindow::objectDumpAvailable()
+{
+
+}
+
 void RbkitMainWindow::disconnectFromSocket()
 {
     subscriberThread.requestInterruption();
@@ -111,6 +116,7 @@ void RbkitMainWindow::setupSubscriber()
     connect(subscriber, &Subscriber::errored, this, &RbkitMainWindow::onError);
     connect(subscriber, &Subscriber::connected, this, &RbkitMainWindow::connectedToSocket);
     connect(subscriber, &Subscriber::disconnected, this, &RbkitMainWindow::disconnectedFromSocket);
+    connect(subscriber, &Subscriber::objectDumpAvailable, this, &RbkitMainWindow::objectDumpAvailable);
 
     subscriberThread.start();
 }
@@ -142,6 +148,5 @@ void RbkitMainWindow::on_action_Trigger_GC_triggered()
 
 void RbkitMainWindow::on_actionHeap_Snapshot_triggered()
 {
-    qDebug() << "Emitting take snapshot signal";
     emit takeSnapshot();
 }
