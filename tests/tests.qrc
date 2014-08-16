@@ -4,5 +4,6 @@
         <file>msgpack/objdestroyed</file>
         <file>msgpack/gcstats</file>
         <file>msgpack/gc_start</file>
+        <file>msgpack/objectdump</file>
     </qresource>
 </RCC>

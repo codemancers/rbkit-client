@@ -5,6 +5,10 @@
 #include <QDebug>
 
 
+static QVariantList parseMsgpackObjectArray(msgpack::object_array);
+static QVariantMap parseMsgpackObjectMap(msgpack::object_map);
+
+
 static inline QString rawToQString(msgpack::object obj)
 {
     msgpack::object_raw raw = obj.via.raw;
@@ -21,6 +25,30 @@ static inline quint64 hextoInt(const QString &string) {
     }
 }
 
+
+static QVariant parseMsgpackObject(msgpack::object obj)
+{
+    switch (obj.type) {
+    case msgpack::type::ARRAY :
+        return QVariant(parseMsgpackObjectArray(obj.via.array));
+    case msgpack::type::MAP :
+        return QVariant(parseMsgpackObjectMap(obj.via.map));
+
+    case msgpack::type::RAW :
+        return QVariant(rawToQString(obj));
+    case msgpack::type::DOUBLE :
+        return QVariant(obj.via.dec);
+    case msgpack::type::POSITIVE_INTEGER :
+        return QVariant((unsigned long long int)(obj.via.u64));
+    case msgpack::type::NIL :
+        return QVariant("");
+
+    default:
+        qDebug() << "throwing error while parsing event" << obj.type;
+        throw "unknown object type";
+    }
+}
+
 // NOTE: This can be improved with the version that hemant is writing for GCStats.
 static QVariantMap parseMsgpackObjectMap(msgpack::object_map obj)
 {
@@ -34,35 +62,26 @@ static QVariantMap parseMsgpackObjectMap(msgpack::object_map obj)
         // qDebug() << key.type << val.type;
 
         QString keyStr = rawToQString(key);
-        switch (val.type) {
-        case msgpack::type::MAP : // recursion here.
-            map[keyStr] = parseMsgpackObjectMap(val.via.map);
-            break;
-
-        case msgpack::type::RAW :
-            map[keyStr] = rawToQString(val);
-            break;
-        case msgpack::type::DOUBLE :
-            map[keyStr] = val.via.dec;
-            break;
-        case msgpack::type::POSITIVE_INTEGER :
-            map[keyStr] = (unsigned long long int)(val.via.u64);
-            break;
-        case msgpack::type::NIL :
-            map[keyStr] = "";
-            break;
-        case msgpack::type::ARRAY :
-
-        default:
-            qDebug() << "throwing error while parsing event" << val.type;
-            throw "unknown object type";
-        }
+        map[keyStr] = parseMsgpackObject(val);
 
         ++list;
     }
 
     return map;
 }
+
+
+static QVariantList parseMsgpackObjectArray(msgpack::object_array array)
+{
+    QVariantList objList;
+
+    for (uint32_t iter = 0; iter != array.size; ++iter) {
+        objList.append(parseMsgpackObject(array.ptr[iter]));
+    }
+
+    return objList;
+}
+
 
 RBKit::EventDataBase* RBKit::parseEvent(const QByteArray& message)
 {
@@ -87,6 +106,8 @@ RBKit::EventDataBase* RBKit::parseEvent(const QByteArray& message)
         return new RBKit::EvtGcStart(timestamp, map["event_type"].toString());
     } else if (map["event_type"] == "gc_end_s") {
         return new RBKit::EvtGcStop(timestamp, map["event_type"].toString());
+    } else if (map["event_type"] == "object_space_dump") {
+        return new RBKit::EvtObjectDump(timestamp, map["event_type"].toString(), map["payload"].toList());
     } else {
         qDebug() << "Unable to parse event of type" << map["event_type"];
         return NULL;
@@ -135,6 +156,7 @@ void RBKit::EvtGcStats::process(Subscriber& processor) const
     processor.processEvent(*this);
 }
 
+
 RBKit::EvtGcStart::EvtGcStart(QDateTime ts, QString eventName)
     : EventDataBase(ts, eventName)
 {}
@@ -150,6 +172,17 @@ RBKit::EvtGcStop::EvtGcStop(QDateTime ts, QString eventName)
 {}
 
 void RBKit::EvtGcStop::process(Subscriber& processor) const
+{
+    processor.processEvent(*this);
+}
+
+
+RBKit::EvtObjectDump::EvtObjectDump(QDateTime ts, QString eventName, QVariantList _payload)
+    : EventDataBase(ts, eventName)
+    , payload(_payload)
+{ }
+
+void RBKit::EvtObjectDump::process(Subscriber& processor) const
 {
     processor.processEvent(*this);
 }
