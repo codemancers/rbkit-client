@@ -32,8 +32,8 @@ void RBKit::ObjectStore::updateObjectGeneration()
 {
     QHash<quint64, ObjectDetail*>::const_iterator iter = objectStore.constBegin();
     while(iter != objectStore.constEnd()) {
-        ObjectDetail detail = iter.value();
-        detail.updateGeneration();
+        RBKit::ObjectDetail* detail = iter.value();
+        detail->updateGeneration();
     }
 }
 
