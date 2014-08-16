@@ -20,6 +20,8 @@ RBKit::ObjectStore HeapDumpForm::getObjectStore() const
 void HeapDumpForm::setObjectStore(const RBKit::ObjectStore &value)
 {
     objectStore = value;
+    HeapTable *heapTable = new HeapTable(0, objectStore);
+    ui->tableView->setModel(heapTable);
 }
 
 

@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include "objectstore.h"
+#include <QTableView>
+#include <heaptable.h>
 
 namespace Ui {
 class HeapDumpForm;

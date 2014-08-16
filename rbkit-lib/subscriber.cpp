@@ -168,6 +168,7 @@ void Subscriber::processEvent(const RBKit::EvtObjectDump &dump)
         objectStore->addObject(objectDetail);
     }
     const RBKit::ObjectStore newObjectStore = RBKit::ObjectStore(*objectStore);
+    qDebug() << "Send objectstore string to front";
     emit objectDumpAvailable(newObjectStore);
 }
 

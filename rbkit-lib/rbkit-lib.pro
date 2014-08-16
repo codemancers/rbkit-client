@@ -18,7 +18,8 @@ SOURCES += \
     objectdetail.cpp \
     objectstore.cpp \
     jsbridge.cpp \
-    heapdumpform.cpp
+    heapdumpform.cpp \
+    heaptable.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -29,7 +30,8 @@ HEADERS +=  \
     objectdetail.h \
     objectstore.h \
     jsbridge.h \
-    heapdumpform.h
+    heapdumpform.h \
+    heaptable.h
 
 
 # Include msgpack via pri file

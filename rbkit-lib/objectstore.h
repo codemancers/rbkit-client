@@ -24,9 +24,12 @@ namespace RBKit {
         void updateObjectGeneration();
         ObjectDetail *getObject(quint64 key);
         quint32 getObjectTypeCount(const QString& className);
-        quint32 liveObjectCount();
+        const quint32 liveObjectCount() const;
         const QVariantMap getObjectTypeCountMap();
     };
 }
+
+Q_DECLARE_METATYPE(RBKit::ObjectStore)
+
 
 #endif // OBJECTSTORE_H

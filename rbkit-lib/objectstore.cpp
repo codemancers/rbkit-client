@@ -63,7 +63,7 @@ quint32 RBKit::ObjectStore::getObjectTypeCount(const QString &className)
     return objectTypeCount[className];
 }
 
-quint32 RBKit::ObjectStore::liveObjectCount()
+const quint32 RBKit::ObjectStore::liveObjectCount() const
 {
     return objectStore.size();
 }
