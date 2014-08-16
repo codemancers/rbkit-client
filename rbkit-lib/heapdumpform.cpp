@@ -8,15 +8,18 @@ HeapDumpForm::HeapDumpForm(QWidget *parent) :
     ui->setupUi(this);
 }
 
-HeapDumpForm::HeapDumpForm(QWidget *parent, const RBKit::ObjectStore &_objectStore) :
-    HeapDumpForm(parent),
-    objectStore(_objectStore)
-{
-
-}
-
-
 HeapDumpForm::~HeapDumpForm()
 {
     delete ui;
 }
+RBKit::ObjectStore HeapDumpForm::getObjectStore() const
+{
+    return objectStore;
+}
+
+void HeapDumpForm::setObjectStore(const RBKit::ObjectStore &value)
+{
+    objectStore = value;
+}
+
+

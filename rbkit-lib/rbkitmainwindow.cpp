@@ -85,7 +85,8 @@ void RbkitMainWindow::onPageLoad(bool ok)
 
 void RbkitMainWindow::objectDumpAvailable(const RBKit::ObjectStore& objectStore)
 {
-    HeapDumpForm *heapUI = new HeapDumpForm(0, objectStore);
+    HeapDumpForm *heapUI = new HeapDumpForm();
+    heapUI->setObjectStore(objectStore);
     ui->chartingTab->addTab(heapUI, "Heap Dump #1");
 }
 

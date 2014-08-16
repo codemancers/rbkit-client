@@ -14,12 +14,14 @@ class HeapDumpForm : public QWidget
 
 public:
     explicit HeapDumpForm(QWidget *parent = 0);
-    HeapDumpForm(QWidget *parent = 0, const RBKit::ObjectStore &objectStore);
     ~HeapDumpForm();
+
+    RBKit::ObjectStore getObjectStore() const;
+    void setObjectStore(const RBKit::ObjectStore &value);
 
 private:
     Ui::HeapDumpForm *ui;
-    const RBKit::ObjectStore objectStore;
+    RBKit::ObjectStore objectStore;
 };
 
 #endif // HEAPDUMPFORM_H
