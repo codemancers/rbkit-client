@@ -8,6 +8,7 @@
 
 #include "subscriber.h"
 #include "askhost.h"
+#include "heapdump.h"
 
 namespace Ui {
 class RbkitMainWindow;

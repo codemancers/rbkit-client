@@ -85,7 +85,8 @@ void RbkitMainWindow::onPageLoad(bool ok)
 
 void RbkitMainWindow::objectDumpAvailable()
 {
-
+    HeapDump *heapUI = new HeapDump();
+    ui->chartingTab->addTab(heapUI, "Heap Dump #1");
 }
 
 void RbkitMainWindow::disconnectFromSocket()

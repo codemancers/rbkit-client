@@ -17,7 +17,8 @@ SOURCES += \
     rbevents.cpp \
     objectdetail.cpp \
     objectstore.cpp \
-    jsbridge.cpp
+    jsbridge.cpp \
+    heapdump.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -27,7 +28,8 @@ HEADERS +=  \
     rbevents.h \
     objectdetail.h \
     objectstore.h \
-    jsbridge.h
+    jsbridge.h \
+    heapdump.h
 
 
 # Include msgpack via pri file
@@ -35,4 +37,5 @@ include($$RC_ROOT_SOURCE_DIR/common.pri)
 
 FORMS += \
     rbkitmainwindow.ui \
-    askhost.ui
+    askhost.ui \
+    heapdump.ui

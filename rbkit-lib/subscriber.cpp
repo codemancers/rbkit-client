@@ -25,7 +25,6 @@ static inline quint64 hextoInt(const QString &string) {
 }
 
 
-
 Subscriber::Subscriber(RBKit::JsBridge* bridge)
     :jsBridge(bridge)
 {
