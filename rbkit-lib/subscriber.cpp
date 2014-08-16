@@ -149,6 +149,8 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
     qDebug() << "Received gc stop" << gcEvent.timestamp;
     static const QString eventName("gc_stop");
     QVariantMap map;
+    // update generation of objects that have survived the GC
+    objectStore->updateObjectGeneration();
     jsBridge->sendMapToJs(eventName, gcEvent.timestamp, map);
 }
 

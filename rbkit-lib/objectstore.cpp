@@ -28,6 +28,15 @@ void RBKit::ObjectStore::reset() {
     objectTypeCount.clear();
 }
 
+void RBKit::ObjectStore::updateObjectGeneration()
+{
+    QHash<quint64, ObjectDetail*>::const_iterator iter = objectStore.constBegin();
+    while(iter != objectStore.constEnd()) {
+        ObjectDetail detail = iter.value();
+        detail.updateGeneration();
+    }
+}
+
 RBKit::ObjectDetail *RBKit::ObjectStore::getObject(quint64 key)
 {
     QHash<quint64, RBKit::ObjectDetail*>::const_iterator i = objectStore.find(key);

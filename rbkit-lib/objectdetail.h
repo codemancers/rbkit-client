@@ -13,8 +13,10 @@ namespace RBKit {
         quint64 objectId;
         QString fileName;
         quint32 lineNumber;
+        quint16 objectGeneration;
         QList<quint64> references;
         void addReference(quint64 reference);
+        void updateGeneration();
     };
 }
 #endif // OBJECTDETAIL_H
