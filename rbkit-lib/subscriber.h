@@ -53,7 +53,7 @@ signals:
     void disconnected();
     void connected();
     void errored(const QString &);
-    void objectDumpAvailable();
+    void objectDumpAvailable(const RBKit::ObjectStore&);
 
 public slots:
     void startListening(QString, QString);

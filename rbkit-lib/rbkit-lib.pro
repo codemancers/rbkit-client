@@ -18,7 +18,7 @@ SOURCES += \
     objectdetail.cpp \
     objectstore.cpp \
     jsbridge.cpp \
-    heapdump.cpp
+    heapdumpform.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -29,7 +29,7 @@ HEADERS +=  \
     objectdetail.h \
     objectstore.h \
     jsbridge.h \
-    heapdump.h
+    heapdumpform.h
 
 
 # Include msgpack via pri file
@@ -38,4 +38,4 @@ include($$RC_ROOT_SOURCE_DIR/common.pri)
 FORMS += \
     rbkitmainwindow.ui \
     askhost.ui \
-    heapdump.ui
+    heapdumpform.ui

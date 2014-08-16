@@ -6,6 +6,13 @@ RBKit::ObjectDetail::ObjectDetail(QString className, quint64 objectId)
 {
 }
 
+RBKit::ObjectDetail::ObjectDetail(const RBKit::ObjectDetail &original)
+    : className(original.className), objectId(original.objectId)
+    , objectGeneration(original.objectGeneration), fileName(original.fileName)
+    , lineNumber(original.lineNumber), references(original.references)
+{
+}
+
 void RBKit::ObjectDetail::addReference(quint64 reference)
 {
     this->references.append(reference);

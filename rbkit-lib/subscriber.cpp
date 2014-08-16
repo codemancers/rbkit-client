@@ -167,7 +167,8 @@ void Subscriber::processEvent(const RBKit::EvtObjectDump &dump)
                                     hextoInt(details["object_id"].toString()));
         objectStore->addObject(objectDetail);
     }
-    emit objectDumpAvailable();
+    const RBKit::ObjectStore newObjectStore = RBKit::ObjectStore(*objectStore);
+    emit objectDumpAvailable(newObjectStore);
 }
 
 

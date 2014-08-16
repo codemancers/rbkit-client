@@ -2,8 +2,8 @@
  <author/>
  <comment/>
  <exportmacro/>
- <class>HeapDump</class>
- <widget class="QWidget" name="HeapDump">
+ <class>HeapDumpForm</class>
+ <widget class="QWidget" name="HeapDumpForm">
   <property name="geometry">
    <rect>
     <x>0</x>

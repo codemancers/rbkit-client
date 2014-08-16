@@ -9,6 +9,7 @@ namespace RBKit {
     {
     public:
         ObjectDetail(QString className, quint64 objectId);
+        ObjectDetail(const ObjectDetail&original);
         QString className;
         quint64 objectId;
         QString fileName;

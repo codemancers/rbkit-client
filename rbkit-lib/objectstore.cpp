@@ -4,6 +4,16 @@ RBKit::ObjectStore::ObjectStore()
 {
 }
 
+// Implement the copy constructor
+RBKit::ObjectStore::ObjectStore(const ObjectStore &original)
+{
+    QHash<quint64, RBKit::ObjectDetail*>::const_iterator iter = original.objectStore.constBegin();
+    while(iter != original.objectStore.constEnd()) {
+        objectStore[iter.key()] = ObjectDetail(iter.value());
+    }
+    objectTypeCount = QHash<QString, quint32>(original.objectTypeCount);
+
+
 void RBKit::ObjectStore::addObject(RBKit::ObjectDetail *objectDetail)
 {
     objectStore[objectDetail->objectId] = objectDetail;

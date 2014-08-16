@@ -83,9 +83,9 @@ void RbkitMainWindow::onPageLoad(bool ok)
     frame->addToJavaScriptWindowObject(QString("jsBridge"), jsBridge);
 }
 
-void RbkitMainWindow::objectDumpAvailable()
+void RbkitMainWindow::objectDumpAvailable(const RBKit::ObjectStore& objectStore)
 {
-    HeapDump *heapUI = new HeapDump();
+    HeapDumpForm *heapUI = new HeapDumpForm(0, objectStore);
     ui->chartingTab->addTab(heapUI, "Heap Dump #1");
 }
 
