@@ -16,6 +16,8 @@ private slots:
     void testGetObject();
     void testRemoveObject();
     void testObjectTypeMap();
+    void testUpdateGeneration();
 };
+
 DECLARE_TEST(TestObjectStore)
 #endif // TESTOBJECTSTORE_H

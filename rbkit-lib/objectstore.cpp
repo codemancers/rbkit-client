@@ -10,6 +10,7 @@ RBKit::ObjectStore::ObjectStore(const ObjectStore &original)
     QHash<quint64, RBKit::ObjectDetail*>::const_iterator iter = original.objectStore.constBegin();
     while(iter != original.objectStore.constEnd()) {
         objectStore[iter.key()] = new ObjectDetail(*iter.value());
+        ++iter;
     }
     objectTypeCount = QHash<QString, quint32>(original.objectTypeCount);
 }
@@ -45,6 +46,7 @@ void RBKit::ObjectStore::updateObjectGeneration()
     while(iter != objectStore.constEnd()) {
         RBKit::ObjectDetail* detail = iter.value();
         detail->updateGeneration();
+        ++iter;
     }
 }
 

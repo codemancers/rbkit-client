@@ -56,3 +56,15 @@ void TestObjectStore::testObjectTypeMap()
     quint32 count = map["String"].toInt();
     QVERIFY(count == 1);
 }
+
+void TestObjectStore::testUpdateGeneration()
+{
+    this->objectStore->reset();
+
+    RBKit::ObjectDetail *objectDetail = new RBKit::ObjectDetail("String", 12345);
+    objectStore->addObject(objectDetail);
+    QVERIFY(objectStore->objectStore[12345]->objectGeneration == 0);
+
+    objectStore->updateObjectGeneration();
+    QVERIFY(objectStore->objectStore[12345]->objectGeneration == 1);
+}
