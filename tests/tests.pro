@@ -5,6 +5,7 @@ TARGET = rctests
 
 CONFIG -= app_bundle
 CONFIG += console
+CONFIG += c++11
 
 SOURCES += \
     testobjectstore.cpp \

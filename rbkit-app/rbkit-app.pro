@@ -7,6 +7,8 @@ TEMPLATE = app
 
 SOURCES += main.cpp
 
+CONFIG += c++11
+
 # Include msgpack via pri file
 include($$RC_ROOT_SOURCE_DIR/common.pri)
 
