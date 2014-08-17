@@ -73,3 +73,7 @@ h1, h2, h3 { font-family: 'Tahoma', sans-serif; }
 }
 
 .stats-title { margin: 0 0 0 100px; }
+
+.rickshaw_graph .detail .item.active {
+  background: rgba(0, 0, 0, 0.6);
+}

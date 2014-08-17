@@ -1,7 +1,7 @@
 class @Graph
   constructor: (element) ->
     @element = element
-    @colorPalette = new Rickshaw.Color.Palette()
+    @colorPalette = new Rickshaw.Color.Palette(scheme: 'spectrum14')
 
   init: =>
     @graph = new Rickshaw.Graph(
@@ -9,13 +9,13 @@ class @Graph
       height: document.height - 150
       renderer: 'bar'
       stack: true
-      gapSize: 0.5
+      gapSize: 0.3
       series: new Rickshaw.Series.FixedDuration(
         [{ name: 'baseline' }],
         @colorPalette,
         {
           timeInterval: 1000
-          maxDataPoints: 15
+          maxDataPoints: 10
         }
       )
     )
