@@ -3,7 +3,21 @@ class @Graph
     @element = element
     @colorPalette = new Rickshaw.Color.Palette(scheme: 'spectrum14')
 
-  init: =>
+  # This method is used to convert the following seriesData object structure:
+  #   { Foo: 12, String: 13 }
+  # to:
+  #   [ { name: 'Foo', Foo: 12 }, { name: 'String', String: 13 } ]
+  #
+  # This format is required to instantiate the series.
+  formatSeriesData: (seriesData) =>
+    for name, count of seriesData
+      data = new Object
+      data['name'] = name
+      data[name]   = count
+      data
+
+  init: (seriesData) =>
+    formattedData = @formatSeriesData(seriesData)
     @graph = new Rickshaw.Graph(
       element: document.querySelector(@element)
       height: document.height - 150
@@ -11,12 +25,7 @@ class @Graph
       stack: true
       gapSize: 0.3
       series: new Rickshaw.Series.FixedDuration(
-        [{ name: 'baseline' }],
-        @colorPalette,
-        {
-          timeInterval: 1000
-          maxDataPoints: 10
-        }
+        formattedData, @colorPalette, { timeInterval: 1000, maxDataPoints: 15 }
       )
     )
     @renderAxes()
@@ -67,6 +76,7 @@ class @Graph
     @graph.series.legend = @legend
 
   addData: (item) =>
+    @init(item) unless @graph
     @graph.series.addData(item)
 
   renderGraphAndLegend: =>
@@ -103,12 +113,10 @@ class @Charter
 
     @grapher.renderGraphAndLegend()
 
-
   tryQtBridge: =>
     window.jsBridge?.jsEvent.connect(@receiveObjectData)
 
 grapher = new Graph('#chart')
-grapher.init()
 
 charter = new Charter(grapher)
 setTimeout(charter.tryQtBridge, 1000)

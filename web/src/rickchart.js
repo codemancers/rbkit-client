@@ -11,26 +11,38 @@ this.Graph = (function() {
     this.renderHoverDetail = __bind(this.renderHoverDetail, this);
     this.renderAxes = __bind(this.renderAxes, this);
     this.init = __bind(this.init, this);
+    this.formatSeriesData = __bind(this.formatSeriesData, this);
     this.element = element;
     this.colorPalette = new Rickshaw.Color.Palette({
       scheme: 'spectrum14'
     });
   }
 
-  Graph.prototype.init = function() {
+  Graph.prototype.formatSeriesData = function(seriesData) {
+    var count, data, name, _results;
+    _results = [];
+    for (name in seriesData) {
+      count = seriesData[name];
+      data = new Object;
+      data['name'] = name;
+      data[name] = count;
+      _results.push(data);
+    }
+    return _results;
+  };
+
+  Graph.prototype.init = function(seriesData) {
+    var formattedData;
+    formattedData = this.formatSeriesData(seriesData);
     this.graph = new Rickshaw.Graph({
       element: document.querySelector(this.element),
       height: document.height - 150,
       renderer: 'bar',
       stack: true,
       gapSize: 0.3,
-      series: new Rickshaw.Series.FixedDuration([
-        {
-          name: 'baseline'
-        }
-      ], this.colorPalette, {
+      series: new Rickshaw.Series.FixedDuration(formattedData, this.colorPalette, {
         timeInterval: 1000,
-        maxDataPoints: 10
+        maxDataPoints: 15
       })
     });
     return this.renderAxes();
@@ -79,6 +91,9 @@ this.Graph = (function() {
   };
 
   Graph.prototype.addData = function(item) {
+    if (!this.graph) {
+      this.init(item);
+    }
     return this.graph.series.addData(item);
   };
 
@@ -137,8 +152,6 @@ this.Charter = (function() {
 })();
 
 grapher = new Graph('#chart');
-
-grapher.init();
 
 charter = new Charter(grapher);
 
