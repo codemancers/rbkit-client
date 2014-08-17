@@ -3,11 +3,13 @@
 
 #include <QList>
 #include <QString>
+#include <QVariant>
 
 namespace RBKit {
     class ObjectDetail
     {
     public:
+        ObjectDetail();
         ObjectDetail(QString className, quint64 objectId);
         ObjectDetail(const ObjectDetail&original);
         QString className;
@@ -20,4 +22,7 @@ namespace RBKit {
         void updateGeneration();
     };
 }
+
+Q_DECLARE_METATYPE(RBKit::ObjectDetail)
+
 #endif // OBJECTDETAIL_H

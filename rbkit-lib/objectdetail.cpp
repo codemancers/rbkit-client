@@ -1,5 +1,9 @@
 #include "objectdetail.h"
 
+RBKit::ObjectDetail::ObjectDetail()
+{
+}
+
 RBKit::ObjectDetail::ObjectDetail(QString className, quint64 objectId)
     : className(className)
     , objectId(objectId), objectGeneration(0)

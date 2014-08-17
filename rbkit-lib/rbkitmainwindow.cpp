@@ -10,6 +10,8 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     this->connected = false;
     ui->setupUi(this);
     qRegisterMetaType<RBKit::ObjectStore>();
+    qRegisterMetaType<RBKit::ObjectDetail>();
+
     QWebSettings *settings = ui->chartingView->settings();
     settings->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
     settings->setAttribute(QWebSettings::AutoLoadImages, true);
