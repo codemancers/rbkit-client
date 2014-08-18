@@ -2,6 +2,7 @@ class @Graph
   constructor: (element) ->
     @element = element
     @colorPalette = new Rickshaw.Color.Palette(scheme: 'spectrum14')
+    @otherObjects = {}
 
   # This method is used to convert the following seriesData object structure:
   #   { Foo: 12, String: 13 }
@@ -16,8 +17,35 @@ class @Graph
       data[name]   = count
       data
 
+  sortSeriesData: (seriesData) =>
+    sortedPairs = _.sortBy(_.pairs(seriesData), (element) -> element[1] * -1)
+    _.object(sortedPairs)
+
+  # The series gets sorted in descending order and then aggregates the data
+  # to pick the first 10 items and shove the rest into 'Others' data point
+  sortAndPickObjectsForRendering: (seriesData) =>
+    sortedData = @sortSeriesData(seriesData)
+    finalData = {}
+    otherCount = 0
+    atomicData = 0
+    for objectType, count of sortedData
+      if @otherObjects[objectType]
+        otherCount += count
+      else
+        if atomicData < 10
+          finalData[objectType] = count
+          atomicData += 1
+        else
+          otherCount += count
+          @otherObjects[objectType] = true
+    if otherCount > 0
+      finalData["Other"] = otherCount
+    finalData
+
   init: (seriesData) =>
-    formattedData = @formatSeriesData(seriesData)
+    sortedData = @sortAndPickObjectsForRendering(seriesData)
+    formattedData = @formatSeriesData(sortedData)
+
     @graph = new Rickshaw.Graph(
       element: document.querySelector(@element)
       height: document.height - 150
@@ -77,7 +105,8 @@ class @Graph
 
   addData: (item) =>
     @init(item) unless @graph
-    @graph.series.addData(item)
+    sortedData = @sortAndPickObjectsForRendering(item)
+    @graph.series.addData(sortedData)
 
   renderGraphAndLegend: =>
     @graph.render()
