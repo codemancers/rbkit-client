@@ -12,7 +12,9 @@ this.Graph = (function() {
     this.renderAxes = __bind(this.renderAxes, this);
     this.init = __bind(this.init, this);
     this.element = element;
-    this.colorPalette = new Rickshaw.Color.Palette();
+    this.colorPalette = new Rickshaw.Color.Palette({
+      scheme: 'spectrum14'
+    });
   }
 
   Graph.prototype.init = function() {
@@ -21,14 +23,14 @@ this.Graph = (function() {
       height: document.height - 150,
       renderer: 'bar',
       stack: true,
-      gapSize: 0.5,
+      gapSize: 0.3,
       series: new Rickshaw.Series.FixedDuration([
         {
           name: 'baseline'
         }
       ], this.colorPalette, {
         timeInterval: 1000,
-        maxDataPoints: 15
+        maxDataPoints: 10
       })
     });
     return this.renderAxes();
