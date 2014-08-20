@@ -32,7 +32,7 @@ class @Graph
       if @otherObjects[objectType]
         otherCount += count
       else
-        if atomicData < 10
+        if atomicData < 15
           finalData[objectType] = count
           atomicData += 1
         else
