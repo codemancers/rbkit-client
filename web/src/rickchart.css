@@ -28,9 +28,10 @@
 }
 
 .rickshaw_legend .line {
-  display: inline-table;
-  text-align: justify;
+  display: inline-block;
+  text-align: left;
   margin-top: 10px;
+  width: 80px;
 }
 
 #chart_container {
