@@ -72,6 +72,7 @@ namespace RBKit
     };
 
     EventDataBase* parseEvent(const QByteArray& rawMessage);
+    quint64 hextoInt(const QString& string);
 }
 
 

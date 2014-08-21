@@ -14,16 +14,6 @@ static const int rbkcZmqTotalIoThreads = 1;
 static const int timerIntervalInMs = 1500;
 
 
-static inline quint64 hextoInt(const QString &string) {
-    bool ok;
-    quint64 hex = string.toULongLong(&ok, 16);
-    if(ok) {
-        return hex;
-    } else {
-        return 0;
-    }
-}
-
 
 Subscriber::Subscriber(RBKit::JsBridge* bridge)
     :jsBridge(bridge)
@@ -164,7 +154,12 @@ void Subscriber::processEvent(const RBKit::EvtObjectDump &dump)
         QVariantMap details = (*iter).toMap();
         RBKit::ObjectDetail *objectDetail =
             new RBKit::ObjectDetail(details["class_name"].toString(),
-                                    hextoInt(details["object_id"].toString()));
+                                    RBKit::hextoInt(details["object_id"].toString()));
+        objectDetail->fileName = details["file"].toString();
+        objectDetail->lineNumber = details["line"].toInt();
+        objectDetail->addReferences(details["references"].toList());
+        objectDetail->size = details["size"].toInt();
+
         objectStore->addObject(objectDetail);
     }
     const RBKit::ObjectStore newObjectStore = RBKit::ObjectStore(*objectStore);

@@ -15,7 +15,7 @@ static inline QString rawToQString(msgpack::object obj)
     return QString::fromUtf8(raw.ptr, raw.size);
 }
 
-static inline quint64 hextoInt(const QString &string) {
+quint64 RBKit::hextoInt(const QString &string) {
     bool ok;
     quint64 hex = string.toULongLong(&ok, 16);
     if(ok) {
@@ -124,7 +124,7 @@ RBKit::EventDataBase::EventDataBase(QDateTime ts, QString eventName)
 
 RBKit::EvtNewObject::EvtNewObject(QDateTime ts, QString eventName, QVariantMap payload)
     : EventDataBase(ts, eventName)
-    , objectId(hextoInt(payload["object_id"].toString()))
+    , objectId(RBKit::hextoInt(payload["object_id"].toString()))
     , className(payload["class"].toString())
 {
 
@@ -137,7 +137,7 @@ void RBKit::EvtNewObject::process(Subscriber& processor) const
 
 RBKit::EvtDelObject::EvtDelObject(QDateTime ts, QString eventName, QVariantMap payload)
     : EventDataBase(ts, eventName)
-    , objectId(hextoInt(payload["object_id"].toString()))
+    , objectId(RBKit::hextoInt(payload["object_id"].toString()))
 { }
 
 void RBKit::EvtDelObject::process(Subscriber& processor) const
