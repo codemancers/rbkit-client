@@ -11,22 +11,74 @@ this.Graph = (function() {
     this.renderHoverDetail = __bind(this.renderHoverDetail, this);
     this.renderAxes = __bind(this.renderAxes, this);
     this.init = __bind(this.init, this);
+    this.sortAndPickObjectsForRendering = __bind(this.sortAndPickObjectsForRendering, this);
+    this.sortSeriesData = __bind(this.sortSeriesData, this);
+    this.formatSeriesData = __bind(this.formatSeriesData, this);
     this.element = element;
-    this.colorPalette = new Rickshaw.Color.Palette();
+    this.colorPalette = new Rickshaw.Color.Palette({
+      scheme: 'spectrum14'
+    });
+    this.otherObjects = {};
   }
 
-  Graph.prototype.init = function() {
+  Graph.prototype.formatSeriesData = function(seriesData) {
+    var count, data, name, _results;
+    _results = [];
+    for (name in seriesData) {
+      count = seriesData[name];
+      data = new Object;
+      data['name'] = name;
+      data[name] = count;
+      _results.push(data);
+    }
+    return _results;
+  };
+
+  Graph.prototype.sortSeriesData = function(seriesData) {
+    var sortedPairs;
+    sortedPairs = _.sortBy(_.pairs(seriesData), function(element) {
+      return element[1] * -1;
+    });
+    return _.object(sortedPairs);
+  };
+
+  Graph.prototype.sortAndPickObjectsForRendering = function(seriesData) {
+    var atomicData, count, finalData, objectType, otherCount, sortedData;
+    sortedData = this.sortSeriesData(seriesData);
+    finalData = {};
+    otherCount = 0;
+    atomicData = 0;
+    for (objectType in sortedData) {
+      count = sortedData[objectType];
+      if (this.otherObjects[objectType]) {
+        otherCount += count;
+      } else {
+        if (atomicData < 15) {
+          finalData[objectType] = count;
+          atomicData += 1;
+        } else {
+          otherCount += count;
+          this.otherObjects[objectType] = true;
+        }
+      }
+    }
+    if (otherCount > 0) {
+      finalData["Other"] = otherCount;
+    }
+    return finalData;
+  };
+
+  Graph.prototype.init = function(seriesData) {
+    var formattedData, sortedData;
+    sortedData = this.sortAndPickObjectsForRendering(seriesData);
+    formattedData = this.formatSeriesData(sortedData);
     this.graph = new Rickshaw.Graph({
       element: document.querySelector(this.element),
       height: document.height - 150,
       renderer: 'bar',
       stack: true,
-      gapSize: 0.5,
-      series: new Rickshaw.Series.FixedDuration([
-        {
-          name: 'baseline'
-        }
-      ], this.colorPalette, {
+      gapSize: 0.3,
+      series: new Rickshaw.Series.FixedDuration(formattedData, this.colorPalette, {
         timeInterval: 1000,
         maxDataPoints: 15
       })
@@ -77,7 +129,12 @@ this.Graph = (function() {
   };
 
   Graph.prototype.addData = function(item) {
-    return this.graph.series.addData(item);
+    var sortedData;
+    if (!this.graph) {
+      this.init(item);
+    }
+    sortedData = this.sortAndPickObjectsForRendering(item);
+    return this.graph.series.addData(sortedData);
   };
 
   Graph.prototype.renderGraphAndLegend = function() {
@@ -135,8 +192,6 @@ this.Charter = (function() {
 })();
 
 grapher = new Graph('#chart');
-
-grapher.init();
 
 charter = new Charter(grapher);
 
