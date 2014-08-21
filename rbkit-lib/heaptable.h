@@ -2,6 +2,9 @@
 #define HEAPTABLE_H
 
 #include <QAbstractTableModel>
+#include <QMap>
+#include <QDebug>
+
 #include "objectstore.h"
 #include "objectdetail.h"
 
@@ -17,6 +20,7 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 private:
     const RBKit::ObjectStore objectStore;
+    std::vector<QString> sortedObjectKeys;
 };
 
 #endif // HEAPTABLE_H

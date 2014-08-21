@@ -40,6 +40,7 @@ void RBKit::ObjectStore::reset() {
     objectTypeCount.clear();
 }
 
+
 void RBKit::ObjectStore::updateObjectGeneration()
 {
     QHash<quint64, ObjectDetail*>::const_iterator iter = objectStore.constBegin();
@@ -80,4 +81,13 @@ const QVariantMap RBKit::ObjectStore::getObjectTypeCountMap()
         map[typeIter.key()] = typeIter.value();
     }
     return map;
+}
+
+std::list<QString> RBKit::ObjectStore::sort(int critirea) const
+{
+    QMap<QString, quint32> map;
+    std::list<QString> classNames = objectTypeCount.keys().toStdList();
+    Sorter s(this);
+    classNames.sort(s);
+    return classNames;
 }

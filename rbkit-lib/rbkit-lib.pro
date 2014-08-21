@@ -1,6 +1,6 @@
 QT += core gui webkitwidgets
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport sql
 
 VERSION = 0.0.0.pre
 TARGET = rbkit
@@ -19,7 +19,8 @@ SOURCES += \
     objectstore.cpp \
     jsbridge.cpp \
     heapdumpform.cpp \
-    heaptable.cpp
+    heaptable.cpp \
+    objecttyperow.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -31,7 +32,8 @@ HEADERS +=  \
     objectstore.h \
     jsbridge.h \
     heapdumpform.h \
-    heaptable.h
+    heaptable.h \
+    objecttyperow.h
 
 
 # Include msgpack via pri file

@@ -6,46 +6,52 @@ HeapTable::HeapTable(QObject *parent):
 }
 
 
-HeapTable::HeapTable(QObject *parent, const RBKit::ObjectStore objectStore):
+HeapTable::HeapTable(QObject *parent, const RBKit::ObjectStore _objectStore):
     QAbstractTableModel(parent),
-    objectStore(objectStore)
+    objectStore(_objectStore)
 {
-
+    std::list<QString> sortedObjectList = objectStore.sort(0);
+    for (std::list<QString>::iterator it = sortedObjectList.begin(); it != sortedObjectList.end(); ++it)
+        sortedObjectKeys.push_back(*it);
 }
 
 int HeapTable::rowCount(const QModelIndex &parent) const
 {
-    int objectTypeCount = objectStore.objectTypeCount.size();
-    if(objectTypeCount < 30)
-        return objectTypeCount;
-    else
-        return 30;
+    return objectStore.objectTypeCount.size();
 }
 
 int HeapTable::columnCount(const QModelIndex &parent) const
 {
-    return 5;
+    return 2;
 }
 
 QVariant HeapTable::data(const QModelIndex &index, int role) const
 {
-    return QVariant(QString("Hello"));
+    if (role == Qt::DisplayRole){
+        QString objectType = sortedObjectKeys[index.row()];
+        switch (index.column()) {
+        case 0:
+            return objectType;
+        case 1:
+            return objectStore.objectTypeCount[objectType];
+        }
+    }
+    return QVariant();
 }
 
 QVariant HeapTable::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    switch(section) {
-    case 0:
-        return QString("Class");
-    case 1:
-        return QString("Count");
-    case 2:
-        return QString("Percentage");
-    case 3:
-        return QString("Retention");
-    case 4:
-        return QString("Retention Percentage");
-    default:
-        return QString("Ho HO");
-    }
+    if (role == Qt::DisplayRole)
+        {
+            if (orientation == Qt::Horizontal) {
+                switch (section)
+                {
+                case 0:
+                    return QString("Class");
+                case 1:
+                    return QString("Count");
+                }
+            }
+        }
+        return QVariant();
 }
