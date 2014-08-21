@@ -9,23 +9,6 @@ static QVariantList parseMsgpackObjectArray(msgpack::object_array);
 static QVariantMap parseMsgpackObjectMap(msgpack::object_map);
 
 
-static inline QString rawToQString(msgpack::object obj)
-{
-    msgpack::object_raw raw = obj.via.raw;
-    return QString::fromUtf8(raw.ptr, raw.size);
-}
-
-quint64 RBKit::hextoInt(const QString &string) {
-    bool ok;
-    quint64 hex = string.toULongLong(&ok, 16);
-    if(ok) {
-        return hex;
-    } else {
-        return 0;
-    }
-}
-
-
 static QVariant parseMsgpackObject(msgpack::object obj)
 {
     switch (obj.type) {
@@ -35,7 +18,7 @@ static QVariant parseMsgpackObject(msgpack::object obj)
         return QVariant(parseMsgpackObjectMap(obj.via.map));
 
     case msgpack::type::RAW :
-        return QVariant(rawToQString(obj));
+        return QVariant(RBKit::StringUtil::rawToQString(obj));
     case msgpack::type::DOUBLE :
         return QVariant(obj.via.dec);
     case msgpack::type::POSITIVE_INTEGER :
@@ -61,7 +44,7 @@ static QVariantMap parseMsgpackObjectMap(msgpack::object_map obj)
 
         // qDebug() << key.type << val.type;
 
-        QString keyStr = rawToQString(key);
+        QString keyStr = RBKit::StringUtil::rawToQString(key);
         map[keyStr] = parseMsgpackObject(val);
 
         ++list;
@@ -124,7 +107,7 @@ RBKit::EventDataBase::EventDataBase(QDateTime ts, QString eventName)
 
 RBKit::EvtNewObject::EvtNewObject(QDateTime ts, QString eventName, QVariantMap payload)
     : EventDataBase(ts, eventName)
-    , objectId(RBKit::hextoInt(payload["object_id"].toString()))
+    , objectId(StringUtil::hextoInt(payload["object_id"].toString()))
     , className(payload["class"].toString())
 {
 
@@ -137,7 +120,7 @@ void RBKit::EvtNewObject::process(Subscriber& processor) const
 
 RBKit::EvtDelObject::EvtDelObject(QDateTime ts, QString eventName, QVariantMap payload)
     : EventDataBase(ts, eventName)
-    , objectId(RBKit::hextoInt(payload["object_id"].toString()))
+    , objectId(StringUtil::hextoInt(payload["object_id"].toString()))
 { }
 
 void RBKit::EvtDelObject::process(Subscriber& processor) const

@@ -154,7 +154,7 @@ void Subscriber::processEvent(const RBKit::EvtObjectDump &dump)
         QVariantMap details = (*iter).toMap();
         RBKit::ObjectDetail *objectDetail =
             new RBKit::ObjectDetail(details["class_name"].toString(),
-                                    RBKit::hextoInt(details["object_id"].toString()));
+                                    RBKit::StringUtil::hextoInt(details["object_id"].toString()));
         objectDetail->fileName = details["file"].toString();
         objectDetail->lineNumber = details["line"].toInt();
         objectDetail->addReferences(details["references"].toList());

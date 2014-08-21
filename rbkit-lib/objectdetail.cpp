@@ -27,7 +27,7 @@ void RBKit::ObjectDetail::addReferences(QList<QVariant> _references)
     QList<QVariant>::const_iterator referIter;
     for(referIter = _references.constBegin();
         referIter != _references.constEnd(); ++referIter) {
-        references.append(RBKit::hextoInt((*referIter).toString()));
+        references.append(RBKit::StringUtil::hextoInt((*referIter).toString()));
     }
 }
 

@@ -5,6 +5,7 @@
 #include <QVariantList>
 #include <QDateTime>
 #include <QString>
+#include "stringutil.h"
 
 class Subscriber;               // this acts as processor also atm.
 
@@ -72,7 +73,6 @@ namespace RBKit
     };
 
     EventDataBase* parseEvent(const QByteArray& rawMessage);
-    quint64 hextoInt(const QString& string);
 }
 
 
