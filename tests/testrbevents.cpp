@@ -58,3 +58,15 @@ void TestRbEvents::testParseGCStartEvent()
 
     QVERIFY(event->eventName == "gc_start");
 }
+
+
+void TestRbEvents::testParseObjectDumpEvent()
+{
+    QByteArray data = msgpackDataFromFile(":/tests/msgpack/objectdump");
+    EventDataBase *base = parseEvent(data);
+
+    QVERIFY(base);
+
+    EvtObjectDump *event = dynamic_cast<EvtObjectDump *>(base);
+    QVERIFY(event);
+}

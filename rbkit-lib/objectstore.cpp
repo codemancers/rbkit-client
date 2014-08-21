@@ -4,6 +4,18 @@ RBKit::ObjectStore::ObjectStore()
 {
 }
 
+// Implement the copy constructor
+RBKit::ObjectStore::ObjectStore(const ObjectStore &original)
+{
+    QHash<quint64, RBKit::ObjectDetail*>::const_iterator iter = original.objectStore.constBegin();
+    while(iter != original.objectStore.constEnd()) {
+        objectStore[iter.key()] = new ObjectDetail(*iter.value());
+        ++iter;
+    }
+    objectTypeCount = QHash<QString, quint32>(original.objectTypeCount);
+}
+
+
 void RBKit::ObjectStore::addObject(RBKit::ObjectDetail *objectDetail)
 {
     objectStore[objectDetail->objectId] = objectDetail;
@@ -28,6 +40,17 @@ void RBKit::ObjectStore::reset() {
     objectTypeCount.clear();
 }
 
+
+void RBKit::ObjectStore::updateObjectGeneration()
+{
+    QHash<quint64, ObjectDetail*>::const_iterator iter = objectStore.constBegin();
+    while(iter != objectStore.constEnd()) {
+        RBKit::ObjectDetail* detail = iter.value();
+        detail->updateGeneration();
+        ++iter;
+    }
+}
+
 RBKit::ObjectDetail *RBKit::ObjectStore::getObject(quint64 key)
 {
     QHash<quint64, RBKit::ObjectDetail*>::const_iterator i = objectStore.find(key);
@@ -43,7 +66,7 @@ quint32 RBKit::ObjectStore::getObjectTypeCount(const QString &className)
     return objectTypeCount[className];
 }
 
-quint32 RBKit::ObjectStore::liveObjectCount()
+const quint32 RBKit::ObjectStore::liveObjectCount() const
 {
     return objectStore.size();
 }
@@ -58,4 +81,13 @@ const QVariantMap RBKit::ObjectStore::getObjectTypeCountMap()
         map[typeIter.key()] = typeIter.value();
     }
     return map;
+}
+
+std::list<QString> RBKit::ObjectStore::sort(int critirea) const
+{
+    QMap<QString, quint32> map;
+    std::list<QString> classNames = objectTypeCount.keys().toStdList();
+    Sorter s(this);
+    classNames.sort(s);
+    return classNames;
 }

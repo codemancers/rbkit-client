@@ -9,6 +9,9 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
 {
     this->connected = false;
     ui->setupUi(this);
+    qRegisterMetaType<RBKit::ObjectStore>();
+    qRegisterMetaType<RBKit::ObjectDetail>();
+
     QWebSettings *settings = ui->chartingView->settings();
     settings->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
     settings->setAttribute(QWebSettings::AutoLoadImages, true);
@@ -83,6 +86,13 @@ void RbkitMainWindow::onPageLoad(bool ok)
     frame->addToJavaScriptWindowObject(QString("jsBridge"), jsBridge);
 }
 
+void RbkitMainWindow::objectDumpAvailable(const RBKit::ObjectStore& objectStore)
+{
+    HeapDumpForm *heapUI = new HeapDumpForm();
+    heapUI->setObjectStore(objectStore);
+    ui->chartingTab->addTab(heapUI, "Heap Dump #1");
+}
+
 void RbkitMainWindow::disconnectFromSocket()
 {
     subscriberThread.requestInterruption();
@@ -104,12 +114,14 @@ void RbkitMainWindow::setupSubscriber()
     connect(this, SIGNAL(connectToSocket(QString, QString)),
             subscriber, SLOT(startListening(QString, QString)));
     connect(this, SIGNAL(triggerGc()), subscriber, SLOT(triggerGc()));
+    connect(this, SIGNAL(takeSnapshot()), subscriber, SLOT(takeSnapshot()));
 
     connect(this, SIGNAL(disconnectSubscriber()), subscriber, SLOT(stop()));
 
     connect(subscriber, &Subscriber::errored, this, &RbkitMainWindow::onError);
     connect(subscriber, &Subscriber::connected, this, &RbkitMainWindow::connectedToSocket);
     connect(subscriber, &Subscriber::disconnected, this, &RbkitMainWindow::disconnectedFromSocket);
+    connect(subscriber, &Subscriber::objectDumpAvailable, this, &RbkitMainWindow::objectDumpAvailable);
 
     subscriberThread.start();
 }
@@ -137,4 +149,9 @@ void RbkitMainWindow::onError(const QString &error)
 void RbkitMainWindow::on_action_Trigger_GC_triggered()
 {
     emit triggerGc();
+}
+
+void RbkitMainWindow::on_actionHeap_Snapshot_triggered()
+{
+    emit takeSnapshot();
 }

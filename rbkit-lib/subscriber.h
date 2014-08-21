@@ -47,10 +47,13 @@ public:
     void processEvent(const RBKit::EvtGcStats&);
     void processEvent(const RBKit::EvtGcStart&);
     void processEvent(const RBKit::EvtGcStop&);
+    void processEvent(const RBKit::EvtObjectDump&);
+
 signals:
     void disconnected();
     void connected();
     void errored(const QString &);
+    void objectDumpAvailable(const RBKit::ObjectStore&);
 
 public slots:
     void startListening(QString, QString);
@@ -58,6 +61,7 @@ public slots:
     void onMessageReceived(const QList<QByteArray>&);
     void onTimerExpiry();
     void triggerGc();
+    void takeSnapshot();
 };
 
 #endif // SUBSCRIBER_H

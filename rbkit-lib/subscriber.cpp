@@ -14,6 +14,7 @@ static const int rbkcZmqTotalIoThreads = 1;
 static const int timerIntervalInMs = 1500;
 
 
+
 Subscriber::Subscriber(RBKit::JsBridge* bridge)
     :jsBridge(bridge)
 {
@@ -33,6 +34,13 @@ void Subscriber::triggerGc() {
     RBKit::CmdTriggerGC triggerGC_Command;
     qDebug() << "Triggering GC";
     commandSocket->sendCommand(triggerGC_Command);
+}
+
+void Subscriber::takeSnapshot()
+{
+   RBKit::CmdObjSnapshot triggerSnapshot;
+   qDebug() << "Taking snapshot";
+   commandSocket->sendCommand(triggerSnapshot);
 }
 
 Subscriber::~Subscriber()
@@ -130,8 +138,35 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
     qDebug() << "Received gc stop" << gcEvent.timestamp;
     static const QString eventName("gc_stop");
     QVariantMap map;
+    // update generation of objects that have survived the GC
+    objectStore->updateObjectGeneration();
     jsBridge->sendMapToJs(eventName, gcEvent.timestamp, map);
 }
+
+
+void Subscriber::processEvent(const RBKit::EvtObjectDump &dump)
+{
+    objectStore->reset();
+
+    QVariantList listOfObjects = dump.payload;
+    for (QVariantList::ConstIterator iter = listOfObjects.begin();
+         iter != listOfObjects.end(); ++iter) {
+        QVariantMap details = (*iter).toMap();
+        RBKit::ObjectDetail *objectDetail =
+            new RBKit::ObjectDetail(details["class_name"].toString(),
+                                    RBKit::hextoInt(details["object_id"].toString()));
+        objectDetail->fileName = details["file"].toString();
+        objectDetail->lineNumber = details["line"].toInt();
+        objectDetail->addReferences(details["references"].toList());
+        objectDetail->size = details["size"].toInt();
+
+        objectStore->addObject(objectDetail);
+    }
+    const RBKit::ObjectStore newObjectStore = RBKit::ObjectStore(*objectStore);
+    qDebug() << "Send objectstore string to front";
+    emit objectDumpAvailable(newObjectStore);
+}
+
 
 void Subscriber::onTimerExpiry()
 {

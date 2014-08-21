@@ -85,6 +85,7 @@
    </attribute>
    <addaction name="action_Connect"/>
    <addaction name="action_Trigger_GC"/>
+   <addaction name="actionHeap_Snapshot"/>
   </widget>
   <action name="action_Connect">
    <property name="text">
@@ -104,6 +105,14 @@
   <action name="action_Trigger_GC">
    <property name="text">
     <string>&amp;Start GC</string>
+   </property>
+  </action>
+  <action name="actionHeap_Snapshot">
+   <property name="text">
+    <string>Heap Snapshot</string>
+   </property>
+   <property name="toolTip">
+    <string>Record heapsnapshot</string>
    </property>
   </action>
  </widget>

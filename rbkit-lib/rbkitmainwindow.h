@@ -8,6 +8,8 @@
 
 #include "subscriber.h"
 #include "askhost.h"
+#include "heapdumpform.h"
+#include "objectstore.h"
 
 namespace Ui {
 class RbkitMainWindow;
@@ -41,6 +43,7 @@ signals:
     void connectToSocket(QString, QString);
     void triggerGc();
     void disconnectSubscriber();
+    void takeSnapshot();
 
 private slots:
     void on_action_Connect_triggered();
@@ -52,9 +55,12 @@ private slots:
     void disconnectedFromSocket();
     void onError(const QString &);
     void onPageLoad(bool ok);
+    void objectDumpAvailable(const RBKit::ObjectStore&);
     void useSelectedHost(QString, QString);
 
     void on_action_Trigger_GC_triggered();
+
+    void on_actionHeap_Snapshot_triggered();
 
 private:
     Ui::RbkitMainWindow *ui;

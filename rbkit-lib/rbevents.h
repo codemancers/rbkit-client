@@ -2,6 +2,7 @@
 #define RBKIT_EVENTS_H
 
 #include <QVariantMap>
+#include <QVariantList>
 #include <QDateTime>
 #include <QString>
 
@@ -61,7 +62,17 @@ namespace RBKit
         void process(Subscriber &processor) const;
     };
 
+    class EvtObjectDump : public EventDataBase
+    {
+    public:
+        EvtObjectDump(QDateTime ts, QString eventName, QVariantList payload);
+        void process(Subscriber& processor) const;
+
+        QVariantList payload;
+    };
+
     EventDataBase* parseEvent(const QByteArray& rawMessage);
+    quint64 hextoInt(const QString& string);
 }
 
 
