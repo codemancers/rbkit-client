@@ -53,6 +53,33 @@ static QVariantMap parseMsgpackObjectMap(msgpack::object_map obj)
     return map;
 }
 
+static RBKit::EventDataBase* RBKit::makeEventFromQVariantMap(QVariantMap map) {
+    // qDebug() << map << map["payload"];
+    if(map["event_type"] != "obj_created" && map["event_type"] != "obj_destroyed")
+        qDebug() << "Received event of type : " << map["event_type"].toString();
+
+    QDateTime timestamp = QDateTime::fromMSecsSinceEpoch(map["timestamp"].toULongLong());
+    QString eventType = map["event_type"].toString();
+    if (eventType == "obj_created") {
+        return new RBKit::EvtNewObject(timestamp, eventType, map["payload"].toMap());
+    } else if (eventType == "obj_destroyed") {
+        return new RBKit::EvtDelObject(timestamp, eventType, map["payload"].toMap());
+    } else if (eventType == "gc_stats") {
+        return new RBKit::EvtGcStats(timestamp, eventType, map["payload"].toMap());
+    } else if (eventType == "gc_start") {
+        return new RBKit::EvtGcStart(timestamp, eventType);
+    } else if (eventType == "gc_end_s") {
+        return new RBKit::EvtGcStop(timestamp, eventType);
+    } else if (eventType == "object_space_dump") {
+        return new RBKit::EvtObjectDump(timestamp, eventType, map["payload"].toList());
+    } else if (eventType == "event_collection") {
+        return new RBKit::EvtCollection(timestamp, eventType, map["payload"].toList());
+    } else {
+        qDebug() << "Unable to parse event of type" << map["event_type"];
+        return NULL;
+    }
+}
+
 
 static QVariantList parseMsgpackObjectArray(msgpack::object_array array)
 {
@@ -74,27 +101,7 @@ RBKit::EventDataBase* RBKit::parseEvent(const QByteArray& message)
     msgpack::object_map obj = unpackedMessage.get().via.map;
 
     QVariantMap map = parseMsgpackObjectMap(obj);
-    // qDebug() << map << map["payload"];
-    if(map["event_type"] != "obj_created" && map["event_type"] != "obj_destroyed")
-        qDebug() << "Received event of type : " << map["event_type"].toString();
-
-    QDateTime timestamp = QDateTime::fromMSecsSinceEpoch(map["timestamp"].toULongLong());
-    if (map["event_type"] == "obj_created") {
-        return new RBKit::EvtNewObject(timestamp, map["event_type"].toString(), map["payload"].toMap());
-    } else if (map["event_type"] == "obj_destroyed") {
-        return new RBKit::EvtDelObject(timestamp, map["event_type"].toString(), map["payload"].toMap());
-    } else if (map["event_type"] == "gc_stats") {
-        return new RBKit::EvtGcStats(timestamp, map["event_type"].toString(), map["payload"].toMap());
-    } else if (map["event_type"] == "gc_start") {
-        return new RBKit::EvtGcStart(timestamp, map["event_type"].toString());
-    } else if (map["event_type"] == "gc_end_s") {
-        return new RBKit::EvtGcStop(timestamp, map["event_type"].toString());
-    } else if (map["event_type"] == "object_space_dump") {
-        return new RBKit::EvtObjectDump(timestamp, map["event_type"].toString(), map["payload"].toList());
-    } else {
-        qDebug() << "Unable to parse event of type" << map["event_type"];
-        return NULL;
-    }
+    return makeEventFromQVariantMap(map);
 }
 
 
@@ -168,4 +175,20 @@ RBKit::EvtObjectDump::EvtObjectDump(QDateTime ts, QString eventName, QVariantLis
 void RBKit::EvtObjectDump::process(Subscriber& processor) const
 {
     processor.processEvent(*this);
+}
+
+RBKit::EvtCollection::EvtCollection(QDateTime ts, QString eventName, QVariantList _payload)
+    : EventDataBase(ts, eventName),
+      payload(_payload)
+{}
+
+void RBKit::EvtCollection::process(Subscriber& processor) const {
+    QList<QVariant>::const_iterator eventIter;
+    for(eventIter = payload.constBegin();
+        eventIter != payload.constEnd();
+        ++eventIter) {
+        QVariantMap map = (*eventIter).toMap();
+        EventDataBase* event = makeEventFromQVariantMap(map);
+        processor.processEvent(*event);
+    }
 }

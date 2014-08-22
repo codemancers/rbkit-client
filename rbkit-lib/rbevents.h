@@ -72,6 +72,15 @@ namespace RBKit
         QVariantList payload;
     };
 
+    class EvtCollection : public EventDataBase
+    {
+    public:
+        EvtCollection(QDateTime ts, QString eventName, QVariantList payload);
+        void process(Subscriber& process) const;
+
+        QVariantList payload;
+    };
+
     EventDataBase* parseEvent(const QByteArray& rawMessage);
 }
 
