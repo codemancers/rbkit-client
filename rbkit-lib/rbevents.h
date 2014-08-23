@@ -16,6 +16,7 @@ namespace RBKit
     public:
         EventDataBase(QDateTime ts, QString eventName);
         virtual void process(Subscriber& processor) const = 0;
+        virtual ~EventDataBase() {}
 
         QDateTime timestamp;
         QString eventName;
@@ -72,7 +73,17 @@ namespace RBKit
         QVariantList payload;
     };
 
+    class EvtCollection : public EventDataBase
+    {
+    public:
+        EvtCollection(QDateTime ts, QString eventName, QVariantList payload);
+        void process(Subscriber& process) const;
+
+        QVariantList payload;
+    };
+
     EventDataBase* parseEvent(const QByteArray& rawMessage);
+    EventDataBase* makeEventFromQVariantMap(const QVariantMap& map);
 }
 
 

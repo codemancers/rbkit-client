@@ -31,11 +31,18 @@ void RBKit::ObjectStore::removeObject(quint64 key)
             oldCount -= 1;
         }
         objectTypeCount[objectDetail->className] = oldCount;
+        delete objectDetail;
     }
     objectStore.remove(key);
 }
 
 void RBKit::ObjectStore::reset() {
+    QHash<quint64, RBKit::ObjectDetail*>::iterator iter = objectStore.begin();
+    while(iter != objectStore.end()) {
+        delete iter.value();
+        objectStore[iter.key()] = NULL;
+        ++iter;
+    }
     objectStore.clear();
     objectTypeCount.clear();
 }
