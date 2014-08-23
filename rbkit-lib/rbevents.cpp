@@ -5,11 +5,11 @@
 #include <QDebug>
 
 
-static QVariantList parseMsgpackObjectArray(msgpack::object_array);
-static QVariantMap parseMsgpackObjectMap(msgpack::object_map);
+static QVariantList parseMsgpackObjectArray(const msgpack::object_array&);
+static QVariantMap parseMsgpackObjectMap(const msgpack::object_map&);
 
 
-static QVariant parseMsgpackObject(msgpack::object obj)
+static QVariant parseMsgpackObject(const msgpack::object& obj)
 {
     switch (obj.type) {
     case msgpack::type::ARRAY :
@@ -33,7 +33,7 @@ static QVariant parseMsgpackObject(msgpack::object obj)
 }
 
 // NOTE: This can be improved with the version that hemant is writing for GCStats.
-static QVariantMap parseMsgpackObjectMap(msgpack::object_map obj)
+static QVariantMap parseMsgpackObjectMap(const msgpack::object_map& obj)
 {
     QVariantMap map;
 
@@ -53,7 +53,7 @@ static QVariantMap parseMsgpackObjectMap(msgpack::object_map obj)
     return map;
 }
 
-static RBKit::EventDataBase* RBKit::makeEventFromQVariantMap(QVariantMap map) {
+RBKit::EventDataBase* RBKit::makeEventFromQVariantMap(const QVariantMap &map) {
     // qDebug() << map << map["payload"];
     if(map["event_type"] != "obj_created" && map["event_type"] != "obj_destroyed")
         qDebug() << "Received event of type : " << map["event_type"].toString();
@@ -81,7 +81,7 @@ static RBKit::EventDataBase* RBKit::makeEventFromQVariantMap(QVariantMap map) {
 }
 
 
-static QVariantList parseMsgpackObjectArray(msgpack::object_array array)
+static QVariantList parseMsgpackObjectArray(const msgpack::object_array& array)
 {
     QVariantList objList;
 
@@ -189,6 +189,7 @@ void RBKit::EvtCollection::process(Subscriber& processor) const {
         ++eventIter) {
         QVariantMap map = (*eventIter).toMap();
         EventDataBase* event = makeEventFromQVariantMap(map);
-        processor.processEvent(*event);
+        event->process(processor);
+        delete event;
     }
 }

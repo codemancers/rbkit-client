@@ -83,6 +83,7 @@ namespace RBKit
     };
 
     EventDataBase* parseEvent(const QByteArray& rawMessage);
+    EventDataBase* makeEventFromQVariantMap(const QVariantMap& map);
 }
 
 
