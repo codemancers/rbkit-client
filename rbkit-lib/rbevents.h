@@ -16,6 +16,7 @@ namespace RBKit
     public:
         EventDataBase(QDateTime ts, QString eventName);
         virtual void process(Subscriber& processor) const = 0;
+        virtual ~EventDataBase() {}
 
         QDateTime timestamp;
         QString eventName;
