@@ -13,3 +13,4 @@ SUBDIRS =     \
     tests
 
 CONFIG += ordered
+CONFIG += c++11
