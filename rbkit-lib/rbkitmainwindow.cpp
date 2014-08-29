@@ -11,32 +11,15 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     ui->setupUi(this);
     qRegisterMetaType<RBKit::ObjectStore>();
     qRegisterMetaType<RBKit::ObjectDetail>();
-
-    QWebSettings *settings = ui->chartingView->settings();
-    settings->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
-    settings->setAttribute(QWebSettings::AutoLoadImages, true);
-    settings->setMaximumPagesInCache(0);
-    settings->setObjectCacheCapacities(0, 0, 0);
-    settings->setIconDatabasePath("");
-
-    settings->setAttribute(QWebSettings::JavascriptEnabled, true);
-    settings->setAttribute(QWebSettings::PluginsEnabled, false);
-    settings->setAttribute(QWebSettings::JavaEnabled, false);
-    settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
-    settings->setAttribute(QWebSettings::JavascriptCanOpenWindows, false);
-    settings->setAttribute(QWebSettings::JavascriptCanAccessClipboard, false);
-
-    connect(ui->chartingView, SIGNAL(loadFinished(bool)), this, SLOT(onPageLoad(bool)));
-    ui->chartingView->setUrl(QUrl("qrc:/web/index.html"));
-
-    jsBridge = new RBKit::JsBridge();
+    memoryView = new RBKit::MemoryView();
+    ui->chartingTab->addTab(memoryView, "Object Charts");
 }
 
 RbkitMainWindow::~RbkitMainWindow()
 {
-    delete jsBridge;
     delete ui;
 }
+
 
 
 void RbkitMainWindow::on_action_Connect_triggered()
@@ -66,6 +49,7 @@ void RbkitMainWindow::askForServerInfo() {
     }
 }
 
+
 void RbkitMainWindow::useSelectedHost(QString commandsSocket, QString eventsSocket)
 {
     askHost->close();
@@ -80,11 +64,6 @@ void RbkitMainWindow::on_action_About_Rbkit_triggered()
     msgBox.exec();
 }
 
-void RbkitMainWindow::onPageLoad(bool ok)
-{
-    QWebFrame *frame = ui->chartingView->page()->mainFrame();
-    frame->addToJavaScriptWindowObject(QString("jsBridge"), jsBridge);
-}
 
 void RbkitMainWindow::objectDumpAvailable(const RBKit::ObjectStore& objectStore)
 {
@@ -102,11 +81,8 @@ void RbkitMainWindow::disconnectFromSocket()
 
 void RbkitMainWindow::setupSubscriber()
 {
-    // move jsbridge to subscriber thread first.
-    //jsBridge->moveToThread(&subscriberThread);
-
     //Create a subscriber and move it to it's own thread
-    subscriber = new Subscriber(jsBridge);
+    subscriber = new Subscriber(memoryView->getJsBridge());
     subscriber->moveToThread(&subscriberThread);
 
     //Events to/from parent/subcriber thread
