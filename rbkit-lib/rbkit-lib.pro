@@ -23,7 +23,8 @@ SOURCES += \
     heaptable.cpp \
     objecttyperow.cpp \
     stringutil.cpp \
-    memoryview.cpp
+    memoryview.cpp \
+    appstate.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -38,7 +39,8 @@ HEADERS +=  \
     heaptable.h \
     objecttyperow.h \
     stringutil.h \
-    memoryview.h
+    memoryview.h \
+    appstate.h
 
 
 # Include msgpack via pri file

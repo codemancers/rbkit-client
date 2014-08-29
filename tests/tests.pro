@@ -12,7 +12,8 @@ SOURCES += \
     testrbevents.cpp \
     testjsbridge.cpp \
     main.cpp \
-    testheaptable.cpp
+    testheaptable.cpp \
+    testappstate.cpp
 
 # Include everything via one common pri file
 include($$RC_ROOT_SOURCE_DIR/common.pri)
@@ -26,7 +27,8 @@ HEADERS += \
     testobjectstore.h \
     testrbevents.h \
     testjsbridge.h \
-    testheaptable.h
+    testheaptable.h \
+    testappstate.h
 
 RESOURCES += \
     tests.qrc
