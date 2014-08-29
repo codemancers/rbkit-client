@@ -174,5 +174,8 @@ void Subscriber::onTimerExpiry()
 
     // qDebug() << m_type2Count;
     QVariantMap data = objectStore->getObjectTypeCountMap();
-    jsBridge->sendMapToJs(eventName, QDateTime(), data);
+    if (!data.empty()) {
+        qDebug() << "Sending event to js" << QDateTime::currentDateTime();
+        jsBridge->sendMapToJs(eventName, QDateTime(), data);
+    }
 }
