@@ -10,6 +10,7 @@
 #include "askhost.h"
 #include "heapdumpform.h"
 #include "objectstore.h"
+#include "memoryview.h"
 
 namespace Ui {
 class RbkitMainWindow;
@@ -28,7 +29,7 @@ class RbkitMainWindow : public QMainWindow
     Subscriber *subscriber;
     QString host;
     AskHost *askHost;
-    RBKit::JsBridge* jsBridge;
+    RBKit::MemoryView *memoryView;
 
     void setupSubscriber();
     void disconnectFromSocket();
@@ -54,7 +55,6 @@ private slots:
     void connectedToSocket();
     void disconnectedFromSocket();
     void onError(const QString &);
-    void onPageLoad(bool ok);
     void objectDumpAvailable(const RBKit::ObjectStore&);
     void useSelectedHost(QString, QString);
 

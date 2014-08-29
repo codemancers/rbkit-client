@@ -22,7 +22,8 @@ SOURCES += \
     heapdumpform.cpp \
     heaptable.cpp \
     objecttyperow.cpp \
-    stringutil.cpp
+    stringutil.cpp \
+    memoryview.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -36,7 +37,8 @@ HEADERS +=  \
     heapdumpform.h \
     heaptable.h \
     objecttyperow.h \
-    stringutil.h
+    stringutil.h \
+    memoryview.h
 
 
 # Include msgpack via pri file
@@ -45,4 +47,5 @@ include($$RC_ROOT_SOURCE_DIR/common.pri)
 FORMS += \
     rbkitmainwindow.ui \
     askhost.ui \
-    heapdumpform.ui
+    heapdumpform.ui \
+    memoryview.ui
