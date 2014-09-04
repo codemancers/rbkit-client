@@ -22,6 +22,7 @@ public:
     int countPercentage;
     int refPercentage;
     int snapShotVersion;
+    bool leafNode;
     QVector<HeapItem *> children;
 
     bool hasChildren() const;
@@ -34,6 +35,7 @@ public:
     QVariant data(int column) const;
     void addChildren(HeapItem *item);
     void computePercentage();
+    QVariant getClassOrFile() const;
     int row();
 };
 

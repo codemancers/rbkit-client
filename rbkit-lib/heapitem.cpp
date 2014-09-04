@@ -6,6 +6,7 @@ HeapItem::HeapItem(int _snapShotVersion)
     : snapShotVersion(_snapShotVersion)
 {
     parent = 0;
+    leafNode = false;
     childrenFetched = false;
 }
 
@@ -15,6 +16,7 @@ HeapItem::HeapItem(const QString _className, quint32 _count, quint32 _referenceC
     , snapShotVersion(_snapShotVersion)
 {
     parent = 0;
+    leafNode = false;
     childrenFetched = false;
 }
 
@@ -24,6 +26,7 @@ HeapItem::HeapItem(const QString _className, quint32 _count, quint32 _referenceC
     , snapShotVersion(_snapShotVersion)
 {
     parent = 0;
+    leafNode = true;
     childrenFetched = false;
 }
 
@@ -38,10 +41,7 @@ QVariant HeapItem::data(int column) const
 {
     switch (column) {
     case 0:
-        if (filename.isEmpty())
-            return QVariant(className);
-        else
-            return QVariant(filename);
+        return getClassOrFile();
         break;
     case 1:
         return QVariant(count);
@@ -80,6 +80,18 @@ void HeapItem::computePercentage()
     }
 }
 
+QVariant HeapItem::getClassOrFile() const
+{
+    if (!leafNode)
+        return QVariant(className);
+    else {
+        if (filename.isEmpty())
+            return QVariant(QString("<compiled>"));
+        else
+            return QVariant(filename);
+    }
+}
+
 int HeapItem::row()
 {
     return parent->children.indexOf(this);
@@ -107,7 +119,7 @@ void HeapItem::setParent(HeapItem *value)
 
 bool HeapItem::hasChildren() const
 {
-    if (!filename.isEmpty())
+    if (leafNode)
         return false;
     QSqlQuery query(QString("select count(*) as count from rbkit_objects_%0 where class_name='%1'").arg(snapShotVersion).arg(className));
     int recordCount;
