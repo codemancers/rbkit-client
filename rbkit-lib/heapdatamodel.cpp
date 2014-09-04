@@ -42,11 +42,11 @@ QVariant HeapDataModel::headerData(int section, Qt::Orientation orientation, int
         case 1:
             return QVariant(QString("Count"));
         case 2:
-            return QVariant(QString("Ref Count"));
+            return QVariant(QString("Reference Count"));
         case 3:
             return QVariant(QString("Count Percentage"));
         case 4:
-            return QVariant(QString("Ref Percentage"));
+            return QVariant(QString("Reference Percentage"));
         }
     }
     return QVariant();

@@ -19,8 +19,13 @@ void HeapDumpForm::loaData()
     RBKit::HeapDataModel *model = new RBKit::HeapDataModel(rootItem, this);
     QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(model);
-    ui->tableView->setModel(proxyModel);
-    ui->tableView->setSortingEnabled(true);
+    ui->treeView->setModel(proxyModel);
+    ui->treeView->setSortingEnabled(true);
+    ui->treeView->setColumnWidth(0, 300);
+    ui->treeView->setColumnWidth(1, 150);
+    ui->treeView->setColumnWidth(2, 200);
+    ui->treeView->setColumnWidth(3, 200);
+    ui->treeView->setColumnWidth(4, 200);
 }
 
 
