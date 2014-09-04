@@ -1,10 +1,5 @@
 #include "sqlconnectionpool.h"
 
-#include <QVariant>
-#include <QDebug>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-
 namespace RBKit {
 
 SqlConnectionPool* SqlConnectionPool::singleton = NULL;
@@ -12,6 +7,7 @@ SqlConnectionPool* SqlConnectionPool::singleton = NULL;
 SqlConnectionPool::SqlConnectionPool()
     : currentVersion(0)
 {
+    setupDatabase();
 }
 
 SqlConnectionPool *SqlConnectionPool::getInstance() {
@@ -35,12 +31,9 @@ void SqlConnectionPool::setupDatabase()
 
     if (!database.open()) {
         qDebug() << query.lastError();
-        return
+        return;
     }
-
-
     query = QSqlQuery(database);
-
 }
 
 void SqlConnectionPool::prepareTables()
@@ -72,29 +65,7 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
         qDebug() << query.lastError();
         return;
     }
-
-    QHash<quint64, RBKit::ObjectDetail*>::iterator iter = objectStore->objectStore.constBegin();
-    while(iter != objectStore->objectStore.constEnd()) {
-        addObject(iter.value());
-        ++iter;
-    }
-}
-
-void SqlConnectionPool::addObject(ObjectDetail *objectDetail)
-{
-    query.addBindValue(objectDetail->objectId);
-    query.addBindValue(objectDetail->className);
-    query.addBindValue(objectDetail->size);
-    query.addBindValue(objectDetail->references.size());
-    query.addBindValue(objectDetail->getFileLine());
-    if (!query.exec()) {
-        qDebug() << query.lastError();
-    }
-}
-
-void SqlConnectionPool::addReference(int parentId, int childId)
-{
-
+    objectStore->insertObjectsInDB(query);
 }
 
 } // namespace RBKit

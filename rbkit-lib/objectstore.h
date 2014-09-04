@@ -6,6 +6,11 @@
 #include <QVariantMap>
 #include <QMap>
 #include <QMultiMap>
+#include <QDebug>
+#include <QSqlQuery>
+#include <QSqlError>
+
+class QSqlQuery;
 
 #include "objectdetail.h"
 #include "objecttyperow.h"
@@ -25,12 +30,15 @@ namespace RBKit {
     public:
         ObjectStore();
         ObjectStore(const ObjectStore &);
+
         // Store mapping between object-id and detail
         QHash<quint64, RBKit::ObjectDetail*> objectStore;
         // mapping between object class and its count
         QHash<QString, quint32> objectTypeCount;
         // Mapping between object class and the ids
         QMultiMap<QString, quint64> objectTypeIdMap;
+        void insertObjectsInDB(QSqlQuery query);
+        void insertReferences(QSqlQuery query);
 
         void addObject(RBKit::ObjectDetail *objectDetails);
         void removeObject(quint64 key);

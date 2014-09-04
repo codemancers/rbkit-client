@@ -25,8 +25,6 @@ public:
     void setupDatabase();
     void prepareTables();
     void loadSnapshot(ObjectStore *objectStore);
-    void addObject(ObjectDetail *objectDeetail);
-    void addReference(int parentId, int childId);
 };
 
 } // namespace RBKit
