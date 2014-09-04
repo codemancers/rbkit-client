@@ -25,7 +25,7 @@ public:
     void setupDatabase();
     void prepareTables();
     void loadSnapshot(ObjectStore *objectStore);
-    void addObject(int object_id, const QString& className, int size, int referenceCount, const QString& file, int line);
+    void addObject(ObjectDetail *objectDeetail);
     void addReference(int parentId, int childId);
 };
 

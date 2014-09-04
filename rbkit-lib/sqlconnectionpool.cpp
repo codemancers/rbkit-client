@@ -33,8 +33,11 @@ void SqlConnectionPool::setupDatabase()
     database = QSqlDatabase::addDatabase("QSQLITE");
     database.setDatabaseName("/tmp/rbkit.db");
 
-    if (!database.open())
-        return database.lastError();
+    if (!database.open()) {
+        qDebug() << query.lastError();
+        return
+    }
+
 
     query = QSqlQuery(database);
 
@@ -45,8 +48,7 @@ void SqlConnectionPool::prepareTables()
     QVector<QString> objectCreation;
     objectCreation.append(QString("create table rbkit_objects_%0(id integer primary key"
                                   ", class_name varchar, size integer "
-                                  ", reference_count integer, file varchar"
-                                  ", line integer)").arg(currentVersion));
+                                  ", reference_count integer, file varchar)").arg(currentVersion));
     objectCreation.append(QString("create table rbkit_object_references_%0(id integer primary key asc"
                                   ", object_id integer"
                                   ", child_id integer)").arg(currentVersion));
@@ -65,18 +67,29 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
     prepareTables();
 
     if (!query.prepare(
-                QString("insert into rbkit_objects_%0(id, class_name, size, reference_count, file, line) values (?, ?, ?, ?, ?, ?)")
+                QString("insert into rbkit_objects_%0(id, class_name, size, reference_count, file) values (?, ?, ?, ?, ?)")
                 .arg(currentVersion))) {
         qDebug() << query.lastError();
         return;
     }
 
-
+    QHash<quint64, RBKit::ObjectDetail*>::iterator iter = objectStore->objectStore.constBegin();
+    while(iter != objectStore->objectStore.constEnd()) {
+        addObject(iter.value());
+        ++iter;
+    }
 }
 
-void SqlConnectionPool::addObject(int object_id, const QString &className, int size, int referenceCount, const QString &file, int line)
+void SqlConnectionPool::addObject(ObjectDetail *objectDetail)
 {
-
+    query.addBindValue(objectDetail->objectId);
+    query.addBindValue(objectDetail->className);
+    query.addBindValue(objectDetail->size);
+    query.addBindValue(objectDetail->references.size());
+    query.addBindValue(objectDetail->getFileLine());
+    if (!query.exec()) {
+        qDebug() << query.lastError();
+    }
 }
 
 void SqlConnectionPool::addReference(int parentId, int childId)
