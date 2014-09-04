@@ -24,7 +24,9 @@ SOURCES += \
     objecttyperow.cpp \
     stringutil.cpp \
     memoryview.cpp \
-    appstate.cpp
+    appstate.cpp \
+    sqlconnectionpool.cpp \
+    heapitem.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -40,7 +42,9 @@ HEADERS +=  \
     objecttyperow.h \
     stringutil.h \
     memoryview.h \
-    appstate.h
+    appstate.h \
+    sqlconnectionpool.h \
+    heapitem.h
 
 
 # Include msgpack via pri file
