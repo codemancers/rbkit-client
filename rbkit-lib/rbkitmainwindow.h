@@ -30,6 +30,7 @@ class RbkitMainWindow : public QMainWindow
     QString host;
     AskHost *askHost;
     RBKit::MemoryView *memoryView;
+    QVector<HeapDumpForm *> heapForms;
 
     void setupSubscriber();
     void disconnectFromSocket();
@@ -55,7 +56,7 @@ private slots:
     void connectedToSocket();
     void disconnectedFromSocket();
     void onError(const QString &);
-    void objectDumpAvailable(const RBKit::ObjectStore&);
+    void objectDumpAvailable(int snapshotVersion);
     void useSelectedHost(QString, QString);
 
     void on_action_Trigger_GC_triggered();

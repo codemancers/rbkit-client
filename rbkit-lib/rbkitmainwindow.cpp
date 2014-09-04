@@ -65,11 +65,11 @@ void RbkitMainWindow::on_action_About_Rbkit_triggered()
 }
 
 
-void RbkitMainWindow::objectDumpAvailable(const RBKit::ObjectStore& objectStore)
+void RbkitMainWindow::objectDumpAvailable(int snapshotVersion)
 {
     HeapDumpForm *heapUI = new HeapDumpForm();
-    heapUI->setObjectStore(objectStore);
-    ui->chartingTab->addTab(heapUI, "Heap Dump #1");
+    heapUI->setObjectStore(snapshotVersion);
+    ui->chartingTab->addTab(heapUI, QString("Heap Dump #%0").arg(snapshotVersion));
 }
 
 void RbkitMainWindow::disconnectFromSocket()

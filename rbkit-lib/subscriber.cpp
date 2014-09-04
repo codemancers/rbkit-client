@@ -163,6 +163,7 @@ void Subscriber::processEvent(const RBKit::EvtObjectDump &dump)
         objectStore->addObject(objectDetail);
     }
     RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
+    emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->currentVersion);
 }
 
 
