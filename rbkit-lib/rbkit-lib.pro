@@ -20,13 +20,13 @@ SOURCES += \
     objectstore.cpp \
     jsbridge.cpp \
     heapdumpform.cpp \
-    heaptable.cpp \
     objecttyperow.cpp \
     stringutil.cpp \
     memoryview.cpp \
     appstate.cpp \
     sqlconnectionpool.cpp \
-    heapitem.cpp
+    heapitem.cpp \
+    heapdatamodel.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -38,13 +38,13 @@ HEADERS +=  \
     objectstore.h \
     jsbridge.h \
     heapdumpform.h \
-    heaptable.h \
     objecttyperow.h \
     stringutil.h \
     memoryview.h \
     appstate.h \
     sqlconnectionpool.h \
-    heapitem.h
+    heapitem.h \
+    heapdatamodel.h
 
 
 # Include msgpack via pri file

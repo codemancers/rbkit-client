@@ -9,6 +9,7 @@
 #include <QSqlError>
 
 #include "objectstore.h"
+#include "heapitem.h"
 
 namespace RBKit {
 
@@ -25,6 +26,9 @@ public:
     void setupDatabase();
     void prepareTables();
     void loadSnapshot(ObjectStore *objectStore);
+    HeapItem *rootOfSnapshot(int snapShotVersion);
+
+    int getCurrentVersion();
 };
 
 } // namespace RBKit

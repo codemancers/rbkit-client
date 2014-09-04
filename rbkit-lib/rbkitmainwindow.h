@@ -30,7 +30,7 @@ class RbkitMainWindow : public QMainWindow
     QString host;
     AskHost *askHost;
     RBKit::MemoryView *memoryView;
-    QVector<HeapDumpForm *> heapForms;
+    QHash<int, HeapDumpForm *> heapForms;
 
     void setupSubscriber();
     void disconnectFromSocket();

@@ -22,18 +22,15 @@ SqlConnectionPool *SqlConnectionPool::getInstance() {
 void SqlConnectionPool::setupDatabase()
 {
     qDebug() << "Creating new shared resource";
-    QFile file("/tmp/rbkit.db");
-    if (file.exists()) {
-        file.remove();
-    }
     database = QSqlDatabase::addDatabase("QSQLITE");
-    database.setDatabaseName("/tmp/rbkit.db");
+    database.setDatabaseName(":memory:");
 
     if (!database.open()) {
         qDebug() << query.lastError();
         return;
     }
     query = QSqlQuery(database);
+    qDebug() << "Setting up database done";
 }
 
 void SqlConnectionPool::prepareTables()
@@ -52,6 +49,7 @@ void SqlConnectionPool::prepareTables()
             qDebug() << query.lastError();
         }
     }
+    qDebug() << "Preparing tables done";
 }
 
 void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
@@ -59,6 +57,7 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
     currentVersion += 1;
     prepareTables();
 
+    qDebug() << "Loading db snapshot";
     if (!query.prepare(
                 QString("insert into rbkit_objects_%0(id, class_name, size, reference_count, file) values (?, ?, ?, ?, ?)")
                 .arg(currentVersion))) {
@@ -66,6 +65,26 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
         return;
     }
     objectStore->insertObjectsInDB(query);
+}
+
+HeapItem *SqlConnectionPool::rootOfSnapshot(int snapShotVersion)
+{
+    HeapItem *rootItem = new HeapItem(snapShotVersion);
+    QSqlQuery searchQuery(QString("select class_name, count(id) as object_count, "
+                          "sum(reference_count) as total_ref_count, sum(size) as total_size from rbkit_objects_%0 group by (class_name)").arg(snapShotVersion));
+    while(searchQuery.next()) {
+        HeapItem* item = new HeapItem(searchQuery.value(0).toString(), searchQuery.value(1).toInt(),
+                                            searchQuery.value(2).toInt(), searchQuery.value(3).toInt(), snapShotVersion);
+        rootItem->addChildren(item);
+    }
+    rootItem->childrenFetched = true;
+    rootItem->computePercentage();
+    return rootItem;
+}
+
+int SqlConnectionPool::getCurrentVersion()
+{
+   return currentVersion;
 }
 
 } // namespace RBKit

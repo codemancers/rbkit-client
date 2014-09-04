@@ -12,7 +12,6 @@ SOURCES += \
     testrbevents.cpp \
     testjsbridge.cpp \
     main.cpp \
-    testheaptable.cpp \
     testappstate.cpp
 
 # Include everything via one common pri file
@@ -27,7 +26,6 @@ HEADERS += \
     testobjectstore.h \
     testrbevents.h \
     testjsbridge.h \
-    testheaptable.h \
     testappstate.h
 
 RESOURCES += \

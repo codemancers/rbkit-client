@@ -1,9 +1,9 @@
 #include "heapdumpform.h"
 #include "ui_heapdumpform.h"
 
-HeapDumpForm::HeapDumpForm(QWidget *parent) :
+HeapDumpForm::HeapDumpForm(QWidget *parent, int _snapShotVersion) :
     QWidget(parent),
-    ui(new Ui::HeapDumpForm)
+    ui(new Ui::HeapDumpForm), snapShotVersion(_snapShotVersion)
 {
     ui->setupUi(this);
 }
@@ -12,16 +12,15 @@ HeapDumpForm::~HeapDumpForm()
 {
     delete ui;
 }
-RBKit::ObjectStore HeapDumpForm::getObjectStore() const
-{
-    return objectStore;
-}
 
-void HeapDumpForm::setObjectStore(const RBKit::ObjectStore &value)
+void HeapDumpForm::loaData()
 {
-    objectStore = value;
-    HeapTable *heapTable = new HeapTable(0, objectStore);
-    ui->tableView->setModel(heapTable);
+    RBKit::HeapItem *rootItem = RBKit::SqlConnectionPool::getInstance()->rootOfSnapshot(snapShotVersion);
+    RBKit::HeapDataModel *model = new RBKit::HeapDataModel(rootItem, this);
+    QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
+    proxyModel->setSourceModel(model);
+    ui->tableView->setModel(proxyModel);
+    ui->tableView->setSortingEnabled(true);
 }
 
 
