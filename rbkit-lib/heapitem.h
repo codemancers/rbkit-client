@@ -9,7 +9,8 @@ class HeapItem
 public:
     HeapItem(int _snapShotVersion);
     HeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, int _snapShotVersion);
-    HeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, const QString _filename, int _snapShotVersion);
+    HeapItem(const QString _className, quint32 _count, quint32 _referenceCount,
+             quint32 _totalSize, const QString _filename, int _snapShotVersion);
 
     QString className;
     quint32 count;

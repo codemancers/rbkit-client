@@ -3,7 +3,7 @@
 namespace RBKit {
 
 HeapItem::HeapItem(int _snapShotVersion)
-    : snapShotVersion(snapShotVersion)
+    : snapShotVersion(_snapShotVersion)
 {
     parent = 0;
     childrenFetched = false;
@@ -133,7 +133,7 @@ void HeapItem::fetchChildren()
 {
     if (childrenFetched)
         return;
-     QSqlQuery searchQuery(QString("select file, count(id) as object_count "
+     QSqlQuery searchQuery(QString("select file, count(id) as object_count, "
                            "sum(reference_count) as total_ref_count, sum(size) as total_size from rbkit_objects_%0 where class_name='%1' group by (file)").arg(snapShotVersion).arg(className));
 
 

@@ -21,7 +21,6 @@ QVariant HeapDataModel::data(const QModelIndex &index, int role) const
     }
     HeapItem *item = static_cast<HeapItem *>(index.internalPointer());
 
-    qDebug() << "******** Calling data for row : " << index.row() << " and class : " << item->className;
     return item->data(index.column());
 }
 
@@ -64,8 +63,6 @@ QModelIndex HeapDataModel::index(int row, int column, const QModelIndex &parent)
     } else {
         parentItem = static_cast<HeapItem *>(parent.internalPointer());
     }
-
-    qDebug() << "Building index for : " << row << " With parent : " << parentItem->className;
 
     HeapItem *childItem = parentItem->getChild(row);
     if (childItem) {
