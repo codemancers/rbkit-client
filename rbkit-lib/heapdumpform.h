@@ -5,6 +5,10 @@
 #include <QTableView>
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
+#include <QContextMenuEvent>
+#include <QPoint>
+#include <QAction>
+#include <QMenu>
 
 #include "objectstore.h"
 #include "heapdatamodel.h"
@@ -18,14 +22,18 @@ class HeapDumpForm;
 class HeapDumpForm : public QWidget
 {
     Q_OBJECT
-
+    QAction *viewRefAct;
 public:
     explicit HeapDumpForm(QWidget *parent = 0, int _snapShotVersion = 0);
     ~HeapDumpForm();
     void loaData();
+    void contextMenuEvent(QContextMenuEvent *);
 private:
     Ui::HeapDumpForm *ui;
     int snapShotVersion;
+public slots:
+    void onCustomContextMenu(const QPoint& point);
+    void viewReferences();
 };
 
 #endif // HEAPDUMPFORM_H

@@ -64,7 +64,13 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
         qDebug() << query.lastError();
         return;
     }
+
     objectStore->insertObjectsInDB(query);
+
+    if (!query.prepare(QString("insert into rbkit_object_references_%0(object_id, child_id) values (?, ?)").arg(currentVersion)))
+        qDebug() << query.lastError();
+
+    objectStore->insertReferences(query);
 }
 
 HeapItem *SqlConnectionPool::rootOfSnapshot(int snapShotVersion)

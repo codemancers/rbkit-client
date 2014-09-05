@@ -33,6 +33,26 @@ void RBKit::ObjectStore::insertObjectsInDB(QSqlQuery query)
     }
 }
 
+void RBKit::ObjectStore::insertReferences(QSqlQuery query)
+{
+    QHash<quint64, RBKit::ObjectDetail*>::const_iterator iter = objectStore.constBegin();
+    while(iter != objectStore.constEnd()) {
+        ObjectDetail *objectDetail = iter.value();
+        QList<quint64> references = objectDetail->references;
+        if (!references.isEmpty()) {
+            for(auto refId : references) {
+                query.addBindValue(objectDetail->objectId);
+                query.addBindValue(refId);
+                if (!query.exec()) {
+                    qDebug() << "Inserting relations failed";
+                    qDebug() << query.lastError();
+                }
+            }
+        }
+        ++iter;
+    }
+}
+
 
 void RBKit::ObjectStore::addObject(RBKit::ObjectDetail *objectDetail)
 {

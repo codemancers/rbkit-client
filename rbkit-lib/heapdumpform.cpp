@@ -6,6 +6,12 @@ HeapDumpForm::HeapDumpForm(QWidget *parent, int _snapShotVersion) :
     ui(new Ui::HeapDumpForm), snapShotVersion(_snapShotVersion)
 {
     ui->setupUi(this);
+//    ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
+//    connect(ui->treeView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
+
+    viewRefAct = new QAction(tr("View References"), this);
+    viewRefAct->setStatusTip("View object references");
+    connect(viewRefAct, SIGNAL(triggered()), this, SLOT(viewReferences()));
 }
 
 HeapDumpForm::~HeapDumpForm()
@@ -22,10 +28,29 @@ void HeapDumpForm::loaData()
     ui->treeView->setModel(proxyModel);
     ui->treeView->setSortingEnabled(true);
     ui->treeView->setColumnWidth(0, 300);
-    ui->treeView->setColumnWidth(1, 150);
-    ui->treeView->setColumnWidth(2, 200);
-    ui->treeView->setColumnWidth(3, 200);
-    ui->treeView->setColumnWidth(4, 200);
+    ui->treeView->setColumnWidth(1, 100);
+    ui->treeView->setColumnWidth(2, 180);
+    ui->treeView->setColumnWidth(3, 180);
+    ui->treeView->setColumnWidth(4, 180);
 }
 
+void HeapDumpForm::contextMenuEvent(QContextMenuEvent *event) {
+    QMenu menu(this);
+    menu.addAction(viewRefAct);
+    menu.exec(event->globalPos());
+}
+
+void HeapDumpForm::onCustomContextMenu(const QPoint &point)
+{
+    QModelIndex index = ui->treeView->indexAt(point);
+    QMenu menu(this);
+    menu.addAction(viewRefAct);
+    menu.exec(point);
+    qDebug() << index;
+}
+
+void HeapDumpForm::viewReferences()
+{
+
+}
 
