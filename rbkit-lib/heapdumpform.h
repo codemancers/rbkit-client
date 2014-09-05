@@ -2,9 +2,14 @@
 #define HEAPDUMPFORM_H
 
 #include <QWidget>
-#include "objectstore.h"
 #include <QTableView>
-#include <heaptable.h>
+#include <QAbstractItemModel>
+#include <QSortFilterProxyModel>
+
+#include "objectstore.h"
+#include "heapdatamodel.h"
+#include "heapitem.h"
+#include "sqlconnectionpool.h"
 
 namespace Ui {
 class HeapDumpForm;
@@ -15,15 +20,12 @@ class HeapDumpForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit HeapDumpForm(QWidget *parent = 0);
+    explicit HeapDumpForm(QWidget *parent = 0, int _snapShotVersion = 0);
     ~HeapDumpForm();
-
-    RBKit::ObjectStore getObjectStore() const;
-    void setObjectStore(const RBKit::ObjectStore &value);
-
+    void loaData();
 private:
     Ui::HeapDumpForm *ui;
-    RBKit::ObjectStore objectStore;
+    int snapShotVersion;
 };
 
 #endif // HEAPDUMPFORM_H

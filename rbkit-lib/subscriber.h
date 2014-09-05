@@ -6,6 +6,7 @@
 
 #include "rbevents.h"
 #include "objectstore.h"
+#include "sqlconnectionpool.h"
 
 // forward declaration of nzmqt classes
 namespace nzmqt
@@ -53,7 +54,7 @@ signals:
     void disconnected();
     void connected();
     void errored(const QString &);
-    void objectDumpAvailable(const RBKit::ObjectStore&);
+    void objectDumpAvailable(int snapshotVersion);
 
 public slots:
     void startListening(QString, QString);

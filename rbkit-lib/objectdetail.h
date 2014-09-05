@@ -20,9 +20,11 @@ namespace RBKit {
         quint16 objectGeneration;
         QList<quint64> references;
         quint64 size;
+
         void addReference(quint64 reference);
         void addReferences(QList<QVariant> _references);
         void updateGeneration();
+        QString getFileLine();
     };
 }
 

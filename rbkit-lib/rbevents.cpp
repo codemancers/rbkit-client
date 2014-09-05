@@ -54,10 +54,6 @@ static QVariantMap parseMsgpackObjectMap(const msgpack::object_map& obj)
 }
 
 RBKit::EventDataBase* RBKit::makeEventFromQVariantMap(const QVariantMap &map) {
-    // qDebug() << map << map["payload"];
-    if(map["event_type"] != "obj_created" && map["event_type"] != "obj_destroyed")
-        qDebug() << "Received event of type : " << map["event_type"].toString();
-
     QDateTime timestamp = QDateTime::fromMSecsSinceEpoch(map["timestamp"].toULongLong());
     QString eventType = map["event_type"].toString();
     if (eventType == "obj_created") {

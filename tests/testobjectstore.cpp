@@ -68,3 +68,13 @@ void TestObjectStore::testUpdateGeneration()
     objectStore->updateObjectGeneration();
     QVERIFY(objectStore->objectStore[12345]->objectGeneration == 1);
 }
+
+void TestObjectStore::testObjectDetailGetFileLine()
+{
+    RBKit::ObjectDetail *objectDetail = new RBKit::ObjectDetail("String", 12345);
+    objectDetail->fileName = "foo.rb";
+    objectDetail->lineNumber = 10;
+
+    QString fileLine = objectDetail->getFileLine();
+    QVERIFY(fileLine == "foo.rb:10");
+}

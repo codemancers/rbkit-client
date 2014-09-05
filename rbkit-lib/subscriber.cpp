@@ -162,9 +162,8 @@ void Subscriber::processEvent(const RBKit::EvtObjectDump &dump)
 
         objectStore->addObject(objectDetail);
     }
-    const RBKit::ObjectStore newObjectStore = RBKit::ObjectStore(*objectStore);
-    qDebug() << "Send objectstore string to front";
-    emit objectDumpAvailable(newObjectStore);
+    RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
+    emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());
 }
 
 
@@ -174,5 +173,7 @@ void Subscriber::onTimerExpiry()
 
     // qDebug() << m_type2Count;
     QVariantMap data = objectStore->getObjectTypeCountMap();
-    jsBridge->sendMapToJs(eventName, QDateTime(), data);
+    if (!data.empty()) {
+        jsBridge->sendMapToJs(eventName, QDateTime(), data);
+    }
 }

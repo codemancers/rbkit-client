@@ -7,6 +7,7 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     QMainWindow(parent), connected(false), host(""),
     ui(new Ui::RbkitMainWindow)
 {
+    RBKit::SqlConnectionPool::getInstance()->setupDatabase();
     this->connected = false;
     ui->setupUi(this);
     qRegisterMetaType<RBKit::ObjectStore>();
@@ -65,11 +66,12 @@ void RbkitMainWindow::on_action_About_Rbkit_triggered()
 }
 
 
-void RbkitMainWindow::objectDumpAvailable(const RBKit::ObjectStore& objectStore)
+void RbkitMainWindow::objectDumpAvailable(int snapshotVersion)
 {
-    HeapDumpForm *heapUI = new HeapDumpForm();
-    heapUI->setObjectStore(objectStore);
-    ui->chartingTab->addTab(heapUI, "Heap Dump #1");
+    HeapDumpForm *heapUI = new HeapDumpForm(this, snapshotVersion);
+    heapUI->loaData();
+    heapForms[snapshotVersion] = heapUI;
+    ui->chartingTab->addTab(heapUI, QString("Heap Dump #%0").arg(snapshotVersion));
 }
 
 void RbkitMainWindow::disconnectFromSocket()

@@ -15,6 +15,24 @@ RBKit::ObjectStore::ObjectStore(const ObjectStore &original)
     objectTypeCount = QHash<QString, quint32>(original.objectTypeCount);
 }
 
+void RBKit::ObjectStore::insertObjectsInDB(QSqlQuery query)
+{
+    qDebug() << "*  Insert number of  objects : " << objectStore.size();
+    QHash<quint64, RBKit::ObjectDetail*>::const_iterator iter = objectStore.constBegin();
+    while(iter != objectStore.constEnd()) {
+        ObjectDetail *objectDetail = iter.value();
+        query.addBindValue(objectDetail->objectId);
+        query.addBindValue(objectDetail->className);
+        query.addBindValue(objectDetail->size);
+        query.addBindValue(objectDetail->references.size());
+        query.addBindValue(objectDetail->getFileLine());
+        if (!query.exec()) {
+            qDebug() << query.lastError();
+        }
+        ++iter;
+    }
+}
+
 
 void RBKit::ObjectStore::addObject(RBKit::ObjectDetail *objectDetail)
 {

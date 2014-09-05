@@ -33,5 +33,13 @@ void RBKit::ObjectDetail::addReferences(QList<QVariant> _references)
 
 void RBKit::ObjectDetail::updateGeneration()
 {
-   ++objectGeneration;
+    ++objectGeneration;
+}
+
+QString RBKit::ObjectDetail::getFileLine()
+{
+    if (fileName.isEmpty())
+        return "";
+    else
+        return QString("%0:%1").arg(fileName).arg(lineNumber);
 }
