@@ -31,6 +31,7 @@ class RbkitMainWindow : public QMainWindow
     AskHost *askHost;
     RBKit::MemoryView *memoryView;
     QHash<int, HeapDumpForm *> heapForms;
+    int currentIndex;
 
     void setupSubscriber();
     void disconnectFromSocket();
@@ -62,6 +63,7 @@ private slots:
     void on_action_Trigger_GC_triggered();
 
     void on_actionHeap_Snapshot_triggered();
+    void tabClosed(int index);
 
 private:
     Ui::RbkitMainWindow *ui;

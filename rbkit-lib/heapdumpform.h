@@ -23,6 +23,9 @@ class HeapDumpForm : public QWidget
 {
     Q_OBJECT
     QAction *viewRefAct;
+    RBKit::HeapItem *rootItem;
+    RBKit::HeapDataModel *model;
+    QSortFilterProxyModel *proxyModel;
 public:
     explicit HeapDumpForm(QWidget *parent = 0, int _snapShotVersion = 0);
     ~HeapDumpForm();
@@ -33,7 +36,7 @@ private:
     int snapShotVersion;
 public slots:
     void onCustomContextMenu(const QPoint& point);
-    void viewReferences();
+    void viewReferences(QAction* action);
 };
 
 #endif // HEAPDUMPFORM_H

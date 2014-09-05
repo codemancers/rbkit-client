@@ -33,6 +33,15 @@ HeapItem::HeapItem(const QString _className, quint32 _count, quint32 _referenceC
     childrenCountFetched = -1;
 }
 
+HeapItem::~HeapItem()
+{
+    if (!children.isEmpty()) {
+        for(auto child : children) {
+            delete child;
+        }
+    }
+}
+
 const QString HeapItem::toString() const
 {
    QString string("class : %0, count : %1, ref Count : %2, size : %3");

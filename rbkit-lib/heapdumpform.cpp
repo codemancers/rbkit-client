@@ -11,19 +11,22 @@ HeapDumpForm::HeapDumpForm(QWidget *parent, int _snapShotVersion) :
 
     viewRefAct = new QAction(tr("View References"), this);
     viewRefAct->setStatusTip("View object references");
-    connect(viewRefAct, SIGNAL(triggered()), this, SLOT(viewReferences()));
+    connect(viewRefAct, SIGNAL(triggered()), this, SLOT(viewReferences(QAction *)));
 }
 
 HeapDumpForm::~HeapDumpForm()
 {
     delete ui;
+    delete proxyModel;
+    delete model;
+    delete rootItem;
 }
 
 void HeapDumpForm::loaData()
 {
-    RBKit::HeapItem *rootItem = RBKit::SqlConnectionPool::getInstance()->rootOfSnapshot(snapShotVersion);
-    RBKit::HeapDataModel *model = new RBKit::HeapDataModel(rootItem, this);
-    QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
+    rootItem = RBKit::SqlConnectionPool::getInstance()->rootOfSnapshot(snapShotVersion);
+    model = new RBKit::HeapDataModel(rootItem, this);
+    proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(model);
     ui->treeView->setModel(proxyModel);
     ui->treeView->setSortingEnabled(true);
@@ -36,6 +39,7 @@ void HeapDumpForm::loaData()
 
 void HeapDumpForm::contextMenuEvent(QContextMenuEvent *event) {
     QMenu menu(this);
+    viewRefAct->setData(event->globalPos());
     menu.addAction(viewRefAct);
     menu.exec(event->globalPos());
 }
@@ -49,8 +53,9 @@ void HeapDumpForm::onCustomContextMenu(const QPoint &point)
     qDebug() << index;
 }
 
-void HeapDumpForm::viewReferences()
+void HeapDumpForm::viewReferences(QAction *action)
 {
-
+    qDebug() << action->data();
 }
+
 
