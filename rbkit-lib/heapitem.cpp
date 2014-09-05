@@ -122,11 +122,11 @@ bool HeapItem::hasChildren() const
     if (leafNode)
         return false;
     QSqlQuery query(QString("select count(*) as count from rbkit_objects_%0 where class_name='%1'").arg(snapShotVersion).arg(className));
+    qDebug() << "Checking for children for class : " << className;
     int recordCount;
     while(query.next()) {
         recordCount = query.value(0).toInt();
     }
-    qDebug() << query.lastError();
     if (recordCount > 1) {
         return true;
     } else {
@@ -149,7 +149,6 @@ void HeapItem::fetchChildren()
                            "sum(reference_count) as total_ref_count, sum(size) as total_size from rbkit_objects_%0 where class_name='%1' group by (file)").arg(snapShotVersion).arg(className));
 
 
-     qDebug() << searchQuery.lastError();
      childrenFetched = true;
      while(searchQuery.next()) {
          HeapItem* item = new HeapItem(className, searchQuery.value(1).toInt(),

@@ -13,7 +13,6 @@
 class QSqlQuery;
 
 #include "objectdetail.h"
-#include "objecttyperow.h"
 
 namespace RBKit {
     class ObjectStore

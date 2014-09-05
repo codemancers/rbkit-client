@@ -20,7 +20,6 @@ SOURCES += \
     objectstore.cpp \
     jsbridge.cpp \
     heapdumpform.cpp \
-    objecttyperow.cpp \
     stringutil.cpp \
     memoryview.cpp \
     appstate.cpp \
@@ -38,7 +37,6 @@ HEADERS +=  \
     objectstore.h \
     jsbridge.h \
     heapdumpform.h \
-    objecttyperow.h \
     stringutil.h \
     memoryview.h \
     appstate.h \
