@@ -8,6 +8,7 @@ HeapItem::HeapItem(int _snapShotVersion)
     parent = 0;
     leafNode = false;
     childrenFetched = false;
+    childrenCountFetched = -1;
 }
 
 HeapItem::HeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, int _snapShotVersion)
@@ -18,6 +19,7 @@ HeapItem::HeapItem(const QString _className, quint32 _count, quint32 _referenceC
     parent = 0;
     leafNode = false;
     childrenFetched = false;
+    childrenCountFetched = -1;
 }
 
 HeapItem::HeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, const QString _filename, int _snapShotVersion)
@@ -28,6 +30,7 @@ HeapItem::HeapItem(const QString _className, quint32 _count, quint32 _referenceC
     parent = 0;
     leafNode = true;
     childrenFetched = false;
+    childrenCountFetched = -1;
 }
 
 const QString HeapItem::toString() const
@@ -117,21 +120,27 @@ void HeapItem::setParent(HeapItem *value)
 }
 
 
-bool HeapItem::hasChildren() const
+bool HeapItem::hasChildren()
 {
     if (leafNode)
         return false;
+    if (childrenCountFetched > -1) {
+        if (childrenCountFetched > 1)
+            return true;
+        else
+            return false;
+    }
+
     QSqlQuery query(QString("select count(*) as count from rbkit_objects_%0 where class_name='%1'").arg(snapShotVersion).arg(className));
     qDebug() << "Checking for children for class : " << className;
-    int recordCount;
     while(query.next()) {
-        recordCount = query.value(0).toInt();
+        childrenCountFetched = query.value(0).toInt();
     }
-    if (recordCount > 1) {
+
+    if (childrenCountFetched > 1)
         return true;
-    } else {
+    else
         return false;
-    }
 }
 
 quint32 HeapItem::childrenCount()

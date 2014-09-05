@@ -20,12 +20,13 @@ public:
     HeapItem* parent;
     bool childrenFetched;
     int countPercentage;
+    int childrenCountFetched;
     int refPercentage;
     int snapShotVersion;
     bool leafNode;
     QVector<HeapItem *> children;
 
-    bool hasChildren() const;
+    bool hasChildren();
     quint32 childrenCount();
     void fetchChildren();
     HeapItem *getParent() const;
