@@ -42,6 +42,8 @@ public:
     explicit RbkitMainWindow(QWidget *parent = 0);
     ~RbkitMainWindow();
 
+    void addTabWidget(HeapDumpForm* heapDumpForm, const QString& title);
+
 signals:
     void connectToSocket(QString, QString);
     void triggerGc();

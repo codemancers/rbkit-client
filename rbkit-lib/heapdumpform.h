@@ -14,6 +14,7 @@
 #include "heapdatamodel.h"
 #include "heapitem.h"
 #include "sqlconnectionpool.h"
+#include "rbkitmainwindow.h"
 
 namespace Ui {
 class HeapDumpForm;
@@ -26,17 +27,18 @@ class HeapDumpForm : public QWidget
     RBKit::HeapItem *rootItem;
     RBKit::HeapDataModel *model;
     QSortFilterProxyModel *proxyModel;
+    RBKit::HeapItem *selecteItem;
 public:
     explicit HeapDumpForm(QWidget *parent = 0, int _snapShotVersion = 0);
     ~HeapDumpForm();
     void loaData();
-    void contextMenuEvent(QContextMenuEvent *);
+    void loadSelectedReferences(RBKit::HeapItem* _selectedItem);
 private:
     Ui::HeapDumpForm *ui;
     int snapShotVersion;
 public slots:
     void onCustomContextMenu(const QPoint& point);
-    void viewReferences(QAction* action);
+    void viewReferences();
 };
 
 #endif // HEAPDUMPFORM_H

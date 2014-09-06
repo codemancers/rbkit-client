@@ -22,7 +22,12 @@ RbkitMainWindow::~RbkitMainWindow()
     delete ui;
 }
 
-
+void RbkitMainWindow::addTabWidget(HeapDumpForm *heapDumpForm, const QString& title)
+{
+    ++currentIndex;
+    heapForms[currentIndex] = heapDumpForm;
+    ui->chartingTab->addTab(heapUI, title);
+}
 
 void RbkitMainWindow::on_action_Connect_triggered()
 {

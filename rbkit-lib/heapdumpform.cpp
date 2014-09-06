@@ -5,13 +5,14 @@ HeapDumpForm::HeapDumpForm(QWidget *parent, int _snapShotVersion) :
     QWidget(parent),
     ui(new Ui::HeapDumpForm), snapShotVersion(_snapShotVersion)
 {
+    selecteItem = NULL;
     ui->setupUi(this);
-//    ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
-//    connect(ui->treeView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
+    ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->treeView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
 
     viewRefAct = new QAction(tr("View References"), this);
     viewRefAct->setStatusTip("View object references");
-    connect(viewRefAct, SIGNAL(triggered()), this, SLOT(viewReferences(QAction *)));
+    connect(viewRefAct, SIGNAL(triggered()), this, SLOT(viewReferences()));
 }
 
 HeapDumpForm::~HeapDumpForm()
@@ -37,25 +38,29 @@ void HeapDumpForm::loaData()
     ui->treeView->setColumnWidth(4, 180);
 }
 
-void HeapDumpForm::contextMenuEvent(QContextMenuEvent *event) {
-    QMenu menu(this);
-    viewRefAct->setData(event->globalPos());
-    menu.addAction(viewRefAct);
-    menu.exec(event->globalPos());
+void HeapDumpForm::loadSelectedReferences(RBKit::HeapItem *_selectedItem)
+{
+
 }
 
 void HeapDumpForm::onCustomContextMenu(const QPoint &point)
 {
-    QModelIndex index = ui->treeView->indexAt(point);
-    QMenu menu(this);
-    menu.addAction(viewRefAct);
-    menu.exec(point);
-    qDebug() << index;
+    QPoint localPoint = ui->treeView->viewport()->mapToGlobal(point);
+    QModelIndex index = proxyModel->mapToSource(ui->treeView->indexAt(point));
+    if (index.isValid()) {
+        selecteItem = static_cast<RBKit::HeapItem *>(index.internalPointer());
+        QMenu menu(this);
+        menu.addAction(viewRefAct);
+        menu.exec(localPoint);
+    }
 }
 
-void HeapDumpForm::viewReferences(QAction *action)
+void HeapDumpForm::viewReferences()
 {
-    qDebug() << action->data();
+    RbkitMainWindow *window = static_cast<RbkitMainWindow *>(parentWidget());
+    HeapDumpForm *form = new HeapDumpForm(window, 0);
+    form->loadSelectedReferences(selecteItem);
+    window->addTabWidget(form, "References for");
 }
 
 
