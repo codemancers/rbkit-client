@@ -17,6 +17,7 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     connect(ui->chartingTab, SIGNAL(tabCloseRequested(int)), this, SLOT(tabClosed(int)));
 }
 
+
 RbkitMainWindow::~RbkitMainWindow()
 {
     delete ui;
@@ -75,6 +76,7 @@ void RbkitMainWindow::on_action_About_Rbkit_triggered()
 void RbkitMainWindow::objectDumpAvailable(int snapshotVersion)
 {
     HeapDumpForm *heapUI = new HeapDumpForm(this, snapshotVersion);
+    heapUI->setParentWindow(this);
     heapUI->loaData();
     ++currentIndex;
     heapForms[currentIndex] = heapUI;

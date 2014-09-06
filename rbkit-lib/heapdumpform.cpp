@@ -1,9 +1,19 @@
 #include "heapdumpform.h"
 #include "ui_heapdumpform.h"
 
-HeapDumpForm::HeapDumpForm(QWidget *parent, int _snapShotVersion) :
-    QWidget(parent),
-    ui(new Ui::HeapDumpForm), snapShotVersion(_snapShotVersion)
+#include "rbkitmainwindow.h"
+
+RbkitMainWindow *HeapDumpForm::getParentWindow() const
+{
+    return parentWindow;
+}
+
+void HeapDumpForm::setParentWindow(RbkitMainWindow *value)
+{
+    parentWindow = value;
+}
+HeapDumpForm::HeapDumpForm(QWidget* parent, int _snapShotVersion)
+    : QWidget(parent), ui(new Ui::HeapDumpForm), snapShotVersion(_snapShotVersion)
 {
     selecteItem = NULL;
     ui->setupUi(this);
@@ -30,6 +40,7 @@ void HeapDumpForm::loaData()
     proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(model);
     ui->treeView->setModel(proxyModel);
+    adjustColumnWidth();
 }
 
 void HeapDumpForm::loadSelectedReferences(RBKit::HeapItem *_selectedItem)
@@ -39,6 +50,7 @@ void HeapDumpForm::loadSelectedReferences(RBKit::HeapItem *_selectedItem)
     proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(model);
     ui->treeView->setModel(proxyModel);
+    adjustColumnWidth();
 }
 
 void HeapDumpForm::adjustColumnWidth()
@@ -65,10 +77,9 @@ void HeapDumpForm::onCustomContextMenu(const QPoint &point)
 
 void HeapDumpForm::viewReferences()
 {
-    RbkitMainWindow *window = static_cast<RbkitMainWindow *>(parentWidget());
-    HeapDumpForm *form = new HeapDumpForm(window, 0);
+    HeapDumpForm *form = new HeapDumpForm(this, 0);
     form->loadSelectedReferences(selecteItem);
-    window->addTabWidget(form, QString("References for : %0").arg(selecteItem->leadingIdentifier()));
+    parentWindow->addTabWidget(form, QString("References for : %0").arg(selecteItem->leadingIdentifier()));
 }
 
 

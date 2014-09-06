@@ -16,7 +16,6 @@ namespace Ui {
 class RbkitMainWindow;
 }
 
-
 namespace RBKit {
     class JsBridge;
 }
@@ -40,9 +39,8 @@ class RbkitMainWindow : public QMainWindow
 
 public:
     explicit RbkitMainWindow(QWidget *parent = 0);
+    void addTabWidget(HeapDumpForm* form, const QString &title);
     ~RbkitMainWindow();
-
-    void addTabWidget(HeapDumpForm* heapDumpForm, const QString& title);
 
 signals:
     void connectToSocket(QString, QString);

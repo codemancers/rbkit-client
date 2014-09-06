@@ -14,11 +14,12 @@
 #include "heapdatamodel.h"
 #include "heapitem.h"
 #include "sqlconnectionpool.h"
-#include "rbkitmainwindow.h"
 
 namespace Ui {
 class HeapDumpForm;
 }
+
+class RbkitMainWindow;
 
 class HeapDumpForm : public QWidget
 {
@@ -28,12 +29,16 @@ class HeapDumpForm : public QWidget
     RBKit::HeapDataModel *model;
     QSortFilterProxyModel *proxyModel;
     RBKit::HeapItem *selecteItem;
+    RbkitMainWindow *parentWindow;
 public:
     explicit HeapDumpForm(QWidget *parent = 0, int _snapShotVersion = 0);
     ~HeapDumpForm();
     void loaData();
     void loadSelectedReferences(RBKit::HeapItem* _selectedItem);
     void adjustColumnWidth();
+    RbkitMainWindow *getParentWindow() const;
+    void setParentWindow(RbkitMainWindow *value);
+
 private:
     Ui::HeapDumpForm *ui;
     int snapShotVersion;
