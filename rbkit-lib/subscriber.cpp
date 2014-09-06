@@ -1,6 +1,7 @@
 #include <QDebug>
 #include <QThread>
 #include <QTimer>
+#include <QScopedPointer>
 
 #include "nzmqt/nzmqt.hpp"
 
@@ -147,24 +148,22 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 {
     auto previousKeys  = objectStore->keys();
-    auto listOfObjects = dump.payload;
+    const auto listOfObjects = dump.payload;
 
-    auto iter = listOfObjects.begin();
-    foreach (iter, listOfObjects) {
-        QVariantMap details = (*iter).toMap();
+    for (auto iter = listOfObjects.begin(); iter != listOfObjects.end(); ++iter) {
+        auto details = (*iter).toMap();
+        auto objectId = RBKit::StringUtil::hextoInt(details["object_id"].toString());
+        auto className = details["class_name"].toString();
 
-        quint64 objectId = RBKit::StringUtil::hextoInt(details["object_id"].toString());
-        QString className = details["class_name"].toString();
-
-        QSharedPointer<RBKit::ObjectDetail> objectDetail =
-            new RBKit::ObjectDetail(className, objectId);
+        QScopedPointer<RBKit::ObjectDetail> objectDetail(
+            new RBKit::ObjectDetail(className, objectId));
 
         if (objectStore->hasKey(objectId)) {
             // remove the object from previousKeys because we still want
             // this object. and update the object store with details
             // that we have got from object dump.
             previousKeys.removeOne(objectDetail->objectId);
-            objectStore->updateObject(objectDetail);
+            objectStore->updateObject(objectDetail.data());
             continue;
         }
 
@@ -173,7 +172,7 @@ void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
         objectDetail->addReferences(details["references"].toList());
         objectDetail->size = details["size"].toInt();
 
-        objectStore->addObject(objectDetail);
+        objectStore->addObject(objectDetail.take());
     }
 
     quint64 objectId(0);
