@@ -144,13 +144,13 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 }
 
 
-void Subscriber::processEvent(const RBKit::EvtObjectDump &dump)
+void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 {
-    auto previousKeys = objectStore->keys();
+    auto previousKeys  = objectStore->keys();
+    auto listOfObjects = dump.payload;
 
-    QVariantList listOfObjects = dump.payload;
-    for (QVariantList::ConstIterator iter = listOfObjects.begin();
-         iter != listOfObjects.end(); ++iter) {
+    auto iter = listOfObjects.begin();
+    foreach (iter, listOfObjects) {
         QVariantMap details = (*iter).toMap();
 
         quint64 objectId = RBKit::StringUtil::hextoInt(details["object_id"].toString());
