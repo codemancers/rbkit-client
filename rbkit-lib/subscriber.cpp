@@ -152,12 +152,19 @@ void Subscriber::processEvent(const RBKit::EvtObjectDump &dump)
     for (QVariantList::ConstIterator iter = listOfObjects.begin();
          iter != listOfObjects.end(); ++iter) {
         QVariantMap details = (*iter).toMap();
-        RBKit::ObjectDetail *objectDetail =
-            new RBKit::ObjectDetail(details["class_name"].toString(),
-                                    RBKit::StringUtil::hextoInt(details["object_id"].toString()));
 
-        if (objectStore->hasKey(objectDetail->objectId)) {
+        quint64 objectId = RBKit::StringUtil::hextoInt(details["object_id"].toString());
+        QString className = details["class_name"].toString();
+
+        QSharedPointer<RBKit::ObjectDetail> objectDetail =
+            new RBKit::ObjectDetail(className, objectId);
+
+        if (objectStore->hasKey(objectId)) {
+            // remove the object from previousKeys because we still want
+            // this object. and update the object store with details
+            // that we have got from object dump.
             previousKeys.removeOne(objectDetail->objectId);
+            objectStore->updateObject(objectDetail);
             continue;
         }
 

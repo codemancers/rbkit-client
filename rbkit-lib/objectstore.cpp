@@ -75,6 +75,16 @@ QList<quint64> RBKit::ObjectStore::keys() const
     return objectStore.keys();
 }
 
+void RBKit::ObjectStore::updateObject(RBKit::ObjectDetail *objectDetail)
+{
+    RBKit::ObjectDetail* object = objectStore[objectDetail->objectId];
+    object->fileName   = objectDetail->fileName;
+    object->lineNumber = objectDetail->lineNumber;
+    object->references = objectDetail->references;
+    object->size       = objectDetail->size;
+}
+
+
 void RBKit::ObjectStore::updateObjectGeneration()
 {
     QHash<quint64, ObjectDetail*>::const_iterator iter = objectStore.constBegin();
