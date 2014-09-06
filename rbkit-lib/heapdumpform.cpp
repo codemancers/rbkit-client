@@ -30,17 +30,25 @@ void HeapDumpForm::loaData()
     proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(model);
     ui->treeView->setModel(proxyModel);
+}
+
+void HeapDumpForm::loadSelectedReferences(RBKit::HeapItem *_selectedItem)
+{
+    rootItem = _selectedItem->getSelectedReferences();
+    model = new RBKit::HeapDataModel(rootItem, this);
+    proxyModel = new QSortFilterProxyModel(this);
+    proxyModel->setSourceModel(model);
+    ui->treeView->setModel(proxyModel);
+}
+
+void HeapDumpForm::adjustColumnWidth()
+{
     ui->treeView->setSortingEnabled(true);
     ui->treeView->setColumnWidth(0, 300);
     ui->treeView->setColumnWidth(1, 100);
     ui->treeView->setColumnWidth(2, 180);
     ui->treeView->setColumnWidth(3, 180);
     ui->treeView->setColumnWidth(4, 180);
-}
-
-void HeapDumpForm::loadSelectedReferences(RBKit::HeapItem *_selectedItem)
-{
-
 }
 
 void HeapDumpForm::onCustomContextMenu(const QPoint &point)
@@ -60,7 +68,7 @@ void HeapDumpForm::viewReferences()
     RbkitMainWindow *window = static_cast<RbkitMainWindow *>(parentWidget());
     HeapDumpForm *form = new HeapDumpForm(window, 0);
     form->loadSelectedReferences(selecteItem);
-    window->addTabWidget(form, "References for");
+    window->addTabWidget(form, QString("References for : %0").arg(selecteItem->leadingIdentifier()));
 }
 
 

@@ -33,6 +33,7 @@ public:
     ~HeapDumpForm();
     void loaData();
     void loadSelectedReferences(RBKit::HeapItem* _selectedItem);
+    void adjustColumnWidth();
 private:
     Ui::HeapDumpForm *ui;
     int snapShotVersion;

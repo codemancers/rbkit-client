@@ -109,6 +109,51 @@ int HeapItem::row()
     return parent->children.indexOf(this);
 }
 
+QString HeapItem::leadingIdentifier()
+{
+    if (leafNode) {
+        if (filename.isEmpty()) {
+            return className;
+        } else {
+            return QString("%0 - %1").arg(className).arg(filename);
+        }
+    } else {
+        return className;
+    }
+}
+
+HeapItem *HeapItem::getSelectedReferences()
+{
+    QString queryString;
+    if (leafNode) {
+        queryString = QString("select rbkit_objects_%0.class_name, count(rbkit_objects_%0.id) as total_count, sum(rbkit_objects_%0.reference_count) as ref_count, "
+                            "sum(rbkit_objects_%0.size) as total_size from rbkit_objects_%0 where rbkit_objects_%0.id in "
+                            "(select rbkit_object_references_%0.child_id from rbkit_object_references_%0 "
+                            " INNER JOIN rbkit_objects_%0 ON rbkit_objects_%0.id = rbkit_object_references_%0.object_id "
+                            " where rbkit_objects_%0.class_name = '%1' and rbkit_objects_%0.file='%2')"
+                            " group by rbkit_objects_%0.class_name").arg(snapShotVersion).arg(className).arg(filename);
+    } else {
+        queryString = QString("select rbkit_objects_%0.class_name, count(rbkit_objects_%0.id) as total_count, sum(rbkit_objects_%0.reference_count) as ref_count, "
+                            "sum(rbkit_objects_%0.size) as total_size from rbkit_objects_%0 where rbkit_objects_%0.id in "
+                            "(select rbkit_object_references_%0.child_id from rbkit_object_references_%0 "
+                            " INNER JOIN rbkit_objects_%0 ON rbkit_objects_%0.id = rbkit_object_references_%0.object_id "
+                            " where rbkit_objects_%0.class_name = '%1')"
+                            " group by rbkit_objects_%0.class_name").arg(snapShotVersion).arg(className);
+    }
+
+    QSqlQuery query(queryString);
+    HeapItem *rootItem = new HeapItem(snapShotVersion);
+
+    while(query.next()) {
+        HeapItem* item = new HeapItem(query.value(0).toString(), query.value(1).toInt(),
+                                      query.value(2).toInt(), query.value(3).toInt(), snapShotVersion);
+        rootItem->addChildren(item);
+    }
+    rootItem->childrenFetched = true;
+    rootItem->computePercentage();
+    return rootItem;
+}
+
 HeapItem *HeapItem::getParent() const
 {
     return parent;

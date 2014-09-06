@@ -39,6 +39,8 @@ public:
     void computePercentage();
     QVariant getClassOrFile() const;
     int row();
+    QString leadingIdentifier();
+    HeapItem *getSelectedReferences();
 };
 
 } // namespace RBKit

@@ -26,7 +26,7 @@ void RbkitMainWindow::addTabWidget(HeapDumpForm *heapDumpForm, const QString& ti
 {
     ++currentIndex;
     heapForms[currentIndex] = heapDumpForm;
-    ui->chartingTab->addTab(heapUI, title);
+    ui->chartingTab->addTab(heapDumpForm, title);
 }
 
 void RbkitMainWindow::on_action_Connect_triggered()
