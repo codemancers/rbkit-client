@@ -146,7 +146,7 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 
 void Subscriber::processEvent(const RBKit::EvtObjectDump &dump)
 {
-    objectStore->reset();
+    auto previousKeys = objectStore->keys();
 
     QVariantList listOfObjects = dump.payload;
     for (QVariantList::ConstIterator iter = listOfObjects.begin();
@@ -155,6 +155,12 @@ void Subscriber::processEvent(const RBKit::EvtObjectDump &dump)
         RBKit::ObjectDetail *objectDetail =
             new RBKit::ObjectDetail(details["class_name"].toString(),
                                     RBKit::StringUtil::hextoInt(details["object_id"].toString()));
+
+        if (objectStore->hasKey(objectDetail->objectId)) {
+            previousKeys.removeOne(objectDetail->objectId);
+            continue;
+        }
+
         objectDetail->fileName = details["file"].toString();
         objectDetail->lineNumber = details["line"].toInt();
         objectDetail->addReferences(details["references"].toList());
@@ -162,6 +168,12 @@ void Subscriber::processEvent(const RBKit::EvtObjectDump &dump)
 
         objectStore->addObject(objectDetail);
     }
+
+    quint64 objectId(0);
+    foreach (objectId, previousKeys) {
+        objectStore->removeObject(objectId);
+    }
+
     RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
     emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());
 }

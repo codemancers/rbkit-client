@@ -42,6 +42,9 @@ namespace RBKit {
         void addObject(RBKit::ObjectDetail *objectDetails);
         void removeObject(quint64 key);
         void reset();
+        bool hasKey(quint64 key) const;
+        QList<quint64> keys() const;
+
         void updateObjectGeneration();
         ObjectDetail *getObject(quint64 key);
         quint32 getObjectTypeCount(const QString& className);

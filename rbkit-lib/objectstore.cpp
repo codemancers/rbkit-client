@@ -65,6 +65,15 @@ void RBKit::ObjectStore::reset() {
     objectTypeCount.clear();
 }
 
+bool RBKit::ObjectStore::hasKey(quint64 key) const
+{
+    return objectStore.find(key) != objectStore.end();
+}
+
+QList<quint64> RBKit::ObjectStore::keys() const
+{
+    return objectStore.keys();
+}
 
 void RBKit::ObjectStore::updateObjectGeneration()
 {
