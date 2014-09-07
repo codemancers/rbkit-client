@@ -2,35 +2,35 @@
 
 namespace RBKit {
 
-HeapItem::HeapItem(int _snapShotVersion)
-    : snapShotVersion(_snapShotVersion)
+void HeapItem::initializeDataMembers()
 {
     parent = 0;
     leafNode = false;
     childrenFetched = false;
     childrenCountFetched = -1;
+    objectsTableName = QString("rbkit_objects_%0").arg(snapShotVersion);
+    referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
+}
+
+HeapItem::HeapItem(int _snapShotVersion)
+    : snapShotVersion(_snapShotVersion)
+{
+    initializeDataMembers();
 }
 
 HeapItem::HeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, int _snapShotVersion)
     : className(_className), count(_count),
-      referenceCount(_referenceCount), totalSize(_totalSize)
-    , snapShotVersion(_snapShotVersion)
+      referenceCount(_referenceCount), totalSize(_totalSize), snapShotVersion(_snapShotVersion)
 {
-    parent = 0;
-    leafNode = false;
-    childrenFetched = false;
-    childrenCountFetched = -1;
+    initializeDataMembers();
 }
 
 HeapItem::HeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, const QString _filename, int _snapShotVersion)
-    : className(_className), count(_count),
-      referenceCount(_referenceCount), totalSize(_totalSize), filename(_filename)
-    , snapShotVersion(_snapShotVersion)
+    : className(_className), count(_count), referenceCount(_referenceCount),
+      totalSize(_totalSize), filename(_filename), snapShotVersion(_snapShotVersion)
 {
-    parent = 0;
+    initializeDataMembers();
     leafNode = true;
-    childrenFetched = false;
-    childrenCountFetched = -1;
 }
 
 HeapItem::~HeapItem()
@@ -41,11 +41,31 @@ HeapItem::~HeapItem()
         }
     }
 }
+QString HeapItem::getReferenceTableName() const
+{
+    return referenceTableName;
+}
+
+void HeapItem::setReferenceTableName(const QString &value)
+{
+    referenceTableName = value;
+}
+
+QString HeapItem::getObjectsTableName() const
+{
+    return objectsTableName;
+}
+
+void HeapItem::setObjectsTableName(const QString &value)
+{
+    objectsTableName = value;
+}
+
 
 const QString HeapItem::toString() const
 {
-   QString string("class : %0, count : %1, ref Count : %2, size : %3");
-   QString resultString = string.arg(className).arg(count).arg(referenceCount).arg(totalSize);
+    QString string("class : %0, count : %1, ref Count : %2, size : %3");
+    QString resultString = string.arg(className).arg(count).arg(referenceCount).arg(totalSize);
    return resultString;
 }
 
@@ -185,7 +205,7 @@ bool HeapItem::hasChildren()
             return false;
     }
 
-    QSqlQuery query(QString("select count(*) as count from rbkit_objects_%0 where class_name='%1'").arg(snapShotVersion).arg(className));
+    QSqlQuery query(QString("select count(*) as count from %0 where class_name='%1'").arg(objectsTableName).arg(className));
     qDebug() << "Checking for children for class : " << className;
     while(query.next()) {
         childrenCountFetched = query.value(0).toInt();
@@ -209,7 +229,7 @@ void HeapItem::fetchChildren()
     if (childrenFetched)
         return;
      QSqlQuery searchQuery(QString("select file, count(id) as object_count, "
-                           "sum(reference_count) as total_ref_count, sum(size) as total_size from rbkit_objects_%0 where class_name='%1' group by (file)").arg(snapShotVersion).arg(className));
+                           "sum(reference_count) as total_ref_count, sum(size) as total_size from %0 where class_name='%1' group by (file)").arg(objectsTableName).arg(className));
 
 
      childrenFetched = true;

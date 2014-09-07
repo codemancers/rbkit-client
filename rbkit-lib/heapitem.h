@@ -6,6 +6,7 @@
 namespace RBKit {
 class HeapItem
 {
+    void initializeDataMembers();
 public:
     HeapItem(int _snapShotVersion);
     HeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, int _snapShotVersion);
@@ -26,6 +27,8 @@ public:
     int snapShotVersion;
     bool leafNode;
     QVector<HeapItem *> children;
+    QString objectsTableName;
+    QString referenceTableName;
 
     bool hasChildren();
     quint32 childrenCount();
@@ -41,6 +44,10 @@ public:
     int row();
     QString leadingIdentifier();
     HeapItem *getSelectedReferences();
+    QString getObjectsTableName() const;
+    void setObjectsTableName(const QString &value);
+    QString getReferenceTableName() const;
+    void setReferenceTableName(const QString &value);
 };
 
 } // namespace RBKit
