@@ -14,6 +14,7 @@
 #include "heapdatamodel.h"
 #include "heapitem.h"
 #include "sqlconnectionpool.h"
+#include "sortobjectproxymodel.h"
 
 namespace Ui {
 class HeapDumpForm;

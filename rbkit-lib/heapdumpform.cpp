@@ -45,7 +45,7 @@ void HeapDumpForm::loaData()
 {
     rootItem = RBKit::SqlConnectionPool::getInstance()->rootOfSnapshot(snapShotVersion);
     model = new RBKit::HeapDataModel(rootItem, this);
-    proxyModel = new QSortFilterProxyModel(this);
+    proxyModel = new SortObjectProxyModel(this);
     proxyModel->setSourceModel(model);
     ui->treeView->setModel(proxyModel);
     adjustColumnWidth();
@@ -55,7 +55,7 @@ void HeapDumpForm::loadSelectedReferences(RBKit::HeapItem *_selectedItem)
 {
     rootItem = _selectedItem->getSelectedReferences();
     model = new RBKit::HeapDataModel(rootItem, this);
-    proxyModel = new QSortFilterProxyModel(this);
+    proxyModel = new SortObjectProxyModel(this);
     proxyModel->setSourceModel(model);
     ui->treeView->setModel(proxyModel);
     adjustColumnWidth();
