@@ -28,7 +28,6 @@ HeapDumpForm::HeapDumpForm(QWidget* parent, int _snapShotVersion)
 HeapDumpForm::~HeapDumpForm()
 {
     delete ui;
-    delete proxyModel;
     delete model;
     delete rootItem;
 }
@@ -45,9 +44,9 @@ void HeapDumpForm::loaData()
 {
     rootItem = RBKit::SqlConnectionPool::getInstance()->rootOfSnapshot(snapShotVersion);
     model = new RBKit::HeapDataModel(rootItem, this);
-    proxyModel = new SortObjectProxyModel(this);
-    proxyModel->setSourceModel(model);
-    ui->treeView->setModel(proxyModel);
+//    proxyModel = new SortObjectProxyModel(this);
+//    proxyModel->setSourceModel(model);
+    ui->treeView->setModel(model);
     adjustColumnWidth();
 }
 
@@ -55,9 +54,9 @@ void HeapDumpForm::loadSelectedReferences(RBKit::HeapItem *_selectedItem)
 {
     rootItem = _selectedItem->getSelectedReferences();
     model = new RBKit::HeapDataModel(rootItem, this);
-    proxyModel = new SortObjectProxyModel(this);
-    proxyModel->setSourceModel(model);
-    ui->treeView->setModel(proxyModel);
+//    proxyModel = new SortObjectProxyModel(this);
+//    proxyModel->setSourceModel(model);
+    ui->treeView->setModel(model);
     adjustColumnWidth();
 }
 
@@ -76,7 +75,7 @@ void HeapDumpForm::onCustomContextMenu(const QPoint &point)
     if (disableRightClick)
         return;
     QPoint localPoint = ui->treeView->viewport()->mapToGlobal(point);
-    QModelIndex index = proxyModel->mapToSource(ui->treeView->indexAt(point));
+    QModelIndex index = ui->treeView->indexAt(point);
     if (index.isValid()) {
         selecteItem = static_cast<RBKit::HeapItem *>(index.internalPointer());
         QMenu menu(this);
