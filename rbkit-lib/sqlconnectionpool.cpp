@@ -21,7 +21,10 @@ SqlConnectionPool *SqlConnectionPool::getInstance() {
 
 void SqlConnectionPool::setupDatabase()
 {
-    qDebug() << "Creating new shared resource";
+    QFile file("/tmp/rbkit.db");
+    if (file.exists()) {
+        file.remove();
+    }
     database = QSqlDatabase::addDatabase("QSQLITE");
     database.setDatabaseName("/tmp/rbkit.db");
 
