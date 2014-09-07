@@ -1,6 +1,8 @@
 #ifndef RBKIT_HEAPITEM_H
 #define RBKIT_HEAPITEM_H
 
+#include <QUuid>
+#include <QCryptographicHash>
 #include "objectstore.h"
 
 namespace RBKit {

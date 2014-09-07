@@ -145,28 +145,44 @@ QString HeapItem::leadingIdentifier()
 HeapItem *HeapItem::getSelectedReferences()
 {
     QString queryString;
+    QCryptographicHash cryptHash(QCryptographicHash::Sha1);
+    qint64 msec = QDateTime::currentMSecsSinceEpoch();
+    char *randomData;
+    asprintf(&randomData, "%lld", msec);
+    cryptHash.addData(randomData, strlen(randomData));
+    qDebug() << "Random data is : " << randomData;
+    QString viewName = QString("view_").append(QString(cryptHash.result().toHex()).mid(0, 6));
+    free(randomData);
+    qDebug() << "** Generated uuid is : " << viewName;
     if (leafNode) {
-        queryString = QString("select rbkit_objects_%0.class_name, count(rbkit_objects_%0.id) as total_count, sum(rbkit_objects_%0.reference_count) as ref_count, "
-                            "sum(rbkit_objects_%0.size) as total_size from rbkit_objects_%0 where rbkit_objects_%0.id in "
-                            "(select rbkit_object_references_%0.child_id from rbkit_object_references_%0 "
-                            " INNER JOIN rbkit_objects_%0 ON rbkit_objects_%0.id = rbkit_object_references_%0.object_id "
-                            " where rbkit_objects_%0.class_name = '%1' and rbkit_objects_%0.file='%2')"
-                            " group by rbkit_objects_%0.class_name").arg(snapShotVersion).arg(className).arg(filename);
+        queryString = QString("create view %0 AS select * from %1 where %1.id in "
+                            "(select %2.child_id from %2 "
+                            " INNER JOIN %1 ON %1.id = %2.object_id "
+                            " where %1.class_name = '%3' and %1.file='%4')").arg(viewName).arg(objectsTableName).arg(referenceTableName).arg(className).arg(filename);
     } else {
-        queryString = QString("select rbkit_objects_%0.class_name, count(rbkit_objects_%0.id) as total_count, sum(rbkit_objects_%0.reference_count) as ref_count, "
-                            "sum(rbkit_objects_%0.size) as total_size from rbkit_objects_%0 where rbkit_objects_%0.id in "
-                            "(select rbkit_object_references_%0.child_id from rbkit_object_references_%0 "
-                            " INNER JOIN rbkit_objects_%0 ON rbkit_objects_%0.id = rbkit_object_references_%0.object_id "
-                            " where rbkit_objects_%0.class_name = '%1')"
-                            " group by rbkit_objects_%0.class_name").arg(snapShotVersion).arg(className);
+        queryString = QString("create view %0 AS select * from %1 where %1.id in "
+                            "(select %2.child_id from %2 "
+                            " INNER JOIN %1 ON %1.id = %2.object_id "
+                            " where %1.class_name = '%3')").arg(viewName).arg(objectsTableName).arg(referenceTableName).arg(className);
     }
 
-    QSqlQuery query(queryString);
-    HeapItem *rootItem = new HeapItem(snapShotVersion);
+    QSqlQuery query;
 
-    while(query.next()) {
-        HeapItem* item = new HeapItem(query.value(0).toString(), query.value(1).toInt(),
-                                      query.value(2).toInt(), query.value(3).toInt(), snapShotVersion);
+    if (!query.exec(queryString)) {
+        qDebug() << "Error creating view with";
+        qDebug() << query.lastError();
+    }
+
+
+    HeapItem *rootItem = new HeapItem(-1);
+    rootItem->setObjectsTableName(viewName);
+    QSqlQuery searchQuery(QString("select class_name, count(id) as object_count, "
+                          "sum(reference_count) as total_ref_count, sum(size) as total_size from %0 group by (class_name)").arg(viewName));
+
+    while(searchQuery.next()) {
+        HeapItem* item = new HeapItem(searchQuery.value(0).toString(), searchQuery.value(1).toInt(),
+                                      searchQuery.value(2).toInt(), searchQuery.value(3).toInt(), -1);
+        item->setObjectsTableName(viewName);
         rootItem->addChildren(item);
     }
     rootItem->childrenFetched = true;
