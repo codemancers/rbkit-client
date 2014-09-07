@@ -30,6 +30,7 @@ class HeapDumpForm : public QWidget
     QSortFilterProxyModel *proxyModel;
     RBKit::HeapItem *selecteItem;
     RbkitMainWindow *parentWindow;
+    bool disableRightClick;
 public:
     explicit HeapDumpForm(QWidget *parent = 0, int _snapShotVersion = 0);
     ~HeapDumpForm();
@@ -38,6 +39,8 @@ public:
     void adjustColumnWidth();
     RbkitMainWindow *getParentWindow() const;
     void setParentWindow(RbkitMainWindow *value);
+    void setDisableRightClick(bool value);
+    bool getDisableRightClick() const;
 
 private:
     Ui::HeapDumpForm *ui;

@@ -13,7 +13,7 @@ void HeapDumpForm::setParentWindow(RbkitMainWindow *value)
     parentWindow = value;
 }
 HeapDumpForm::HeapDumpForm(QWidget* parent, int _snapShotVersion)
-    : QWidget(parent), ui(new Ui::HeapDumpForm), snapShotVersion(_snapShotVersion)
+    : QWidget(parent), ui(new Ui::HeapDumpForm), snapShotVersion(_snapShotVersion), disableRightClick(false)
 {
     selecteItem = NULL;
     ui->setupUi(this);
@@ -31,6 +31,14 @@ HeapDumpForm::~HeapDumpForm()
     delete proxyModel;
     delete model;
     delete rootItem;
+}
+
+void HeapDumpForm::setDisableRightClick(bool value) {
+    disableRightClick = value;
+}
+
+bool HeapDumpForm::getDisableRightClick() const {
+    return disableRightClick;
 }
 
 void HeapDumpForm::loaData()
@@ -65,6 +73,8 @@ void HeapDumpForm::adjustColumnWidth()
 
 void HeapDumpForm::onCustomContextMenu(const QPoint &point)
 {
+    if (disableRightClick)
+        return;
     QPoint localPoint = ui->treeView->viewport()->mapToGlobal(point);
     QModelIndex index = proxyModel->mapToSource(ui->treeView->indexAt(point));
     if (index.isValid()) {
@@ -78,6 +88,7 @@ void HeapDumpForm::onCustomContextMenu(const QPoint &point)
 void HeapDumpForm::viewReferences()
 {
     HeapDumpForm *form = new HeapDumpForm(this, 0);
+    form->setDisableRightClick(true);
     form->loadSelectedReferences(selecteItem);
     parentWindow->addTabWidget(form, QString("References for : %0").arg(selecteItem->leadingIdentifier()));
 }
