@@ -145,14 +145,7 @@ QString HeapItem::leadingIdentifier()
 HeapItem *HeapItem::getSelectedReferences()
 {
     QString queryString;
-    QCryptographicHash cryptHash(QCryptographicHash::Sha1);
-    qint64 msec = QDateTime::currentMSecsSinceEpoch();
-    char *randomData;
-    asprintf(&randomData, "%lld", msec);
-    cryptHash.addData(randomData, strlen(randomData));
-    qDebug() << "Random data is : " << randomData;
-    QString viewName = QString("view_").append(QString(cryptHash.result().toHex()).mid(0, 6));
-    free(randomData);
+    QString viewName = QString("view_").append(RBKit::StringUtil::randomSHA());
     qDebug() << "** Generated uuid is : " << viewName;
     if (leafNode) {
         queryString = QString("create view %0 AS select * from %1 where %1.id in "

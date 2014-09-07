@@ -20,6 +20,18 @@ quint64 hextoInt(const QString &string)
     }
 }
 
+QString randomSHA()
+{
+    QCryptographicHash cryptHash(QCryptographicHash::Sha1);
+    qint64 msec = QDateTime::currentMSecsSinceEpoch();
+    char *randomData;
+    asprintf(&randomData, "%lld", msec);
+    cryptHash.addData(randomData, strlen(randomData));
+    QString sha =  QString(cryptHash.result().toHex()).mid(0, 6);
+    free(randomData);
+    return sha;
+}
+
 
 }
 } // namespace RBKit
