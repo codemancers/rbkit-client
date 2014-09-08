@@ -158,21 +158,20 @@ void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
         QScopedPointer<RBKit::ObjectDetail> objectDetail(
             new RBKit::ObjectDetail(className, objectId));
 
+        objectDetail->fileName = details["file"].toString();
+        objectDetail->lineNumber = details["line"].toInt();
+        objectDetail->addReferences(details["references"].toList());
+        objectDetail->size = details["size"].toInt();
+
         if (objectStore->hasKey(objectId)) {
             // remove the object from previousKeys because we still want
             // this object. and update the object store with details
             // that we have got from object dump.
             previousKeys.removeOne(objectDetail->objectId);
             objectStore->updateObject(objectDetail.data());
-            continue;
+        } else {
+            objectStore->addObject(objectDetail.take());
         }
-
-        objectDetail->fileName = details["file"].toString();
-        objectDetail->lineNumber = details["line"].toInt();
-        objectDetail->addReferences(details["references"].toList());
-        objectDetail->size = details["size"].toInt();
-
-        objectStore->addObject(objectDetail.take());
     }
 
     quint64 objectId(0);
