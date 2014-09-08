@@ -207,20 +207,7 @@ bool HeapItem::hasChildren()
 {
     if (leafNode)
         return false;
-    if (childrenCountFetched > -1) {
-        if (childrenCountFetched > 1)
-            return true;
-        else
-            return false;
-    }
-
-    QSqlQuery query(QString("select count(*) as count from %0 where class_name='%1'").arg(objectsTableName).arg(className));
-    qDebug() << "Checking for children for class : " << className;
-    while(query.next()) {
-        childrenCountFetched = query.value(0).toInt();
-    }
-
-    if (childrenCountFetched > 1)
+    if (count > 1)
         return true;
     else
         return false;
