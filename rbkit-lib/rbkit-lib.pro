@@ -25,7 +25,8 @@ SOURCES += \
     appstate.cpp \
     sqlconnectionpool.cpp \
     heapitem.cpp \
-    heapdatamodel.cpp
+    heapdatamodel.cpp \
+    sortobjectproxymodel.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -42,7 +43,8 @@ HEADERS +=  \
     appstate.h \
     sqlconnectionpool.h \
     heapitem.h \
-    heapdatamodel.h
+    heapdatamodel.h \
+    sortobjectproxymodel.h
 
 
 # Include msgpack via pri file

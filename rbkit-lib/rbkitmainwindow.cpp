@@ -5,7 +5,7 @@
 
 RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     QMainWindow(parent), connected(false), host(""),
-    ui(new Ui::RbkitMainWindow)
+    ui(new Ui::RbkitMainWindow), currentIndex(0)
 {
     RBKit::SqlConnectionPool::getInstance()->setupDatabase();
     this->connected = false;
@@ -14,14 +14,21 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     qRegisterMetaType<RBKit::ObjectDetail>();
     memoryView = new RBKit::MemoryView();
     ui->chartingTab->addTab(memoryView, "Object Charts");
+    connect(ui->chartingTab, SIGNAL(tabCloseRequested(int)), this, SLOT(tabClosed(int)));
 }
+
 
 RbkitMainWindow::~RbkitMainWindow()
 {
     delete ui;
 }
 
-
+void RbkitMainWindow::addTabWidget(HeapDumpForm *heapDumpForm, const QString& title)
+{
+    ++currentIndex;
+    heapForms[currentIndex] = heapDumpForm;
+    ui->chartingTab->addTab(heapDumpForm, title);
+}
 
 void RbkitMainWindow::on_action_Connect_triggered()
 {
@@ -69,8 +76,10 @@ void RbkitMainWindow::on_action_About_Rbkit_triggered()
 void RbkitMainWindow::objectDumpAvailable(int snapshotVersion)
 {
     HeapDumpForm *heapUI = new HeapDumpForm(this, snapshotVersion);
+    heapUI->setParentWindow(this);
     heapUI->loaData();
-    heapForms[snapshotVersion] = heapUI;
+    ++currentIndex;
+    heapForms[currentIndex] = heapUI;
     ui->chartingTab->addTab(heapUI, QString("Heap Dump #%0").arg(snapshotVersion));
 }
 
@@ -132,4 +141,19 @@ void RbkitMainWindow::on_action_Trigger_GC_triggered()
 void RbkitMainWindow::on_actionHeap_Snapshot_triggered()
 {
     emit takeSnapshot();
+}
+
+void RbkitMainWindow::tabClosed(int index)
+{
+    if(index == 0)
+        return;
+
+    ui->chartingTab->removeTab(index);
+    HeapDumpForm *form = heapForms[index];
+    if (form) {
+        delete form;
+    }
+
+    heapForms.remove(index);
+    --currentIndex;
 }

@@ -21,9 +21,12 @@ SqlConnectionPool *SqlConnectionPool::getInstance() {
 
 void SqlConnectionPool::setupDatabase()
 {
-    qDebug() << "Creating new shared resource";
+    QFile file("/tmp/rbkit.db");
+    if (file.exists()) {
+        file.remove();
+    }
     database = QSqlDatabase::addDatabase("QSQLITE");
-    database.setDatabaseName(":memory:");
+    database.setDatabaseName("/tmp/rbkit.db");
 
     if (!database.open()) {
         qDebug() << query.lastError();
@@ -58,13 +61,25 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
     prepareTables();
 
     qDebug() << "Loading db snapshot";
+    if (!query.exec(QString("begin transaction"))) {
+        qDebug() << query.lastError();
+    }
     if (!query.prepare(
                 QString("insert into rbkit_objects_%0(id, class_name, size, reference_count, file) values (?, ?, ?, ?, ?)")
                 .arg(currentVersion))) {
         qDebug() << query.lastError();
         return;
     }
+
     objectStore->insertObjectsInDB(query);
+
+    if (!query.prepare(QString("insert into rbkit_object_references_%0(object_id, child_id) values (?, ?)").arg(currentVersion)))
+        qDebug() << query.lastError();
+
+    objectStore->insertReferences(query);
+
+    if (!query.exec(QString("commit transaction")))
+        qDebug() << query.lastError();
 }
 
 HeapItem *SqlConnectionPool::rootOfSnapshot(int snapShotVersion)

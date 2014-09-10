@@ -17,7 +17,8 @@ RBKit::ObjectStore::ObjectStore(const ObjectStore &original)
 
 void RBKit::ObjectStore::insertObjectsInDB(QSqlQuery query)
 {
-    qDebug() << "*  Insert number of  objects : " << objectStore.size();
+    qDebug() << "*****  Insert number of  objects : " << objectStore.size();
+    int counter = 0;
     QHash<quint64, RBKit::ObjectDetail*>::const_iterator iter = objectStore.constBegin();
     while(iter != objectStore.constEnd()) {
         ObjectDetail *objectDetail = iter.value();
@@ -26,8 +27,30 @@ void RBKit::ObjectStore::insertObjectsInDB(QSqlQuery query)
         query.addBindValue(objectDetail->size);
         query.addBindValue(objectDetail->references.size());
         query.addBindValue(objectDetail->getFileLine());
+        qDebug() << "Inserting object with id : " << objectDetail->objectId << " count : " << counter;
         if (!query.exec()) {
             qDebug() << query.lastError();
+        }
+        ++counter;
+        ++iter;
+    }
+}
+
+void RBKit::ObjectStore::insertReferences(QSqlQuery query)
+{
+    QHash<quint64, RBKit::ObjectDetail*>::const_iterator iter = objectStore.constBegin();
+    while(iter != objectStore.constEnd()) {
+        ObjectDetail *objectDetail = iter.value();
+        QList<quint64> references = objectDetail->references;
+        if (!references.isEmpty()) {
+            for(auto refId : references) {
+                query.addBindValue(objectDetail->objectId);
+                query.addBindValue(refId);
+                if (!query.exec()) {
+                    qDebug() << "Inserting relations failed";
+                    qDebug() << query.lastError();
+                }
+            }
         }
         ++iter;
     }
