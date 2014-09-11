@@ -1,6 +1,7 @@
 #include <QDebug>
 #include <QThread>
 #include <QTimer>
+#include <QScopedPointer>
 
 #include "nzmqt/nzmqt.hpp"
 
@@ -144,24 +145,40 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 }
 
 
-void Subscriber::processEvent(const RBKit::EvtObjectDump &dump)
+void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 {
-    objectStore->reset();
+    auto previousKeys  = objectStore->keys();
+    const auto listOfObjects = dump.payload;
 
-    QVariantList listOfObjects = dump.payload;
-    for (QVariantList::ConstIterator iter = listOfObjects.begin();
-         iter != listOfObjects.end(); ++iter) {
-        QVariantMap details = (*iter).toMap();
-        RBKit::ObjectDetail *objectDetail =
-            new RBKit::ObjectDetail(details["class_name"].toString(),
-                                    RBKit::StringUtil::hextoInt(details["object_id"].toString()));
+    for (auto iter = listOfObjects.begin(); iter != listOfObjects.end(); ++iter) {
+        auto details = (*iter).toMap();
+        auto objectId = RBKit::StringUtil::hextoInt(details["object_id"].toString());
+        auto className = details["class_name"].toString();
+
+        QScopedPointer<RBKit::ObjectDetail> objectDetail(
+            new RBKit::ObjectDetail(className, objectId));
+
         objectDetail->fileName = details["file"].toString();
         objectDetail->lineNumber = details["line"].toInt();
         objectDetail->addReferences(details["references"].toList());
         objectDetail->size = details["size"].toInt();
 
-        objectStore->addObject(objectDetail);
+        if (objectStore->hasKey(objectId)) {
+            // remove the object from previousKeys because we still want
+            // this object. and update the object store with details
+            // that we have got from object dump.
+            previousKeys.removeOne(objectDetail->objectId);
+            objectStore->updateObject(objectDetail.data());
+        } else {
+            objectStore->addObject(objectDetail.take());
+        }
     }
+
+    quint64 objectId(0);
+    foreach (objectId, previousKeys) {
+        objectStore->removeObject(objectId);
+    }
+
     RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
     emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());
 }

@@ -88,6 +88,25 @@ void RBKit::ObjectStore::reset() {
     objectTypeCount.clear();
 }
 
+bool RBKit::ObjectStore::hasKey(quint64 key) const
+{
+    return objectStore.find(key) != objectStore.end();
+}
+
+QList<quint64> RBKit::ObjectStore::keys() const
+{
+    return objectStore.keys();
+}
+
+void RBKit::ObjectStore::updateObject(RBKit::ObjectDetail *objectDetail)
+{
+    RBKit::ObjectDetail* object = objectStore[objectDetail->objectId];
+    object->fileName   = objectDetail->fileName;
+    object->lineNumber = objectDetail->lineNumber;
+    object->references = objectDetail->references;
+    object->size       = objectDetail->size;
+}
+
 
 void RBKit::ObjectStore::updateObjectGeneration()
 {

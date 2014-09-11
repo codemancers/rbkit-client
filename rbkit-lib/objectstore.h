@@ -36,12 +36,18 @@ namespace RBKit {
         QHash<QString, quint32> objectTypeCount;
         // Mapping between object class and the ids
         QMultiMap<QString, quint64> objectTypeIdMap;
+
+        // database related functions
         void insertObjectsInDB(QSqlQuery query);
         void insertReferences(QSqlQuery query);
 
-        void addObject(RBKit::ObjectDetail *objectDetails);
+        void addObject(RBKit::ObjectDetail* objectDetails);
+        void updateObject(RBKit::ObjectDetail* details);
         void removeObject(quint64 key);
         void reset();
+        bool hasKey(quint64 key) const;
+        QList<quint64> keys() const;
+
         void updateObjectGeneration();
         ObjectDetail *getObject(quint64 key);
         quint32 getObjectTypeCount(const QString& className);
