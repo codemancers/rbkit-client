@@ -123,18 +123,21 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
 void Subscriber::processEvent(const RBKit::EvtNewObject& objCreated)
 {
     objectStore->addObject(objCreated.object);
+    aggregator.objCreated(objCreated.object);
 }
 
 void Subscriber::processEvent(const RBKit::EvtDelObject& objDeleted)
 {
     quint64 objectId = objDeleted.objectId;
     objectStore->removeObject(objectId);
+    aggregator.objDeleted(objectId);
 }
 
 void Subscriber::processEvent(const RBKit::EvtGcStats& stats)
 {
     static const QString eventName("gc_stats");
     jsBridge->sendMapToJs(eventName, stats.timestamp, stats.payload);
+    aggregator.onGcStats(stats.payload);
 }
 
 
@@ -177,11 +180,13 @@ void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
             objectStore->updateObject(object);
         } else {
             objectStore->addObject(object);
+            aggregator.objCreated(object);
         }
     }
 
     for (auto objectId : previousKeys) {
         objectStore->removeObject(objectId);
+        aggregator.objDeleted(objectId);
     }
 
     RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
@@ -200,17 +205,6 @@ void Subscriber::onTimerExpiry()
 {
     static const QString eventName("object_stats");
 
-    quint64 objectsCount(0);
-    quint64 objectsSize(0);
-
-    // TODO: Should we move this into objectStore itself?
-    for (const auto& iter : objectStore->objectStore) {
-        objectsSize += iter->size;
-        ++objectsCount;
-    }
-
-    QVariantMap map;
-    map[QString("Heap Objects")] = objectsCount;
-    map[QString("Heap Size")] = objectsSize;
+    QVariantMap map = hashToQVarMap(aggregator.liveStats());
     jsBridge->sendMapToJs(eventName, QDateTime(), map);
 }

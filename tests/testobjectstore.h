@@ -14,7 +14,6 @@ private slots:
     void initTestCase();
     void cleanupTestCase();
     void testRemoveObject();
-    void testObjectTypeMap();
     void testUpdateGeneration();
     void testObjectDetailGetFileLine();
 };

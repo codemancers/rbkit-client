@@ -41,27 +41,15 @@ void RBKit::ObjectStore::insertReferences(QSqlQuery query)
 void RBKit::ObjectStore::addObject(RBKit::ObjectDetailPtr objectDetail)
 {
     objectStore[objectDetail->objectId] = objectDetail;
-    ++objectTypeCount[objectDetail->className];
 }
 
 void RBKit::ObjectStore::removeObject(quint64 key)
 {
-    auto iter = objectStore.find(key);
-    if (iter != objectStore.end()) {
-        auto object = iter.value();
-
-        quint32 oldCount = objectTypeCount[object->className];
-        if(oldCount > 0) {
-            oldCount -= 1;
-        }
-        objectTypeCount[object->className] = oldCount;
-    }
     objectStore.remove(key);
 }
 
 void RBKit::ObjectStore::reset() {
     objectStore.clear();
-    objectTypeCount.clear();
 }
 
 bool RBKit::ObjectStore::hasKey(quint64 key) const
@@ -100,36 +88,4 @@ QHash<QString, quint64> RBKit::ObjectStore::generationStats(int begin, int end) 
     }
 
     return stats;
-}
-
-
-quint32 RBKit::ObjectStore::getObjectTypeCount(const QString &className)
-{
-    return objectTypeCount[className];
-}
-
-quint32 RBKit::ObjectStore::liveObjectCount() const
-{
-    return objectStore.size();
-}
-
-const QVariantMap RBKit::ObjectStore::getObjectTypeCountMap()
-{
-    QVariantMap map;
-    QHash<QString, quint32>::const_iterator typeIter;
-    for(typeIter = objectTypeCount.begin()
-        ; typeIter != objectTypeCount.end()
-        ; typeIter++) {
-        map[typeIter.key()] = typeIter.value();
-    }
-    return map;
-}
-
-std::list<QString> RBKit::ObjectStore::sort(int critirea) const
-{
-    QMap<QString, quint32> map;
-    std::list<QString> classNames = objectTypeCount.keys().toStdList();
-    Sorter s(this);
-    classNames.sort(s);
-    return classNames;
 }

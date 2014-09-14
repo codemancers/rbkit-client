@@ -17,23 +17,7 @@ class QSqlQuery;
 namespace RBKit {
     class ObjectStore
     {
-        class Sorter {
-            const ObjectStore *objectStore;
-        public:
-            Sorter(const ObjectStore *_objectStore): objectStore(_objectStore) {};
-            bool operator() (QString key1, QString key2) {
-                return objectStore->objectTypeCount[key1] > objectStore->objectTypeCount[key2];
-            }
-        };
-
     public:
-        // Store mapping between object-id and detail
-        QHash<quint64, RBKit::ObjectDetailPtr> objectStore;
-        // mapping between object class and its count
-        QHash<QString, quint32> objectTypeCount;
-        // Mapping between object class and the ids
-        QMultiMap<QString, quint64> objectTypeIdMap;
-
         // database related functions
         void insertObjectsInDB(QSqlQuery query);
         void insertReferences(QSqlQuery query);
@@ -59,14 +43,13 @@ namespace RBKit {
             return generationStats(4, 100000);
         }
 
-        quint32 getObjectTypeCount(const QString& className);
-        quint32 liveObjectCount() const;
-        const QVariantMap getObjectTypeCountMap();
-        std::list<QString> sort(int critirea) const;
-
     private:
         // follows half-open series convention: [begin, end)
         QHash<QString, quint64> generationStats(int begin, int end) const;
+
+    private:
+        // Store mapping between object-id and detail
+        QHash<quint64, RBKit::ObjectDetailPtr> objectStore;
     };
 }
 
