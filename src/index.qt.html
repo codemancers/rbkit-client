@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Using Charts.js</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="qrc:/rbcharts/src/styles.css">
+</head>
+<body>
+<div id="wrapper">
+  <div class="gc-stats">
+    <table id='gc-stats-table'>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div class='heap-chart'>
+    <canvas id='heap-chart' width='550' height='300'></canvas>
+  </div>
+  <div class='gc-chart'>
+    <canvas id='gc-chart' width='550' height='100'></canvas>
+  </div>
+  <div class='generation-charts'>
+    <canvas id='generation-one' width='250' height='250'></canvas>
+    <canvas id='generation-two' width='250' height='250'></canvas>
+    <canvas id='generation-three' width='250' height='250'></canvas>
+  </div>
+</div>
+
+<script src='qrc:/rbcharts/vendor/chart.js'></script>
+<script src='qrc:/rbcharts/src/rbcharts.js'></script>
+<script src='qrc:/rbcharts/src/qtbridge.js'></script>
+</body>
+</html>
