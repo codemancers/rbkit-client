@@ -63,9 +63,15 @@ var Rbkit = {
 
   // function to record gc end time
   gcEnded: function (timestamp) {
-    var gcDurationInSec = parseFloat(timestamp - this.gcStartTime)/1000;
+    if (!this.gcStartTime) {
+      console.info("not sure why gc start time is not set");
+      return;
+    }
 
-    this.gcChart.addData([gcDurationInSec], ++this.gcCounter);
+    var gcDurationInMs = parseFloat(timestamp - this.gcStartTime);
+    this.gcStartTime = undefined;
+
+    this.gcChart.addData([gcDurationInMs], ++this.gcCounter);
     if (this.gcChart.datasets[0].bars.length > 10) {
       this.gcChart.removeData();
     }
@@ -197,8 +203,16 @@ var Rbkit = {
     switch (data.event_type) {
     case "object_stats":
       this.updateYoungGenerationChart(data.payload);
+      break;
+    case "gc_start":
+      this.gcStarted(data.timestamp);
+      break;
+    case "gc_stop":
+      this.gcEnded(data.timestamp);
+      break;
     case "event_collection":
       this.updateHeapChart(data.payload);
+      break;
     }
   }
 };
