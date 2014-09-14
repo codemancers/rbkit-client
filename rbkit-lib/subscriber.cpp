@@ -156,14 +156,15 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
     objectStore->updateObjectGeneration();
     jsBridge->sendMapToJs(eventName, gcEvent.timestamp, QVariantMap());
 
-    QVariantMap youngGen = hashToQVarMap(objectStore->youngGenStats());
-    jsBridge->sendMapToJs("young_gen", gcEvent.timestamp, youngGen);
+    // for now, disable polar charts about generations.
+    // QVariantMap youngGen = hashToQVarMap(objectStore->youngGenStats());
+    // jsBridge->sendMapToJs("young_gen", gcEvent.timestamp, youngGen);
 
-    QVariantMap secondGen = hashToQVarMap(objectStore->secondGenStats());
-    jsBridge->sendMapToJs("second_gen", gcEvent.timestamp, secondGen);
+    // QVariantMap secondGen = hashToQVarMap(objectStore->secondGenStats());
+    // jsBridge->sendMapToJs("second_gen", gcEvent.timestamp, secondGen);
 
-    QVariantMap oldGen = hashToQVarMap(objectStore->oldGenStats());
-    jsBridge->sendMapToJs("old_gen", gcEvent.timestamp, oldGen);
+    // QVariantMap oldGen = hashToQVarMap(objectStore->oldGenStats());
+    // jsBridge->sendMapToJs("old_gen", gcEvent.timestamp, oldGen);
 }
 
 
