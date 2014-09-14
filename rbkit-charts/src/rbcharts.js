@@ -210,6 +210,9 @@ var Rbkit = {
     case "gc_stop":
       this.gcEnded(data.timestamp);
       break;
+    case "gc_stats":
+      this.updateGcStats(data.payload);
+      break;
     case "event_collection":
       this.updateHeapChart(data.payload);
       break;
