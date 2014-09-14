@@ -14,6 +14,18 @@
 static const int rbkcZmqTotalIoThreads = 1;
 static const int timerIntervalInMs = 1500;
 
+// TODO: Move it to utils, or some common file.
+template <class K, class V>
+QVariantMap hashToQVarMap(const QHash<K, V>&& hash) {
+    QVariantMap map;
+
+    auto iter = hash.constBegin();
+    for (; iter != hash.constEnd(); ++iter) {
+        map[iter.key()] = iter.value();
+    }
+
+    return map;
+}
 
 
 Subscriber::Subscriber(RBKit::JsBridge* bridge)
@@ -138,10 +150,18 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 {
     qDebug() << "Received gc stop" << gcEvent.timestamp;
     static const QString eventName("gc_stop");
-    QVariantMap map;
     // update generation of objects that have survived the GC
     objectStore->updateObjectGeneration();
-    jsBridge->sendMapToJs(eventName, gcEvent.timestamp, map);
+    jsBridge->sendMapToJs(eventName, gcEvent.timestamp, QVariantMap());
+
+    QVariantMap youngGen = hashToQVarMap(objectStore->youngGenStats());
+    jsBridge->sendMapToJs("young_gen", gcEvent.timestamp, youngGen);
+
+    QVariantMap secondGen = hashToQVarMap(objectStore->secondGenStats());
+    jsBridge->sendMapToJs("second_gen", gcEvent.timestamp, secondGen);
+
+    QVariantMap oldGen = hashToQVarMap(objectStore->oldGenStats());
+    jsBridge->sendMapToJs("old_gen", gcEvent.timestamp, oldGen);
 }
 
 
