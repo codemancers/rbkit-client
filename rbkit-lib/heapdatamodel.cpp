@@ -114,10 +114,7 @@ void HeapDataModel::fetchMore(const QModelIndex &parent)
         int startRow = row + 1 ;
         HeapItem *item = static_cast<HeapItem *>(parent.internalPointer());
         if (!item->childrenFetched) {
-            qDebug() << "Insert New Rows at :" << startRow << " ending at : " << startRow + item->childrenCount();
-            beginInsertRows(parent, startRow, startRow + item->childrenCount());
             item->fetchChildren();
-            endInsertRows();
         }
     }
 }

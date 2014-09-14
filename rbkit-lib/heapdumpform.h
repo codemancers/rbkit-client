@@ -28,7 +28,7 @@ class HeapDumpForm : public QWidget
     QAction *viewRefAct;
     RBKit::HeapItem *rootItem;
     RBKit::HeapDataModel *model;
-    QSortFilterProxyModel *proxyModel;
+    SortObjectProxyModel *proxyModel;
     RBKit::HeapItem *selecteItem;
     RbkitMainWindow *parentWindow;
     bool disableRightClick;
