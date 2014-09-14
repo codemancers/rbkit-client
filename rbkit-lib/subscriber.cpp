@@ -208,9 +208,17 @@ void Subscriber::onTimerExpiry()
 {
     static const QString eventName("object_stats");
 
-    // qDebug() << m_type2Count;
-    QVariantMap data = objectStore->getObjectTypeCountMap();
-    if (!data.empty()) {
-        jsBridge->sendMapToJs(eventName, QDateTime(), data);
+    quint64 objectsCount(0);
+    quint64 objectsSize(0);
+
+    // TODO: Should we move this into objectStore itself?
+    for (const auto& iter : objectStore->objectStore) {
+        objectsSize += iter->size;
+        ++objectsCount;
     }
+
+    QVariantMap map;
+    map[QString("Heap Objects")] = objectsCount;
+    map[QString("Heap Size")] = objectsSize;
+    jsBridge->sendMapToJs(eventName, QDateTime(), map);
 }
