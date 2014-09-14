@@ -43,11 +43,28 @@ namespace RBKit {
         void removeObject(quint64 key);
         void reset();
         void updateObjectGeneration();
+
+        inline QHash<QString, quint64> youngGenStats() const {
+            return generationStats(0, 2);
+        }
+
+        inline QHash<QString, quint64> secondGenStats() const {
+            return generationStats(2, 4);
+        }
+
+        inline QHash<QString, quint64> oldGenStats() const {
+            return generationStats(4, 100000);
+        }
+
         ObjectDetail *getObject(quint64 key);
         quint32 getObjectTypeCount(const QString& className);
         const quint32 liveObjectCount() const;
         const QVariantMap getObjectTypeCountMap();
         std::list<QString> sort(int critirea) const;
+
+    private:
+        // follows half-open series convention: [begin, end)
+        QHash<QString, quint64> generationStats(int begin, int end) const;
     };
 }
 

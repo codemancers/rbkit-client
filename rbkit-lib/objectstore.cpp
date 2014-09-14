@@ -99,6 +99,18 @@ void RBKit::ObjectStore::updateObjectGeneration()
     }
 }
 
+QHash<QString, quint64> RBKit::ObjectStore::generationStats(int begin, int end) const
+{
+    QHash<QString, quint64> stats;
+    for (const auto& iter : objectStore) {
+        if (begin <= iter->objectGeneration && iter->objectGeneration < end) {
+            ++stats[iter->className];
+        }
+    }
+
+    return stats;
+}
+
 RBKit::ObjectDetail *RBKit::ObjectStore::getObject(quint64 key)
 {
     QHash<quint64, RBKit::ObjectDetail*>::const_iterator i = objectStore.find(key);
