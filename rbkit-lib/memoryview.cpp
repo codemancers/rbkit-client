@@ -23,7 +23,7 @@ MemoryView::MemoryView(QWidget *parent) :
     settings->setAttribute(QWebSettings::JavascriptCanAccessClipboard, false);
 
     connect(ui->chartingView, SIGNAL(loadFinished(bool)), this, SLOT(onPageLoad(bool)));
-    ui->chartingView->setUrl(QUrl("qrc:/web/index.html"));
+    ui->chartingView->setUrl(QUrl("qrc:/rbcharts/src/index.qt.html"));
 
     jsBridge = new RBKit::JsBridge();
 }
