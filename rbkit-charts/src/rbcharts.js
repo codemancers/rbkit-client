@@ -34,6 +34,14 @@ var Rbkit = {
     labels: [0]
   },
 
+  gcStatsImportantFields: [
+    'count', 'minor_gc_count', 'major_gc_count',
+    'heap_length', 'heap_eden_page_length', 'heap_used',
+    'heap_live_slot', 'heap_free_slot', 'heap_swept_slot',
+    'old_object', 'old_object_limit', 'remembered_shady_object',
+    'total_allocated_object', 'total_freed_object'
+  ],
+
   // chart canvas contexts, maybe we can remove these
   heapDataCtx         : undefined,
   gcCtx               : undefined,
@@ -129,26 +137,27 @@ var Rbkit = {
   },
 
   updateGcStats: function (gcStats) {
-    for (var key in gcStats) {
-      if (gcStats.hasOwnProperty(key)) {
-        entry = document.getElementById(key);
-        if (entry) {
-          entry.textContent = gcStats[key];
-        } else {
-          var trNode = document.createElement('tr');
-          var tdKey = document.createElement('td');
-          tdKey.textContent = key;
-          var tdVal = document.createElement('td');
-          tdVal.id = key;
-          tdVal.textContent = gcStats[key];
-          trNode.appendChild(tdKey);
-          trNode.appendChild(tdVal);
+    for (var iter = 0; iter != this.gcStatsImportantFields.length; ++iter) {
+      var key = this.gcStatsImportantFields[iter];
+      var value = gcStats[key];
 
-          // append created node to table
-          document.getElementById('gc-stats-table')
-            .firstElementChild
-            .appendChild(trNode);
-        }
+      var entry = document.getElementById(key);
+      if (entry) {
+        entry.textContent = value;
+      } else {
+        var trNode = document.createElement('tr');
+        var tdKey = document.createElement('td');
+        tdKey.textContent = key;
+        var tdVal = document.createElement('td');
+        tdVal.id = key;
+        tdVal.textContent = value;
+        trNode.appendChild(tdKey);
+        trNode.appendChild(tdVal);
+
+        // append created node to table
+        document.getElementById('gc-stats-table')
+          .firstElementChild
+          .appendChild(trNode);
       }
     }
   },
