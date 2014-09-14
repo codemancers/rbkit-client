@@ -217,7 +217,7 @@ var Rbkit = {
     case "gc_stats":
       this.updateGcStats(data.payload);
       break;
-    case "event_collection":
+    case "object_stats":
       this.updateHeapChart(data.payload);
       break;
     }
