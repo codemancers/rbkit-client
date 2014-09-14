@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/rbcharts">
+        <file>vendor/chart.js</file>
+
+        <file>src/index.qt.html</file>
+        <file>src/rbcharts.js</file>
+        <file>src/qtbridge.js</file>
+        <file>src/styles.css</file>
+    </qresource>
+</RCC>

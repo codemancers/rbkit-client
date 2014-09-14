@@ -1,0 +1,25 @@
+#wrapper {
+  width: 900px;
+}
+
+.heap-chart, .gc-chart {
+  margin: 20px 0px;
+  float: left;
+  width: 550px;
+}
+
+.gc-stats {
+  float: right;
+  width: 250px;
+}
+
+.generation-charts {
+  margin-top: 40px;
+  float: left;
+  width: 800px;
+}
+
+
+.generation-charts canvas {
+  display: inline-block;
+}
