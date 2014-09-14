@@ -13,7 +13,6 @@ public:
 private slots:
     void initTestCase();
     void cleanupTestCase();
-    void testGetObject();
     void testRemoveObject();
     void testObjectTypeMap();
     void testUpdateGeneration();

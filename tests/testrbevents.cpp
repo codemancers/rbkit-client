@@ -21,7 +21,7 @@ void TestRbEvents::testParseObjectCreateEvent()
 
     EvtNewObject* event = dynamic_cast<EvtNewObject*>(base);
     QVERIFY(event);
-    QVERIFY(0x7f879309d090 == event->objectId);
+    QVERIFY(0x7f879309d090 == event->object->objectId);
 }
 
 // test whether parser is parsing destroy event properly or not.

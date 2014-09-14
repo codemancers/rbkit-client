@@ -122,8 +122,7 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
 
 void Subscriber::processEvent(const RBKit::EvtNewObject& objCreated)
 {
-    RBKit::ObjectDetail *objectDetail = new RBKit::ObjectDetail(objCreated.className, objCreated.objectId);
-    objectStore->addObject(objectDetail);
+    objectStore->addObject(objCreated.object);
 }
 
 void Subscriber::processEvent(const RBKit::EvtDelObject& objDeleted)
@@ -168,39 +167,32 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 {
     auto previousKeys  = objectStore->keys();
-    const auto listOfObjects = dump.payload;
 
-    for (auto iter = listOfObjects.begin(); iter != listOfObjects.end(); ++iter) {
-        auto details = (*iter).toMap();
-        auto objectId = RBKit::StringUtil::hextoInt(details["object_id"].toString());
-        auto className = details["class_name"].toString();
-
-        QScopedPointer<RBKit::ObjectDetail> objectDetail(
-            new RBKit::ObjectDetail(className, objectId));
-
-        objectDetail->fileName = details["file"].toString();
-        objectDetail->lineNumber = details["line"].toInt();
-        objectDetail->addReferences(details["references"].toList());
-        objectDetail->size = details["size"].toInt();
-
-        if (objectStore->hasKey(objectId)) {
+    for (auto& object : dump.objects) {
+        if (objectStore->hasKey(object->objectId)) {
             // remove the object from previousKeys because we still want
             // this object. and update the object store with details
             // that we have got from object dump.
-            previousKeys.removeOne(objectDetail->objectId);
-            objectStore->updateObject(objectDetail.data());
+            previousKeys.removeOne(object->objectId);
+            objectStore->updateObject(object);
         } else {
-            objectStore->addObject(objectDetail.take());
+            objectStore->addObject(object);
         }
     }
 
-    quint64 objectId(0);
-    foreach (objectId, previousKeys) {
+    for (auto objectId : previousKeys) {
         objectStore->removeObject(objectId);
     }
 
     RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
     emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());
+}
+
+void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)
+{
+    for (auto& event : evtCollection.events) {
+        event->process(*this);
+    }
 }
 
 

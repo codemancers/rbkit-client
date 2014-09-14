@@ -49,6 +49,7 @@ public:
     void processEvent(const RBKit::EvtGcStart&);
     void processEvent(const RBKit::EvtGcStop&);
     void processEvent(const RBKit::EvtObjectDump&);
+    void processEvent(const RBKit::EvtCollection&);
 
 signals:
     void disconnected();

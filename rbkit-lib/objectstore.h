@@ -27,11 +27,8 @@ namespace RBKit {
         };
 
     public:
-        ObjectStore();
-        ObjectStore(const ObjectStore &);
-
         // Store mapping between object-id and detail
-        QHash<quint64, RBKit::ObjectDetail*> objectStore;
+        QHash<quint64, RBKit::ObjectDetailPtr> objectStore;
         // mapping between object class and its count
         QHash<QString, quint32> objectTypeCount;
         // Mapping between object class and the ids
@@ -41,8 +38,8 @@ namespace RBKit {
         void insertObjectsInDB(QSqlQuery query);
         void insertReferences(QSqlQuery query);
 
-        void addObject(RBKit::ObjectDetail* objectDetails);
-        void updateObject(RBKit::ObjectDetail* details);
+        void addObject(RBKit::ObjectDetailPtr objectPtr);
+        void updateObject(RBKit::ObjectDetailPtr object);
         void removeObject(quint64 key);
         void reset();
         bool hasKey(quint64 key) const;
@@ -62,9 +59,8 @@ namespace RBKit {
             return generationStats(4, 100000);
         }
 
-        ObjectDetail *getObject(quint64 key);
         quint32 getObjectTypeCount(const QString& className);
-        const quint32 liveObjectCount() const;
+        quint32 liveObjectCount() const;
         const QVariantMap getObjectTypeCountMap();
         std::list<QString> sort(int critirea) const;
 
