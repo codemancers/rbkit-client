@@ -97,17 +97,15 @@ var Rbkit = {
 
   // helper function to update a particular polar chart
   updatePolarChart: function(chart, newData) {
+    // clear the whole chart first
+    chart.segments = [];
+
     var iter = 0;
     for (var key in newData) {
       if (newData.hasOwnProperty(key)) {
-        segment = chart.segments[iter];
-        if (segment === undefined) {
-          color = this.polarChartDefaultColors[iter];
-          chart.addData({ value: newData[key], label: key, color: color, highlight: color });
-        } else {
-          chart.segments[iter].value = newData[key];
-          chart.segments[iter].label = key;
-        }
+        var color = this.polarChartDefaultColors[iter];
+        var data = { value: newData[key], label: key, color: color, highlight: color };
+        chart.addData(data);
         ++iter;
       }
     }
@@ -201,8 +199,14 @@ var Rbkit = {
 
   receiveLiveData: function(data) {
     switch (data.event_type) {
-    case "object_stats":
+    case "young_gen":
       this.updateYoungGenerationChart(data.payload);
+      break;
+    case "second_gen":
+      this.updateSecondGenerationChart(data.payload);
+      break;
+    case "old_gen":
+      this.updateOldGenerationChart(data.payload);
       break;
     case "gc_start":
       this.gcStarted(data.timestamp);
