@@ -5,6 +5,9 @@
 #include <QThread>
 #include <QWebFrame>
 #include <QMessageBox>
+#include <QLabel>
+#include <QProgressBar>
+#include <QTimer>
 
 #include "subscriber.h"
 #include "askhost.h"
@@ -31,6 +34,9 @@ class RbkitMainWindow : public QMainWindow
     RBKit::MemoryView *memoryView;
     QHash<int, HeapDumpForm *> heapForms;
     int currentIndex;
+    QLabel *statusLabel;
+    QProgressBar *progressBar;
+    QTimer *snapshotProgressTimer;
 
     void setupSubscriber();
     void disconnectFromSocket();
@@ -64,6 +70,7 @@ private slots:
 
     void on_actionHeap_Snapshot_triggered();
     void tabClosed(int index);
+    void updateProgressBar();
 
 private:
     Ui::RbkitMainWindow *ui;

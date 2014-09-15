@@ -1,4 +1,5 @@
 #include "sqlconnectionpool.h"
+#include "appstate.h"
 
 namespace RBKit {
 
@@ -72,6 +73,7 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
     }
 
     objectStore->insertObjectsInDB(query);
+    RBKit::AppState::getInstance()->setAppState("heap_snapshot", 50);
 
     if (!query.prepare(QString("insert into rbkit_object_references_%0(object_id, child_id) values (?, ?)").arg(currentVersion)))
         qDebug() << query.lastError();
@@ -80,6 +82,8 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
 
     if (!query.exec(QString("commit transaction")))
         qDebug() << query.lastError();
+
+    RBKit::AppState::getInstance()->setAppState("heap_snapshot", 80);
 }
 
 HeapItem *SqlConnectionPool::rootOfSnapshot(int snapShotVersion)

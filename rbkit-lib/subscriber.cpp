@@ -9,6 +9,7 @@
 #include "zmqsockets.h"
 #include "rbcommands.h"
 #include "jsbridge.h"
+#include "appstate.h"
 
 
 static const int rbkcZmqTotalIoThreads = 1;
@@ -190,6 +191,7 @@ void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
         aggregator.objDeleted(objectId);
     }
 
+    RBKit::AppState::getInstance()->setAppState("heap_snapshot", 10);
     RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
     emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());
 }
