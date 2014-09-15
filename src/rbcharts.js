@@ -2,11 +2,27 @@
 // namespace
 var Rbkit = {
   // heap data which will be displayed as line chart
+  liveObjectsData: {
+    labels: ['-', '-'],
+    datasets: [
+        {
+            label: 'Live Objects',
+            fillColor: "rgba(220,220,220,0.2)",
+            strokeColor: "rgba(220,220,220,1)",
+            pointColor: "rgba(220,220,220,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(220,220,220,1)",
+            data: [0, 0]
+        }
+    ]
+  },
+
   heapData: {
     labels: ['-', '-'],
     datasets: [
         {
-            label: 'Heap Objects',
+            label: 'RES Mem Size',
             fillColor: "rgba(220,220,220,0.2)",
             strokeColor: "rgba(220,220,220,1)",
             pointColor: "rgba(220,220,220,1)",
@@ -34,14 +50,16 @@ var Rbkit = {
     labels: [0]
   },
 
-  // chart canvas contexts, maybe we can remove these
-  heapDataCtx         : undefined,
-  gcCtx               : undefined,
-  youngGenerationCtx  : undefined,
-  secondGenerationCtx : undefined,
-  oldGenerationCtx    : undefined,
+  gcStatsImportantFields: [
+    'count', 'minor_gc_count', 'major_gc_count',
+    'heap_length', 'heap_eden_page_length', 'heap_used',
+    'heap_live_slot', 'heap_free_slot', 'heap_swept_slot',
+    'old_object', 'old_object_limit', 'remembered_shady_object',
+    'total_allocated_object', 'total_freed_object'
+  ],
 
   // actual charts
+  liveObjectsChart      : undefined,
   heapDataChart         : undefined,
   gcChart               : undefined,
   youngGenerationChart  : undefined,
@@ -63,9 +81,15 @@ var Rbkit = {
 
   // function to record gc end time
   gcEnded: function (timestamp) {
-    var gcDurationInSec = parseFloat(timestamp - this.gcStartTime)/1000;
+    if (!this.gcStartTime) {
+      console.info("not sure why gc start time is not set");
+      return;
+    }
 
-    this.gcChart.addData([gcDurationInSec], ++this.gcCounter);
+    var gcDurationInMs = parseFloat(timestamp - this.gcStartTime);
+    this.gcStartTime = undefined;
+
+    this.gcChart.addData([gcDurationInMs], ++this.gcCounter);
     if (this.gcChart.datasets[0].bars.length > 10) {
       this.gcChart.removeData();
     }
@@ -91,17 +115,15 @@ var Rbkit = {
 
   // helper function to update a particular polar chart
   updatePolarChart: function(chart, newData) {
+    // clear the whole chart first
+    chart.segments = [];
+
     var iter = 0;
     for (var key in newData) {
       if (newData.hasOwnProperty(key)) {
-        segment = chart.segments[iter];
-        if (segment === undefined) {
-          color = this.polarChartDefaultColors[iter];
-          chart.addData({ value: newData[key], label: key, color: color, highlight: color });
-        } else {
-          chart.segments[iter].value = newData[key];
-          chart.segments[iter].label = key;
-        }
+        var color = this.polarChartDefaultColors[iter];
+        var data = { value: newData[key], label: key, color: color, highlight: color };
+        chart.addData(data);
         ++iter;
       }
     }
@@ -125,35 +147,60 @@ var Rbkit = {
   },
 
   updateGcStats: function (gcStats) {
-    for (var key in gcStats) {
-      if (gcStats.hasOwnProperty(key)) {
-        entry = document.getElementById(key);
-        if (entry) {
-          entry.textContent = gcStats[key];
-        } else {
-          var trNode = document.createElement('tr');
-          var tdKey = document.createElement('td');
-          tdKey.textContent = key;
-          var tdVal = document.createElement('td');
-          tdVal.id = key;
-          tdVal.textContent = gcStats[key];
-          trNode.appendChild(tdKey);
-          trNode.appendChild(tdVal);
+    for (var iter = 0; iter != this.gcStatsImportantFields.length; ++iter) {
+      var key = this.gcStatsImportantFields[iter];
+      var value = gcStats[key];
 
-          // append created node to table
-          document.getElementById('gc-stats-table')
-            .firstElementChild
-            .appendChild(trNode);
-        }
+      var entry = document.getElementById(key);
+      if (entry) {
+        entry.textContent = value;
+      } else {
+        var trNode = document.createElement('tr');
+        var tdKey = document.createElement('td');
+        tdKey.textContent = key;
+        var tdVal = document.createElement('td');
+        tdVal.id = key;
+        tdVal.textContent = value;
+        trNode.appendChild(tdKey);
+        trNode.appendChild(tdVal);
+
+        // append created node to table
+        document.getElementById('gc-stats-table')
+          .firstElementChild
+          .appendChild(trNode);
       }
     }
   },
 
-  updateHeapChart: function (newData) {
-    var date = new Date();
-    var timeStamp = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+  updateLiveObjectsChart: function (newData) {
+    var timeStamp = this.getTimeStamp();
 
-    var values = [newData['Heap Objects'], newData['Heap Size']];
+    var values = [newData['Heap Objects'].toFixed(2)];
+    this.liveObjectsChart.addData(values, timeStamp);
+
+    if (this.liveObjectsChart.datasets[0].points.length > 10) {
+      this.liveObjectsChart.removeData();
+    }
+
+    this.liveObjectsChart.render();
+  },
+
+  getTimeStamp: function() {
+    var date = new Date(),
+        minutes = date.getMinutes(),
+        seconds = date.getSeconds();
+
+    var timeStamp = (minutes < 10 ? '0' + minutes : minutes ) +
+                    ':' +
+                    (seconds < 10 ? '0' + seconds : seconds );
+
+    return timeStamp;
+  },
+
+  updateHeapChart: function (newData) {
+    timeStamp = this.getTimeStamp();
+
+    var values = [newData['Heap Size'].toFixed(2), newData['Mem Size'].toFixed(2)];
     this.heapDataChart.addData(values, timeStamp);
 
     if (this.heapDataChart.datasets[0].points.length > 10) {
@@ -163,42 +210,83 @@ var Rbkit = {
     this.heapDataChart.render();
   },
 
+  // helper method, which converts a string to node
+  stringToNode: function (string) {
+    var div = document.createElement('div');
+    div.innerHTML = string;
+    return div.childNodes[0];
+  },
+
+  // helper to generate and insert legend
+  insertLegend: function (chart, canvasDiv) {
+    var chartLegend = chart.generateLegend();
+    var node = this.stringToNode(chartLegend);
+    canvasDiv.parentNode.appendChild(node);
+  },
+
   init: function () {
+    // charts for live objects data
+    var liveObjectsOptions = { animation: false };
+    var liveObjectsCanvas = document.getElementById('live-objects-chart');
+    var liveObjectsCtx    = liveObjectsCanvas.getContext('2d');
+    this.liveObjectsChart = new Chart(liveObjectsCtx)
+      .Line(this.liveObjectsData, liveObjectsOptions);
+    this.insertLegend(this.liveObjectsChart, liveObjectsCanvas);
+
     // charts for heap data
-    var heapChartOptions = { showTooltips: false, animation: false };
-    this.heapDataCtx   = document.getElementById('heap-chart').getContext('2d');
-    this.heapDataChart = new Chart(this.heapDataCtx)
+    var heapChartOptions = { animation: false };
+    var heapDataCanvas = document.getElementById('heap-chart');
+    var heapDataCtx    = heapDataCanvas.getContext('2d');
+    this.heapDataChart = new Chart(heapDataCtx)
       .Line(this.heapData, heapChartOptions);
+    this.insertLegend(this.heapDataChart, heapDataCanvas);
 
     // charts for gc stats.
-    var gcChartOptions = { showTooltips: false, animation: false };
-    this.gcCtx    = document.getElementById('gc-chart').getContext('2d');
-    this.gcChart  = new Chart(this.gcCtx)
-      .Bar(this.gcData, gcChartOptions);
+    var gcChartOptions = { animation: false };
+    var gcCtx     = document.getElementById('gc-chart').getContext('2d');
+    this.gcChart  = new Chart(gcCtx).Bar(this.gcData, gcChartOptions);
 
     // charts for generations
-    this.youngGenerationCtx  = document
+    var youngGenerationCtx  = document
       .getElementById('generation-one').getContext('2d');
-    this.secondGenerationCtx = document
+    var secondGenerationCtx = document
       .getElementById('generation-two').getContext('2d');
-    this.oldGenerationCtx    = document
+    var oldGenerationCtx    = document
       .getElementById('generation-three').getContext('2d');
 
-    var polarChartOptions = { showTooltips: false, animation: false };
-    this.youngGenerationChart  = new Chart(this.youngGenerationCtx)
+    var polarChartOptions = { animation: false };
+    this.youngGenerationChart  = new Chart(youngGenerationCtx)
       .PolarArea([], polarChartOptions);
-    this.secondGenerationChart = new Chart(this.secondGenerationCtx)
+    this.secondGenerationChart = new Chart(secondGenerationCtx)
       .PolarArea([], polarChartOptions);
-    this.oldGenerationChart    = new Chart(this.oldGenerationCtx)
+    this.oldGenerationChart    = new Chart(oldGenerationCtx)
       .PolarArea([], polarChartOptions);
   },
 
   receiveLiveData: function(data) {
     switch (data.event_type) {
-    case "object_stats":
+    case "young_gen":
       this.updateYoungGenerationChart(data.payload);
-    case "event_collection":
+      break;
+    case "second_gen":
+      this.updateSecondGenerationChart(data.payload);
+      break;
+    case "old_gen":
+      this.updateOldGenerationChart(data.payload);
+      break;
+    case "gc_start":
+      this.gcStarted(data.timestamp);
+      break;
+    case "gc_stop":
+      this.gcEnded(data.timestamp);
+      break;
+    case "gc_stats":
+      this.updateGcStats(data.payload);
+      break;
+    case "object_stats":
+      this.updateLiveObjectsChart(data.payload);
       this.updateHeapChart(data.payload);
+      break;
     }
   }
 };
