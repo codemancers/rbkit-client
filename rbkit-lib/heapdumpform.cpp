@@ -2,6 +2,7 @@
 #include "ui_heapdumpform.h"
 
 #include "rbkitmainwindow.h"
+#include <QStatusBar>
 
 RbkitMainWindow *HeapDumpForm::getParentWindow() const
 {
@@ -19,7 +20,9 @@ HeapDumpForm::HeapDumpForm(QWidget* parent, int _snapShotVersion)
     selecteItem = NULL;
     ui->setupUi(this);
     ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
+    ui->treeView->setMouseTracking(true);
     connect(ui->treeView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
+    connect(ui->treeView, SIGNAL(clicked(QModelIndex)), this, SLOT(treeNodeSelected(QModelIndex)));
 
     viewRefAct = new QAction(tr("View References"), this);
     viewRefAct->setStatusTip("View object references");
@@ -92,6 +95,13 @@ void HeapDumpForm::viewReferences()
     form->setDisableRightClick(true);
     form->loadSelectedReferences(selecteItem);
     parentWindow->addTabWidget(form, QString("References for : %0").arg(selecteItem->leadingIdentifier()));
+}
+
+void HeapDumpForm::treeNodeSelected(const QModelIndex &index)
+{
+    QModelIndex sourceIndex = proxyModel->mapToSource(index);
+    RBKit::HeapItem *nodeItem = static_cast<RBKit::HeapItem *>(sourceIndex.internalPointer());
+    parentWindow->statusBar()->showMessage(nodeItem->leadingIdentifier());
 }
 
 
