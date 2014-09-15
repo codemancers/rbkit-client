@@ -2,7 +2,6 @@
 
 void RBKit::ObjectStore::insertObjectsInDB(QSqlQuery query)
 {
-    qDebug() << "*****  Insert number of  objects : " << objectStore.size();
     int counter = 0;
 
     for (auto& objectDetail : objectStore) {
@@ -11,7 +10,6 @@ void RBKit::ObjectStore::insertObjectsInDB(QSqlQuery query)
         query.addBindValue(objectDetail->size);
         query.addBindValue(objectDetail->references.size());
         query.addBindValue(objectDetail->getFileLine());
-        qDebug() << "Inserting object with id : " << objectDetail->objectId << " count : " << counter;
         if (!query.exec()) {
             qDebug() << query.lastError();
         }

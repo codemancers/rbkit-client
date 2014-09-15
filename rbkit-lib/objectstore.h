@@ -46,8 +46,6 @@ namespace RBKit {
     private:
         // follows half-open series convention: [begin, end)
         QHash<QString, quint64> generationStats(int begin, int end) const;
-
-    private:
         // Store mapping between object-id and detail
         QHash<quint64, RBKit::ObjectDetailPtr> objectStore;
     };
