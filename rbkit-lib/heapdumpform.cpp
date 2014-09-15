@@ -94,14 +94,15 @@ void HeapDumpForm::viewReferences()
     HeapDumpForm *form = new HeapDumpForm(this, 0);
     form->setDisableRightClick(true);
     form->loadSelectedReferences(selecteItem);
-    parentWindow->addTabWidget(form, QString("References for : %0").arg(selecteItem->leadingIdentifier()));
+    parentWindow->addTabWidget(form, QString("References for : %0").arg(selecteItem->shortLeadingIdentifier()));
 }
 
 void HeapDumpForm::treeNodeSelected(const QModelIndex &index)
 {
     QModelIndex sourceIndex = proxyModel->mapToSource(index);
     RBKit::HeapItem *nodeItem = static_cast<RBKit::HeapItem *>(sourceIndex.internalPointer());
-    parentWindow->statusBar()->showMessage(nodeItem->leadingIdentifier());
+    if (nodeItem != NULL)
+        parentWindow->statusBar()->showMessage(nodeItem->leadingIdentifier());
 }
 
 
