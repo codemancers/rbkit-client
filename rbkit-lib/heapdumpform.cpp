@@ -12,6 +12,7 @@ void HeapDumpForm::setParentWindow(RbkitMainWindow *value)
 {
     parentWindow = value;
 }
+
 HeapDumpForm::HeapDumpForm(QWidget* parent, int _snapShotVersion)
     : QWidget(parent), ui(new Ui::HeapDumpForm), snapShotVersion(_snapShotVersion), disableRightClick(false)
 {
@@ -68,6 +69,7 @@ void HeapDumpForm::adjustColumnWidth()
     ui->treeView->setColumnWidth(2, 180);
     ui->treeView->setColumnWidth(3, 180);
     ui->treeView->setColumnWidth(4, 180);
+    ui->treeView->setAlternatingRowColors(true);
 }
 
 void HeapDumpForm::onCustomContextMenu(const QPoint &point)
