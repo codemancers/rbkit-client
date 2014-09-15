@@ -18,6 +18,7 @@ SOURCES += \
     rbevents.cpp \
     objectdetail.cpp \
     objectstore.cpp \
+    objectaggregator.cpp \
     jsbridge.cpp \
     heapdumpform.cpp \
     stringutil.cpp \
@@ -36,6 +37,7 @@ HEADERS +=  \
     rbevents.h \
     objectdetail.h \
     objectstore.h \
+    objectaggregator.h \
     jsbridge.h \
     heapdumpform.h \
     stringutil.h \

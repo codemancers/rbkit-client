@@ -1,4 +1,5 @@
 #include "heapitem.h"
+#include "stringutil.h"
 
 namespace RBKit {
 

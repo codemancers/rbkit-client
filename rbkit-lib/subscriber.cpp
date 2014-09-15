@@ -14,6 +14,18 @@
 static const int rbkcZmqTotalIoThreads = 1;
 static const int timerIntervalInMs = 1500;
 
+// TODO: Move it to utils, or some common file.
+template <class K, class V>
+QVariantMap hashToQVarMap(const QHash<K, V>&& hash) {
+    QVariantMap map;
+
+    auto iter = hash.constBegin();
+    for (; iter != hash.constEnd(); ++iter) {
+        map[iter.key()] = iter.value();
+    }
+
+    return map;
+}
 
 
 Subscriber::Subscriber(RBKit::JsBridge* bridge)
@@ -110,20 +122,22 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
 
 void Subscriber::processEvent(const RBKit::EvtNewObject& objCreated)
 {
-    RBKit::ObjectDetail *objectDetail = new RBKit::ObjectDetail(objCreated.className, objCreated.objectId);
-    objectStore->addObject(objectDetail);
+    objectStore->addObject(objCreated.object);
+    aggregator.objCreated(objCreated.object);
 }
 
 void Subscriber::processEvent(const RBKit::EvtDelObject& objDeleted)
 {
     quint64 objectId = objDeleted.objectId;
     objectStore->removeObject(objectId);
+    aggregator.objDeleted(objectId);
 }
 
 void Subscriber::processEvent(const RBKit::EvtGcStats& stats)
 {
     static const QString eventName("gc_stats");
     jsBridge->sendMapToJs(eventName, stats.timestamp, stats.payload);
+    aggregator.onGcStats(stats.payload);
 }
 
 
@@ -138,49 +152,53 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 {
     qDebug() << "Received gc stop" << gcEvent.timestamp;
     static const QString eventName("gc_stop");
-    QVariantMap map;
     // update generation of objects that have survived the GC
     objectStore->updateObjectGeneration();
-    jsBridge->sendMapToJs(eventName, gcEvent.timestamp, map);
+    jsBridge->sendMapToJs(eventName, gcEvent.timestamp, QVariantMap());
+
+    // for now, disable polar charts about generations.
+    // QVariantMap youngGen = hashToQVarMap(objectStore->youngGenStats());
+    // jsBridge->sendMapToJs("young_gen", gcEvent.timestamp, youngGen);
+
+    // QVariantMap secondGen = hashToQVarMap(objectStore->secondGenStats());
+    // jsBridge->sendMapToJs("second_gen", gcEvent.timestamp, secondGen);
+
+    // QVariantMap oldGen = hashToQVarMap(objectStore->oldGenStats());
+    // jsBridge->sendMapToJs("old_gen", gcEvent.timestamp, oldGen);
 }
 
 
 void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 {
     auto previousKeys  = objectStore->keys();
-    const auto listOfObjects = dump.payload;
 
-    for (auto iter = listOfObjects.begin(); iter != listOfObjects.end(); ++iter) {
-        auto details = (*iter).toMap();
-        auto objectId = RBKit::StringUtil::hextoInt(details["object_id"].toString());
-        auto className = details["class_name"].toString();
-
-        QScopedPointer<RBKit::ObjectDetail> objectDetail(
-            new RBKit::ObjectDetail(className, objectId));
-
-        objectDetail->fileName = details["file"].toString();
-        objectDetail->lineNumber = details["line"].toInt();
-        objectDetail->addReferences(details["references"].toList());
-        objectDetail->size = details["size"].toInt();
-
-        if (objectStore->hasKey(objectId)) {
+    for (auto& object : dump.objects) {
+        if (objectStore->hasKey(object->objectId)) {
             // remove the object from previousKeys because we still want
             // this object. and update the object store with details
             // that we have got from object dump.
-            previousKeys.removeOne(objectDetail->objectId);
-            objectStore->updateObject(objectDetail.data());
+            previousKeys.removeOne(object->objectId);
+            objectStore->updateObject(object);
         } else {
-            objectStore->addObject(objectDetail.take());
+            objectStore->addObject(object);
+            aggregator.objCreated(object);
         }
     }
 
-    quint64 objectId(0);
-    foreach (objectId, previousKeys) {
+    for (auto objectId : previousKeys) {
         objectStore->removeObject(objectId);
+        aggregator.objDeleted(objectId);
     }
 
     RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
     emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());
+}
+
+void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)
+{
+    for (auto& event : evtCollection.events) {
+        event->process(*this);
+    }
 }
 
 
@@ -188,9 +206,6 @@ void Subscriber::onTimerExpiry()
 {
     static const QString eventName("object_stats");
 
-    // qDebug() << m_type2Count;
-    QVariantMap data = objectStore->getObjectTypeCountMap();
-    if (!data.empty()) {
-        jsBridge->sendMapToJs(eventName, QDateTime(), data);
-    }
+    QVariantMap map = hashToQVarMap(aggregator.liveStats());
+    jsBridge->sendMapToJs(eventName, QDateTime(), map);
 }

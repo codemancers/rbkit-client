@@ -1,25 +1,55 @@
-#wrapper {
-  width: 900px;
+.container {
+  margin: 0px auto;
+  width: 980px;
 }
 
-.heap-chart, .gc-chart {
-  margin: 20px 0px;
-  float: left;
-  width: 550px;
+.chart, .stats {
+  display: inline-block;
+  padding: 10px 10px;
+  margin: 10px 0px;
+  width: 480px;
+
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-.gc-stats {
-  float: right;
-  width: 250px;
+.chart h4, .stats h4 {
+  margin: 0px auto;
+}
+
+.stats .table {
+  display: inline-block;
 }
 
 .generation-charts {
   margin-top: 40px;
-  float: left;
   width: 800px;
+  display: none;
 }
 
 
 .generation-charts canvas {
   display: inline-block;
+}
+
+
+.line-legend {
+  list-style-type: none;
+  margin: 0px;
+}
+
+.line-legend li {
+  display: inline-block;
+  margin: auto 10px;
+}
+
+.line-legend span {
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  margin: auto 5px;
+  box-sizing: border-box;
+  border: 1px solid #666;
+  border-radius: 2px;
 }

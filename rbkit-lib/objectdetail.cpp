@@ -1,4 +1,5 @@
 #include "objectdetail.h"
+#include "stringutil.h"
 
 RBKit::ObjectDetail::ObjectDetail()
 {
@@ -42,4 +43,33 @@ QString RBKit::ObjectDetail::getFileLine()
         return "";
     else
         return QString("%0:%1").arg(fileName).arg(lineNumber);
+}
+
+
+// ============================== static helper methods ==============================
+
+RBKit::ObjectDetailPtr RBKit::payloadToObject(const QVariantMap& map)
+{
+    auto objectId = RBKit::StringUtil::hextoInt(map["object_id"].toString());
+    auto className = map["class_name"].toString();
+
+    RBKit::ObjectDetailPtr object(new RBKit::ObjectDetail(className, objectId));
+    object->fileName = map["file"].toString();
+    object->lineNumber = map["line"].toInt();
+    object->addReferences(map["references"].toList());
+    object->size = map["size"].toInt();
+
+    return object;
+}
+
+QList<RBKit::ObjectDetailPtr> RBKit::payloadToObjects(const QVariantList& list)
+{
+    QList<RBKit::ObjectDetailPtr> objects;
+
+    for (auto& entry : list) {
+        auto object = RBKit::payloadToObject(entry.toMap());
+        objects.append(object);
+    }
+
+    return objects;
 }

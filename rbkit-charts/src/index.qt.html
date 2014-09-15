@@ -6,23 +6,38 @@
   <link rel="stylesheet" href="qrc:/rbcharts/src/styles.css">
 </head>
 <body>
-<div id="wrapper">
-  <div class="gc-stats">
-    <table id='gc-stats-table'>
-      <tbody></tbody>
-    </table>
+<div class="container">
+  <div class="chart">
+    <h4> Live Objects - Time vs Objects(in 1000's) </h4>
+    <hr>
+    <canvas id="live-objects-chart" width='460' height='250'></canvas>
   </div>
-  <div class='heap-chart'>
-    <canvas id='heap-chart' width='550' height='300'></canvas>
+  <div class="chart">
+    <h4> Heap Sizes - Time vs Size(in MB) </h4>
+    <hr>
+    <canvas id="heap-chart" width='460' height='250'></canvas>
   </div>
-  <div class='gc-chart'>
-    <canvas id='gc-chart' width='550' height='100'></canvas>
+  <div class="chart">
+    <h4> GC Chart - Time take for each GC(in ms) </h4>
+    <hr>
+    <canvas id="gc-chart" width='460' height='310'></canvas>
   </div>
+  <div class="stats">
+    <h4> GC Stats </h4>
+    <hr>
+    <div class="table">
+      <table id="gc-stats-table">
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
   <div class='generation-charts'>
     <canvas id='generation-one' width='250' height='250'></canvas>
     <canvas id='generation-two' width='250' height='250'></canvas>
     <canvas id='generation-three' width='250' height='250'></canvas>
   </div>
+
 </div>
 
 <script src='qrc:/rbcharts/vendor/chart.js'></script>

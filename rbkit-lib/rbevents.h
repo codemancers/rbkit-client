@@ -2,10 +2,13 @@
 #define RBKIT_EVENTS_H
 
 #include <QVariantMap>
+#include <QSharedPointer>
 #include <QVariantList>
 #include <QDateTime>
 #include <QString>
 #include "stringutil.h"
+#include "objectdetail.h"
+
 
 class Subscriber;               // this acts as processor also atm.
 
@@ -22,14 +25,16 @@ namespace RBKit
         QString eventName;
     };
 
+    // event pointer.
+    typedef QSharedPointer<EventDataBase> EventPtr;
+
     class EvtNewObject : public EventDataBase
     {
     public:
-        EvtNewObject(QDateTime ts, QString eventName, QVariantMap payload);
+        EvtNewObject(QDateTime ts, QString eventName, RBKit::ObjectDetailPtr object);
         void process(Subscriber& processor) const;
 
-        QString className;
-        quint64 objectId;
+        RBKit::ObjectDetailPtr object;
     };
 
     class EvtDelObject : public EventDataBase
@@ -67,19 +72,20 @@ namespace RBKit
     class EvtObjectDump : public EventDataBase
     {
     public:
-        EvtObjectDump(QDateTime ts, QString eventName, QVariantList payload);
+        EvtObjectDump(QDateTime ts, QString eventName,
+                      QList<RBKit::ObjectDetailPtr> objects);
         void process(Subscriber& processor) const;
 
-        QVariantList payload;
+        QList<RBKit::ObjectDetailPtr> objects;
     };
 
     class EvtCollection : public EventDataBase
     {
     public:
-        EvtCollection(QDateTime ts, QString eventName, QVariantList payload);
+        EvtCollection(QDateTime ts, QString eventName, QList<RBKit::EventPtr>);
         void process(Subscriber& process) const;
 
-        QVariantList payload;
+        QList<RBKit::EventPtr> events;
     };
 
     EventDataBase* parseEvent(const QByteArray& rawMessage);

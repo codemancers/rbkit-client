@@ -2,9 +2,9 @@
 #define OBJECTDETAIL_H
 
 #include <QList>
+#include <QSharedPointer>
 #include <QString>
 #include <QVariant>
-#include "rbevents.h"
 
 namespace RBKit {
     class ObjectDetail
@@ -26,6 +26,12 @@ namespace RBKit {
         void updateGeneration();
         QString getFileLine();
     };
+
+    // typedef for the pointer.
+    typedef QSharedPointer<ObjectDetail> ObjectDetailPtr;
+
+    QList<ObjectDetailPtr> payloadToObjects(const QVariantList& list);
+    ObjectDetailPtr payloadToObject(const QVariantMap& map);
 }
 
 Q_DECLARE_METATYPE(RBKit::ObjectDetail)
