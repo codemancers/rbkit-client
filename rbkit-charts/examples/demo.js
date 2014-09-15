@@ -2,14 +2,16 @@
 
 var heapRandomData = function () {
   return {
-    'Heap Objects': _.random(0, 200),
-    'Heap Size':    _.random(0, 200)
+    'Heap Objects': _.random(0, 1000),
+    'Heap Size':    _.random(0, 200),
+    'Mem Size':     _.random(0, 200)
   };
 };
 
 var heapCharts = function() {
   setTimeout(heapCharts, 1000);
 
+  Rbkit.updateLiveObjectsChart(heapRandomData());
   Rbkit.updateHeapChart(heapRandomData());
 };
 
@@ -55,7 +57,7 @@ var polarGenerationCharts = function () {
   Rbkit.updateOldGenerationChart(polarRandomData());
 };
 
-polarGenerationCharts();
+// polarGenerationCharts();
 
 // ====================== code for randomly updating gc stats ======================
 
