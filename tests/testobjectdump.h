@@ -9,6 +9,8 @@ class TestObjectDump : public QObject
 
 private slots:
     void testBenchmarkParseObjectDump();
+    void testBenchmarkProcessObjectsWhenObjectSpaceIsEmpty();
+    void testBenchmarkProcessObjectsWhenObjectSpaceIsFull();
 };
 
 DECLARE_TEST(TestObjectDump)
