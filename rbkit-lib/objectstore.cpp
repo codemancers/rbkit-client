@@ -71,8 +71,7 @@ void RBKit::ObjectStore::updateObject(RBKit::ObjectDetailPtr newObject)
 }
 
 
-void RBKit::ObjectStore::updateFromSnapshot(const QList<RBKit::ObjectDetailPtr>& objects,
-                                            RBKit::ObjectAggregator& aggregator)
+void RBKit::ObjectStore::updateFromSnapshot(const QList<RBKit::ObjectDetailPtr>& objects)
 {
     QHash<quint64, RBKit::ObjectDetailPtr> newStore;
 
@@ -85,8 +84,6 @@ void RBKit::ObjectStore::updateFromSnapshot(const QList<RBKit::ObjectDetailPtr>&
             // retain the object generation from old object
             auto oldGeneration = oldObjectIter.value()->objectGeneration;
             object->objectGeneration = oldGeneration;
-        } else {
-            aggregator.objCreated(object);
         }
     }
 

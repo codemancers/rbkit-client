@@ -1,4 +1,5 @@
 #include "objectaggregator.h"
+#include <QDebug>
 
 
 RBKit::ObjectAggregator::ObjectAggregator(QObject* parent)
@@ -28,7 +29,23 @@ void RBKit::ObjectAggregator::objDeleted(quint64 key)
         if (totalObjects > 0) {
             --totalObjects;
         }
+    } else {
+        qDebug() << "not removing key:" << key;
     }
+}
+
+void RBKit::ObjectAggregator::
+updateFromSnapshot(const QList<RBKit::ObjectDetailPtr>& objects)
+{
+    typeToCount.clear();
+    idToName.clear();
+
+    for (auto& object : objects) {
+        idToName[object->objectId] = object->className;
+        ++typeToCount[object->className];
+    }
+
+    totalObjects = objects.size();
 }
 
 void RBKit::ObjectAggregator::onGcStats(const QVariantMap& map)

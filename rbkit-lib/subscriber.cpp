@@ -170,7 +170,8 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 
 void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 {
-    objectStore->updateFromSnapshot(dump.objects, aggregator);
+    objectStore->updateFromSnapshot(dump.objects);
+    aggregator.updateFromSnapshot(dump.objects);
 
     RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
     emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());

@@ -1,6 +1,5 @@
 #include "testobjectdump.h"
 #include "rbevents.h"
-#include "objectaggregator.h"
 #include "objectstore.h"
 #include <QDebug>
 
@@ -41,13 +40,12 @@ void TestObjectDump::testBenchmarkProcessObjectsWhenObjectSpaceIsEmpty()
     EvtObjectDump* evt = dynamic_cast<EvtObjectDump *>(base);
     qDebug() << "total objects :" << evt->objects.size();
 
-    // Create an objectstore, and aggregator
-    ObjectAggregator aggregator;
+    // Create an objectstore
     ObjectStore store;
 
     qDebug() << "populating object store for first time";
     QBENCHMARK {
-        store.updateFromSnapshot(evt->objects, aggregator);
+        store.updateFromSnapshot(evt->objects);
     }
 }
 
@@ -59,14 +57,13 @@ void TestObjectDump::testBenchmarkProcessObjectsWhenObjectSpaceIsFull()
     EvtObjectDump* evt = dynamic_cast<EvtObjectDump *>(base);
     qDebug() << "total objects :" << evt->objects.size();
 
-    // Create an objectstore, and aggregator
-    ObjectAggregator aggregator;
+    // Create an objectstore
     ObjectStore store;
 
-    store.updateFromSnapshot(evt->objects, aggregator);
+    store.updateFromSnapshot(evt->objects);
 
     qDebug() << "populating object store again";
     QBENCHMARK {
-        store.updateFromSnapshot(evt->objects, aggregator);
+        store.updateFromSnapshot(evt->objects);
     }
 }
