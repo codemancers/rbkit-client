@@ -1,4 +1,5 @@
 #include "objectstore.h"
+#include "objectaggregator.h"
 
 void RBKit::ObjectStore::insertObjectsInDB(QSqlQuery query)
 {
@@ -67,6 +68,31 @@ void RBKit::ObjectStore::updateObject(RBKit::ObjectDetailPtr newObject)
     RBKit::ObjectDetailPtr oldObject = objectStore[newObject->objectId];
     newObject->objectGeneration = oldObject->objectGeneration;
     objectStore[newObject->objectId] = newObject;
+}
+
+
+void RBKit::ObjectStore::updateFromSnapshot(const QList<RBKit::ObjectDetailPtr>& objects,
+                                            RBKit::ObjectAggregator& aggregator)
+{
+    auto previousKeys = keys();
+
+    for (auto& object : objects) {
+        if (hasKey(object->objectId)) {
+            // remove the object from previousKeys because we still want
+            // this object. and update the object store with details
+            // that we have got from object dump.
+            previousKeys.removeOne(object->objectId);
+            updateObject(object);
+        } else {
+            addObject(object);
+            aggregator.objCreated(object);
+        }
+    }
+
+    for (auto objectId : previousKeys) {
+        aggregator.objDeleted(objectId);
+        removeObject(objectId);
+    }
 }
 
 

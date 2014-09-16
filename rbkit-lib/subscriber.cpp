@@ -170,25 +170,7 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 
 void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 {
-    auto previousKeys  = objectStore->keys();
-
-    for (auto& object : dump.objects) {
-        if (objectStore->hasKey(object->objectId)) {
-            // remove the object from previousKeys because we still want
-            // this object. and update the object store with details
-            // that we have got from object dump.
-            previousKeys.removeOne(object->objectId);
-            objectStore->updateObject(object);
-        } else {
-            objectStore->addObject(object);
-            aggregator.objCreated(object);
-        }
-    }
-
-    for (auto objectId : previousKeys) {
-        objectStore->removeObject(objectId);
-        aggregator.objDeleted(objectId);
-    }
+    objectStore->updateFromSnapshot(dump.objects, aggregator);
 
     RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
     emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());

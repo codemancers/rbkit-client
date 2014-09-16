@@ -1,7 +1,7 @@
 #include "testobjectdump.h"
 #include "rbevents.h"
-#include "jsbridge.h"
-#include "subscriber.h"
+#include "objectaggregator.h"
+#include "objectstore.h"
 #include <QDebug>
 
 using namespace RBKit;
@@ -41,13 +41,13 @@ void TestObjectDump::testBenchmarkProcessObjectsWhenObjectSpaceIsEmpty()
     EvtObjectDump* evt = dynamic_cast<EvtObjectDump *>(base);
     qDebug() << "total objects :" << evt->objects.size();
 
-    // Create a subscriber
-    auto jsBridge = new RBKit::JsBridge();
-    auto subscriber = new Subscriber(jsBridge);
+    // Create an objectstore, and aggregator
+    ObjectAggregator aggregator;
+    ObjectStore store;
 
     qDebug() << "populating object store for first time";
     QBENCHMARK {
-        subscriber->processEvent(*evt);
+        store.updateFromSnapshot(evt->objects, aggregator);
     }
 }
 
@@ -59,14 +59,14 @@ void TestObjectDump::testBenchmarkProcessObjectsWhenObjectSpaceIsFull()
     EvtObjectDump* evt = dynamic_cast<EvtObjectDump *>(base);
     qDebug() << "total objects :" << evt->objects.size();
 
-    // Create a subscriber
-    auto jsBridge = new RBKit::JsBridge();
-    auto subscriber = new Subscriber(jsBridge);
+    // Create an objectstore, and aggregator
+    ObjectAggregator aggregator;
+    ObjectStore store;
 
-    subscriber->processEvent(*evt);
+    store.updateFromSnapshot(evt->objects, aggregator);
 
     qDebug() << "populating object store again";
     QBENCHMARK {
-        subscriber->processEvent(*evt);
+        store.updateFromSnapshot(evt->objects, aggregator);
     }
 }

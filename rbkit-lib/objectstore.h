@@ -15,6 +15,8 @@ class QSqlQuery;
 #include "objectdetail.h"
 
 namespace RBKit {
+    class ObjectAggregator;     // forward declaration
+
     class ObjectStore
     {
     public:
@@ -29,6 +31,8 @@ namespace RBKit {
         bool hasKey(quint64 key) const;
         QList<quint64> keys() const;
 
+        void updateFromSnapshot(const QList<RBKit::ObjectDetailPtr>& objects,
+                                RBKit::ObjectAggregator& aggregator);
         void updateObjectGeneration();
 
         inline QHash<QString, quint64> youngGenStats() const {
