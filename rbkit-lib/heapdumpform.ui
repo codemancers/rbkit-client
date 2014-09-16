@@ -13,32 +13,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="QTabWidget" name="tabWidget">
-     <property name="tabPosition">
-      <enum>QTabWidget::West</enum>
-     </property>
-     <property name="tabShape">
-      <enum>QTabWidget::Rounded</enum>
-     </property>
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <property name="elideMode">
-      <enum>Qt::ElideLeft</enum>
-     </property>
-     <widget class="QWidget" name="tab">
-      <attribute name="title">
-       <string>Live Object Heap</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QTreeView" name="treeView"/>
-       </item>
-      </layout>
-     </widget>
-    </widget>
+    <widget class="QTreeView" name="treeView"/>
    </item>
   </layout>
  </widget>

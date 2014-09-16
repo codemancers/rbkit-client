@@ -1,5 +1,6 @@
 #include "heapitem.h"
 #include "stringutil.h"
+#include <QFileInfo>
 
 namespace RBKit {
 
@@ -50,6 +51,20 @@ QString HeapItem::getReferenceTableName() const
 void HeapItem::setReferenceTableName(const QString &value)
 {
     referenceTableName = value;
+}
+
+QString HeapItem::shortLeadingIdentifier()
+{
+    if (leafNode) {
+        if (filename.isEmpty()) {
+            return className;
+        } else {
+            QString shortFileName = QFileInfo(filename).fileName();
+            return QString("%0 - %1").arg(className).arg(shortFileName);
+        }
+    } else {
+        return className;
+    }
 }
 
 QString HeapItem::getObjectsTableName() const

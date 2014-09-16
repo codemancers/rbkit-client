@@ -50,6 +50,7 @@ public:
     void setObjectsTableName(const QString &value);
     QString getReferenceTableName() const;
     void setReferenceTableName(const QString &value);
+    QString shortLeadingIdentifier();
 };
 
 } // namespace RBKit

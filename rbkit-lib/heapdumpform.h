@@ -49,6 +49,7 @@ private:
 public slots:
     void onCustomContextMenu(const QPoint& point);
     void viewReferences();
+    void treeNodeSelected(const QModelIndex& index);
 };
 
 #endif // HEAPDUMPFORM_H

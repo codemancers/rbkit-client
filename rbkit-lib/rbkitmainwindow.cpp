@@ -2,6 +2,7 @@
 #include "ui_rbkitmainwindow.h"
 #include "askhost.h"
 #include "jsbridge.h"
+#include "appstate.h"
 
 RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     QMainWindow(parent), connected(false), host(""),
@@ -10,6 +11,19 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     RBKit::SqlConnectionPool::getInstance()->setupDatabase();
     this->connected = false;
     ui->setupUi(this);
+
+    snapshotProgressTimer = new QTimer(this);
+
+    connect(snapshotProgressTimer, SIGNAL(timeout()), this, SLOT(updateProgressBar()));
+
+    statusLabel = new QLabel(this);
+    progressBar = new QProgressBar(this);
+
+    statusLabel->setText("Snapshot Progress");
+    progressBar->setTextVisible(false);
+    ui->statusbar->addWidget(statusLabel);
+    ui->statusbar->addWidget(progressBar);
+
     qRegisterMetaType<RBKit::ObjectStore>();
     qRegisterMetaType<RBKit::ObjectDetail>();
     memoryView = new RBKit::MemoryView();
@@ -27,6 +41,7 @@ void RbkitMainWindow::addTabWidget(HeapDumpForm *heapDumpForm, const QString& ti
 {
     ++currentIndex;
     heapForms[currentIndex] = heapDumpForm;
+    heapDumpForm->setParentWindow(this);
     ui->chartingTab->addTab(heapDumpForm, title);
 }
 
@@ -80,6 +95,10 @@ void RbkitMainWindow::objectDumpAvailable(int snapshotVersion)
     heapUI->loaData();
     ++currentIndex;
     heapForms[currentIndex] = heapUI;
+    ui->statusbar->showMessage("Heap snapshot complete");
+    ui->statusbar->clearMessage();
+    progressBar->setValue(100);
+    snapshotProgressTimer->stop();
     ui->chartingTab->addTab(heapUI, QString("Heap Dump #%0").arg(snapshotVersion));
 }
 
@@ -140,6 +159,12 @@ void RbkitMainWindow::on_action_Trigger_GC_triggered()
 
 void RbkitMainWindow::on_actionHeap_Snapshot_triggered()
 {
+    RBKit::AppState::getInstance()->setAppState("heap_snapshot", 2);
+    ui->statusbar->showMessage("Snapshot started");
+    ui->statusbar->clearMessage();
+    progressBar->reset();
+    progressBar->setValue(2);
+    snapshotProgressTimer->start(500);
     emit takeSnapshot();
 }
 
@@ -156,4 +181,10 @@ void RbkitMainWindow::tabClosed(int index)
 
     heapForms.remove(index);
     --currentIndex;
+}
+
+void RbkitMainWindow::updateProgressBar()
+{
+    int currentProgress = RBKit::AppState::getInstance()->getState("heap_snapshot").toInt();
+    progressBar->setValue(currentProgress);
 }
