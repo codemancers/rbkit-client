@@ -74,25 +74,23 @@ void RBKit::ObjectStore::updateObject(RBKit::ObjectDetailPtr newObject)
 void RBKit::ObjectStore::updateFromSnapshot(const QList<RBKit::ObjectDetailPtr>& objects,
                                             RBKit::ObjectAggregator& aggregator)
 {
-    auto previousKeys = keys();
+    QHash<quint64, RBKit::ObjectDetailPtr> newStore;
 
     for (auto& object : objects) {
-        if (hasKey(object->objectId)) {
-            // remove the object from previousKeys because we still want
-            // this object. and update the object store with details
-            // that we have got from object dump.
-            previousKeys.removeOne(object->objectId);
-            updateObject(object);
+        auto objectId = object->objectId;
+        newStore[objectId] = object;
+
+        auto oldObjectIter = objectStore.find(objectId);
+        if (oldObjectIter != objectStore.end()) {
+            // retain the object generation from old object
+            auto oldGeneration = oldObjectIter.value()->objectGeneration;
+            object->objectGeneration = oldGeneration;
         } else {
-            addObject(object);
             aggregator.objCreated(object);
         }
     }
 
-    for (auto objectId : previousKeys) {
-        aggregator.objDeleted(objectId);
-        removeObject(objectId);
-    }
+    objectStore.swap(newStore);
 }
 
 
