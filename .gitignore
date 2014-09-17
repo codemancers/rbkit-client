@@ -5,4 +5,3 @@
 /Makefile
 /msgpack-c/autom4te.cache/
 /zeromq-4.0.4/autom4te.cache/
-/tests/msgpack/hugedump
