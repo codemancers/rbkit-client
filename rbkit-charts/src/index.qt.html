@@ -3,6 +3,7 @@
 <head>
   <title>Using Charts.js</title>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="qrc:/rbcharts/src/styles.css">
 </head>
 <body>
@@ -10,17 +11,17 @@
   <div class="chart">
     <h4> Live Objects - Time vs Objects(in 1000's) </h4>
     <hr>
-    <canvas id="live-objects-chart" width='460' height='250'></canvas>
+    <canvas id="live-objects-chart" width='420' height='200'></canvas>
   </div>
   <div class="chart">
     <h4> Heap Sizes - Time vs Size(in MB) </h4>
     <hr>
-    <canvas id="heap-chart" width='460' height='250'></canvas>
+    <canvas id="heap-chart" width='420' height='200'></canvas>
   </div>
   <div class="chart">
     <h4> GC Chart - Time taken for each GC(in ms) </h4>
     <hr>
-    <canvas id="gc-chart" width='460' height='310'></canvas>
+    <canvas id="gc-chart" width='420' height='282'></canvas>
   </div>
   <div class="stats">
     <h4> GC Stats </h4>
@@ -28,6 +29,10 @@
     <div class="table">
       <table id="gc-stats-table">
         <tbody></tbody>
+        <colgroup>
+          <col width="320" />
+          <col width="100"/>
+        </colgroup>
       </table>
     </div>
   </div>

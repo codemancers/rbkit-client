@@ -50,13 +50,22 @@ var Rbkit = {
     labels: [0]
   },
 
-  gcStatsImportantFields: [
-    'count', 'minor_gc_count', 'major_gc_count',
-    'heap_length', 'heap_eden_page_length', 'heap_used',
-    'heap_live_slot', 'heap_free_slot', 'heap_swept_slot',
-    'old_object', 'old_object_limit', 'remembered_shady_object',
-    'total_allocated_object', 'total_freed_object'
-  ],
+  gcStatsImportantFields: {
+    count: 'Count',
+    minor_gc_count: 'Minor GC Count',
+    major_gc_count: 'Major GC Count',
+    heap_length: 'Heap Length',
+    heap_eden_page_length: 'Heap Eden Page Length',
+    heap_used: 'Heap Used',
+    heap_live_slot: 'Heap Live Slots',
+    heap_free_slot: 'Heap Free Slots',
+    heap_swept_slot: 'Heap Swept Slots',
+    old_object: 'Old Objects',
+    old_object_limit: 'Old Object Limit',
+    remembered_shady_object: 'Remembered Shady Objects',
+    total_allocated_object: 'Total Allocated Objects',
+    total_freed_object: 'Total Freed Objects'
+  },
 
   // actual charts
   liveObjectsChart      : undefined,
@@ -147,9 +156,11 @@ var Rbkit = {
   },
 
   updateGcStats: function (gcStats) {
-    for (var iter = 0; iter != this.gcStatsImportantFields.length; ++iter) {
-      var key = this.gcStatsImportantFields[iter];
-      var value = gcStats[key];
+    var gcStatsKeys = Object.keys(this.gcStatsImportantFields);
+    for (var iter = 0; iter != gcStatsKeys.length; ++iter) {
+      var token = gcStatsKeys[iter];
+      var key = this.gcStatsImportantFields[token];
+      var value = gcStats[token];
 
       var entry = document.getElementById(key);
       if (entry) {
