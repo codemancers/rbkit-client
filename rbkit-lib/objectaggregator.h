@@ -7,17 +7,15 @@
 
 namespace RBKit
 {
-    class ObjectAggregator : public QObject
+    class ObjectAggregator
     {
-        Q_OBJECT;
-
     public:
-        ObjectAggregator(QObject* parent = NULL);
-        ~ObjectAggregator() {};
+        ObjectAggregator();
 
     public:
         void objCreated(RBKit::ObjectDetailPtr objectPtr);
         void objDeleted(quint64 key);
+        void updateFromSnapshot(const QList<ObjectDetailPtr>&);
         void onGcStats(const QVariantMap& map);
 
         QHash<QString, double> liveStats() const;

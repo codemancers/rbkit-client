@@ -5,7 +5,6 @@
 #include <QVariantMap>
 
 #include "rbevents.h"
-#include "objectaggregator.h"
 #include "objectstore.h"
 #include "sqlconnectionpool.h"
 
@@ -34,7 +33,6 @@ class Subscriber : public QObject
 
     // add a timer to emit stats
     QTimer* m_timer;
-    RBKit::ObjectAggregator aggregator;
     RBKit::ObjectStore *objectStore;
 
     RBKit::JsBridge* jsBridge;

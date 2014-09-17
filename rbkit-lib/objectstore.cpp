@@ -1,4 +1,5 @@
 #include "objectstore.h"
+#include "objectaggregator.h"
 
 void RBKit::ObjectStore::insertObjectsInDB(QSqlQuery query)
 {
@@ -39,10 +40,12 @@ void RBKit::ObjectStore::insertReferences(QSqlQuery query)
 void RBKit::ObjectStore::addObject(RBKit::ObjectDetailPtr objectDetail)
 {
     objectStore[objectDetail->objectId] = objectDetail;
+    aggregator.objCreated(objectDetail);
 }
 
 void RBKit::ObjectStore::removeObject(quint64 key)
 {
+    aggregator.objDeleted(key);
     objectStore.remove(key);
 }
 
@@ -69,12 +72,36 @@ void RBKit::ObjectStore::updateObject(RBKit::ObjectDetailPtr newObject)
 }
 
 
+void RBKit::ObjectStore::updateFromSnapshot(const QList<RBKit::ObjectDetailPtr>& objects)
+{
+    QHash<quint64, RBKit::ObjectDetailPtr> newStore;
+
+    for (auto& object : objects) {
+        auto objectId = object->objectId;
+        newStore[objectId] = object;
+
+        auto oldObjectIter = objectStore.find(objectId);
+        if (oldObjectIter != objectStore.end()) {
+            // retain the object generation from old object
+            auto oldGeneration = oldObjectIter.value()->objectGeneration;
+            object->objectGeneration = oldGeneration;
+        }
+    }
+
+    objectStore.swap(newStore);
+
+    // update aggregator also.
+    aggregator.updateFromSnapshot(objects);
+}
+
+
 void RBKit::ObjectStore::updateObjectGeneration()
 {
     for (auto& object : objectStore) {
         object->updateGeneration();
     }
 }
+
 
 QHash<QString, quint64> RBKit::ObjectStore::generationStats(int begin, int end) const
 {

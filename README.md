@@ -55,6 +55,13 @@ Right now, QTest framework is integrated. So, if you make a build, then
 tests will be built under `$BUILD_DIR/tests` folder. Those executables
 can be run from commandline directly.
 
+NOTE: For running benchmarks, there should be a file called `hugedump`
+under `tests/msgpack` folder. This file is not checked in, because in
+my machine, it is occupying 67mb. So, its better to keep this file
+out of source control. For running tests, simply copy the file
+`tests/msgpack/objectdump` to `tests/msgpack/hugedump`.
+
+
 ```bash
 $ mkdir -p ~/rbkit-build
 $ cd ~/rbkit-build

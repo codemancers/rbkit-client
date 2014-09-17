@@ -124,21 +124,19 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
 void Subscriber::processEvent(const RBKit::EvtNewObject& objCreated)
 {
     objectStore->addObject(objCreated.object);
-    aggregator.objCreated(objCreated.object);
 }
 
 void Subscriber::processEvent(const RBKit::EvtDelObject& objDeleted)
 {
     quint64 objectId = objDeleted.objectId;
     objectStore->removeObject(objectId);
-    aggregator.objDeleted(objectId);
 }
 
 void Subscriber::processEvent(const RBKit::EvtGcStats& stats)
 {
     static const QString eventName("gc_stats");
     jsBridge->sendMapToJs(eventName, stats.timestamp, stats.payload);
-    aggregator.onGcStats(stats.payload);
+    objectStore->onGcStats(stats.payload);
 }
 
 
@@ -171,25 +169,7 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 
 void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 {
-    auto previousKeys  = objectStore->keys();
-
-    for (auto& object : dump.objects) {
-        if (objectStore->hasKey(object->objectId)) {
-            // remove the object from previousKeys because we still want
-            // this object. and update the object store with details
-            // that we have got from object dump.
-            previousKeys.removeOne(object->objectId);
-            objectStore->updateObject(object);
-        } else {
-            objectStore->addObject(object);
-            aggregator.objCreated(object);
-        }
-    }
-
-    for (auto objectId : previousKeys) {
-        objectStore->removeObject(objectId);
-        aggregator.objDeleted(objectId);
-    }
+    objectStore->updateFromSnapshot(dump.objects);
 
     RBKit::AppState::getInstance()->setAppState("heap_snapshot", 10);
     RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
@@ -208,6 +188,6 @@ void Subscriber::onTimerExpiry()
 {
     static const QString eventName("object_stats");
 
-    QVariantMap map = hashToQVarMap(aggregator.liveStats());
+    QVariantMap map = hashToQVarMap(objectStore->liveStats());
     jsBridge->sendMapToJs(eventName, QDateTime(), map);
 }

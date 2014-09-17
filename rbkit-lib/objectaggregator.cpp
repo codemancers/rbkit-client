@@ -1,9 +1,9 @@
 #include "objectaggregator.h"
+#include <QDebug>
 
 
-RBKit::ObjectAggregator::ObjectAggregator(QObject* parent)
-    : QObject(parent)
-    , totalObjects(0)
+RBKit::ObjectAggregator::ObjectAggregator()
+    : totalObjects(0)
     , totalHeapSize(0)
     , totalMemSize(0)
 {
@@ -29,6 +29,20 @@ void RBKit::ObjectAggregator::objDeleted(quint64 key)
             --totalObjects;
         }
     }
+}
+
+void RBKit::ObjectAggregator::
+updateFromSnapshot(const QList<RBKit::ObjectDetailPtr>& objects)
+{
+    typeToCount.clear();
+    idToName.clear();
+
+    for (auto& object : objects) {
+        idToName[object->objectId] = object->className;
+        ++typeToCount[object->className];
+    }
+
+    totalObjects = objects.size();
 }
 
 void RBKit::ObjectAggregator::onGcStats(const QVariantMap& map)

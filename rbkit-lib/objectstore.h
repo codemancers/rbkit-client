@@ -13,6 +13,7 @@
 class QSqlQuery;
 
 #include "objectdetail.h"
+#include "objectaggregator.h"
 
 namespace RBKit {
     class ObjectStore
@@ -29,7 +30,16 @@ namespace RBKit {
         bool hasKey(quint64 key) const;
         QList<quint64> keys() const;
 
+        void updateFromSnapshot(const QList<RBKit::ObjectDetailPtr>& objects);
         void updateObjectGeneration();
+
+        inline void onGcStats(const QVariantMap& stats) {
+            aggregator.onGcStats(stats);
+        }
+
+        inline QHash<QString, double> liveStats() const {
+            return aggregator.liveStats();
+        }
 
         inline QHash<QString, quint64> youngGenStats() const {
             return generationStats(0, 2);
@@ -48,6 +58,7 @@ namespace RBKit {
         QHash<QString, quint64> generationStats(int begin, int end) const;
         // Store mapping between object-id and detail
         QHash<quint64, RBKit::ObjectDetailPtr> objectStore;
+        ObjectAggregator aggregator;
     };
 }
 
