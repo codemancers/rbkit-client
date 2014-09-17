@@ -1,3 +1,14 @@
+// Underscore random function
+
+var _ = {
+  random: function(max, min) {
+    if (max == null) {
+      max = min;
+      min = 0;
+    }
+    return min + Math.floor(Math.random() * (max - min + 1));
+  }
+}
 // ============================== code for heap charts =============================
 
 var heapRandomData = function () {
