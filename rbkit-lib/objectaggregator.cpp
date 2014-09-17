@@ -2,9 +2,8 @@
 #include <QDebug>
 
 
-RBKit::ObjectAggregator::ObjectAggregator(QObject* parent)
-    : QObject(parent)
-    , totalObjects(0)
+RBKit::ObjectAggregator::ObjectAggregator()
+    : totalObjects(0)
     , totalHeapSize(0)
     , totalMemSize(0)
 {
@@ -29,8 +28,6 @@ void RBKit::ObjectAggregator::objDeleted(quint64 key)
         if (totalObjects > 0) {
             --totalObjects;
         }
-    } else {
-        qDebug() << "not removing key:" << key;
     }
 }
 

@@ -7,13 +7,10 @@
 
 namespace RBKit
 {
-    class ObjectAggregator : public QObject
+    class ObjectAggregator
     {
-        Q_OBJECT;
-
     public:
-        ObjectAggregator(QObject* parent = NULL);
-        ~ObjectAggregator() {};
+        ObjectAggregator();
 
     public:
         void objCreated(RBKit::ObjectDetailPtr objectPtr);

@@ -123,21 +123,19 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
 void Subscriber::processEvent(const RBKit::EvtNewObject& objCreated)
 {
     objectStore->addObject(objCreated.object);
-    aggregator.objCreated(objCreated.object);
 }
 
 void Subscriber::processEvent(const RBKit::EvtDelObject& objDeleted)
 {
     quint64 objectId = objDeleted.objectId;
     objectStore->removeObject(objectId);
-    aggregator.objDeleted(objectId);
 }
 
 void Subscriber::processEvent(const RBKit::EvtGcStats& stats)
 {
     static const QString eventName("gc_stats");
     jsBridge->sendMapToJs(eventName, stats.timestamp, stats.payload);
-    aggregator.onGcStats(stats.payload);
+    objectStore->onGcStats(stats.payload);
 }
 
 
@@ -171,7 +169,6 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 {
     objectStore->updateFromSnapshot(dump.objects);
-    aggregator.updateFromSnapshot(dump.objects);
 
     RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
     emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());
@@ -189,6 +186,6 @@ void Subscriber::onTimerExpiry()
 {
     static const QString eventName("object_stats");
 
-    QVariantMap map = hashToQVarMap(aggregator.liveStats());
+    QVariantMap map = hashToQVarMap(objectStore->liveStats());
     jsBridge->sendMapToJs(eventName, QDateTime(), map);
 }

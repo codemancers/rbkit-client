@@ -41,10 +41,12 @@ void RBKit::ObjectStore::insertReferences(QSqlQuery query)
 void RBKit::ObjectStore::addObject(RBKit::ObjectDetailPtr objectDetail)
 {
     objectStore[objectDetail->objectId] = objectDetail;
+    aggregator.objCreated(objectDetail);
 }
 
 void RBKit::ObjectStore::removeObject(quint64 key)
 {
+    aggregator.objDeleted(key);
     objectStore.remove(key);
 }
 
@@ -88,6 +90,9 @@ void RBKit::ObjectStore::updateFromSnapshot(const QList<RBKit::ObjectDetailPtr>&
     }
 
     objectStore.swap(newStore);
+
+    // update aggregator also.
+    aggregator.updateFromSnapshot(objects);
 }
 
 
@@ -97,6 +102,7 @@ void RBKit::ObjectStore::updateObjectGeneration()
         object->updateGeneration();
     }
 }
+
 
 QHash<QString, quint64> RBKit::ObjectStore::generationStats(int begin, int end) const
 {
