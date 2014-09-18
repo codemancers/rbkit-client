@@ -21,12 +21,12 @@
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>Select Snapshot</string>
+          <string>Select Snapshot #1</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox"/>
+        <widget class="QComboBox" name="snapshot1"/>
        </item>
       </layout>
      </item>
@@ -35,12 +35,12 @@
        <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Select Snapshot</string>
+          <string>Select Snapshot #2</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox_2"/>
+        <widget class="QComboBox" name="snapshot2"/>
        </item>
       </layout>
      </item>

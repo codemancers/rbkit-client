@@ -74,6 +74,11 @@ void RbkitMainWindow::askForServerInfo() {
     }
 }
 
+QList<int> RbkitMainWindow::diffableSnapshotVersions()
+{
+   return heapForms.keys();
+}
+
 
 void RbkitMainWindow::useSelectedHost(QString commandsSocket, QString eventsSocket)
 {
@@ -195,5 +200,8 @@ void RbkitMainWindow::updateProgressBar()
 void RbkitMainWindow::on_actionComapre_Heapsnapshots_triggered()
 {
     ComapreSnapshotForm *compareSnapshots = new ComapreSnapshotForm(this);
+    QList<int> snapShotVersions = diffableSnapshotVersions();
+    if (!snapShotVersions.isEmpty())
+        compareSnapshots->setSnapshotVersions(snapShotVersions);
     compareSnapshots->show();
 }

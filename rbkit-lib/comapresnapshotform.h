@@ -17,6 +17,8 @@ class ComapreSnapshotForm : public QDialog
 public:
     explicit ComapreSnapshotForm(QWidget *parent = 0);
     ~ComapreSnapshotForm();
+    void setSnapshotVersions(QList<int> _snapshotVersions);
+    QList<int> getSnapshotVersions() const;
 
 private slots:
     void on_okButton_clicked();
