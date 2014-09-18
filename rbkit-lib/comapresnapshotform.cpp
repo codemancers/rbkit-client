@@ -27,7 +27,12 @@ QList<int> ComapreSnapshotForm::getSnapshotVersions() const {
 
 void ComapreSnapshotForm::on_okButton_clicked()
 {
-
+    QList<int> selections;
+    int selection1 = ui->snapshot1->currentIndex();
+    selections.append(snapshotVersions.at(selection1));
+    int selection2 = ui->snapshot2->currentIndex();
+    selections.append(snapshotVersions.at(selection2));
+    emit snapshotSelected(selections);
 }
 
 void ComapreSnapshotForm::on_cancelButton_clicked()

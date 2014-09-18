@@ -201,7 +201,15 @@ void RbkitMainWindow::on_actionComapre_Heapsnapshots_triggered()
 {
     ComapreSnapshotForm *compareSnapshots = new ComapreSnapshotForm(this);
     QList<int> snapShotVersions = diffableSnapshotVersions();
-    if (!snapShotVersions.isEmpty())
+    if (!snapShotVersions.isEmpty() && snapShotVersions.size() > 1) {
         compareSnapshots->setSnapshotVersions(snapShotVersions);
+        connect(compareSnapshots, SIGNAL(snapshotSelected(QList<int>)), this, SLOT(onDiffSnapshotsSelected(QList<int>)));
+    }
+
     compareSnapshots->show();
+}
+
+void RbkitMainWindow::onDiffSnapshotsSelected(QList<int> selectedSnapshots)
+{
+    qDebug() << selectedSnapshots;
 }

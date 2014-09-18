@@ -27,6 +27,8 @@ private slots:
 
 private:
     Ui::ComapreSnapshotForm *ui;
+signals:
+    void snapshotSelected(QList<int> selected);
 };
 
 #endif // COMAPRESNAPSHOTFORM_H

@@ -74,6 +74,7 @@ private slots:
     void updateProgressBar();
 
     void on_actionComapre_Heapsnapshots_triggered();
+    void onDiffSnapshotsSelected(QList<int> selectedSnapshots);
 
 private:
     Ui::RbkitMainWindow *ui;
