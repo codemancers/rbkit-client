@@ -72,6 +72,8 @@ private slots:
     void tabClosed(int index);
     void updateProgressBar();
 
+    void on_actionComapre_Heapsnapshots_triggered();
+
 private:
     Ui::RbkitMainWindow *ui;
 };

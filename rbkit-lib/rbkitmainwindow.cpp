@@ -188,3 +188,9 @@ void RbkitMainWindow::updateProgressBar()
     int currentProgress = RBKit::AppState::getInstance()->getState("heap_snapshot").toInt();
     progressBar->setValue(currentProgress);
 }
+
+
+void RbkitMainWindow::on_actionComapre_Heapsnapshots_triggered()
+{
+
+}

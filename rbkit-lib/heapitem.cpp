@@ -82,7 +82,6 @@ HeapItem *HeapItem::minus(HeapItem *other)
     if (other->getIsSnapshot() && isSnapshot) {
         QString queryString;
         QString viewName = QString("view_").append(RBKit::StringUtil::randomSHA());
-        qDebug() << "** Generated uuid is : " << viewName;
         queryString = QString("create view %0 AS select * from %1 where %1.id not in "
                               "(select %2.id from %2)").arg(viewName).arg(objectsTableName).arg(other->getObjectsTableName());
 

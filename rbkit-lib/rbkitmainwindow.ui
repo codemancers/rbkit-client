@@ -76,6 +76,7 @@
    <addaction name="action_Connect"/>
    <addaction name="action_Trigger_GC"/>
    <addaction name="actionHeap_Snapshot"/>
+   <addaction name="actionComapre_Heapsnapshots"/>
   </widget>
   <action name="action_Connect">
    <property name="text">
@@ -103,6 +104,14 @@
    </property>
    <property name="toolTip">
     <string>Record heapsnapshot</string>
+   </property>
+  </action>
+  <action name="actionComapre_Heapsnapshots">
+   <property name="text">
+    <string>Comapre  Snapshots</string>
+   </property>
+   <property name="toolTip">
+    <string>Comapre Heapsnpshot</string>
    </property>
   </action>
  </widget>
