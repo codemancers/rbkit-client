@@ -97,6 +97,7 @@ HeapItem *SqlConnectionPool::rootOfSnapshot(int snapShotVersion)
         rootItem->addChildren(item);
     }
     rootItem->childrenFetched = true;
+    rootItem->setIsSnapshot(true);
     rootItem->computePercentage();
     return rootItem;
 }

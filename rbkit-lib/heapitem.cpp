@@ -43,6 +43,16 @@ HeapItem::~HeapItem()
         }
     }
 }
+bool HeapItem::getIsSnapshot() const
+{
+    return isSnapshot;
+}
+
+void HeapItem::setIsSnapshot(bool value)
+{
+    isSnapshot = value;
+}
+
 QString HeapItem::getReferenceTableName() const
 {
     return referenceTableName;
@@ -65,6 +75,43 @@ QString HeapItem::shortLeadingIdentifier()
     } else {
         return className;
     }
+}
+
+HeapItem *HeapItem::minus(HeapItem *other)
+{
+    if (other->getIsSnapshot() && isSnapshot) {
+        QString queryString;
+        QString viewName = QString("view_").append(RBKit::StringUtil::randomSHA());
+        qDebug() << "** Generated uuid is : " << viewName;
+        queryString = QString("create view %0 AS select * from %1 where %1.id not in "
+                              "(select %2.id from %2)").arg(viewName).arg(objectsTableName).arg(other->getObjectsTableName());
+
+        QSqlQuery query;
+
+        if (!query.exec(queryString)) {
+            qDebug() << "Error creating view with";
+            qDebug() << query.lastError();
+        }
+
+        HeapItem *rootItem = new HeapItem(-1);
+        rootItem->setObjectsTableName(viewName);
+        rootItem->setIsSnapshot(false);
+        QSqlQuery searchQuery(QString("select class_name, count(id) as object_count, "
+                                      "sum(reference_count) as total_ref_count, sum(size) as total_size from %0 group by (class_name)").arg(viewName));
+
+        while(searchQuery.next()) {
+            HeapItem* item = new HeapItem(searchQuery.value(0).toString(), searchQuery.value(1).toInt(),
+                                          searchQuery.value(2).toInt(), searchQuery.value(3).toInt(), -1);
+            item->setObjectsTableName(viewName);
+            rootItem->addChildren(item);
+        }
+        rootItem->childrenFetched = true;
+        rootItem->computePercentage();
+        return rootItem;
+    } else {
+        return NULL;
+    }
+
 }
 
 QString HeapItem::getObjectsTableName() const
@@ -185,6 +232,7 @@ HeapItem *HeapItem::getSelectedReferences()
 
     HeapItem *rootItem = new HeapItem(-1);
     rootItem->setObjectsTableName(viewName);
+    rootItem->setIsSnapshot(false);
     QSqlQuery searchQuery(QString("select class_name, count(id) as object_count, "
                           "sum(reference_count) as total_ref_count, sum(size) as total_size from %0 group by (class_name)").arg(viewName));
 
@@ -234,6 +282,13 @@ quint32 HeapItem::childrenCount()
     if (!childrenFetched)
         fetchChildren();
     return children.size();
+}
+
+bool HeapItem::canHaveDiff()
+{
+    if (leafNode)
+        return false;
+
 }
 
 void HeapItem::fetchChildren()
