@@ -21,5 +21,5 @@ void ComapreSnapshotForm::on_okButton_clicked()
 
 void ComapreSnapshotForm::on_cancelButton_clicked()
 {
-
+    this->close();
 }
