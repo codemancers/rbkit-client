@@ -73,6 +73,7 @@ void HeapDumpForm::adjustColumnWidth()
     ui->treeView->setColumnWidth(3, 180);
     ui->treeView->setColumnWidth(4, 180);
     ui->treeView->setAlternatingRowColors(true);
+    ui->treeView->sortByColumn(1, Qt::DescendingOrder);
 }
 
 void HeapDumpForm::onCustomContextMenu(const QPoint &point)
