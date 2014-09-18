@@ -27,7 +27,8 @@ SOURCES += \
     sqlconnectionpool.cpp \
     heapitem.cpp \
     heapdatamodel.cpp \
-    sortobjectproxymodel.cpp
+    sortobjectproxymodel.cpp \
+    comapresnapshotform.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -46,7 +47,8 @@ HEADERS +=  \
     sqlconnectionpool.h \
     heapitem.h \
     heapdatamodel.h \
-    sortobjectproxymodel.h
+    sortobjectproxymodel.h \
+    comapresnapshotform.h
 
 
 # Include msgpack via pri file
@@ -56,4 +58,5 @@ FORMS += \
     rbkitmainwindow.ui \
     askhost.ui \
     heapdumpform.ui \
-    memoryview.ui
+    memoryview.ui \
+    comapresnapshotform.ui

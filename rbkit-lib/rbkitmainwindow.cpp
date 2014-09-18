@@ -3,6 +3,7 @@
 #include "askhost.h"
 #include "jsbridge.h"
 #include "appstate.h"
+#include "comapresnapshotform.h"
 
 RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     QMainWindow(parent), connected(false), host(""),
@@ -192,5 +193,6 @@ void RbkitMainWindow::updateProgressBar()
 
 void RbkitMainWindow::on_actionComapre_Heapsnapshots_triggered()
 {
-
+    ComapreSnapshotForm *compareSnapshots = new ComapreSnapshotForm(this);
+    compareSnapshots->show();
 }
