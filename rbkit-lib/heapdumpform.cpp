@@ -14,6 +14,12 @@ void HeapDumpForm::setParentWindow(RbkitMainWindow *value)
     parentWindow = value;
 }
 
+
+RBKit::HeapItem *HeapDumpForm::getRootItem() const
+{
+    return rootItem;
+}
+
 HeapDumpForm::HeapDumpForm(QWidget* parent, int _snapShotVersion)
     : QWidget(parent), ui(new Ui::HeapDumpForm), snapShotVersion(_snapShotVersion), disableRightClick(false)
 {

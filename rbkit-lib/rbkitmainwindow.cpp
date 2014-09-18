@@ -211,5 +211,14 @@ void RbkitMainWindow::on_actionComapre_Heapsnapshots_triggered()
 
 void RbkitMainWindow::onDiffSnapshotsSelected(QList<int> selectedSnapshots)
 {
+    RBKit::HeapItem* item1 = heapForms[selectedSnapshots.at(0)]->getRootItem();
+    RBKit::HeapItem* item2 = heapForms[selectedSnapshots.at(1)]->getRootItem();
+
+    RBKit::HeapItem *newRoot = item2->minus(item1);
+
+    HeapDumpForm *form = new HeapDumpForm(this, 0);
+    form->setDisableRightClick(true);
+    form->loadSelectedReferences(selecteItem);
+    parentWindow->addTabWidget(form, QString("References for : %0").arg(selecteItem->shortLeadingIdentifier()));
     qDebug() << selectedSnapshots;
 }

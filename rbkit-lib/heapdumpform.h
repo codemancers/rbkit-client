@@ -43,6 +43,8 @@ public:
     void setDisableRightClick(bool value);
     bool getDisableRightClick() const;
 
+    RBKit::HeapItem *getRootItem() const;
+
 private:
     Ui::HeapDumpForm *ui;
     int snapShotVersion;
