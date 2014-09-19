@@ -29,7 +29,12 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     qRegisterMetaType<RBKit::ObjectDetail>();
     memoryView = new RBKit::MemoryView();
     ui->chartingTab->addTab(memoryView, "Object Charts");
-    ui->chartingTab->tabBar()->tabButton(0, QTabBar::RightSide)->resize(0,0);
+    QWidget *tabButton = ui->chartingTab->tabBar()->tabButton(0, QTabBar::RightSide);
+    if (tabButton) {
+        tabButton->resize(0, 0);
+    } else {
+        ui->chartingTab->tabBar()->tabButton(0, QTabBar::LeftSide)->resize(0, 0);
+    }
     connect(ui->chartingTab, SIGNAL(tabCloseRequested(int)), this, SLOT(tabClosed(int)));
 }
 
@@ -213,12 +218,4 @@ void RbkitMainWindow::onDiffSnapshotsSelected(QList<int> selectedSnapshots)
 {
     RBKit::HeapItem* item1 = heapForms[selectedSnapshots.at(0)]->getRootItem();
     RBKit::HeapItem* item2 = heapForms[selectedSnapshots.at(1)]->getRootItem();
-
-    RBKit::HeapItem *newRoot = item2->minus(item1);
-
-    HeapDumpForm *form = new HeapDumpForm(this, 0);
-    form->setDisableRightClick(true);
-    form->loadSelectedReferences(selecteItem);
-    parentWindow->addTabWidget(form, QString("References for : %0").arg(selecteItem->shortLeadingIdentifier()));
-    qDebug() << selectedSnapshots;
 }
