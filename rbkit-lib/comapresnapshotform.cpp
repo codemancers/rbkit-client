@@ -33,6 +33,7 @@ void ComapreSnapshotForm::on_okButton_clicked()
     int selection2 = ui->snapshot2->currentIndex();
     selections.append(snapshotVersions.at(selection2));
     emit snapshotSelected(selections);
+    this->close();
 }
 
 void ComapreSnapshotForm::on_cancelButton_clicked()

@@ -25,6 +25,7 @@ class RbkitMainWindow;
 class HeapDumpForm : public QWidget
 {
     Q_OBJECT
+protected:
     QAction *viewRefAct;
     RBKit::HeapItem *rootItem;
     RBKit::HeapDataModel *model;
@@ -42,6 +43,7 @@ public:
     void setParentWindow(RbkitMainWindow *value);
     void setDisableRightClick(bool value);
     bool getDisableRightClick() const;
+    void setTreeModel(SortObjectProxyModel* model);
 
     RBKit::HeapItem *getRootItem() const;
 

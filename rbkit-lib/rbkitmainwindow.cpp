@@ -4,6 +4,7 @@
 #include "jsbridge.h"
 #include "appstate.h"
 #include "comapresnapshotform.h"
+#include "diffviewform.h"
 
 RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     QMainWindow(parent), connected(false), host(""),
@@ -218,4 +219,11 @@ void RbkitMainWindow::onDiffSnapshotsSelected(QList<int> selectedSnapshots)
 {
     RBKit::HeapItem* item1 = heapForms[selectedSnapshots.at(0)]->getRootItem();
     RBKit::HeapItem* item2 = heapForms[selectedSnapshots.at(1)]->getRootItem();
+
+    RBKit::HeapItem *newRootItem = item2->minus(item1);
+
+    DiffViewForm *form = new DiffViewForm(this, -1);
+    form->setDisableRightClick(true);
+    form->loadFromSpecifiedRoot(newRootItem);
+    addTabWidget(form, QString("Heap Diff"));
 }
