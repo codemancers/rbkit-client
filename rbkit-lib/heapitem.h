@@ -28,12 +28,14 @@ public:
     int refPercentage;
     int snapShotVersion;
     bool leafNode;
+    bool isSnapshot;
     QVector<HeapItem *> children;
     QString objectsTableName;
     QString referenceTableName;
 
     bool hasChildren();
     quint32 childrenCount();
+    bool canHaveDiff();
     void fetchChildren();
     HeapItem *getParent() const;
     HeapItem *getChild(int index);
@@ -51,6 +53,9 @@ public:
     QString getReferenceTableName() const;
     void setReferenceTableName(const QString &value);
     QString shortLeadingIdentifier();
+    HeapItem *minus(HeapItem *other);
+    bool getIsSnapshot() const;
+    void setIsSnapshot(bool value);
 };
 
 } // namespace RBKit

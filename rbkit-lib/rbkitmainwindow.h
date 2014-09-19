@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QProgressBar>
 #include <QTimer>
+#include <QMap>
 
 #include "subscriber.h"
 #include "askhost.h"
@@ -32,7 +33,7 @@ class RbkitMainWindow : public QMainWindow
     QString host;
     AskHost *askHost;
     RBKit::MemoryView *memoryView;
-    QHash<int, HeapDumpForm *> heapForms;
+    QMap<int, HeapDumpForm *> heapForms;
     int currentIndex;
     QLabel *statusLabel;
     QProgressBar *progressBar;
@@ -41,6 +42,7 @@ class RbkitMainWindow : public QMainWindow
     void setupSubscriber();
     void disconnectFromSocket();
     void askForServerInfo();
+    QList<int> diffableSnapshotVersions();
     bool connected;
 
 public:
@@ -71,6 +73,9 @@ private slots:
     void on_actionHeap_Snapshot_triggered();
     void tabClosed(int index);
     void updateProgressBar();
+
+    void on_actionComapre_Heapsnapshots_triggered();
+    void onDiffSnapshotsSelected(QList<int> selectedSnapshots);
 
 private:
     Ui::RbkitMainWindow *ui;

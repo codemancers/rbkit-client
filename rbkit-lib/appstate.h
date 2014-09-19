@@ -12,11 +12,15 @@ class AppState
 {
     QMutex mutex;
     QHash<QString, QVariant> appState;
+    QHash<int, QString> snapshotNames;
     AppState();
     static AppState *singleton;
 public:
     const QVariant getState(const QString& ket);
     void setAppState(const QString key, const QVariant value);
+    void setSnapshotName(int key, QString snapShotName);
+    QString getSnapshotName(int key) const;
+    void removeSnapshotName(int key);
     static AppState* getInstance();
 };
 

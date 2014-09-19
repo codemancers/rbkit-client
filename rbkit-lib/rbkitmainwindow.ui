@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>1100</width>
-    <height>830</height>
+    <height>840</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>850</width>
-    <height>830</height>
+    <height>840</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -76,6 +76,7 @@
    <addaction name="action_Connect"/>
    <addaction name="action_Trigger_GC"/>
    <addaction name="actionHeap_Snapshot"/>
+   <addaction name="actionComapre_Heapsnapshots"/>
   </widget>
   <action name="action_Connect">
    <property name="text">
@@ -103,6 +104,14 @@
    </property>
    <property name="toolTip">
     <string>Record heapsnapshot</string>
+   </property>
+  </action>
+  <action name="actionComapre_Heapsnapshots">
+   <property name="text">
+    <string>Comapre  Snapshots</string>
+   </property>
+   <property name="toolTip">
+    <string>Comapre Heapsnpshot</string>
    </property>
   </action>
  </widget>

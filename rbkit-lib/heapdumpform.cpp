@@ -14,6 +14,12 @@ void HeapDumpForm::setParentWindow(RbkitMainWindow *value)
     parentWindow = value;
 }
 
+
+RBKit::HeapItem *HeapDumpForm::getRootItem() const
+{
+    return rootItem;
+}
+
 HeapDumpForm::HeapDumpForm(QWidget* parent, int _snapShotVersion)
     : QWidget(parent), ui(new Ui::HeapDumpForm), snapShotVersion(_snapShotVersion), disableRightClick(false)
 {
@@ -44,13 +50,18 @@ bool HeapDumpForm::getDisableRightClick() const {
     return disableRightClick;
 }
 
+void HeapDumpForm::setTreeModel(SortObjectProxyModel *model)
+{
+    ui->treeView->setModel(model);
+}
+
 void HeapDumpForm::loaData()
 {
     rootItem = RBKit::SqlConnectionPool::getInstance()->rootOfSnapshot(snapShotVersion);
     model = new RBKit::HeapDataModel(rootItem, this);
     proxyModel = new SortObjectProxyModel(this);
     proxyModel->setSourceModel(model);
-    ui->treeView->setModel(proxyModel);
+    setTreeModel(proxyModel);
     adjustColumnWidth();
 }
 
@@ -60,7 +71,7 @@ void HeapDumpForm::loadSelectedReferences(RBKit::HeapItem *_selectedItem)
     model = new RBKit::HeapDataModel(rootItem, this);
     proxyModel = new SortObjectProxyModel(this);
     proxyModel->setSourceModel(model);
-    ui->treeView->setModel(proxyModel);
+    setTreeModel(proxyModel);
     adjustColumnWidth();
 }
 
@@ -73,6 +84,8 @@ void HeapDumpForm::adjustColumnWidth()
     ui->treeView->setColumnWidth(3, 180);
     ui->treeView->setColumnWidth(4, 180);
     ui->treeView->setAlternatingRowColors(true);
+    ui->treeView->sortByColumn(1, Qt::DescendingOrder);
+    connect(ui->treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(treeNodeSelected(QModelIndex)));
 }
 
 void HeapDumpForm::onCustomContextMenu(const QPoint &point)
