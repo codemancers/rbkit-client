@@ -10,10 +10,10 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     QMainWindow(parent), connected(false), host(""),
     ui(new Ui::RbkitMainWindow), currentIndex(0)
 {
+    Q_INIT_RESOURCE(tool_icons);
     RBKit::SqlConnectionPool::getInstance()->setupDatabase();
     this->connected = false;
     ui->setupUi(this);
-    setupIcons();
 
     snapshotProgressTimer = new QTimer(this);
 
@@ -79,23 +79,6 @@ void RbkitMainWindow::askForServerInfo() {
                 this, SLOT(useSelectedHost(QString, QString)));
         askHost->show();
     }
-}
-
-void RbkitMainWindow::setupIcons()
-{
-    QIcon connectIcon(QPixmap(":connect-32.png"));
-    ui->action_Connect->setIcon(connectIcon);
-
-    QIcon disconnectIcon(QPixmap(":disconnect-32.png"));
-
-    QIcon gcIcon(QPixmap(":startgc-32.png"));
-    ui->action_Trigger_GC->setIcon(gcIcon);
-
-    QIcon snapshotIcon(QPixmap(":snapshot-32.png"));
-    ui->actionHeap_Snapshot->setIcon(snapshotIcon);
-
-    QIcon compareIcon(QPixmap(":Comapre-32.png"));
-    ui->actionComapre_Heapsnapshots->setIcon(compareIcon);
 }
 
 QList<int> RbkitMainWindow::diffableSnapshotVersions()
@@ -178,7 +161,9 @@ void RbkitMainWindow::setupSubscriber()
 void RbkitMainWindow::disconnectedFromSocket()
 {
     ui->action_Connect->setText(tr("&Connect"));
+    ui->action_Connect->setIcon(QIcon(":/connect-32.png"));
     this->connected = false;
+    ui->statusbar->showMessage("Not connected to any Ruby application");
     emit disconnectSubscriber();
 }
 
@@ -186,6 +171,8 @@ void RbkitMainWindow::disconnectedFromSocket()
 void RbkitMainWindow::connectedToSocket()
 {
     ui->action_Connect->setText(tr("&Disconnect"));
+    ui->action_Connect->setIcon(QIcon(":/disconnect-32.png"));
+    ui->statusbar->showMessage("Currently Profiling Ruby application");
     this->connected = true;
 }
 

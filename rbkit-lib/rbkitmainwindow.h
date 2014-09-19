@@ -43,7 +43,6 @@ class RbkitMainWindow : public QMainWindow
     void setupSubscriber();
     void disconnectFromSocket();
     void askForServerInfo();
-    void setupIcons();
     QList<int> diffableSnapshotVersions();
 
 public:
