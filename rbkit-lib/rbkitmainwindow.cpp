@@ -82,7 +82,16 @@ void RbkitMainWindow::askForServerInfo() {
 
 QList<int> RbkitMainWindow::diffableSnapshotVersions()
 {
-   return heapForms.keys();
+    QList<int> selectedSnapshots;
+    QMapIterator<int, HeapDumpForm *> iterator(heapForms);
+    while (iterator.hasNext()) {
+        iterator.next();
+        HeapDumpForm *form = iterator.value();
+        if (form->getRootItem()->getIsSnapshot()) {
+            selectedSnapshots.append(iterator.key());
+        }
+    }
+    return selectedSnapshots;
 }
 
 
@@ -112,7 +121,10 @@ void RbkitMainWindow::objectDumpAvailable(int snapshotVersion)
     ui->statusbar->clearMessage();
     progressBar->setValue(100);
     snapshotProgressTimer->stop();
-    ui->chartingTab->addTab(heapUI, QString("Heap Dump #%0").arg(snapshotVersion));
+    QString snapshotName = QString("Heap Dump #%0").arg(snapshotVersion);
+    ui->chartingTab->addTab(heapUI, snapshotName);
+    RBKit::AppState::getInstance()->setSnapshotName(currentIndex, snapshotName);
+
 }
 
 void RbkitMainWindow::disconnectFromSocket()
@@ -193,7 +205,6 @@ void RbkitMainWindow::tabClosed(int index)
     }
 
     heapForms.remove(index);
-    --currentIndex;
 }
 
 void RbkitMainWindow::updateProgressBar()
@@ -225,5 +236,5 @@ void RbkitMainWindow::onDiffSnapshotsSelected(QList<int> selectedSnapshots)
     DiffViewForm *form = new DiffViewForm(this, -1);
     form->setDisableRightClick(true);
     form->loadFromSpecifiedRoot(newRootItem);
-    addTabWidget(form, QString("Heap Diff"));
+    addTabWidget(form, QString("Comapre Snapshots"));
 }

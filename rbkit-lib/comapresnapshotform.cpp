@@ -1,5 +1,6 @@
 #include "comapresnapshotform.h"
 #include "ui_comapresnapshotform.h"
+#include "appstate.h"
 
 ComapreSnapshotForm::ComapreSnapshotForm(QWidget *parent) :
     QDialog(parent),
@@ -16,8 +17,8 @@ ComapreSnapshotForm::~ComapreSnapshotForm()
 void ComapreSnapshotForm::setSnapshotVersions(QList<int> _snapshotVersions) {
     snapshotVersions = _snapshotVersions;
     for(auto version : snapshotVersions) {
-        ui->snapshot1->addItem(QString("Snapshot %0").arg(version));
-        ui->snapshot2->addItem(QString("Snapshot %0").arg(version));
+        ui->snapshot1->addItem(RBKit::AppState::getInstance()->getSnapshotName(version));
+        ui->snapshot2->addItem(RBKit::AppState::getInstance()->getSnapshotName(version));
     }
 }
 

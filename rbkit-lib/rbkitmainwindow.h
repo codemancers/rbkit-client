@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QProgressBar>
 #include <QTimer>
+#include <QMap>
 
 #include "subscriber.h"
 #include "askhost.h"
@@ -32,7 +33,7 @@ class RbkitMainWindow : public QMainWindow
     QString host;
     AskHost *askHost;
     RBKit::MemoryView *memoryView;
-    QHash<int, HeapDumpForm *> heapForms;
+    QMap<int, HeapDumpForm *> heapForms;
     int currentIndex;
     QLabel *statusLabel;
     QProgressBar *progressBar;

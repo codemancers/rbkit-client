@@ -10,6 +10,7 @@ void HeapItem::initializeDataMembers()
     leafNode = false;
     childrenFetched = false;
     childrenCountFetched = -1;
+    isSnapshot = false;
     objectsTableName = QString("rbkit_objects_%0").arg(snapShotVersion);
     referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
 }
@@ -33,6 +34,7 @@ HeapItem::HeapItem(const QString _className, quint32 _count, quint32 _referenceC
 {
     initializeDataMembers();
     leafNode = true;
+    isSnapshot = false;
 }
 
 HeapItem::~HeapItem()

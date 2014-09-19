@@ -11,6 +11,21 @@ void AppState::setAppState(const QString key, const QVariant value)
    mutex.unlock();
 }
 
+void AppState::setSnapshotName(int key, QString snapShotName)
+{
+   snapshotNames[key] = snapShotName;
+}
+
+QString AppState::getSnapshotName(int key) const
+{
+    return snapshotNames[key];
+}
+
+void AppState::removeSnapshotName(int key)
+{
+    snapshotNames.remove(key);
+}
+
 AppState *AppState::getInstance()
 {
     if (!singleton) {
