@@ -85,6 +85,7 @@ void HeapDumpForm::adjustColumnWidth()
     ui->treeView->setColumnWidth(4, 180);
     ui->treeView->setAlternatingRowColors(true);
     ui->treeView->sortByColumn(1, Qt::DescendingOrder);
+    connect(ui->treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(treeNodeSelected(QModelIndex)));
 }
 
 void HeapDumpForm::onCustomContextMenu(const QPoint &point)
