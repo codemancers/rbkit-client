@@ -9,6 +9,19 @@ rbkit-client
 You need Qt on your system in order to build the project. It's recommended to
 install Qt Creator which is an IDE for Qt projects.
 
+## Compiling on Linux
+
+Assuming you have Qt 5.3.x version installed somewhere on your Linux box, after
+cloning the repository you should run:
+
+```bash
+qmake
+make -j4
+```
+
+And that should give you `rbkit-app/RBKitClient` executable, which you can
+go ahead and run.
+
 ## Qt build issue on OSX Mavericks
 
 Qt binary distribution compiles with `-stdlib=libstdc++` for std lib,
