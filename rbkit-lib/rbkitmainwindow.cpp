@@ -13,6 +13,7 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     RBKit::SqlConnectionPool::getInstance()->setupDatabase();
     this->connected = false;
     ui->setupUi(this);
+    setupIcons();
 
     snapshotProgressTimer = new QTimer(this);
 
@@ -78,6 +79,23 @@ void RbkitMainWindow::askForServerInfo() {
                 this, SLOT(useSelectedHost(QString, QString)));
         askHost->show();
     }
+}
+
+void RbkitMainWindow::setupIcons()
+{
+    QIcon connectIcon(QPixmap(":connect-32.png"));
+    ui->action_Connect->setIcon(connectIcon);
+
+    QIcon disconnectIcon(QPixmap(":disconnect-32.png"));
+
+    QIcon gcIcon(QPixmap(":startgc-32.png"));
+    ui->action_Trigger_GC->setIcon(gcIcon);
+
+    QIcon snapshotIcon(QPixmap(":snapshot-32.png"));
+    ui->actionHeap_Snapshot->setIcon(snapshotIcon);
+
+    QIcon compareIcon(QPixmap(":Comapre-32.png"));
+    ui->actionComapre_Heapsnapshots->setIcon(compareIcon);
 }
 
 QList<int> RbkitMainWindow::diffableSnapshotVersions()

@@ -38,12 +38,13 @@ class RbkitMainWindow : public QMainWindow
     QLabel *statusLabel;
     QProgressBar *progressBar;
     QTimer *snapshotProgressTimer;
+    bool connected;
 
     void setupSubscriber();
     void disconnectFromSocket();
     void askForServerInfo();
+    void setupIcons();
     QList<int> diffableSnapshotVersions();
-    bool connected;
 
 public:
     explicit RbkitMainWindow(QWidget *parent = 0);

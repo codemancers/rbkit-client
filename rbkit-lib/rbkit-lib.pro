@@ -62,3 +62,6 @@ FORMS += \
     heapdumpform.ui \
     memoryview.ui \
     comapresnapshotform.ui
+
+RESOURCES += \
+    tool_icons.qrc
