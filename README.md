@@ -1,6 +1,7 @@
 rbkit-client
 ============
 
+![Rbkit](https://github.com/code-mancers/rbkit-client/raw/master/images/rbkit2.gif "RBkit use")
 
 # Development
 
