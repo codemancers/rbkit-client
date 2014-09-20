@@ -12,15 +12,20 @@ static QByteArray msgpackDataFromFile(const QString filename)
     return file.readAll();
 }
 
+void TestObjectDump::initTestCase()
+{
+    // read object dump, and parse it
+    objectDump = msgpackDataFromFile(":/tests/msgpack/hugedump");
+
+    auto evt = parseEvent(objectDump);
+    event.reset(dynamic_cast<EvtObjectDump *>(evt));
+}
 
 void TestObjectDump::testBenchmarkParseObjectDump()
 {
-    auto data = msgpackDataFromFile(":/tests/msgpack/hugedump");
-    qDebug() << "benchmark data size" << data.size();
-
     EventDataBase* base = NULL;
     QBENCHMARK {
-        base = parseEvent(data);
+        base = parseEvent(objectDump);
     }
 
     QVERIFY(base);
@@ -34,36 +39,28 @@ void TestObjectDump::testBenchmarkParseObjectDump()
 
 void TestObjectDump::testBenchmarkProcessObjectsWhenObjectSpaceIsEmpty()
 {
-    auto data = msgpackDataFromFile(":/tests/msgpack/hugedump");
-
-    auto base = parseEvent(data);
-    EvtObjectDump* evt = dynamic_cast<EvtObjectDump *>(base);
-    qDebug() << "total objects :" << evt->objects.size();
+    qDebug() << "total objects :" << event->objects.size();
 
     // Create an objectstore
     ObjectStore store;
 
     qDebug() << "populating object store for first time";
     QBENCHMARK {
-        store.updateFromSnapshot(evt->objects);
+        store.updateFromSnapshot(event->objects);
     }
 }
 
 void TestObjectDump::testBenchmarkProcessObjectsWhenObjectSpaceIsFull()
 {
-    auto data = msgpackDataFromFile(":/tests/msgpack/hugedump");
-
-    auto base = parseEvent(data);
-    EvtObjectDump* evt = dynamic_cast<EvtObjectDump *>(base);
-    qDebug() << "total objects :" << evt->objects.size();
+    qDebug() << "total objects :" << event->objects.size();
 
     // Create an objectstore
     ObjectStore store;
 
-    store.updateFromSnapshot(evt->objects);
+    store.updateFromSnapshot(event->objects);
 
     qDebug() << "populating object store again";
     QBENCHMARK {
-        store.updateFromSnapshot(evt->objects);
+        store.updateFromSnapshot(event->objects);
     }
 }
