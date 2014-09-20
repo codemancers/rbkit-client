@@ -14,6 +14,7 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     RBKit::SqlConnectionPool::getInstance()->setupDatabase();
     this->connected = false;
     ui->setupUi(this);
+    setupToolbarStyle();
 
     snapshotProgressTimer = new QTimer(this);
 
@@ -79,6 +80,11 @@ void RbkitMainWindow::askForServerInfo() {
                 this, SLOT(useSelectedHost(QString, QString)));
         askHost->show();
     }
+}
+
+void RbkitMainWindow::setupToolbarStyle()
+{
+    ui->toolBar->setStyleSheet("QToolButton:pressed { background-color: rgb(160,160,160); border-style: inset; }");
 }
 
 QList<int> RbkitMainWindow::diffableSnapshotVersions()
