@@ -22,53 +22,74 @@
   <property name="windowTitle">
    <string>Enter address of your Ruby app</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="QLabel" name="hostInfo">
-       <property name="text">
-        <string>Enter connection information for events</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QLineEdit" name="eventsSocket">
+        <widget class="QLabel" name="hostInfo">
          <property name="text">
-          <string>tcp://127.0.0.1:5555</string>
+          <string>Enter connection information for events</string>
          </property>
         </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLineEdit" name="eventsSocket">
+           <property name="text">
+            <string>tcp://127.0.0.1:5555</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Enter connection information for commands</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLineEdit" name="commandsSocket">
+           <property name="text">
+            <string>tcp://127.0.0.1:5556</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
      <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Enter connection information for commands</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QLineEdit" name="commandsSocket">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>178</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="hostSelectedButton">
          <property name="text">
-          <string>tcp://127.0.0.1:5556</string>
+          <string>&amp;Ok</string>
          </property>
         </widget>
        </item>
       </layout>
      </item>
     </layout>
-   </item>
-   <item>
-    <widget class="QPushButton" name="hostSelectedButton">
-     <property name="text">
-      <string>&amp;Ok</string>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>

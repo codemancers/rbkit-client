@@ -14,3 +14,6 @@ include($$RC_ROOT_SOURCE_DIR/common.pri)
 
 # Include rbkit-charts via pri file
 include($$RC_ROOT_SOURCE_DIR/rbkit-charts/rbcharts.pri)
+
+RESOURCES += \
+    appicon.qrc
