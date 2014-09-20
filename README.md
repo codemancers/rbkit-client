@@ -3,6 +3,10 @@ rbkit-client
 
 ![Rbkit](https://github.com/code-mancers/rbkit-client/raw/master/images/rbkit2.gif "RBkit use")
 
+A build for OSX can be downloaded from:
+
+https://github.com/code-mancers/rbkit-client/releases/tag/0.1.2
+
 # Development
 
 ## Requirements
