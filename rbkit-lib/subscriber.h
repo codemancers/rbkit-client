@@ -31,10 +31,10 @@ class Subscriber : public QObject
     RBKit::ZmqCommandSocket* commandSocket;
     RBKit::ZmqEventSocket* eventSocket;
 
-    // add a timer to emit stats
-    QTimer* m_timer;
-    RBKit::ObjectStore *objectStore;
+    // add a timer to detect command timeout, and a timer to emit stats
+    QTimer* statsTimer;
 
+    RBKit::ObjectStore *objectStore;
     RBKit::JsBridge* jsBridge;
 
 public:
@@ -61,7 +61,7 @@ public slots:
     void startListening(QString, QString);
     void stop();
     void onMessageReceived(const QList<QByteArray>&);
-    void onTimerExpiry();
+    void onStatsTimerExpiry();
     void triggerGc();
     void takeSnapshot();
 };

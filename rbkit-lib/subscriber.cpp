@@ -39,9 +39,9 @@ Subscriber::Subscriber(RBKit::JsBridge* bridge)
            this, SLOT(onMessageReceived(const QList<QByteArray>&)));
 
     // initialize the timer, mark it a periodic one, and connect to timeout.
-    m_timer = new QTimer(this);
-    m_timer->setInterval(timerIntervalInMs);
-    connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimerExpiry()));
+    statsTimer = new QTimer(this);
+    statsTimer->setInterval(timerIntervalInMs);
+    connect(statsTimer, SIGNAL(timeout()), this, SLOT(onStatsTimerExpiry()));
 }
 
 void Subscriber::triggerGc() {
@@ -90,7 +90,7 @@ void Subscriber::startListening(QString commandsUrl, QString eventsUrl)
     RBKit::CmdStartProfile startCmd;
     commandSocket->sendCommand(startCmd);
 
-    m_timer->start();
+    statsTimer->start();
 
     emit connected();
     qDebug() << "started";
@@ -184,7 +184,7 @@ void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)
 }
 
 
-void Subscriber::onTimerExpiry()
+void Subscriber::onStatsTimerExpiry()
 {
     static const QString eventName("object_stats");
 
