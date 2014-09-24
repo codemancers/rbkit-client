@@ -34,14 +34,25 @@ Subscriber::Subscriber(RBKit::JsBridge* bridge)
 {
     commandSocket = new RBKit::ZmqCommandSocket(this);
     eventSocket   = new RBKit::ZmqEventSocket(this);
-    objectStore = new RBKit::ObjectStore();
+    connect(commandSocket->getSocket(), SIGNAL(messageReceived(const QList<QByteArray>&)),
+           this, SLOT(onCommandResponseReceived(const QList<QByteArray>&)));
+
     connect(eventSocket->getSocket(), SIGNAL(messageReceived(const QList<QByteArray>&)),
            this, SLOT(onMessageReceived(const QList<QByteArray>&)));
+
+    objectStore = new RBKit::ObjectStore();
 
     // initialize the timer, mark it a periodic one, and connect to timeout.
     statsTimer = new QTimer(this);
     statsTimer->setInterval(timerIntervalInMs);
     connect(statsTimer, SIGNAL(timeout()), this, SLOT(onStatsTimerExpiry()));
+
+    // initialize command socket timer, so that response is received.
+    commandSocketTimer = new QTimer(this);
+    commandSocketTimer->setInterval(timerIntervalInMs);
+    commandSocketTimer->setSingleShot(true);
+    connect(commandSocketTimer, SIGNAL(timeout()),
+            this, SLOT(onCommandSocketTimerExpiry()));
 }
 
 void Subscriber::triggerGc() {
@@ -87,12 +98,11 @@ void Subscriber::startListening(QString commandsUrl, QString eventsUrl)
         return;
     }
 
-    RBKit::CmdStartProfile startCmd;
-    commandSocket->sendCommand(startCmd);
+    RBKit::CmdStartProfile startCommand;
+    sendCommand(startCommand);
 
     statsTimer->start();
 
-    emit connected();
     qDebug() << "started";
 }
 
@@ -190,4 +200,43 @@ void Subscriber::onStatsTimerExpiry()
 
     QVariantMap map = hashToQVarMap(objectStore->liveStats());
     jsBridge->sendMapToJs(eventName, QDateTime(), map);
+}
+
+
+void Subscriber::sendCommand(RBKit::CommandBase& command)
+{
+    if (commandSent.isEmpty()) {
+        // earlier command was successful.
+        commandSocketTimer->start();
+        commandSocket->sendCommand(command);
+        commandSent = command.serialize();
+    } else {
+        qDebug() << commandSent;
+    }
+}
+
+
+void Subscriber::onCommandResponseReceived(const QList<QByteArray>& rawMessage)
+{
+    commandSocketTimer->stop();
+
+    QString response(rawMessage.first());
+    qDebug() << "response received" << response;
+
+    if ("ok" == response) {
+        if ("start_memory_profile" == commandSent) {
+            emit connected();
+        }
+    } else {
+        // fatal error. should we show a message box to user?
+    }
+
+    commandSent = QString();
+}
+
+
+void Subscriber::onCommandSocketTimerExpiry()
+{
+    // fatal error
+    qDebug() << "fatal error, no response received";
 }

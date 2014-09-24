@@ -22,6 +22,7 @@ namespace RBKit
     class ZmqCommandSocket;
     class ZmqEventSocket;
     class JsBridge;
+    class CommandBase;
 }
 
 class Subscriber : public QObject
@@ -36,6 +37,10 @@ class Subscriber : public QObject
 
     RBKit::ObjectStore *objectStore;
     RBKit::JsBridge* jsBridge;
+
+    // command socket state, and timeout
+    QTimer* commandSocketTimer;
+    QString commandSent;
 
 public:
     explicit Subscriber(RBKit::JsBridge* jsBridge);
@@ -61,9 +66,14 @@ public slots:
     void startListening(QString, QString);
     void stop();
     void onMessageReceived(const QList<QByteArray>&);
+    void onCommandResponseReceived(const QList<QByteArray>&);
+    void onCommandSocketTimerExpiry();
     void onStatsTimerExpiry();
     void triggerGc();
     void takeSnapshot();
+
+private:
+    void sendCommand(RBKit::CommandBase& command);
 };
 
 #endif // SUBSCRIBER_H

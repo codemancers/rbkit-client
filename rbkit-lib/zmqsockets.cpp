@@ -30,12 +30,9 @@ bool RBKit::ZmqCommandSocket::sendCommand(RBKit::CommandBase& cmd)
     qDebug() << "Sending " << cmd.serialize().toLocal8Bit();
     nzmqt::ZMQMessage msg(cmd.serialize().toLocal8Bit());
     bool sent = socket->sendMessage(msg);
+    qDebug() << "command sent: " << sent;
 
-    qDebug() << "Waiting for response";
-    QList<QByteArray> resp = socket->receiveMessage();
-    qDebug() << "Got a response " << resp;
-
-    return true;
+    return sent;
 }
 
 void RBKit::ZmqCommandSocket::start(QString socketUrl)
