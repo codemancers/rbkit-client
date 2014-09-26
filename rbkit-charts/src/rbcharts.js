@@ -177,7 +177,7 @@ var Rbkit = {
 
         // append created node to table
         document.getElementById('gc-stats-table')
-          .firstElementChild
+          .lastElementChild     // this is tbody
           .appendChild(trNode);
       }
     }
@@ -211,7 +211,7 @@ var Rbkit = {
   updateHeapChart: function (newData) {
     timeStamp = this.getTimeStamp();
 
-    var values = [newData['Heap Size'].toFixed(2), newData['Mem Size'].toFixed(2)];
+    var values = [newData['Mem Size'].toFixed(2), newData['Heap Size'].toFixed(2)];
     this.heapDataChart.addData(values, timeStamp);
 
     if (this.heapDataChart.datasets[0].points.length > 10) {
@@ -237,7 +237,8 @@ var Rbkit = {
 
   init: function () {
     // charts for live objects data
-    var liveObjectsOptions = { animation: false };
+    var objectsTooltip = "<%= value %>k";
+    var liveObjectsOptions = { animation: false, tooltipTemplate: objectsTooltip };
     var liveObjectsCanvas = document.getElementById('live-objects-chart');
     var liveObjectsCtx    = liveObjectsCanvas.getContext('2d');
     this.liveObjectsChart = new Chart(liveObjectsCtx)
@@ -245,7 +246,8 @@ var Rbkit = {
     this.insertLegend(this.liveObjectsChart, liveObjectsCanvas);
 
     // charts for heap data
-    var heapChartOptions = { animation: false };
+    var heapSizesTooltip = "<%= value %> MB";
+    var heapChartOptions = { animation: false, multiTooltipTemplate: heapSizesTooltip };
     var heapDataCanvas = document.getElementById('heap-chart');
     var heapDataCtx    = heapDataCanvas.getContext('2d');
     this.heapDataChart = new Chart(heapDataCtx)
@@ -253,7 +255,8 @@ var Rbkit = {
     this.insertLegend(this.heapDataChart, heapDataCanvas);
 
     // charts for gc stats.
-    var gcChartOptions = { animation: false };
+    var gcChartsTooltip = "<%if (label){%><%=label%>: <%}%><%= value %> ms";
+    var gcChartOptions = { animation: false, tooltipTemplate: gcChartsTooltip };
     var gcCtx     = document.getElementById('gc-chart').getContext('2d');
     this.gcChart  = new Chart(gcCtx).Bar(this.gcData, gcChartOptions);
 
