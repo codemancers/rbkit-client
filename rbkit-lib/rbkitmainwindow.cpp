@@ -167,7 +167,7 @@ void RbkitMainWindow::setupSubscriber()
 void RbkitMainWindow::disconnectedFromSocket()
 {
     ui->action_Connect->setText(tr("&Connect"));
-    ui->action_Connect->setIcon(QIcon(":/connect-32.png"));
+    ui->action_Connect->setIcon(QIcon(":/icons/connect-32.png"));
     this->connected = false;
     ui->statusbar->showMessage("Not connected to any Ruby application");
     emit disconnectSubscriber();
@@ -177,7 +177,7 @@ void RbkitMainWindow::disconnectedFromSocket()
 void RbkitMainWindow::connectedToSocket()
 {
     ui->action_Connect->setText(tr("&Disconnect"));
-    ui->action_Connect->setIcon(QIcon(":/disconnect-32.png"));
+    ui->action_Connect->setIcon(QIcon(":/icons/disconnect-32.png"));
     ui->statusbar->showMessage("Currently Profiling Ruby application");
     this->connected = true;
 }
@@ -195,6 +195,7 @@ void RbkitMainWindow::on_action_Trigger_GC_triggered()
 
 void RbkitMainWindow::on_actionHeap_Snapshot_triggered()
 {
+    // set heapsnapshot percentage to 2%
     RBKit::AppState::getInstance()->setAppState("heap_snapshot", 2);
     ui->statusbar->showMessage("Snapshot started");
     ui->statusbar->clearMessage();
