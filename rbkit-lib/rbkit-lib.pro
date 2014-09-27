@@ -29,7 +29,8 @@ SOURCES += \
     heapdatamodel.cpp \
     sortobjectproxymodel.cpp \
     comapresnapshotform.cpp \
-    diffviewform.cpp
+    diffviewform.cpp \
+    snapshotstate.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -50,7 +51,8 @@ HEADERS +=  \
     heapdatamodel.h \
     sortobjectproxymodel.h \
     comapresnapshotform.h \
-    diffviewform.h
+    diffviewform.h \
+    snapshotstate.h
 
 
 # Include msgpack via pri file
