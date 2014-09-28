@@ -99,7 +99,7 @@
   </widget>
   <action name="action_Connect">
    <property name="icon">
-    <iconset resource="tool_icons.qrc">
+    <iconset resource="../tool_icons.qrc">
      <normaloff>:/icons/connect-48.png</normaloff>:/icons/connect-48.png</iconset>
    </property>
    <property name="text">
@@ -118,7 +118,7 @@
   </action>
   <action name="action_Trigger_GC">
    <property name="icon">
-    <iconset resource="tool_icons.qrc">
+    <iconset resource="../tool_icons.qrc">
      <normaloff>:/icons/startgc-48.png</normaloff>:/icons/startgc-48.png</iconset>
    </property>
    <property name="text">
@@ -127,7 +127,7 @@
   </action>
   <action name="actionHeap_Snapshot">
    <property name="icon">
-    <iconset resource="tool_icons.qrc">
+    <iconset resource="../tool_icons.qrc">
      <normaloff>:/icons/snapshot-48.png</normaloff>:/icons/snapshot-48.png</iconset>
    </property>
    <property name="text">
@@ -139,7 +139,7 @@
   </action>
   <action name="actionComapre_Heapsnapshots">
    <property name="icon">
-    <iconset resource="tool_icons.qrc">
+    <iconset resource="../tool_icons.qrc">
      <normaloff>:/icons/Comapre-48.png</normaloff>:/icons/Comapre-48.png</iconset>
    </property>
    <property name="text">
@@ -151,7 +151,7 @@
   </action>
  </widget>
  <resources>
-  <include location="tool_icons.qrc"/>
+  <include location="../tool_icons.qrc"/>
  </resources>
  <connections/>
 </ui>
