@@ -131,7 +131,6 @@ void RbkitMainWindow::objectDumpAvailable(int snapshotVersion)
     QString snapshotName = QString("Heap Dump #%0").arg(snapshotVersion);
     ui->chartingTab->addTab(heapUI, snapshotName);
     RBKit::AppState::getInstance()->setSnapshotName(currentIndex, snapshotName);
-
 }
 
 void RbkitMainWindow::disconnectFromSocket()

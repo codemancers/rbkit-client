@@ -3,6 +3,7 @@
 
 #include <QHash>
 #include <QMap>
+#include <QList>
 #include "heapdumpform.h"
 
 class SnapshotState
@@ -13,9 +14,10 @@ public:
     SnapshotState();
     void addNewSnapshot(HeapDumpForm *form);
     void removeSnapshot(int index);
-    bool snapShotInProgress();
-    int getSnapshotProgress();
+    bool snapShotInProgress() const;
+    int getSnapshotProgress() const;
     void setSnapshotProgress();
+    QList<int> diffableSnapshotVersions();
 };
 
 #endif // SNAPSHOTSTATE_H
