@@ -17,6 +17,7 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     setupToolbarStyle();
 
     snapshotProgressTimer = new QTimer(this);
+    snapShotState = new RBKit::SnapshotState();
 
     connect(snapshotProgressTimer, SIGNAL(timeout()), this, SLOT(updateProgressBar()));
 
@@ -49,8 +50,7 @@ RbkitMainWindow::~RbkitMainWindow()
 
 void RbkitMainWindow::addTabWidget(HeapDumpForm *heapDumpForm, const QString& title)
 {
-    ++currentIndex;
-    heapForms[currentIndex] = heapDumpForm;
+    snapShotState->addNewSnapshot(heapDumpForm);
     heapDumpForm->setParentWindow(this);
     ui->chartingTab->addTab(heapDumpForm, title);
 }
@@ -89,16 +89,7 @@ void RbkitMainWindow::setupToolbarStyle()
 
 QList<int> RbkitMainWindow::diffableSnapshotVersions()
 {
-    QList<int> selectedSnapshots;
-    QMapIterator<int, HeapDumpForm *> iterator(heapForms);
-    while (iterator.hasNext()) {
-        iterator.next();
-        HeapDumpForm *form = iterator.value();
-        if (form->getRootItem()->getIsSnapshot()) {
-            selectedSnapshots.append(iterator.key());
-        }
-    }
-    return selectedSnapshots;
+    return snapShotState->diffableSnapshotVersions();
 }
 
 

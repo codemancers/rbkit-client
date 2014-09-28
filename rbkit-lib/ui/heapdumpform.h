@@ -9,6 +9,7 @@
 #include <QPoint>
 #include <QAction>
 #include <QMenu>
+#include <QSharedPointer>
 
 #include "model/objectstore.h"
 #include "model/heapdatamodel.h"
@@ -55,5 +56,7 @@ public slots:
     void viewReferences();
     void treeNodeSelected(const QModelIndex& index);
 };
+
+typedef QSharedPointer<HeapDumpForm> HeapDumpFormPtr;
 
 #endif // HEAPDUMPFORM_H

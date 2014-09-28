@@ -4,20 +4,25 @@
 #include <QHash>
 #include <QMap>
 #include <QList>
+#include <QSharedPointer>
+
 #include "ui/heapdumpform.h"
 
+namespace RBKit {
 class SnapshotState
 {
-    QMap<int, HeapDumpForm *> heapForms;
+    QMap<int, HeapDumpFormPtr> heapForms;
     int snapShotIndex;
+    bool snapShotInProgressFlag;
 public:
     SnapshotState();
-    void addNewSnapshot(HeapDumpForm *form);
+    void addNewSnapshot(HeapDumpFormPtr form);
     void removeSnapshot(int index);
     bool snapShotInProgress() const;
-    int getSnapshotProgress() const;
-    void setSnapshotProgress();
+    void setSnapshotProgress(bool snapShotState);
     QList<int> diffableSnapshotVersions();
 };
+}
+
 
 #endif // SNAPSHOTSTATE_H
