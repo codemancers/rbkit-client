@@ -1,6 +1,6 @@
 #include "testobjectdump.h"
 #include "rbevents.h"
-#include "objectstore.h"
+#include "model/objectstore.h"
 #include <QDebug>
 
 using namespace RBKit;

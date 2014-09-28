@@ -7,7 +7,7 @@
 #include <QDateTime>
 #include <QString>
 #include "stringutil.h"
-#include "objectdetail.h"
+#include "model/objectdetail.h"
 
 
 class Subscriber;               // this acts as processor also atm.

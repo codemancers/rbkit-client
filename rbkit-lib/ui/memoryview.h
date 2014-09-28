@@ -5,7 +5,7 @@
 #include <QtWebKit>
 #include <QWebFrame>
 
-#include "jsbridge.h"
+#include "model/jsbridge.h"
 
 namespace RBKit {
 

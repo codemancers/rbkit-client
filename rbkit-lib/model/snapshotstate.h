@@ -4,7 +4,7 @@
 #include <QHash>
 #include <QMap>
 #include <QList>
-#include "heapdumpform.h"
+#include "ui/heapdumpform.h"
 
 class SnapshotState
 {

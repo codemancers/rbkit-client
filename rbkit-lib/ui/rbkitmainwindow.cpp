@@ -1,8 +1,8 @@
 #include "rbkitmainwindow.h"
 #include "ui_rbkitmainwindow.h"
 #include "askhost.h"
-#include "jsbridge.h"
-#include "appstate.h"
+#include "model/jsbridge.h"
+#include "model/appstate.h"
 #include "comapresnapshotform.h"
 #include "diffviewform.h"
 

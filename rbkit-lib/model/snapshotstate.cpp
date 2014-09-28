@@ -13,7 +13,8 @@ void SnapshotState::addNewSnapshot(HeapDumpForm *form)
 
 void SnapshotState::removeSnapshot(int index)
 {
-
+    if (index == 0)
+        return;
 }
 
 bool SnapshotState::snapShotInProgress()

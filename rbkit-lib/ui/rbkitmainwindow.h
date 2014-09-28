@@ -13,7 +13,7 @@
 #include "subscriber.h"
 #include "askhost.h"
 #include "heapdumpform.h"
-#include "objectstore.h"
+#include "model/objectstore.h"
 #include "memoryview.h"
 
 namespace Ui {

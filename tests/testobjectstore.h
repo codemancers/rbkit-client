@@ -2,7 +2,7 @@
 #define TESTOBJECTSTORE_H
 
 #include "AutoTest.h"
-#include "objectstore.h"
+#include "model/objectstore.h"
 
 class TestObjectStore : public QObject
 {

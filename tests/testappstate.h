@@ -2,7 +2,7 @@
 #define TESTAPPSTATE_H
 
 #include "AutoTest.h"
-#include "appstate.h"
+#include "model/appstate.h"
 
 class TestAppState : public QObject
 {

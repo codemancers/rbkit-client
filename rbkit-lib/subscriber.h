@@ -5,7 +5,7 @@
 #include <QVariantMap>
 
 #include "rbevents.h"
-#include "objectstore.h"
+#include "model/objectstore.h"
 #include "sqlconnectionpool.h"
 
 // forward declaration of nzmqt classes
