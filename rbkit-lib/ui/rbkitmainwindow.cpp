@@ -119,6 +119,7 @@ void RbkitMainWindow::objectDumpAvailable(int snapshotVersion)
     ui->statusbar->clearMessage();
     progressBar->setValue(100);
     snapshotProgressTimer->stop();
+    snapShotState->setSnapshotProgress(false);
     ui->chartingTab->addTab(heapUI.data(), snapshotName);
 }
 
@@ -183,15 +184,22 @@ void RbkitMainWindow::on_action_Trigger_GC_triggered()
 
 void RbkitMainWindow::on_actionHeap_Snapshot_triggered()
 {
-    // set heapsnapshot percentage to 2%
-    RBKit::AppState::getInstance()->setAppState("heap_snapshot", 2);
-    ui->statusbar->showMessage("Snapshot started");
-    ui->statusbar->clearMessage();
-    progressBar->reset();
-    progressBar->setValue(2);
-    snapshotProgressTimer->start(500);
-    snapShotState->setSnapshotProgress(true);
-    emit takeSnapshot();
+    if (snapShotState->snapShotInProgress()) {
+        QMessageBox alert(this);
+        alert.setText("A snapshot is already in progress");
+        alert.exec();
+        return;
+    } else {
+        // set heapsnapshot percentage to 2%
+        RBKit::AppState::getInstance()->setAppState("heap_snapshot", 2);
+        ui->statusbar->showMessage("Snapshot started");
+        ui->statusbar->clearMessage();
+        progressBar->reset();
+        progressBar->setValue(2);
+        snapshotProgressTimer->start(500);
+        snapShotState->setSnapshotProgress(true);
+        emit takeSnapshot();
+    }
 }
 
 void RbkitMainWindow::tabClosed(int index)
