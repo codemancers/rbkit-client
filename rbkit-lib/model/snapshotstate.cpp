@@ -1,4 +1,5 @@
 #include "snapshotstate.h"
+#include "appstate.h"
 
 namespace RBKit {
 
@@ -7,10 +8,11 @@ SnapshotState::SnapshotState()
 {
 }
 
-void SnapshotState::addNewSnapshot(HeapDumpFormPtr form)
+void SnapshotState::addNewSnapshot(HeapDumpFormPtr form, QString snapshotName)
 {
     ++snapShotIndex;
     heapForms[snapShotIndex] = form;
+    RBKit::AppState::getInstance()->setSnapshotName(snapShotIndex, snapshotName);
 }
 
 void SnapshotState::removeSnapshot(int index)
@@ -19,10 +21,11 @@ void SnapshotState::removeSnapshot(int index)
         return;
     if (heapForms.remove(index) > 0) {
         --snapShotIndex;
+        RBKit::AppState::getInstance()->removeSnapshotName(index);
     }
 }
 
-bool SnapshotState::snapShotInProgress()
+bool SnapshotState::snapShotInProgress() const
 {
     return snapShotInProgressFlag;
 }
@@ -43,6 +46,14 @@ QList<int> SnapshotState::diffableSnapshotVersions() {
         }
     }
     return selectedSnapshots;
+}
+
+HeapItem *SnapshotState::diffRootItem(QList<int> selectedSnapshots)
+{
+    HeapItem *item1 = heapForms[selectedSnapshots.at(0)]->getRootItem();
+    HeapItem *item2 = heapForms[selectedSnapshots.at(1)]->getRootItem();
+
+    return item2->minus(item1);
 }
 
 }

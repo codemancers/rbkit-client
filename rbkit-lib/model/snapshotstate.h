@@ -7,6 +7,7 @@
 #include <QSharedPointer>
 
 #include "ui/heapdumpform.h"
+#include "model/heapitem.h"
 
 namespace RBKit {
 class SnapshotState
@@ -16,11 +17,12 @@ class SnapshotState
     bool snapShotInProgressFlag;
 public:
     SnapshotState();
-    void addNewSnapshot(HeapDumpFormPtr form);
+    void addNewSnapshot(HeapDumpFormPtr form, QString snapshotName);
     void removeSnapshot(int index);
     bool snapShotInProgress() const;
     void setSnapshotProgress(bool snapShotState);
     QList<int> diffableSnapshotVersions();
+    HeapItem *diffRootItem(QList<int> selectedSnapshots);
 };
 }
 

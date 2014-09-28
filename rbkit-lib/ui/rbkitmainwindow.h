@@ -35,8 +35,6 @@ class RbkitMainWindow : public QMainWindow
     AskHost *askHost;
     RBKit::MemoryView *memoryView;
     RBKit::SnapshotState *snapShotState;
-    QMap<int, HeapDumpForm *> heapForms;
-    int currentIndex;
     QLabel *statusLabel;
     QProgressBar *progressBar;
     QTimer *snapshotProgressTimer;

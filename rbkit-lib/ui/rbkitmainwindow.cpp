@@ -8,7 +8,7 @@
 
 RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     QMainWindow(parent), connected(false), host(""),
-    ui(new Ui::RbkitMainWindow), currentIndex(0)
+    ui(new Ui::RbkitMainWindow)
 {
     Q_INIT_RESOURCE(tool_icons);
     RBKit::SqlConnectionPool::getInstance()->setupDatabase();
@@ -50,7 +50,7 @@ RbkitMainWindow::~RbkitMainWindow()
 
 void RbkitMainWindow::addTabWidget(HeapDumpForm *heapDumpForm, const QString& title)
 {
-    snapShotState->addNewSnapshot(heapDumpForm);
+    snapShotState->addNewSnapshot(HeapDumpFormPtr(heapDumpForm), title);
     heapDumpForm->setParentWindow(this);
     ui->chartingTab->addTab(heapDumpForm, title);
 }
@@ -110,18 +110,16 @@ void RbkitMainWindow::on_action_About_Rbkit_triggered()
 
 void RbkitMainWindow::objectDumpAvailable(int snapshotVersion)
 {
-    HeapDumpForm *heapUI = new HeapDumpForm(this, snapshotVersion);
+    HeapDumpFormPtr heapUI = HeapDumpFormPtr(new HeapDumpForm(this, snapshotVersion));
     heapUI->setParentWindow(this);
     heapUI->loaData();
-    ++currentIndex;
-    heapForms[currentIndex] = heapUI;
+    QString snapshotName = QString("Heap Dump #%0").arg(snapshotVersion);
+    snapShotState->addNewSnapshot(heapUI, snapshotName);
     ui->statusbar->showMessage("Heap snapshot complete");
     ui->statusbar->clearMessage();
     progressBar->setValue(100);
     snapshotProgressTimer->stop();
-    QString snapshotName = QString("Heap Dump #%0").arg(snapshotVersion);
-    ui->chartingTab->addTab(heapUI, snapshotName);
-    RBKit::AppState::getInstance()->setSnapshotName(currentIndex, snapshotName);
+    ui->chartingTab->addTab(heapUI.data(), snapshotName);
 }
 
 void RbkitMainWindow::disconnectFromSocket()
@@ -192,21 +190,16 @@ void RbkitMainWindow::on_actionHeap_Snapshot_triggered()
     progressBar->reset();
     progressBar->setValue(2);
     snapshotProgressTimer->start(500);
+    snapShotState->setSnapshotProgress(true);
     emit takeSnapshot();
 }
 
 void RbkitMainWindow::tabClosed(int index)
 {
-    if(index == 0)
+    if (index == 0)
         return;
-
     ui->chartingTab->removeTab(index);
-    HeapDumpForm *form = heapForms[index];
-    if (form) {
-        delete form;
-    }
-
-    heapForms.remove(index);
+    snapShotState->removeSnapshot(index);
 }
 
 void RbkitMainWindow::updateProgressBar()
@@ -230,10 +223,7 @@ void RbkitMainWindow::on_actionComapre_Heapsnapshots_triggered()
 
 void RbkitMainWindow::onDiffSnapshotsSelected(QList<int> selectedSnapshots)
 {
-    RBKit::HeapItem* item1 = heapForms[selectedSnapshots.at(0)]->getRootItem();
-    RBKit::HeapItem* item2 = heapForms[selectedSnapshots.at(1)]->getRootItem();
-
-    RBKit::HeapItem *newRootItem = item2->minus(item1);
+    RBKit::HeapItem *newRootItem = snapShotState->diffRootItem(selectedSnapshots);
 
     DiffViewForm *form = new DiffViewForm(this, -1);
     form->setDisableRightClick(true);
