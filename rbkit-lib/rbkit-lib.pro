@@ -9,61 +9,38 @@ TEMPLATE = lib
 CONFIG += staticlib
 CONFIG += c++11
 
+SOURCES += ui/*
+SOURCES += model/*
+
 SOURCES += \
     subscriber.cpp \
-    rbkitmainwindow.cpp \
-    askhost.cpp \
     rbcommands.cpp \
     zmqsockets.cpp \
     rbevents.cpp \
-    objectdetail.cpp \
-    objectstore.cpp \
-    objectaggregator.cpp \
-    jsbridge.cpp \
-    heapdumpform.cpp \
     stringutil.cpp \
-    memoryview.cpp \
-    appstate.cpp \
-    sqlconnectionpool.cpp \
-    heapitem.cpp \
-    heapdatamodel.cpp \
-    sortobjectproxymodel.cpp \
-    comapresnapshotform.cpp \
-    diffviewform.cpp \
-    snapshotstate.cpp
+    sqlconnectionpool.cpp
+
+HEADERS += ui/*
+HEADERS += model/*
 
 HEADERS +=  \
     subscriber.h \
-    rbkitmainwindow.h \
-    askhost.h \
     zmqsockets.h \
     rbevents.h \
-    objectdetail.h \
-    objectstore.h \
-    objectaggregator.h \
-    jsbridge.h \
-    heapdumpform.h \
+    rbcommands.h \
     stringutil.h \
-    memoryview.h \
-    appstate.h \
-    sqlconnectionpool.h \
-    heapitem.h \
-    heapdatamodel.h \
-    sortobjectproxymodel.h \
-    comapresnapshotform.h \
-    diffviewform.h \
-    snapshotstate.h
+    sqlconnectionpool.h
 
 
 # Include msgpack via pri file
 include($$RC_ROOT_SOURCE_DIR/common.pri)
 
 FORMS += \
-    rbkitmainwindow.ui \
-    askhost.ui \
-    heapdumpform.ui \
-    memoryview.ui \
-    comapresnapshotform.ui
+    ui/rbkitmainwindow.ui \
+    ui/askhost.ui \
+    ui/heapdumpform.ui \
+    ui/memoryview.ui \
+    ui/comapresnapshotform.ui
 
 RESOURCES += \
     tool_icons.qrc
