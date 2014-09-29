@@ -1,5 +1,6 @@
 rbkit-client
 ============
+[![Build Status](https://travis-ci.org/code-mancers/rbkit-client.svg?branch=master)](https://travis-ci.org/code-mancers/rbkit-client)
 
 ![Rbkit](https://github.com/code-mancers/rbkit-client/raw/master/images/rbkit2.gif "RBkit use")
 
