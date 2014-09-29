@@ -1,5 +1,5 @@
 #include "sqlconnectionpool.h"
-#include "appstate.h"
+#include "model/appstate.h"
 
 namespace RBKit {
 

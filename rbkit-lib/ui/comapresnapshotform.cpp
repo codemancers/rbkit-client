@@ -1,6 +1,6 @@
 #include "comapresnapshotform.h"
 #include "ui_comapresnapshotform.h"
-#include "appstate.h"
+#include "model/appstate.h"
 
 ComapreSnapshotForm::ComapreSnapshotForm(QWidget *parent) :
     QDialog(parent),

@@ -1,4 +1,4 @@
-#include "rbkitmainwindow.h"
+#include "ui/rbkitmainwindow.h"
 #include <QApplication>
 #include <QIcon>
 

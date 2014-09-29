@@ -8,8 +8,8 @@
 #include <QFile>
 #include <QSqlError>
 
-#include "objectstore.h"
-#include "heapitem.h"
+#include "model/objectstore.h"
+#include "model/heapitem.h"
 
 namespace RBKit {
 

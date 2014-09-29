@@ -8,8 +8,8 @@
 #include "subscriber.h"
 #include "zmqsockets.h"
 #include "rbcommands.h"
-#include "jsbridge.h"
-#include "appstate.h"
+#include "model/jsbridge.h"
+#include "model/appstate.h"
 
 
 static const int rbkcZmqTotalIoThreads = 1;

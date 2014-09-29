@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -99,8 +99,8 @@
   </widget>
   <action name="action_Connect">
    <property name="icon">
-    <iconset resource="tool_icons.qrc">
-     <normaloff>:/connect-32.png</normaloff>:/connect-32.png</iconset>
+    <iconset resource="../tool_icons.qrc">
+     <normaloff>:/icons/connect-48.png</normaloff>:/icons/connect-48.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Connect</string>
@@ -118,8 +118,8 @@
   </action>
   <action name="action_Trigger_GC">
    <property name="icon">
-    <iconset resource="tool_icons.qrc">
-     <normaloff>:/startgc-32.png</normaloff>:/startgc-32.png</iconset>
+    <iconset resource="../tool_icons.qrc">
+     <normaloff>:/icons/startgc-48.png</normaloff>:/icons/startgc-48.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Start GC</string>
@@ -127,8 +127,8 @@
   </action>
   <action name="actionHeap_Snapshot">
    <property name="icon">
-    <iconset resource="tool_icons.qrc">
-     <normaloff>:/snapshot-32.png</normaloff>:/snapshot-32.png</iconset>
+    <iconset resource="../tool_icons.qrc">
+     <normaloff>:/icons/snapshot-48.png</normaloff>:/icons/snapshot-48.png</iconset>
    </property>
    <property name="text">
     <string>Heap Snapshot</string>
@@ -139,8 +139,8 @@
   </action>
   <action name="actionComapre_Heapsnapshots">
    <property name="icon">
-    <iconset resource="tool_icons.qrc">
-     <normaloff>:/Comapre-16.png</normaloff>:/Comapre-16.png</iconset>
+    <iconset resource="../tool_icons.qrc">
+     <normaloff>:/icons/Comapre-48.png</normaloff>:/icons/Comapre-48.png</iconset>
    </property>
    <property name="text">
     <string>Comapre  Snapshots</string>
@@ -151,7 +151,7 @@
   </action>
  </widget>
  <resources>
-  <include location="tool_icons.qrc"/>
+  <include location="../tool_icons.qrc"/>
  </resources>
  <connections/>
 </ui>

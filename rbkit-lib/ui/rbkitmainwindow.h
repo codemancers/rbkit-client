@@ -13,7 +13,8 @@
 #include "subscriber.h"
 #include "askhost.h"
 #include "heapdumpform.h"
-#include "objectstore.h"
+#include "model/objectstore.h"
+#include "model/snapshotstate.h"
 #include "memoryview.h"
 
 namespace Ui {
@@ -33,8 +34,7 @@ class RbkitMainWindow : public QMainWindow
     QString host;
     AskHost *askHost;
     RBKit::MemoryView *memoryView;
-    QMap<int, HeapDumpForm *> heapForms;
-    int currentIndex;
+    RBKit::SnapshotState *snapShotState;
     QLabel *statusLabel;
     QProgressBar *progressBar;
     QTimer *snapshotProgressTimer;

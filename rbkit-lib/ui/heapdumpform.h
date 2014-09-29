@@ -9,12 +9,13 @@
 #include <QPoint>
 #include <QAction>
 #include <QMenu>
+#include <QSharedPointer>
 
-#include "objectstore.h"
-#include "heapdatamodel.h"
-#include "heapitem.h"
+#include "model/objectstore.h"
+#include "model/heapdatamodel.h"
+#include "model/heapitem.h"
 #include "sqlconnectionpool.h"
-#include "sortobjectproxymodel.h"
+#include "model/sortobjectproxymodel.h"
 
 namespace Ui {
 class HeapDumpForm;
@@ -55,5 +56,7 @@ public slots:
     void viewReferences();
     void treeNodeSelected(const QModelIndex& index);
 };
+
+typedef QSharedPointer<HeapDumpForm> HeapDumpFormPtr;
 
 #endif // HEAPDUMPFORM_H

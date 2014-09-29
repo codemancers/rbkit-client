@@ -2,7 +2,7 @@
 #define TEST_RBKIT_EVENTS_H
 
 #include "AutoTest.h"
-#include "objectstore.h"
+#include "model/objectstore.h"
 
 class TestRbEvents : public QObject
 {

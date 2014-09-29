@@ -2,7 +2,7 @@
 #define TEST_RBKIT_JSBRIDGE_H
 
 #include "AutoTest.h"
-#include "jsbridge.h"
+#include "model/jsbridge.h"
 
 class TestJsBridge : public QObject
 {
