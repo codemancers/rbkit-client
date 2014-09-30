@@ -34,8 +34,8 @@ Subscriber::Subscriber(RBKit::JsBridge* bridge)
 {
     commandSocket = new RBKit::ZmqCommandSocket(this);
     eventSocket   = new RBKit::ZmqEventSocket(this);
-    connect(commandSocket->getSocket(), SIGNAL(messageReceived(const QList<QByteArray>&)),
-           this, SLOT(onCommandResponseReceived(const QList<QByteArray>&)));
+    connect(commandSocket, SIGNAL(commandSent(QSharedPointer<RBKit::CommandBase>, bool)),
+            this, SLOT(onCommandSent(QSharedPointer<RBKit::CommandBase>, bool)));
 
     connect(eventSocket->getSocket(), SIGNAL(messageReceived(const QList<QByteArray>&)),
            this, SLOT(onMessageReceived(const QList<QByteArray>&)));
@@ -46,26 +46,19 @@ Subscriber::Subscriber(RBKit::JsBridge* bridge)
     statsTimer = new QTimer(this);
     statsTimer->setInterval(timerIntervalInMs);
     connect(statsTimer, SIGNAL(timeout()), this, SLOT(onStatsTimerExpiry()));
-
-    // initialize command socket timer, so that response is received.
-    commandSocketTimer = new QTimer(this);
-    commandSocketTimer->setInterval(timerIntervalInMs);
-    commandSocketTimer->setSingleShot(true);
-    connect(commandSocketTimer, SIGNAL(timeout()),
-            this, SLOT(onCommandSocketTimerExpiry()));
 }
 
 void Subscriber::triggerGc() {
-    RBKit::CmdTriggerGC triggerGC_Command;
+    QSharedPointer<RBKit::CommandBase> triggerGc(new RBKit::CmdTriggerGC());
     qDebug() << "Triggering GC";
-    commandSocket->sendCommand(triggerGC_Command);
+    commandSocket->sendCommand(triggerGc);
 }
 
 void Subscriber::takeSnapshot()
 {
-   RBKit::CmdObjSnapshot triggerSnapshot;
+    QSharedPointer<RBKit::CommandBase> snapshotCmd(new RBKit::CmdObjSnapshot());
    qDebug() << "Taking snapshot";
-   commandSocket->sendCommand(triggerSnapshot);
+   commandSocket->sendCommand(snapshotCmd);
 }
 
 Subscriber::~Subscriber()
@@ -98,8 +91,8 @@ void Subscriber::startListening(QString commandsUrl, QString eventsUrl)
         return;
     }
 
-    RBKit::CmdStartProfile startCommand;
-    sendCommand(startCommand);
+    QSharedPointer<RBKit::CommandBase> startCommand(new RBKit::CmdStartProfile());
+    commandSocket->sendCommand(startCommand);
 
     statsTimer->start();
 
@@ -108,7 +101,7 @@ void Subscriber::startListening(QString commandsUrl, QString eventsUrl)
 
 void Subscriber::stop()
 {
-    RBKit::CmdStopProfile stopCmd;
+    QSharedPointer<RBKit::CommandBase> stopCmd(new RBKit::CmdStopProfile());
     commandSocket->sendCommand(stopCmd);
     objectStore->reset();
     qDebug() << "stopped";
@@ -203,40 +196,11 @@ void Subscriber::onStatsTimerExpiry()
 }
 
 
-void Subscriber::sendCommand(RBKit::CommandBase& command)
+void Subscriber::onCommandSent(QSharedPointer<RBKit::CommandBase> cmd, bool success)
 {
-    if (commandSent.isEmpty()) {
-        // earlier command was successful.
-        commandSocketTimer->start();
-        commandSocket->sendCommand(command);
-        commandSent = command.serialize();
-    } else {
-        qDebug() << commandSent;
+    qDebug() << success;
+
+    if (success && dynamic_cast<RBKit::CmdStartProfile*>(cmd.data())) {
+        emit connected();
     }
-}
-
-
-void Subscriber::onCommandResponseReceived(const QList<QByteArray>& rawMessage)
-{
-    commandSocketTimer->stop();
-
-    QString response(rawMessage.first());
-    qDebug() << "response received" << response;
-
-    if ("ok" == response) {
-        if ("start_memory_profile" == commandSent) {
-            emit connected();
-        }
-    } else {
-        // fatal error. should we show a message box to user?
-    }
-
-    commandSent = QString();
-}
-
-
-void Subscriber::onCommandSocketTimerExpiry()
-{
-    // fatal error
-    qDebug() << "fatal error, no response received";
 }

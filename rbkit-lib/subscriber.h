@@ -38,10 +38,6 @@ class Subscriber : public QObject
     RBKit::ObjectStore *objectStore;
     RBKit::JsBridge* jsBridge;
 
-    // command socket state, and timeout
-    QTimer* commandSocketTimer;
-    QString commandSent;
-
 public:
     explicit Subscriber(RBKit::JsBridge* jsBridge);
     ~Subscriber();
@@ -66,14 +62,10 @@ public slots:
     void startListening(QString, QString);
     void stop();
     void onMessageReceived(const QList<QByteArray>&);
-    void onCommandResponseReceived(const QList<QByteArray>&);
-    void onCommandSocketTimerExpiry();
+    void onCommandSent(QSharedPointer<RBKit::CommandBase> cmd, bool success);
     void onStatsTimerExpiry();
     void triggerGc();
     void takeSnapshot();
-
-private:
-    void sendCommand(RBKit::CommandBase& command);
 };
 
 #endif // SUBSCRIBER_H
