@@ -1,0 +1,9 @@
+2014-09-30  Yuva  <yuva@codemancers.com>
+
+	* Add a timer to ZmqCommandSocket. This is a one shot timer, which will
+	be used before sending the command. If socket fails to receive any
+	response, then command sending is marked as failed, and context and
+	socket are reset.
+
+	* Use QSharedPointer<> for pointers in zmqsockets
+
