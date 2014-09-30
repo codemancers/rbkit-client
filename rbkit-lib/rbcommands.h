@@ -9,27 +9,27 @@ namespace RBKit
     class CommandBase
     {
     public:
-        virtual QString serialize() = 0;
+        virtual QString serialize() const = 0;
     };
 
     class CmdStartProfile : public CommandBase
     {
-        virtual QString serialize();
+        virtual QString serialize() const;
     };
 
     class CmdStopProfile : public CommandBase
     {
-        virtual QString serialize();
+        virtual QString serialize() const;
     };
 
     class CmdObjSnapshot : public CommandBase
     {
-        virtual QString serialize();
+        virtual QString serialize() const;
     };
 
     class CmdTriggerGC : public CommandBase
     {
-        virtual QString serialize();
+        virtual QString serialize() const;
     };
 }
 
