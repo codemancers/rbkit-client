@@ -54,17 +54,16 @@ var Rbkit = {
     count: 'Count',
     minor_gc_count: 'Minor GC Count',
     major_gc_count: 'Major GC Count',
-    heap_length: 'Heap Length',
-    heap_eden_page_length: 'Heap Eden Page Length',
-    heap_used: 'Heap Used',
-    heap_live_slot: 'Heap Live Slots',
-    heap_free_slot: 'Heap Free Slots',
-    heap_swept_slot: 'Heap Swept Slots',
-    old_object: 'Old Objects',
-    old_object_limit: 'Old Object Limit',
-    remembered_shady_object: 'Remembered Shady Objects',
-    total_allocated_object: 'Total Allocated Objects',
-    total_freed_object: 'Total Freed Objects'
+    heap_sorted_length: 'Heap Length',
+    heap_eden_pages: 'Heap Eden Page Length',
+    heap_allocated_pages: 'Heap Used',
+    heap_live_slots: 'Heap Live Slots',
+    heap_free_slots: 'Heap Free Slots',
+    heap_swept_slots: 'Heap Swept Slots',
+    old_objects: 'Old Objects',
+    old_objects_limit: 'Old Object Limit',
+    total_allocated_objects: 'Total Allocated Objects',
+    total_freed_objects: 'Total Freed Objects'
   },
 
   // actual charts
