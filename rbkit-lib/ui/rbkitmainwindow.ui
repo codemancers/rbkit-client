@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -50,7 +50,6 @@
      <string>&amp;File</string>
     </property>
     <addaction name="action_Connect"/>
-    <addaction name="action_Trigger_GC"/>
     <addaction name="action_Quit"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
@@ -59,7 +58,16 @@
     </property>
     <addaction name="action_About_Rbkit"/>
    </widget>
+   <widget class="QMenu" name="menu_Memory_Profiling">
+    <property name="title">
+     <string>&amp;Memory Profiling</string>
+    </property>
+    <addaction name="action_Trigger_GC"/>
+    <addaction name="actionHeap_Snapshot"/>
+    <addaction name="actionComapre_Heapsnapshots"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menu_Memory_Profiling"/>
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

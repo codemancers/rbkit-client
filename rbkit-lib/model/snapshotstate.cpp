@@ -4,7 +4,7 @@
 namespace RBKit {
 
 SnapshotState::SnapshotState()
-    : snapShotIndex(0)
+    : snapShotIndex(0), snapShotInProgressFlag(false)
 {
 }
 
