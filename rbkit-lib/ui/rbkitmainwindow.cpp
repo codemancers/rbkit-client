@@ -212,8 +212,10 @@ void RbkitMainWindow::tabClosed(int index)
 
 void RbkitMainWindow::updateProgressBar()
 {
-    int currentProgress = RBKit::AppState::getInstance()->getState("heap_snapshot").toInt();
-    progressBar->setValue(currentProgress);
+    if (snapShotState->snapShotInProgress()) {
+        int currentProgress = RBKit::AppState::getInstance()->getState("heap_snapshot").toInt();
+        progressBar->setValue(currentProgress);
+    }
 }
 
 
