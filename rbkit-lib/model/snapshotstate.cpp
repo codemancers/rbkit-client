@@ -78,6 +78,7 @@ void SnapshotState::reset()
    snapShotIndex = 0;
    heapForms.clear();
    tabIndexToSnapshot.clear();
+   tabIndexToSnapshot.append(0);
 }
 
 

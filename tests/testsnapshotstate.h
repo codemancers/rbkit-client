@@ -5,13 +5,13 @@
 #include "model/snapshotstate.h"
 #include "ui/heapdumpform.h"
 
-using namespace RBKit;
-
 class TestSnapshotState : public QObject
 {
     Q_OBJECT
+public:
+    TestSnapshotState();
 private:
-    SnapshotState *snapshotState;
+    RBKit::SnapshotState *snapshotState;
 private slots:
     void testAddTab();
     void testRemoveTab();
