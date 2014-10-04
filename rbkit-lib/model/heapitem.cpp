@@ -149,7 +149,7 @@ QVariant HeapItem::data(int column) const
         return QVariant(countPercentage);
         break;
     case 4:
-        return QVariant(refPercentage);
+        return QVariant(totalSize);
         break;
     default:
         return QVariant();

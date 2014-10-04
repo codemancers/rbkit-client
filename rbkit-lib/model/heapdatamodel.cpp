@@ -45,7 +45,7 @@ QVariant HeapDataModel::headerData(int section, Qt::Orientation orientation, int
         case 3:
             return QVariant(QString("Count Percentage"));
         case 4:
-            return QVariant(QString("Reference Percentage"));
+            return QVariant(QString("Object Size (bytes)"));
         }
     }
     return QVariant();
