@@ -30,7 +30,8 @@ SOURCES += \
     ui/diffviewform.cpp \
     ui/heapdumpform.cpp \
     ui/memoryview.cpp \
-    ui/rbkitmainwindow.cpp
+    ui/rbkitmainwindow.cpp \
+    ui/actiontoolbar.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -53,7 +54,8 @@ HEADERS +=  \
     ui/diffviewform.h \
     ui/heapdumpform.h \
     ui/memoryview.h \
-    ui/rbkitmainwindow.h
+    ui/rbkitmainwindow.h \
+    ui/actiontoolbar.h
 
 
 # Include msgpack via pri file

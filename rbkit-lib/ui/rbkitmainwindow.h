@@ -25,6 +25,8 @@ namespace RBKit {
     class JsBridge;
 }
 
+class ActionToolbar;
+
 
 class RbkitMainWindow : public QMainWindow
 {
@@ -38,6 +40,7 @@ class RbkitMainWindow : public QMainWindow
     QLabel *statusLabel;
     QProgressBar *progressBar;
     QTimer *snapshotProgressTimer;
+    ActionToolbar *actionToolbar;
     bool connected;
 
     void setupSubscriber();
@@ -45,6 +48,7 @@ class RbkitMainWindow : public QMainWindow
     void askForServerInfo();
     void setupToolbarStyle();
     QList<int> diffableSnapshotVersions();
+    void disableCloseButtonOnFirstTab();
 
 public:
     explicit RbkitMainWindow(QWidget *parent = 0);

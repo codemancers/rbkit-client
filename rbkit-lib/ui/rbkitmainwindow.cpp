@@ -5,6 +5,7 @@
 #include "model/appstate.h"
 #include "comapresnapshotform.h"
 #include "diffviewform.h"
+#include "ui/actiontoolbar.h"
 
 RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     QMainWindow(parent), connected(false), host(""),
@@ -14,6 +15,7 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     RBKit::SqlConnectionPool::getInstance()->setupDatabase();
     this->connected = false;
     ui->setupUi(this);
+    actionToolbar = new ActionToolbar(ui);
     setupToolbarStyle();
 
     snapshotProgressTimer = new QTimer(this);
@@ -33,13 +35,8 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     qRegisterMetaType<RBKit::ObjectDetail>();
     memoryView = new RBKit::MemoryView();
     ui->chartingTab->addTab(memoryView, "Object Charts");
-    QWidget *tabButton = ui->chartingTab->tabBar()->tabButton(0, QTabBar::RightSide);
-    if (tabButton) {
-        tabButton->resize(0, 0);
-    } else {
-        ui->chartingTab->tabBar()->tabButton(0, QTabBar::LeftSide)->resize(0, 0);
-    }
     connect(ui->chartingTab, SIGNAL(tabCloseRequested(int)), this, SLOT(tabClosed(int)));
+    actionToolbar->disableProfileActions();
 }
 
 
@@ -90,6 +87,16 @@ void RbkitMainWindow::setupToolbarStyle()
 QList<int> RbkitMainWindow::diffableSnapshotVersions()
 {
     return snapShotState->diffableSnapshotVersions();
+}
+
+void RbkitMainWindow::disableCloseButtonOnFirstTab()
+{
+    QWidget *tabButton = ui->chartingTab->tabBar()->tabButton(0, QTabBar::RightSide);
+    if (tabButton) {
+        tabButton->resize(0, 0);
+    } else {
+        ui->chartingTab->tabBar()->tabButton(0, QTabBar::LeftSide)->resize(0, 0);
+    }
 }
 
 
