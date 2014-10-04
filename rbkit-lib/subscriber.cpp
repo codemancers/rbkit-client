@@ -34,27 +34,31 @@ Subscriber::Subscriber(RBKit::JsBridge* bridge)
 {
     commandSocket = new RBKit::ZmqCommandSocket(this);
     eventSocket   = new RBKit::ZmqEventSocket(this);
-    objectStore = new RBKit::ObjectStore();
+    connect(commandSocket, SIGNAL(commandSent(QSharedPointer<RBKit::CommandBase>, bool)),
+            this, SLOT(onCommandSent(QSharedPointer<RBKit::CommandBase>, bool)));
+
     connect(eventSocket->getSocket(), SIGNAL(messageReceived(const QList<QByteArray>&)),
            this, SLOT(onMessageReceived(const QList<QByteArray>&)));
 
+    objectStore = new RBKit::ObjectStore();
+
     // initialize the timer, mark it a periodic one, and connect to timeout.
-    m_timer = new QTimer(this);
-    m_timer->setInterval(timerIntervalInMs);
-    connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimerExpiry()));
+    statsTimer = new QTimer(this);
+    statsTimer->setInterval(timerIntervalInMs);
+    connect(statsTimer, SIGNAL(timeout()), this, SLOT(onStatsTimerExpiry()));
 }
 
 void Subscriber::triggerGc() {
-    RBKit::CmdTriggerGC triggerGC_Command;
+    QSharedPointer<RBKit::CommandBase> triggerGc(new RBKit::CmdTriggerGC());
     qDebug() << "Triggering GC";
-    commandSocket->sendCommand(triggerGC_Command);
+    commandSocket->sendCommand(triggerGc);
 }
 
 void Subscriber::takeSnapshot()
 {
-   RBKit::CmdObjSnapshot triggerSnapshot;
+    QSharedPointer<RBKit::CommandBase> snapshotCmd(new RBKit::CmdObjSnapshot());
    qDebug() << "Taking snapshot";
-   commandSocket->sendCommand(triggerSnapshot);
+   commandSocket->sendCommand(snapshotCmd);
 }
 
 Subscriber::~Subscriber()
@@ -87,18 +91,17 @@ void Subscriber::startListening(QString commandsUrl, QString eventsUrl)
         return;
     }
 
-    RBKit::CmdStartProfile startCmd;
-    commandSocket->sendCommand(startCmd);
+    QSharedPointer<RBKit::CommandBase> startCommand(new RBKit::CmdStartProfile());
+    commandSocket->sendCommand(startCommand);
 
-    m_timer->start();
+    statsTimer->start();
 
-    emit connected();
     qDebug() << "started";
 }
 
 void Subscriber::stop()
 {
-    RBKit::CmdStopProfile stopCmd;
+    QSharedPointer<RBKit::CommandBase> stopCmd(new RBKit::CmdStopProfile());
     commandSocket->sendCommand(stopCmd);
     objectStore->reset();
     qDebug() << "stopped";
@@ -184,10 +187,20 @@ void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)
 }
 
 
-void Subscriber::onTimerExpiry()
+void Subscriber::onStatsTimerExpiry()
 {
     static const QString eventName("object_stats");
 
     QVariantMap map = hashToQVarMap(objectStore->liveStats());
     jsBridge->sendMapToJs(eventName, QDateTime(), map);
+}
+
+
+void Subscriber::onCommandSent(QSharedPointer<RBKit::CommandBase> cmd, bool success)
+{
+    qDebug() << success;
+
+    if (success && dynamic_cast<RBKit::CmdStartProfile*>(cmd.data())) {
+        emit connected();
+    }
 }

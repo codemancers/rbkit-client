@@ -2,7 +2,8 @@
 #define RBKIT_ZMQ_SOCKETS_H
 
 #include <QObject>
-
+#include <QSharedPointer>
+#include <QTimer>
 
 // forward declaration of nzmqt classes.
 namespace nzmqt
@@ -20,8 +21,11 @@ namespace RBKit
     {
         Q_OBJECT
 
-        nzmqt::ZMQContext* context;
-        nzmqt::ZMQSocket* socket;
+        QSharedPointer<nzmqt::ZMQContext> context;
+        QSharedPointer<nzmqt::ZMQSocket> socket;
+
+        QSharedPointer<CommandBase> currentCmd;
+        QSharedPointer<QTimer> timer;
 
     public:
         explicit ZmqCommandSocket(QObject* parent = 0);
@@ -31,16 +35,26 @@ namespace RBKit
         void start(QString socketUrl);
         void stop();
 
+    signals:
+        void commandSent(QSharedPointer<RBKit::CommandBase>, bool);
+
+    public slots:
+        void onResponseReceived(const QList<QByteArray>&);
+        void onTimerExpiry();
+
     public:
-        bool sendCommand(CommandBase& cmd);
+        bool sendCommand(QSharedPointer<CommandBase> cmd);
+
+    private:
+        void recreateContextAndSocket();
     };
 
     class ZmqEventSocket : public QObject
     {
         Q_OBJECT
 
-        nzmqt::ZMQContext* context;
-        nzmqt::ZMQSocket* socket;
+        QSharedPointer<nzmqt::ZMQContext> context;
+        QSharedPointer<nzmqt::ZMQSocket> socket;
 
     public:
         explicit ZmqEventSocket(QObject* parent = 0);
@@ -48,7 +62,7 @@ namespace RBKit
 
         // hack, not sure how to bind socket receive message.
         inline nzmqt::ZMQSocket* getSocket() {
-            return socket;
+            return socket.data();
         }
 
     public:
