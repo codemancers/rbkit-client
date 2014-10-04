@@ -13,7 +13,8 @@ SOURCES += \
     testjsbridge.cpp \
     testobjectdump.cpp \
     main.cpp \
-    testappstate.cpp
+    testappstate.cpp \
+    testsnapshotstate.cpp
 
 # Include everything via one common pri file
 include($$RC_ROOT_SOURCE_DIR/common.pri)
@@ -28,7 +29,8 @@ HEADERS += \
     testrbevents.h \
     testjsbridge.h \
     testobjectdump.h \
-    testappstate.h
+    testappstate.h \
+    testsnapshotstate.h
 
 RESOURCES += \
     tests.qrc
