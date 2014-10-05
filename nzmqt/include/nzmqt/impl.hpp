@@ -243,6 +243,13 @@ NZMQT_INLINE QList< QList<QByteArray> > ZMQSocket::receiveMessages()
     return ret;
 }
 
+NZMQT_INLINE QByteArray ZMQSocket::receiveBlockingMessage()
+{
+    ZMQMessage msg;
+    recv(&msg);
+    return msg.toByteArray();
+}
+
 NZMQT_INLINE qint32 ZMQSocket::fileDescriptor() const
 {
     qint32 value;

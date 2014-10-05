@@ -22,7 +22,6 @@ namespace RBKit
 
         nzmqt::ZMQContext* context;
         nzmqt::ZMQSocket* socket;
-        QTimer *handShakeTimer;
 
     public:
         explicit ZmqCommandSocket(QObject* parent = 0);
@@ -32,9 +31,7 @@ namespace RBKit
         void start(QString socketUrl);
         void stop();
         bool sendCommand(CommandBase& cmd);
-        void performHandShake();
-    private slots:
-        void periodicHandshake();
+        bool performHandShake();
     signals:
         void handShakeCompleted();
     };

@@ -69,9 +69,7 @@ void Subscriber::handShakeCompleted()
     }
     catch(zmq::error_t err)
     {
-        QString str = QString::fromUtf8(err.what());
-        qDebug() << str ;
-        emit errored(str);
+        emitConnectionError(QString::fromUtf8(err.what()));
         return;
     }
 
@@ -82,6 +80,12 @@ void Subscriber::handShakeCompleted()
 
     emit connected();
     qDebug() << "started";
+}
+
+void Subscriber::emitConnectionError(QString message)
+{
+    qDebug() << message;
+    emit errored(message);
 }
 
 Subscriber::~Subscriber()
@@ -187,14 +191,15 @@ void Subscriber::performHandshake()
     {
         qDebug() << "Connecting to command socket " << commandUrl;
         commandSocket->start(commandUrl);
-        connect(commandSocket, SIGNAL(handShakeCompleted()), this, SLOT(handShakeCompleted()));
-        commandSocket->performHandShake();
+        if (commandSocket->performHandShake())
+            handShakeCompleted();
+        else {
+            emitConnectionError(QString("Error connecting to Ruby application"));
+        }
     }
     catch(zmq::error_t err)
     {
-        QString str = QString::fromUtf8(err.what());
-        qDebug() << str ;
-        emit errored(str);
+        emitConnectionError(QString::fromUtf8(err.what()));
     }
 }
 

@@ -53,7 +53,8 @@ public:
     void processEvent(const RBKit::EvtObjectDump&);
     void processEvent(const RBKit::EvtCollection&);
     void performHandshake();
-
+    void handShakeCompleted();
+    void emitConnectionError(QString message);
 signals:
     void disconnected();
     void connected();
@@ -68,7 +69,6 @@ public slots:
     void triggerGc();
     void takeSnapshot();
     void startSubscriber();
-    void handShakeCompleted();
 };
 
 #endif // SUBSCRIBER_H

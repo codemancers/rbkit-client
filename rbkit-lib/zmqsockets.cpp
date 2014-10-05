@@ -44,27 +44,21 @@ bool RBKit::ZmqCommandSocket::sendCommand(RBKit::CommandBase& cmd)
     }
 }
 
-void RBKit::ZmqCommandSocket::performHandShake()
-{
-    handShakeTimer = new QTimer();
-    connect(handShakeTimer, SIGNAL(timeout()), this, SLOT(periodicHandshake()));
-    handShakeTimer->start(500);
-}
-
-void RBKit::ZmqCommandSocket::periodicHandshake()
+bool RBKit::ZmqCommandSocket::performHandShake()
 {
     RBKit::CmdPing ping;
     nzmqt::ZMQMessage msg(ping.serialize().toLocal8Bit());
     bool sent = socket->sendMessage(msg);
     if(sent) {
         qDebug() << "Waiting for handshake";
-        QList<QByteArray> resp = socket->receiveMessage();
-        qDebug() << resp;
-        handShakeTimer->stop();
-        qDebug() << "Handshake completed";
-        emit handShakeCompleted();
+        QByteArray response = socket->receiveBlockingMessage();
+        if (QString(response) == "ok")
+            return true;
+        else
+            return false;
     } else {
         qDebug() << "Failed to perform handshake";
+        return false;
     }
 }
 
