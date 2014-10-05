@@ -33,6 +33,7 @@ namespace RBKit
 
     public:
         bool sendCommand(CommandBase& cmd);
+        bool performHandShake();
     };
 
     class ZmqEventSocket : public QObject

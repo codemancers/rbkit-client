@@ -32,16 +32,6 @@ QVariantMap hashToQVarMap(const QHash<K, V>&& hash) {
 Subscriber::Subscriber(RBKit::JsBridge* bridge)
     :jsBridge(bridge)
 {
-    commandSocket = new RBKit::ZmqCommandSocket(this);
-    eventSocket   = new RBKit::ZmqEventSocket(this);
-    objectStore = new RBKit::ObjectStore();
-    connect(eventSocket->getSocket(), SIGNAL(messageReceived(const QList<QByteArray>&)),
-           this, SLOT(onMessageReceived(const QList<QByteArray>&)));
-
-    // initialize the timer, mark it a periodic one, and connect to timeout.
-    m_timer = new QTimer(this);
-    m_timer->setInterval(timerIntervalInMs);
-    connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimerExpiry()));
 }
 
 void Subscriber::triggerGc() {
@@ -55,6 +45,21 @@ void Subscriber::takeSnapshot()
    RBKit::CmdObjSnapshot triggerSnapshot;
    qDebug() << "Taking snapshot";
    commandSocket->sendCommand(triggerSnapshot);
+}
+
+void Subscriber::startSubscriber()
+{
+    commandSocket = new RBKit::ZmqCommandSocket(this);
+    commandSocket->performHandShake();
+    eventSocket   = new RBKit::ZmqEventSocket(this);
+    objectStore = new RBKit::ObjectStore();
+    connect(eventSocket->getSocket(), SIGNAL(messageReceived(const QList<QByteArray>&)),
+            this, SLOT(onMessageReceived(const QList<QByteArray>&)));
+
+    // initialize the timer, mark it a periodic one, and connect to timeout.
+    m_timer = new QTimer(this);
+    m_timer->setInterval(timerIntervalInMs);
+    connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimerExpiry()));
 }
 
 Subscriber::~Subscriber()

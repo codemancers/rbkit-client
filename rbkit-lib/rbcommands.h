@@ -31,6 +31,12 @@ namespace RBKit
     {
         virtual QString serialize();
     };
+
+    class CmdPing : public CommandBase
+    {
+    public:
+        virtual QString serialize();
+    };
 }
 
 #endif // RBKIT_COMMANDS_H

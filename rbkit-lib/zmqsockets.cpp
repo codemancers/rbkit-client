@@ -38,6 +38,17 @@ bool RBKit::ZmqCommandSocket::sendCommand(RBKit::CommandBase& cmd)
     return true;
 }
 
+bool RBKit::ZmqCommandSocket::performHandShake()
+{
+    RBKit::CmdPing ping;
+    nzmqt::ZMQMessage msg(ping.serialize().toLocal8Bit());
+    bool sent = socket->sendMessage(msg);
+    qDebug() << "Waiting for handshake";
+    QList<QByteArray> resp = socket->receiveMessage();
+    qDebug() << "Got a for handShake " << resp;
+    return true;
+}
+
 void RBKit::ZmqCommandSocket::start(QString socketUrl)
 {
     if (context->isStopped()) {

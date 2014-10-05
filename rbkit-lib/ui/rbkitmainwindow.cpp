@@ -36,6 +36,7 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     memoryView = new RBKit::MemoryView();
     ui->chartingTab->addTab(memoryView, "Object Charts");
     connect(ui->chartingTab, SIGNAL(tabCloseRequested(int)), this, SLOT(tabClosed(int)));
+    disableCloseButtonOnFirstTab();
     actionToolbar->disableProfileActions();
 }
 
@@ -103,7 +104,6 @@ void RbkitMainWindow::disableCloseButtonOnFirstTab()
 void RbkitMainWindow::useSelectedHost(QString commandsSocket, QString eventsSocket)
 {
     askHost->close();
-    qDebug() << "Emitting signal with " << eventsSocket;
     emit connectToSocket(commandsSocket, eventsSocket);
 }
 
@@ -145,6 +145,7 @@ void RbkitMainWindow::setupSubscriber()
 
     //Events to/from parent/subcriber thread
     connect(&subscriberThread, &QThread::finished, subscriber, &QObject::deleteLater);
+    connect(&subscriberThread, SIGNAL(started()), subscriber, SLOT(startSubscriber()));
     connect(this, SIGNAL(connectToSocket(QString, QString)),
             subscriber, SLOT(startListening(QString, QString)));
     connect(this, SIGNAL(triggerGc()), subscriber, SLOT(triggerGc()));

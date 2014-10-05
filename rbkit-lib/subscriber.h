@@ -64,6 +64,7 @@ public slots:
     void onTimerExpiry();
     void triggerGc();
     void takeSnapshot();
+    void startSubscriber();
 };
 
 #endif // SUBSCRIBER_H
