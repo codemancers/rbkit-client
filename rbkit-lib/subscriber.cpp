@@ -30,7 +30,7 @@ QVariantMap hashToQVarMap(const QHash<K, V>&& hash) {
 
 
 Subscriber::Subscriber(RBKit::JsBridge* bridge)
-    :jsBridge(bridge)
+    :jsBridge(bridge), connectionEstablished(false)
 {
 }
 
@@ -72,6 +72,7 @@ void Subscriber::handShakeCompleted()
         emitConnectionError(QString::fromUtf8(err.what()));
         return;
     }
+    connectionEstablished = true;
 
     RBKit::CmdStartProfile startCmd;
     commandSocket->sendCommand(startCmd);
@@ -91,14 +92,6 @@ void Subscriber::emitConnectionError(QString message)
 Subscriber::~Subscriber()
 {
     stop();
-
-    commandSocket->stop();
-    delete commandSocket;
-
-    eventSocket->stop();
-    delete eventSocket;
-
-    emit disconnected();
 }
 
 void Subscriber::startListening(QString _commandsUrl, QString _eventsUrl)
@@ -110,8 +103,10 @@ void Subscriber::startListening(QString _commandsUrl, QString _eventsUrl)
 
 void Subscriber::stop()
 {
-    RBKit::CmdStopProfile stopCmd;
-    commandSocket->sendCommand(stopCmd);
+    if (connectionEstablished) {
+        RBKit::CmdStopProfile stopCmd;
+        commandSocket->sendCommand(stopCmd);
+    }
     objectStore->reset();
     qDebug() << "stopped";
 }

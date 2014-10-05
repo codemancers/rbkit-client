@@ -33,6 +33,7 @@
 #include <QMutexLocker>
 #include <QSocketNotifier>
 #include <QTimer>
+#include <QThread>
 
 #if defined(NZMQT_LIB)
 // #pragma message("nzmqt is built as library")
@@ -245,9 +246,17 @@ NZMQT_INLINE QList< QList<QByteArray> > ZMQSocket::receiveMessages()
 
 NZMQT_INLINE QByteArray ZMQSocket::receiveBlockingMessage()
 {
-    ZMQMessage msg;
-    recv(&msg);
-    return msg.toByteArray();
+    QList<QByteArray> response;
+    for(;;) {
+        response = receiveMessage();
+        if (!response.isEmpty() || QThread::currentThread()->isInterruptionRequested())
+            break;
+        QThread::msleep(500);
+    }
+    if (!response.isEmpty())
+        return response.first();
+    else
+        return QByteArray();
 }
 
 NZMQT_INLINE qint32 ZMQSocket::fileDescriptor() const

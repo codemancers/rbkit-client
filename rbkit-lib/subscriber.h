@@ -38,6 +38,7 @@ class Subscriber : public QObject
     RBKit::JsBridge* jsBridge;
     QString commandUrl;
     QString eventServerUrl;
+    bool connectionEstablished;
 
 public:
     explicit Subscriber(RBKit::JsBridge* jsBridge);
