@@ -42,6 +42,7 @@ class RbkitMainWindow : public QMainWindow
     QTimer *snapshotProgressTimer;
     ActionToolbar *actionToolbar;
     bool connected;
+    bool connectionInProgress;
 
     void setupSubscriber();
     void disconnectFromSocket();

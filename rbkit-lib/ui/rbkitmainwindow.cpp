@@ -8,12 +8,11 @@
 #include "ui/actiontoolbar.h"
 
 RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
-    QMainWindow(parent), connected(false), host(""),
+    QMainWindow(parent), connected(false), host(""), connectionInProgress(false),
     ui(new Ui::RbkitMainWindow)
 {
     Q_INIT_RESOURCE(tool_icons);
     RBKit::SqlConnectionPool::getInstance()->setupDatabase();
-    this->connected = false;
     ui->setupUi(this);
     actionToolbar = new ActionToolbar(ui);
     setupToolbarStyle();
@@ -57,7 +56,7 @@ void RbkitMainWindow::on_action_Connect_triggered()
 {
     qDebug() << "main-window" << connected;
 
-    if (!connected) {
+    if (!connectionInProgress) {
         setupSubscriber();
         askForServerInfo();
     } else {
@@ -104,6 +103,9 @@ void RbkitMainWindow::disableCloseButtonOnFirstTab()
 void RbkitMainWindow::useSelectedHost(QString commandsSocket, QString eventsSocket)
 {
     askHost->close();
+    connectionInProgress = true;
+    ui->action_Connect->setText(tr("&Disconnect"));
+    ui->action_Connect->setIcon(QIcon(":/icons/disconnect-32.png"));
     emit connectToSocket(commandsSocket, eventsSocket);
 }
 
@@ -132,6 +134,7 @@ void RbkitMainWindow::objectDumpAvailable(int snapshotVersion)
 
 void RbkitMainWindow::disconnectFromSocket()
 {
+    qDebug() << "Attempting to stop the thread";
     subscriberThread.requestInterruption();
     subscriberThread.exit();
     subscriberThread.wait();
@@ -166,6 +169,7 @@ void RbkitMainWindow::disconnectedFromSocket()
     this->connected = false;
     ui->statusbar->showMessage("Not connected to any Ruby application");
     actionToolbar->disableProfileActions();
+    connectionInProgress = false;
 }
 
 
