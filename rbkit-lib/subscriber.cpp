@@ -50,7 +50,6 @@ void Subscriber::takeSnapshot()
 void Subscriber::startSubscriber()
 {
     commandSocket = new RBKit::ZmqCommandSocket(this);
-    commandSocket->performHandShake();
     eventSocket   = new RBKit::ZmqEventSocket(this);
     objectStore = new RBKit::ObjectStore();
     connect(eventSocket->getSocket(), SIGNAL(messageReceived(const QList<QByteArray>&)),
@@ -78,27 +77,27 @@ Subscriber::~Subscriber()
 void Subscriber::startListening(QString commandsUrl, QString eventsUrl)
 {
     qDebug() << "Got " << commandsUrl << eventsUrl;
+    if (performHandshake(commandsUrl)) {
+        try
+        {
+            eventSocket->start(eventsUrl);
+        }
+        catch(zmq::error_t err)
+        {
+            QString str = QString::fromUtf8(err.what());
+            qDebug() << str ;
+            emit errored(str);
+            return;
+        }
 
-    try
-    {
-        commandSocket->start(commandsUrl);
-        eventSocket->start(eventsUrl);
+        RBKit::CmdStartProfile startCmd;
+        commandSocket->sendCommand(startCmd);
+
+        m_timer->start();
+
+        emit connected();
+        qDebug() << "started";
     }
-    catch(zmq::error_t err)
-    {
-        QString str = QString::fromUtf8(err.what());
-        qDebug() << str ;
-        emit errored(str);
-        return;
-    }
-
-    RBKit::CmdStartProfile startCmd;
-    commandSocket->sendCommand(startCmd);
-
-    m_timer->start();
-
-    emit connected();
-    qDebug() << "started";
 }
 
 void Subscriber::stop()
@@ -185,6 +184,22 @@ void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)
 {
     for (auto& event : evtCollection.events) {
         event->process(*this);
+    }
+}
+
+bool Subscriber::performHandshake(const QString &commandUrl)
+{
+    try
+    {
+        commandSocket->start(commandUrl);
+        return commandSocket->performHandShake();
+    }
+    catch(zmq::error_t err)
+    {
+        QString str = QString::fromUtf8(err.what());
+        qDebug() << str ;
+        emit errored(str);
+        return false;
     }
 }
 

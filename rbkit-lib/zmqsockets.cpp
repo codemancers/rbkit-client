@@ -43,10 +43,19 @@ bool RBKit::ZmqCommandSocket::performHandShake()
     RBKit::CmdPing ping;
     nzmqt::ZMQMessage msg(ping.serialize().toLocal8Bit());
     bool sent = socket->sendMessage(msg);
-    qDebug() << "Waiting for handshake";
-    QList<QByteArray> resp = socket->receiveMessage();
-    qDebug() << "Got a for handShake " << resp;
-    return true;
+    if(sent) {
+        qDebug() << "Waiting for handshake";
+        QList<QByteArray> resp = socket->receiveMessage();
+
+        for (QList<QByteArray>::ConstIterator iter = resp.begin();
+             resp.end() != iter; ++iter) {
+            qDebug() << "Got a for handShake " << QString(*iter);
+        }
+        return true;
+    } else {
+        qDebug() << "Failed to perform handshake";
+        return false;
+    }
 }
 
 void RBKit::ZmqCommandSocket::start(QString socketUrl)
