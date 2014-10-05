@@ -36,6 +36,8 @@ class Subscriber : public QObject
     RBKit::ObjectStore *objectStore;
 
     RBKit::JsBridge* jsBridge;
+    QString commandUrl;
+    QString eventServerUrl;
 
 public:
     explicit Subscriber(RBKit::JsBridge* jsBridge);
@@ -50,7 +52,7 @@ public:
     void processEvent(const RBKit::EvtGcStop&);
     void processEvent(const RBKit::EvtObjectDump&);
     void processEvent(const RBKit::EvtCollection&);
-    bool performHandshake(const QString &commandUrl);
+    void performHandshake();
 
 signals:
     void disconnected();
@@ -59,13 +61,14 @@ signals:
     void objectDumpAvailable(int snapshotVersion);
 
 public slots:
-    void startListening(QString, QString);
+    void startListening(QString _commandsUrl, QString _eventsUrl);
     void stop();
     void onMessageReceived(const QList<QByteArray>&);
     void onTimerExpiry();
     void triggerGc();
     void takeSnapshot();
     void startSubscriber();
+    void handShakeCompleted();
 };
 
 #endif // SUBSCRIBER_H

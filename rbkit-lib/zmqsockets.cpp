@@ -27,18 +27,31 @@ RBKit::ZmqCommandSocket::~ZmqCommandSocket()
 
 bool RBKit::ZmqCommandSocket::sendCommand(RBKit::CommandBase& cmd)
 {
-    qDebug() << "Sending " << cmd.serialize().toLocal8Bit();
-    nzmqt::ZMQMessage msg(cmd.serialize().toLocal8Bit());
-    bool sent = socket->sendMessage(msg);
+    try {
+        qDebug() << "Sending " << cmd.serialize().toLocal8Bit();
+        nzmqt::ZMQMessage msg(cmd.serialize().toLocal8Bit());
+        bool sent = socket->sendMessage(msg);
 
-    qDebug() << "Waiting for response";
-    QList<QByteArray> resp = socket->receiveMessage();
-    qDebug() << "Got a response " << resp;
+        qDebug() << "Waiting for response";
+        QList<QByteArray> resp = socket->receiveMessage();
+        qDebug() << "Got a response " << resp;
 
-    return true;
+        return true;
+    } catch(zmq::error_t err) {
+        QString str = QString::fromUtf8(err.what());
+        qDebug() << str ;
+        return false;
+    }
 }
 
-bool RBKit::ZmqCommandSocket::performHandShake()
+void RBKit::ZmqCommandSocket::performHandShake()
+{
+    handShakeTimer = new QTimer();
+    connect(handShakeTimer, SIGNAL(timeout()), this, SLOT(periodicHandshake()));
+    handShakeTimer->start(500);
+}
+
+void RBKit::ZmqCommandSocket::periodicHandshake()
 {
     RBKit::CmdPing ping;
     nzmqt::ZMQMessage msg(ping.serialize().toLocal8Bit());
@@ -46,15 +59,12 @@ bool RBKit::ZmqCommandSocket::performHandShake()
     if(sent) {
         qDebug() << "Waiting for handshake";
         QList<QByteArray> resp = socket->receiveMessage();
-
-        for (QList<QByteArray>::ConstIterator iter = resp.begin();
-             resp.end() != iter; ++iter) {
-            qDebug() << "Got a for handShake " << QString(*iter);
-        }
-        return true;
+        qDebug() << resp;
+        handShakeTimer->stop();
+        qDebug() << "Handshake completed";
+        emit handShakeCompleted();
     } else {
         qDebug() << "Failed to perform handshake";
-        return false;
     }
 }
 

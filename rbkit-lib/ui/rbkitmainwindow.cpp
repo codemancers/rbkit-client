@@ -173,6 +173,7 @@ void RbkitMainWindow::disconnectedFromSocket()
 
 void RbkitMainWindow::connectedToSocket()
 {
+    actionToolbar->enableProfileActions();
     ui->action_Connect->setText(tr("&Disconnect"));
     ui->action_Connect->setIcon(QIcon(":/icons/disconnect-32.png"));
     ui->statusbar->showMessage("Currently Profiling Ruby application");

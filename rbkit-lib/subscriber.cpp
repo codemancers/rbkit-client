@@ -61,6 +61,29 @@ void Subscriber::startSubscriber()
     connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimerExpiry()));
 }
 
+void Subscriber::handShakeCompleted()
+{
+    try
+    {
+        eventSocket->start(eventServerUrl);
+    }
+    catch(zmq::error_t err)
+    {
+        QString str = QString::fromUtf8(err.what());
+        qDebug() << str ;
+        emit errored(str);
+        return;
+    }
+
+    RBKit::CmdStartProfile startCmd;
+    commandSocket->sendCommand(startCmd);
+
+    m_timer->start();
+
+    emit connected();
+    qDebug() << "started";
+}
+
 Subscriber::~Subscriber()
 {
     stop();
@@ -74,30 +97,11 @@ Subscriber::~Subscriber()
     emit disconnected();
 }
 
-void Subscriber::startListening(QString commandsUrl, QString eventsUrl)
+void Subscriber::startListening(QString _commandsUrl, QString _eventsUrl)
 {
-    qDebug() << "Got " << commandsUrl << eventsUrl;
-    if (performHandshake(commandsUrl)) {
-        try
-        {
-            eventSocket->start(eventsUrl);
-        }
-        catch(zmq::error_t err)
-        {
-            QString str = QString::fromUtf8(err.what());
-            qDebug() << str ;
-            emit errored(str);
-            return;
-        }
-
-        RBKit::CmdStartProfile startCmd;
-        commandSocket->sendCommand(startCmd);
-
-        m_timer->start();
-
-        emit connected();
-        qDebug() << "started";
-    }
+    this->commandUrl = _commandsUrl;
+    this->eventServerUrl = _eventsUrl;
+    performHandshake();
 }
 
 void Subscriber::stop()
@@ -158,16 +162,6 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
     // update generation of objects that have survived the GC
     objectStore->updateObjectGeneration();
     jsBridge->sendMapToJs(eventName, gcEvent.timestamp, QVariantMap());
-
-    // for now, disable polar charts about generations.
-    // QVariantMap youngGen = hashToQVarMap(objectStore->youngGenStats());
-    // jsBridge->sendMapToJs("young_gen", gcEvent.timestamp, youngGen);
-
-    // QVariantMap secondGen = hashToQVarMap(objectStore->secondGenStats());
-    // jsBridge->sendMapToJs("second_gen", gcEvent.timestamp, secondGen);
-
-    // QVariantMap oldGen = hashToQVarMap(objectStore->oldGenStats());
-    // jsBridge->sendMapToJs("old_gen", gcEvent.timestamp, oldGen);
 }
 
 
@@ -187,19 +181,20 @@ void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)
     }
 }
 
-bool Subscriber::performHandshake(const QString &commandUrl)
+void Subscriber::performHandshake()
 {
     try
     {
+        qDebug() << "Connecting to command socket " << commandUrl;
         commandSocket->start(commandUrl);
-        return commandSocket->performHandShake();
+        connect(commandSocket, SIGNAL(handShakeCompleted()), this, SLOT(handShakeCompleted()));
+        commandSocket->performHandShake();
     }
     catch(zmq::error_t err)
     {
         QString str = QString::fromUtf8(err.what());
         qDebug() << str ;
         emit errored(str);
-        return false;
     }
 }
 
