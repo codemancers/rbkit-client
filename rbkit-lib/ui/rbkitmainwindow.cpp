@@ -151,8 +151,6 @@ void RbkitMainWindow::setupSubscriber()
     connect(this, SIGNAL(triggerGc()), subscriber, SLOT(triggerGc()));
     connect(this, SIGNAL(takeSnapshot()), subscriber, SLOT(takeSnapshot()));
 
-    connect(this, SIGNAL(disconnectSubscriber()), subscriber, SLOT(stop()));
-
     connect(subscriber, &Subscriber::errored, this, &RbkitMainWindow::onError);
     connect(subscriber, &Subscriber::connected, this, &RbkitMainWindow::connectedToSocket);
     connect(subscriber, &Subscriber::disconnected, this, &RbkitMainWindow::disconnectedFromSocket);
@@ -167,7 +165,7 @@ void RbkitMainWindow::disconnectedFromSocket()
     ui->action_Connect->setIcon(QIcon(":/icons/connect-32.png"));
     this->connected = false;
     ui->statusbar->showMessage("Not connected to any Ruby application");
-    emit disconnectSubscriber();
+    actionToolbar->disableProfileActions();
 }
 
 
