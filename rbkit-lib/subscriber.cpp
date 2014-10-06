@@ -29,9 +29,20 @@ QVariantMap hashToQVarMap(const QHash<K, V>&& hash) {
 }
 
 
+
+nzmqt::ZMQContext *Subscriber::getContext() const
+{
+    return context;
+}
+
+void Subscriber::setContext(nzmqt::ZMQContext *value)
+{
+    context = value;
+}
 Subscriber::Subscriber(RBKit::JsBridge* bridge)
     :jsBridge(bridge), connectionEstablished(false)
 {
+    qDebug() << "** Thread is is : " << QThread::currentThreadId();
 }
 
 void Subscriber::triggerGc() {
@@ -49,8 +60,10 @@ void Subscriber::takeSnapshot()
 
 void Subscriber::startSubscriber()
 {
-    commandSocket = new RBKit::ZmqCommandSocket(this);
-    eventSocket   = new RBKit::ZmqEventSocket(this);
+    qDebug() << "** Thread id is : " << QThread::currentThreadId();
+    context = new nzmqt::SocketNotifierZMQContext(this, 1);
+    commandSocket = new RBKit::ZmqCommandSocket(this, context);
+    eventSocket   = new RBKit::ZmqEventSocket(this, context);
     objectStore = new RBKit::ObjectStore();
     connect(eventSocket->getSocket(), SIGNAL(messageReceived(const QList<QByteArray>&)),
             this, SLOT(onMessageReceived(const QList<QByteArray>&)));
@@ -91,10 +104,14 @@ void Subscriber::emitConnectionError(QString message)
 
 Subscriber::~Subscriber()
 {
+    qDebug() << "** Thread id is : " << QThread::currentThreadId();
+    stop();
     delete m_timer;
     delete commandSocket;
     delete eventSocket;
     delete objectStore;
+    delete context;
+    emit disconnected();
 }
 
 void Subscriber::startListening(QString _commandsUrl, QString _eventsUrl)
@@ -185,6 +202,7 @@ void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)
 
 void Subscriber::performHandshake()
 {
+    context->start();
     try
     {
         qDebug() << "Connecting to command socket " << commandUrl;

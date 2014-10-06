@@ -9,6 +9,7 @@ namespace nzmqt
 {
    class ZMQContext;
    class ZMQSocket;
+   class SocketNotifierZMQContext;
 }
 
 
@@ -24,7 +25,7 @@ namespace RBKit
         nzmqt::ZMQSocket* socket;
 
     public:
-        explicit ZmqCommandSocket(QObject* parent = 0);
+        explicit ZmqCommandSocket(QObject* parent, nzmqt::ZMQContext *_context);
         ~ZmqCommandSocket();
 
     public:
@@ -44,7 +45,7 @@ namespace RBKit
         nzmqt::ZMQSocket* socket;
 
     public:
-        explicit ZmqEventSocket(QObject* parent = 0);
+        explicit ZmqEventSocket(QObject* parent, nzmqt::ZMQContext *_context);
         ~ZmqEventSocket();
 
         // hack, not sure how to bind socket receive message.

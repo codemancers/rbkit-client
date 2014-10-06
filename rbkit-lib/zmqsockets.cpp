@@ -3,26 +3,27 @@
 #include <QDebug>
 
 #include "nzmqt/nzmqt.hpp"
+#include <QThread>
 
 
 static const int rbkcZmqTotalIoThreads = 1;
 static const int timerIntervalInMs = 1000;
 
 
-RBKit::ZmqCommandSocket::ZmqCommandSocket(QObject* parent) :
-    QObject(parent)
+RBKit::ZmqCommandSocket::ZmqCommandSocket(QObject* parent, nzmqt::ZMQContext *_context) :
+    QObject(parent), context(_context)
 {
     // second argument to creating a context is number of io threads. right
     // now, we are using only 1 thread, so defaulting to 1 for now.
-    context = new nzmqt::SocketNotifierZMQContext(this, rbkcZmqTotalIoThreads);
     socket = context->createSocket(nzmqt::ZMQSocket::TYP_REQ, this);
+    socket->setOption(nzmqt::ZMQSocket::OPT_LINGER, 0);
 }
 
 RBKit::ZmqCommandSocket::~ZmqCommandSocket()
 {
+    qDebug() << "++ thread id is : " << QThread::currentThreadId();
     socket->close();
     delete socket;
-    delete context;
 }
 
 bool RBKit::ZmqCommandSocket::sendCommand(RBKit::CommandBase& cmd)
@@ -64,29 +65,21 @@ bool RBKit::ZmqCommandSocket::performHandShake()
 
 void RBKit::ZmqCommandSocket::start(QString socketUrl)
 {
-    if (context->isStopped()) {
-        return;
-    }
-
     QByteArray ba   = socketUrl.toLocal8Bit();
     const char *url = ba.data();
     socket->connectTo(url);
-
-    context->start();
 }
 
 void RBKit::ZmqCommandSocket::stop()
 {
-    context->stop();
 }
 
 
-RBKit::ZmqEventSocket::ZmqEventSocket(QObject* parent) :
-    QObject(parent)
+RBKit::ZmqEventSocket::ZmqEventSocket(QObject* parent, nzmqt::ZMQContext *_context) :
+    QObject(parent), context(_context)
 {
     // second argument to creating a context is number of io threads. right
     // now, we are using only 1 thread, so defaulting to 1 for now.
-    context = new nzmqt::SocketNotifierZMQContext(this, rbkcZmqTotalIoThreads);
     socket = context->createSocket(nzmqt::ZMQSocket::TYP_SUB, this);
     socket->setOption(nzmqt::ZMQSocket::OPT_SUBSCRIBE, "", 0);
     socket->setOption(nzmqt::ZMQSocket::OPT_RCVHWM, 500000);
@@ -96,7 +89,6 @@ RBKit::ZmqEventSocket::~ZmqEventSocket()
 {
     socket->close();
     delete socket;
-    delete context;
 }
 
 void RBKit::ZmqEventSocket::start(QString socketUrl)
@@ -107,12 +99,9 @@ void RBKit::ZmqEventSocket::start(QString socketUrl)
     QByteArray ba   = socketUrl.toLocal8Bit();
     const char *url = ba.data();
     socket->connectTo(url);
-
-    context->start();
 }
 
 
 void RBKit::ZmqEventSocket::stop()
 {
-    context->stop();
 }

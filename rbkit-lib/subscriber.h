@@ -13,6 +13,7 @@ namespace nzmqt
 {
    class ZMQContext;
    class ZMQSocket;
+   class ZSocketNotifierZMQContext;
 }
 
 class QTimer;
@@ -38,10 +39,12 @@ class Subscriber : public QObject
     RBKit::JsBridge* jsBridge;
     QString commandUrl;
     QString eventServerUrl;
+    nzmqt::ZMQContext *context;
     bool connectionEstablished;
 
 public:
     explicit Subscriber(RBKit::JsBridge* jsBridge);
+    ~Subscriber();
 
 public:
     // function overloading
@@ -55,6 +58,9 @@ public:
     void performHandshake();
     void handShakeCompleted();
     void emitConnectionError(QString message);
+    nzmqt::ZMQContext *getContext() const;
+    void setContext(nzmqt::ZMQContext *value);
+
 signals:
     void disconnected();
     void connected();
