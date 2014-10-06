@@ -99,7 +99,7 @@ void Subscriber::handShakeCompleted()
 void Subscriber::emitConnectionError(QString message)
 {
     qDebug() << message;
-    //emit errored(message);
+    emit errored(message);
 }
 
 Subscriber::~Subscriber()
