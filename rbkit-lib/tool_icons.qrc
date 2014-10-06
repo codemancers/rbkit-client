@@ -15,5 +15,6 @@
         <file>icons/Comapre-16.png</file>
         <file>icons/Comapre-32.png</file>
         <file>icons/Comapre-48.png</file>
+        <file>icons/rbkitlogo-128.png</file>
     </qresource>
 </RCC>
