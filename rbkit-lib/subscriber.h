@@ -42,7 +42,6 @@ class Subscriber : public QObject
 
 public:
     explicit Subscriber(RBKit::JsBridge* jsBridge);
-    ~Subscriber();
 
 public:
     // function overloading

@@ -86,12 +86,15 @@ void Subscriber::handShakeCompleted()
 void Subscriber::emitConnectionError(QString message)
 {
     qDebug() << message;
-    emit errored(message);
+    //emit errored(message);
 }
 
 Subscriber::~Subscriber()
 {
-    stop();
+    delete m_timer;
+    delete commandSocket;
+    delete eventSocket;
+    delete objectStore;
 }
 
 void Subscriber::startListening(QString _commandsUrl, QString _eventsUrl)

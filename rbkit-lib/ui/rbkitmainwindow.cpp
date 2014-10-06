@@ -138,6 +138,7 @@ void RbkitMainWindow::disconnectFromSocket()
     subscriberThread.requestInterruption();
     subscriberThread.exit();
     subscriberThread.wait();
+    qDebug() << "Thread has been stopped";
 }
 
 void RbkitMainWindow::setupSubscriber()
