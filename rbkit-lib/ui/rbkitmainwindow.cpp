@@ -5,15 +5,17 @@
 #include "model/appstate.h"
 #include "comapresnapshotform.h"
 #include "diffviewform.h"
+#include "ui/actiontoolbar.h"
+#include "ui/aboutdialog.h"
 
 RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
-    QMainWindow(parent), connected(false), host(""),
+    QMainWindow(parent), connected(false), host(""), connectionInProgress(false),
     ui(new Ui::RbkitMainWindow)
 {
     Q_INIT_RESOURCE(tool_icons);
     RBKit::SqlConnectionPool::getInstance()->setupDatabase();
-    this->connected = false;
     ui->setupUi(this);
+    actionToolbar = new ActionToolbar(ui);
     setupToolbarStyle();
 
     snapshotProgressTimer = new QTimer(this);
@@ -33,13 +35,9 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     qRegisterMetaType<RBKit::ObjectDetail>();
     memoryView = new RBKit::MemoryView();
     ui->chartingTab->addTab(memoryView, "Object Charts");
-    QWidget *tabButton = ui->chartingTab->tabBar()->tabButton(0, QTabBar::RightSide);
-    if (tabButton) {
-        tabButton->resize(0, 0);
-    } else {
-        ui->chartingTab->tabBar()->tabButton(0, QTabBar::LeftSide)->resize(0, 0);
-    }
     connect(ui->chartingTab, SIGNAL(tabCloseRequested(int)), this, SLOT(tabClosed(int)));
+    disableCloseButtonOnFirstTab();
+    actionToolbar->disableProfileActions();
 }
 
 
@@ -59,7 +57,7 @@ void RbkitMainWindow::on_action_Connect_triggered()
 {
     qDebug() << "main-window" << connected;
 
-    if (!connected) {
+    if (!connectionInProgress) {
         setupSubscriber();
         askForServerInfo();
     } else {
@@ -92,19 +90,30 @@ QList<int> RbkitMainWindow::diffableSnapshotVersions()
     return snapShotState->diffableSnapshotVersions();
 }
 
+void RbkitMainWindow::disableCloseButtonOnFirstTab()
+{
+    QWidget *tabButton = ui->chartingTab->tabBar()->tabButton(0, QTabBar::RightSide);
+    if (tabButton) {
+        tabButton->resize(0, 0);
+    } else {
+        ui->chartingTab->tabBar()->tabButton(0, QTabBar::LeftSide)->resize(0, 0);
+    }
+}
+
 
 void RbkitMainWindow::useSelectedHost(QString commandsSocket, QString eventsSocket)
 {
     askHost->close();
-    qDebug() << "Emitting signal with " << eventsSocket;
+    connectionInProgress = true;
+    ui->action_Connect->setText(tr("&Disconnect"));
+    ui->action_Connect->setIcon(QIcon(":/icons/disconnect-32.png"));
     emit connectToSocket(commandsSocket, eventsSocket);
 }
 
 void RbkitMainWindow::on_action_About_Rbkit_triggered()
 {
-    QMessageBox msgBox(this);
-    msgBox.setText(tr("Rbkit is low overhead profiler for Ruby, brought to you by Codemancers team"));
-    msgBox.exec();
+    AboutDialog *aboutDialog = new AboutDialog(this);
+    aboutDialog->show();
 }
 
 
@@ -125,9 +134,11 @@ void RbkitMainWindow::objectDumpAvailable(int snapshotVersion)
 
 void RbkitMainWindow::disconnectFromSocket()
 {
+    qDebug() << "Attempting to stop the thread";
     subscriberThread.requestInterruption();
     subscriberThread.exit();
     subscriberThread.wait();
+    qDebug() << "Thread has been stopped";
 }
 
 void RbkitMainWindow::setupSubscriber()
@@ -138,12 +149,11 @@ void RbkitMainWindow::setupSubscriber()
 
     //Events to/from parent/subcriber thread
     connect(&subscriberThread, &QThread::finished, subscriber, &QObject::deleteLater);
+    connect(&subscriberThread, SIGNAL(started()), subscriber, SLOT(startSubscriber()));
     connect(this, SIGNAL(connectToSocket(QString, QString)),
             subscriber, SLOT(startListening(QString, QString)));
     connect(this, SIGNAL(triggerGc()), subscriber, SLOT(triggerGc()));
     connect(this, SIGNAL(takeSnapshot()), subscriber, SLOT(takeSnapshot()));
-
-    connect(this, SIGNAL(disconnectSubscriber()), subscriber, SLOT(stop()));
 
     connect(subscriber, &Subscriber::errored, this, &RbkitMainWindow::onError);
     connect(subscriber, &Subscriber::connected, this, &RbkitMainWindow::connectedToSocket);
@@ -159,12 +169,14 @@ void RbkitMainWindow::disconnectedFromSocket()
     ui->action_Connect->setIcon(QIcon(":/icons/connect-32.png"));
     this->connected = false;
     ui->statusbar->showMessage("Not connected to any Ruby application");
-    emit disconnectSubscriber();
+    actionToolbar->disableProfileActions();
+    connectionInProgress = false;
 }
 
 
 void RbkitMainWindow::connectedToSocket()
 {
+    actionToolbar->enableProfileActions();
     ui->action_Connect->setText(tr("&Disconnect"));
     ui->action_Connect->setIcon(QIcon(":/icons/disconnect-32.png"));
     ui->statusbar->showMessage("Currently Profiling Ruby application");
@@ -212,8 +224,10 @@ void RbkitMainWindow::tabClosed(int index)
 
 void RbkitMainWindow::updateProgressBar()
 {
-    int currentProgress = RBKit::AppState::getInstance()->getState("heap_snapshot").toInt();
-    progressBar->setValue(currentProgress);
+    if (snapShotState->snapShotInProgress()) {
+        int currentProgress = RBKit::AppState::getInstance()->getState("heap_snapshot").toInt();
+        progressBar->setValue(currentProgress);
+    }
 }
 
 

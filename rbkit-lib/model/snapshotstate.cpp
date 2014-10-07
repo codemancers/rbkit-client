@@ -92,7 +92,6 @@ QList<int> SnapshotState::diffableSnapshotVersions() {
             selectedSnapshots.append(iterator.key());
         }
     }
-    qDebug() << "Comparable snapshots is " << selectedSnapshots;
     return selectedSnapshots;
 }
 

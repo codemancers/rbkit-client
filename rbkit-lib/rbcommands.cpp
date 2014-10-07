@@ -22,3 +22,9 @@ QString RBKit::CmdTriggerGC::serialize()
 {
     return QString("trigger_gc");
 }
+
+
+QString RBKit::CmdPing::serialize()
+{
+    return QString("ping");
+}

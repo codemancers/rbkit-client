@@ -29,19 +29,20 @@ QVariantMap hashToQVarMap(const QHash<K, V>&& hash) {
 }
 
 
-Subscriber::Subscriber(RBKit::JsBridge* bridge)
-    :jsBridge(bridge)
-{
-    commandSocket = new RBKit::ZmqCommandSocket(this);
-    eventSocket   = new RBKit::ZmqEventSocket(this);
-    objectStore = new RBKit::ObjectStore();
-    connect(eventSocket->getSocket(), SIGNAL(messageReceived(const QList<QByteArray>&)),
-           this, SLOT(onMessageReceived(const QList<QByteArray>&)));
 
-    // initialize the timer, mark it a periodic one, and connect to timeout.
-    m_timer = new QTimer(this);
-    m_timer->setInterval(timerIntervalInMs);
-    connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimerExpiry()));
+nzmqt::ZMQContext *Subscriber::getContext() const
+{
+    return context;
+}
+
+void Subscriber::setContext(nzmqt::ZMQContext *value)
+{
+    context = value;
+}
+Subscriber::Subscriber(RBKit::JsBridge* bridge)
+    :jsBridge(bridge), connectionEstablished(false)
+{
+    qDebug() << "** Thread is is : " << QThread::currentThreadId();
 }
 
 void Subscriber::triggerGc() {
@@ -57,35 +58,34 @@ void Subscriber::takeSnapshot()
    commandSocket->sendCommand(triggerSnapshot);
 }
 
-Subscriber::~Subscriber()
+void Subscriber::startSubscriber()
 {
-    stop();
+    qDebug() << "** Thread id is : " << QThread::currentThreadId();
+    context = new nzmqt::SocketNotifierZMQContext(this, 1);
+    commandSocket = new RBKit::ZmqCommandSocket(this, context);
+    eventSocket   = new RBKit::ZmqEventSocket(this, context);
+    objectStore = new RBKit::ObjectStore();
+    connect(eventSocket->getSocket(), SIGNAL(messageReceived(const QList<QByteArray>&)),
+            this, SLOT(onMessageReceived(const QList<QByteArray>&)));
 
-    commandSocket->stop();
-    delete commandSocket;
-
-    eventSocket->stop();
-    delete eventSocket;
-
-    emit disconnected();
+    // initialize the timer, mark it a periodic one, and connect to timeout.
+    m_timer = new QTimer(this);
+    m_timer->setInterval(timerIntervalInMs);
+    connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimerExpiry()));
 }
 
-void Subscriber::startListening(QString commandsUrl, QString eventsUrl)
+void Subscriber::handShakeCompleted()
 {
-    qDebug() << "Got " << commandsUrl << eventsUrl;
-
     try
     {
-        commandSocket->start(commandsUrl);
-        eventSocket->start(eventsUrl);
+        eventSocket->start(eventServerUrl);
     }
     catch(zmq::error_t err)
     {
-        QString str = QString::fromUtf8(err.what());
-        qDebug() << str ;
-        emit errored(str);
+        emitConnectionError(QString::fromUtf8(err.what()));
         return;
     }
+    connectionEstablished = true;
 
     RBKit::CmdStartProfile startCmd;
     commandSocket->sendCommand(startCmd);
@@ -96,10 +96,37 @@ void Subscriber::startListening(QString commandsUrl, QString eventsUrl)
     qDebug() << "started";
 }
 
+void Subscriber::emitConnectionError(QString message)
+{
+    qDebug() << message;
+    emit errored(message);
+}
+
+Subscriber::~Subscriber()
+{
+    qDebug() << "** Thread id is : " << QThread::currentThreadId();
+    stop();
+    delete m_timer;
+    delete commandSocket;
+    delete eventSocket;
+    delete objectStore;
+    delete context;
+    emit disconnected();
+}
+
+void Subscriber::startListening(QString _commandsUrl, QString _eventsUrl)
+{
+    this->commandUrl = _commandsUrl;
+    this->eventServerUrl = _eventsUrl;
+    performHandshake();
+}
+
 void Subscriber::stop()
 {
-    RBKit::CmdStopProfile stopCmd;
-    commandSocket->sendCommand(stopCmd);
+    if (connectionEstablished) {
+        RBKit::CmdStopProfile stopCmd;
+        commandSocket->sendCommand(stopCmd);
+    }
     objectStore->reset();
     qDebug() << "stopped";
 }
@@ -154,16 +181,6 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
     // update generation of objects that have survived the GC
     objectStore->updateObjectGeneration();
     jsBridge->sendMapToJs(eventName, gcEvent.timestamp, QVariantMap());
-
-    // for now, disable polar charts about generations.
-    // QVariantMap youngGen = hashToQVarMap(objectStore->youngGenStats());
-    // jsBridge->sendMapToJs("young_gen", gcEvent.timestamp, youngGen);
-
-    // QVariantMap secondGen = hashToQVarMap(objectStore->secondGenStats());
-    // jsBridge->sendMapToJs("second_gen", gcEvent.timestamp, secondGen);
-
-    // QVariantMap oldGen = hashToQVarMap(objectStore->oldGenStats());
-    // jsBridge->sendMapToJs("old_gen", gcEvent.timestamp, oldGen);
 }
 
 
@@ -180,6 +197,25 @@ void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)
 {
     for (auto& event : evtCollection.events) {
         event->process(*this);
+    }
+}
+
+void Subscriber::performHandshake()
+{
+    context->start();
+    try
+    {
+        qDebug() << "Connecting to command socket " << commandUrl;
+        commandSocket->start(commandUrl);
+        if (commandSocket->performHandShake())
+            handShakeCompleted();
+        else {
+            emitConnectionError(QString("Error connecting to Ruby application"));
+        }
+    }
+    catch(zmq::error_t err)
+    {
+        emitConnectionError(QString::fromUtf8(err.what()));
     }
 }
 

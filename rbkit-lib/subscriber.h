@@ -13,6 +13,7 @@ namespace nzmqt
 {
    class ZMQContext;
    class ZMQSocket;
+   class ZSocketNotifierZMQContext;
 }
 
 class QTimer;
@@ -36,6 +37,10 @@ class Subscriber : public QObject
     RBKit::ObjectStore *objectStore;
 
     RBKit::JsBridge* jsBridge;
+    QString commandUrl;
+    QString eventServerUrl;
+    nzmqt::ZMQContext *context;
+    bool connectionEstablished;
 
 public:
     explicit Subscriber(RBKit::JsBridge* jsBridge);
@@ -50,6 +55,11 @@ public:
     void processEvent(const RBKit::EvtGcStop&);
     void processEvent(const RBKit::EvtObjectDump&);
     void processEvent(const RBKit::EvtCollection&);
+    void performHandshake();
+    void handShakeCompleted();
+    void emitConnectionError(QString message);
+    nzmqt::ZMQContext *getContext() const;
+    void setContext(nzmqt::ZMQContext *value);
 
 signals:
     void disconnected();
@@ -58,12 +68,13 @@ signals:
     void objectDumpAvailable(int snapshotVersion);
 
 public slots:
-    void startListening(QString, QString);
+    void startListening(QString _commandsUrl, QString _eventsUrl);
     void stop();
     void onMessageReceived(const QList<QByteArray>&);
     void onTimerExpiry();
     void triggerGc();
     void takeSnapshot();
+    void startSubscriber();
 };
 
 #endif // SUBSCRIBER_H
