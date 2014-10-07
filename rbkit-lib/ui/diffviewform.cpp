@@ -1,5 +1,7 @@
 #include "diffviewform.h"
 #include "rbkitmainwindow.h"
+#include "ui_heapdumpform.h"
+#include "parentviewform.h"
 #include <QStatusBar>
 
 DiffViewForm::DiffViewForm(QWidget* parent, int _snapShotVersion)
@@ -19,8 +21,14 @@ void DiffViewForm::loadFromSpecifiedRoot(RBKit::HeapItem *_rootItem)
 
 void DiffViewForm::treeNodeSelected(const QModelIndex &index)
 {
+    qDebug() << "Calling this new method";
     QModelIndex sourceIndex = proxyModel->mapToSource(index);
     RBKit::HeapItem *nodeItem = static_cast<RBKit::HeapItem *>(sourceIndex.internalPointer());
-    if (nodeItem != NULL)
+    if (nodeItem != NULL) {
         parentWindow->statusBar()->showMessage(nodeItem->leadingIdentifier());
+        ParentViewForm *parentViewForm = new ParentViewForm(this);
+        ui->horizontalLayout->addWidget(parentViewForm);
+        qDebug() << "Showing the parent form";
+        parentViewForm->show();
+    }
 }

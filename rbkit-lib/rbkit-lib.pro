@@ -33,7 +33,8 @@ SOURCES += \
     ui/rbkitmainwindow.cpp \
     ui/actiontoolbar.cpp \
     ui/aboutdialog.cpp \
-    model/parentobject.cpp
+    model/parentobject.cpp \
+    ui/parentviewform.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -59,7 +60,8 @@ HEADERS +=  \
     ui/rbkitmainwindow.h \
     ui/actiontoolbar.h \
     ui/aboutdialog.h \
-    model/parentobject.h
+    model/parentobject.h \
+    ui/parentviewform.h
 
 
 # Include msgpack via pri file
@@ -71,7 +73,8 @@ FORMS += \
     ui/heapdumpform.ui \
     ui/memoryview.ui \
     ui/comapresnapshotform.ui \
-    ui/aboutdialog.ui
+    ui/aboutdialog.ui \
+    ui/parentviewform.ui
 
 RESOURCES += \
     tool_icons.qrc

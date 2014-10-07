@@ -118,6 +118,9 @@
    <property name="text">
     <string>&amp;Quit</string>
    </property>
+   <property name="toolTip">
+    <string>Quit Rbkit</string>
+   </property>
   </action>
   <action name="action_About_Rbkit">
    <property name="text">
