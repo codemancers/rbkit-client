@@ -31,7 +31,8 @@ SOURCES += \
     ui/heapdumpform.cpp \
     ui/memoryview.cpp \
     ui/rbkitmainwindow.cpp \
-    ui/actiontoolbar.cpp
+    ui/actiontoolbar.cpp \
+    ui/aboutdialog.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -55,7 +56,8 @@ HEADERS +=  \
     ui/heapdumpform.h \
     ui/memoryview.h \
     ui/rbkitmainwindow.h \
-    ui/actiontoolbar.h
+    ui/actiontoolbar.h \
+    ui/aboutdialog.h
 
 
 # Include msgpack via pri file
@@ -66,7 +68,8 @@ FORMS += \
     ui/askhost.ui \
     ui/heapdumpform.ui \
     ui/memoryview.ui \
-    ui/comapresnapshotform.ui
+    ui/comapresnapshotform.ui \
+    ui/aboutdialog.ui
 
 RESOURCES += \
     tool_icons.qrc

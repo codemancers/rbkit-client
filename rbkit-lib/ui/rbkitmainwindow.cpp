@@ -6,6 +6,7 @@
 #include "comapresnapshotform.h"
 #include "diffviewform.h"
 #include "ui/actiontoolbar.h"
+#include "ui/aboutdialog.h"
 
 RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     QMainWindow(parent), connected(false), host(""), connectionInProgress(false),
@@ -111,9 +112,8 @@ void RbkitMainWindow::useSelectedHost(QString commandsSocket, QString eventsSock
 
 void RbkitMainWindow::on_action_About_Rbkit_triggered()
 {
-    QMessageBox msgBox(this);
-    msgBox.setText(tr("Rbkit is low overhead profiler for Ruby, brought to you by Codemancers team"));
-    msgBox.exec();
+    AboutDialog *aboutDialog = new AboutDialog(this);
+    aboutDialog->show();
 }
 
 
