@@ -35,7 +35,6 @@ public:
 
     bool hasChildren();
     quint32 childrenCount();
-    bool canHaveDiff();
     void fetchChildren();
     HeapItem *getParent() const;
     HeapItem *getChild(int index);

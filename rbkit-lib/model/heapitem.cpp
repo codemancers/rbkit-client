@@ -96,6 +96,7 @@ HeapItem *HeapItem::minus(HeapItem *other)
 
         HeapItem *rootItem = new HeapItem(-1);
         rootItem->setObjectsTableName(viewName);
+        rootItem->setReferenceTableName(referenceTableName);
         rootItem->setIsSnapshot(false);
         QSqlQuery searchQuery(QString("select class_name, count(id) as object_count, "
                                       "sum(reference_count) as total_ref_count, sum(size) as total_size from %0 group by (class_name)").arg(viewName));
@@ -283,13 +284,6 @@ quint32 HeapItem::childrenCount()
     if (!childrenFetched)
         fetchChildren();
     return children.size();
-}
-
-bool HeapItem::canHaveDiff()
-{
-    if (leafNode)
-        return false;
-
 }
 
 void HeapItem::fetchChildren()
