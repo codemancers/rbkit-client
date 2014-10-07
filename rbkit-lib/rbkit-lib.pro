@@ -32,7 +32,8 @@ SOURCES += \
     ui/memoryview.cpp \
     ui/rbkitmainwindow.cpp \
     ui/actiontoolbar.cpp \
-    ui/aboutdialog.cpp
+    ui/aboutdialog.cpp \
+    model/parentobject.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -57,7 +58,8 @@ HEADERS +=  \
     ui/memoryview.h \
     ui/rbkitmainwindow.h \
     ui/actiontoolbar.h \
-    ui/aboutdialog.h
+    ui/aboutdialog.h \
+    model/parentobject.h
 
 
 # Include msgpack via pri file
