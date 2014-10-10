@@ -55,6 +55,7 @@ public:
     HeapItem *minus(HeapItem *other);
     bool getIsSnapshot() const;
     void setIsSnapshot(bool value);
+    void getObjectParent();
 };
 
 } // namespace RBKit

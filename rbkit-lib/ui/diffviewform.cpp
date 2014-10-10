@@ -5,7 +5,7 @@
 #include <QStatusBar>
 
 DiffViewForm::DiffViewForm(QWidget* parent, int _snapShotVersion)
-    : HeapDumpForm(parent, _snapShotVersion)
+    : HeapDumpForm(parent, _snapShotVersion), parentViewForm(0)
 {
 }
 
@@ -26,9 +26,22 @@ void DiffViewForm::treeNodeSelected(const QModelIndex &index)
     RBKit::HeapItem *nodeItem = static_cast<RBKit::HeapItem *>(sourceIndex.internalPointer());
     if (nodeItem != NULL) {
         parentWindow->statusBar()->showMessage(nodeItem->leadingIdentifier());
-        ParentViewForm *parentViewForm = new ParentViewForm(this);
-        ui->horizontalLayout->addWidget(parentViewForm);
-        qDebug() << "Showing the parent form";
-        parentViewForm->show();
+        if (parentViewForm == 0) {
+            initializeParentView();
+        }
+        updateParentView();
     }
+}
+
+void DiffViewForm::updateParentView()
+{
+
+}
+
+void DiffViewForm::initializeParentView()
+{
+    parentViewForm = new ParentViewForm(this);
+    ui->treeVerticalLayout->addWidget(parentViewForm);
+    qDebug() << "Showing the parent form";
+    parentViewForm->show();
 }

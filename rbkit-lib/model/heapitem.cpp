@@ -55,6 +55,11 @@ void HeapItem::setIsSnapshot(bool value)
     isSnapshot = value;
 }
 
+void HeapItem::getObjectParent()
+{
+
+}
+
 QString HeapItem::getReferenceTableName() const
 {
     return referenceTableName;
