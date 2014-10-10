@@ -19,6 +19,7 @@ void DiffViewForm::loadFromSpecifiedRoot(RBKit::HeapItem *_rootItem)
 
 void DiffViewForm::treeNodeSelected(const QModelIndex &index)
 {
+    qDebug() << "Calling this method here";
     QModelIndex sourceIndex = proxyModel->mapToSource(index);
     RBKit::HeapItem *nodeItem = static_cast<RBKit::HeapItem *>(sourceIndex.internalPointer());
     if (nodeItem != NULL)

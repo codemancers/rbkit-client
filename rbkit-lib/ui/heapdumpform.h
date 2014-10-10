@@ -54,7 +54,7 @@ private:
 public slots:
     void onCustomContextMenu(const QPoint& point);
     void viewReferences();
-    void treeNodeSelected(const QModelIndex& index);
+    virtual void treeNodeSelected(const QModelIndex& index);
 };
 
 typedef QSharedPointer<HeapDumpForm> HeapDumpFormPtr;
