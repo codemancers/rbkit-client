@@ -47,9 +47,8 @@ public:
     void setTreeModel(SortObjectProxyModel* model);
 
     RBKit::HeapItem *getRootItem() const;
-
-private:
     Ui::HeapDumpForm *ui;
+private:
     int snapShotVersion;
 public slots:
     void onCustomContextMenu(const QPoint& point);
