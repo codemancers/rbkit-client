@@ -6,6 +6,9 @@
 #include "objectstore.h"
 
 namespace RBKit {
+
+class DiffItem;
+
 class HeapItem
 {
     void initializeDataMembers();
@@ -14,7 +17,7 @@ public:
     HeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, int _snapShotVersion);
     HeapItem(const QString _className, quint32 _count, quint32 _referenceCount,
              quint32 _totalSize, const QString _filename, int _snapShotVersion);
-    ~HeapItem();
+    virtual ~HeapItem();
 
     QString className;
     quint32 count;
@@ -52,10 +55,9 @@ public:
     QString getReferenceTableName() const;
     void setReferenceTableName(const QString &value);
     QString shortLeadingIdentifier();
-    HeapItem *minus(HeapItem *other);
+    DiffItem *minus(HeapItem *other);
     bool getIsSnapshot() const;
     void setIsSnapshot(bool value);
-    void getObjectParent();
 };
 
 } // namespace RBKit

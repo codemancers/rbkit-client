@@ -35,7 +35,7 @@ SOURCES += \
     ui/aboutdialog.cpp \
     model/parentobject.cpp \
     ui/parentviewform.cpp \
-    model/snapshotitem.cpp
+    model/diffitem.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -63,7 +63,7 @@ HEADERS +=  \
     ui/aboutdialog.h \
     model/parentobject.h \
     ui/parentviewform.h \
-    model/snapshotitem.h
+    model/diffitem.h
 
 
 # Include msgpack via pri file

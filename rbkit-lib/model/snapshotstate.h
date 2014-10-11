@@ -10,6 +10,8 @@
 #include "model/heapitem.h"
 
 namespace RBKit {
+class DiffItem;
+
 class SnapshotState
 {
     QMap<int, HeapDumpFormPtr> heapForms;
@@ -24,7 +26,7 @@ public:
     void setSnapshotProgress(bool snapShotState);
     void reset();
     QList<int> diffableSnapshotVersions();
-    HeapItem *diffRootItem(QList<int> selectedSnapshots);
+    DiffItem *diffRootItem(QList<int> selectedSnapshots);
     int getSnapShotIndex() const;
     void setSnapShotIndex(int value);
     QMap<int, HeapDumpFormPtr> getHeapForms() const;

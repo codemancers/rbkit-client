@@ -1,5 +1,6 @@
 #include "snapshotstate.h"
 #include "appstate.h"
+#include "diffitem.h"
 
 namespace RBKit {
 
@@ -95,7 +96,7 @@ QList<int> SnapshotState::diffableSnapshotVersions() {
     return selectedSnapshots;
 }
 
-HeapItem *SnapshotState::diffRootItem(QList<int> selectedSnapshots)
+DiffItem *SnapshotState::diffRootItem(QList<int> selectedSnapshots)
 {
     HeapItem *item1 = heapForms[selectedSnapshots.at(0)]->getRootItem();
     HeapItem *item2 = heapForms[selectedSnapshots.at(1)]->getRootItem();

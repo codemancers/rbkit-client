@@ -1,5 +1,6 @@
 #include "heapitem.h"
 #include "stringutil.h"
+#include "diffitem.h"
 #include <QFileInfo>
 
 namespace RBKit {
@@ -55,11 +56,6 @@ void HeapItem::setIsSnapshot(bool value)
     isSnapshot = value;
 }
 
-void HeapItem::getObjectParent()
-{
-
-}
-
 QString HeapItem::getReferenceTableName() const
 {
     return referenceTableName;
@@ -84,7 +80,7 @@ QString HeapItem::shortLeadingIdentifier()
     }
 }
 
-HeapItem *HeapItem::minus(HeapItem *other)
+DiffItem *HeapItem::minus(HeapItem *other)
 {
     if (other->getIsSnapshot() && isSnapshot) {
         QString queryString;
@@ -99,7 +95,7 @@ HeapItem *HeapItem::minus(HeapItem *other)
             qDebug() << query.lastError();
         }
 
-        HeapItem *rootItem = new HeapItem(-1);
+        DiffItem *rootItem = new DiffItem(-1);
         rootItem->setObjectsTableName(viewName);
         rootItem->setReferenceTableName(referenceTableName);
         rootItem->setIsSnapshot(false);
