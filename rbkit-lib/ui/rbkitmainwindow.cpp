@@ -7,6 +7,8 @@
 #include "diffviewform.h"
 #include "ui/actiontoolbar.h"
 #include "ui/aboutdialog.h"
+#include "dbheapdumper.h"
+
 
 RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     QMainWindow(parent), connected(false), host(""), connectionInProgress(false),
@@ -160,7 +162,15 @@ void RbkitMainWindow::setupSubscriber()
     connect(subscriber, &Subscriber::disconnected, this, &RbkitMainWindow::disconnectedFromSocket);
     connect(subscriber, &Subscriber::objectDumpAvailable, this, &RbkitMainWindow::objectDumpAvailable);
 
+
+    // create db heap dumper, and connect subscriber to dumper.
+    heapDumper.reset(new RBKit::DbHeapDumper());
+    heapDumper->moveToThread(&heapDumpThread);
+    connect(subscriber, SIGNAL(dumpReceived(msgpack::unpacked)),
+            heapDumper.data(), SLOT(dump(msgpack::unpacked)));
+
     subscriberThread.start();
+    heapDumpThread.start();
 }
 
 void RbkitMainWindow::disconnectedFromSocket()

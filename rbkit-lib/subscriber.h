@@ -66,6 +66,7 @@ signals:
     void connected();
     void errored(const QString &);
     void objectDumpAvailable(int snapshotVersion);
+    void dumpReceived(msgpack::unpacked);
 
 public slots:
     void startListening(QString _commandsUrl, QString _eventsUrl);

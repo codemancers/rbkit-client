@@ -12,7 +12,6 @@
 #include "model/appstate.h"
 
 
-static const int rbkcZmqTotalIoThreads = 1;
 static const int timerIntervalInMs = 1500;
 
 // TODO: Move it to utils, or some common file.
@@ -184,13 +183,15 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 }
 
 
-void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
+void Subscriber::processEvent(const RBKit::EvtObjectDump& heapDump)
 {
-    objectStore->updateFromSnapshot(dump.objects);
+    emit dumpReceived(heapDump.dump);
 
-    RBKit::AppState::getInstance()->setAppState("heap_snapshot", 10);
-    RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
-    emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());
+    // objectStore->updateFromSnapshot(dump.objects);
+
+    // RBKit::AppState::getInstance()->setAppState("heap_snapshot", 10);
+    // RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
+    // emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());
 }
 
 void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)
