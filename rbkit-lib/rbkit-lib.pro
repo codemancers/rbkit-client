@@ -13,6 +13,7 @@ SOURCES += \
     subscriber.cpp \
     rbcommands.cpp \
     zmqsockets.cpp \
+    mpparser.cpp \
     rbevents.cpp \
     stringutil.cpp \
     sqlconnectionpool.cpp\
@@ -41,6 +42,7 @@ SOURCES += \
 HEADERS +=  \
     subscriber.h \
     zmqsockets.h \
+    mpparser.h \
     rbevents.h \
     rbcommands.h \
     stringutil.h \
