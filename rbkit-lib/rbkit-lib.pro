@@ -42,6 +42,7 @@ SOURCES += \
 HEADERS +=  \
     subscriber.h \
     zmqsockets.h \
+    mpparser.h \
     rbevents.h \
     rbcommands.h \
     stringutil.h \
