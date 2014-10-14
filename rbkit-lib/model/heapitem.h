@@ -58,6 +58,7 @@ public:
     DiffItem *minus(HeapItem *other);
     bool getIsSnapshot() const;
     void setIsSnapshot(bool value);
+    virtual void getObjectParents();
 };
 
 } // namespace RBKit

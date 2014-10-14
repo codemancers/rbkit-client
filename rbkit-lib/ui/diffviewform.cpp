@@ -2,6 +2,7 @@
 #include "rbkitmainwindow.h"
 #include "ui_heapdumpform.h"
 #include "parentviewform.h"
+#include "model/diffitem.h"
 #include <QStatusBar>
 
 DiffViewForm::DiffViewForm(QWidget* parent, int _snapShotVersion)
@@ -9,7 +10,7 @@ DiffViewForm::DiffViewForm(QWidget* parent, int _snapShotVersion)
 {
 }
 
-void DiffViewForm::loadFromSpecifiedRoot(RBKit::HeapItem *_rootItem)
+void DiffViewForm::loadFromSpecifiedRoot(RBKit::DiffItem *_rootItem)
 {
     rootItem = _rootItem;
     model = new RBKit::HeapDataModel(rootItem, this);
@@ -33,9 +34,8 @@ void DiffViewForm::treeNodeSelected(const QModelIndex &index)
     }
 }
 
-void DiffViewForm::updateParentView()
+void DiffViewForm::updateParentView(RBKit::HeapItem *heapItem)
 {
-
 }
 
 void DiffViewForm::initializeParentView()
