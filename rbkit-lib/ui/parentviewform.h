@@ -14,6 +14,7 @@ class ParentViewForm : public QWidget
 public:
     explicit ParentViewForm(QWidget *parent = 0);
     ~ParentViewForm();
+    void setLabel(const QString label);
 
 private:
     Ui::ParentViewForm *ui;

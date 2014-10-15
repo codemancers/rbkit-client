@@ -17,7 +17,7 @@ public:
     void loadFromSpecifiedRoot(RBKit::DiffItem *_rootItem);
 public slots:
     virtual void treeNodeSelected(const QModelIndex& index);
-    void updateParentView();
+    void updateParentView(RBKit::HeapItem *heapItem);
     void initializeParentView();
 };
 

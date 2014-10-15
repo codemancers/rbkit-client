@@ -19,22 +19,6 @@ public:
              quint32 _totalSize, const QString _filename, int _snapShotVersion);
     virtual ~HeapItem();
 
-    QString className;
-    quint32 count;
-    quint32 referenceCount;
-    quint32 totalSize;
-    QString filename;
-    HeapItem* parent;
-    bool childrenFetched;
-    int countPercentage;
-    int childrenCountFetched;
-    int refPercentage;
-    int snapShotVersion;
-    bool leafNode;
-    bool isSnapshot;
-    QVector<HeapItem *> children;
-    QString objectsTableName;
-    QString referenceTableName;
 
     bool hasChildren();
     quint32 childrenCount();

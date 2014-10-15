@@ -30,12 +30,13 @@ void DiffViewForm::treeNodeSelected(const QModelIndex &index)
         if (parentViewForm == 0) {
             initializeParentView();
         }
-        updateParentView();
+        updateParentView(nodeItem);
     }
 }
 
 void DiffViewForm::updateParentView(RBKit::HeapItem *heapItem)
 {
+    parentViewForm->setLabel(heapItem->className);
 }
 
 void DiffViewForm::initializeParentView()

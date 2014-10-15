@@ -12,3 +12,8 @@ ParentViewForm::~ParentViewForm()
 {
     delete ui;
 }
+
+void ParentViewForm::setLabel(const QString label)
+{
+    ui->label->setText(label);
+}
