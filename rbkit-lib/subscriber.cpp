@@ -185,7 +185,7 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 
 void Subscriber::processEvent(const RBKit::EvtObjectDump& heapDump)
 {
-    emit dumpReceived(heapDump.dump);
+    emit dumpReceived(*(msgpack::unpacked*)(&heapDump.dump));
 
     // objectStore->updateFromSnapshot(dump.objects);
 

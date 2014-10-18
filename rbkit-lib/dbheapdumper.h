@@ -19,7 +19,7 @@ namespace RBKit
         void persistObjectToDb(const ObjectDetail&);
 
     public slots:
-        void dump(msgpack::unpacked);
+        void dump(msgpack::unpacked dump);
 
     };
 }

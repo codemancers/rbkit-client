@@ -25,8 +25,11 @@ class SqlConnectionPool
 public:
     static SqlConnectionPool* getInstance();
     void setupDatabase();
+
     void prepareTables();
     void loadSnapshot(ObjectStore *objectStore);
+    void commitTables();
+
     HeapItem *rootOfSnapshot(int snapShotVersion);
 
     int getCurrentVersion();

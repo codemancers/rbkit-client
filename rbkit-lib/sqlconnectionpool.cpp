@@ -40,6 +40,8 @@ void SqlConnectionPool::setupDatabase()
 
 void SqlConnectionPool::prepareTables()
 {
+    currentVersion += 1;
+
     QVector<QString> objectCreation;
     objectCreation.append(QString("create table rbkit_objects_%0(id integer primary key"
                                   ", class_name varchar, size integer "
@@ -59,7 +61,6 @@ void SqlConnectionPool::prepareTables()
 
 void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
 {
-    currentVersion += 1;
     prepareTables();
 
     qDebug() << "Loading db snapshot";
@@ -81,10 +82,16 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
 
     objectStore->insertReferences(query);
 
+    commitTables();
+}
+
+void SqlConnectionPool::commitTables()
+{
     if (!query.exec(QString("commit transaction")))
         qDebug() << query.lastError();
 
     RBKit::AppState::getInstance()->setAppState("heap_snapshot", 80);
+
 }
 
 HeapItem *SqlConnectionPool::rootOfSnapshot(int snapShotVersion)
