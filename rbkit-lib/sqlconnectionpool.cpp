@@ -59,14 +59,28 @@ void SqlConnectionPool::prepareTables()
     qDebug() << "Preparing tables done";
 }
 
-void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
+void SqlConnectionPool::beginTransaction()
 {
-    prepareTables();
-
-    qDebug() << "Loading db snapshot";
     if (!query.exec(QString("begin transaction"))) {
         qDebug() << query.lastError();
     }
+}
+
+void SqlConnectionPool::commitTransaction()
+{
+    if (!query.exec(QString("commit transaction")))
+        qDebug() << query.lastError();
+
+    RBKit::AppState::getInstance()->setAppState("heap_snapshot", 80);
+
+}
+
+void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
+{
+    prepareTables();
+    beginTransaction();
+
+    qDebug() << "Loading db snapshot";
     if (!query.prepare(
                 QString("insert into rbkit_objects_%0(id, class_name, size, reference_count, file) values (?, ?, ?, ?, ?)")
                 .arg(currentVersion))) {
@@ -82,16 +96,7 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
 
     objectStore->insertReferences(query);
 
-    commitTables();
-}
-
-void SqlConnectionPool::commitTables()
-{
-    if (!query.exec(QString("commit transaction")))
-        qDebug() << query.lastError();
-
-    RBKit::AppState::getInstance()->setAppState("heap_snapshot", 80);
-
+    commitTransaction();
 }
 
 HeapItem *SqlConnectionPool::rootOfSnapshot(int snapShotVersion)

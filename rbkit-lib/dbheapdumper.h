@@ -16,11 +16,16 @@ namespace RBKit
         msgpack::unpacked heapDump;
 
     public:
-        void persistObjectToDb(const ObjectDetail&);
+        void DbHeapDumper();
 
     public slots:
         void dump(msgpack::unpacked dump);
 
+    private:
+        void persistObjectToDb(const ObjectDetail&);
+        void prepareDatabase();
+        void beginBatchInsert();
+        void finalizeBatchInsert();
     };
 }
 

@@ -27,8 +27,10 @@ public:
     void setupDatabase();
 
     void prepareTables();
+    void beginTransaction();
+    void commitTransaction();
+    void persistObject(const ObjectDetail& object);
     void loadSnapshot(ObjectStore *objectStore);
-    void commitTables();
 
     HeapItem *rootOfSnapshot(int snapShotVersion);
 
