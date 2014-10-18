@@ -186,12 +186,9 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 
 void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 {
-    // objectStore->updateFromSnapshot(dump.objects);
-
-    // RBKit::AppState::getInstance()->setAppState("heap_snapshot", 10);
-    // RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
-    // emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());
+    emit dumpReceived(dump.rawMessage);
 }
+
 
 void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)
 {

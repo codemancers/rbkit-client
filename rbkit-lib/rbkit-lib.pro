@@ -14,6 +14,7 @@ SOURCES += \
     rbcommands.cpp \
     zmqsockets.cpp \
     rbevents.cpp \
+    rbheapworker.cpp \
     stringutil.cpp \
     sqlconnectionpool.cpp\
     model/appstate.cpp \
@@ -45,6 +46,7 @@ HEADERS +=  \
     mpparser.h \
     rbevents.h \
     rbcommands.h \
+    rbheapworker.h \
     rbdebug.h \
     stringutil.h \
     sqlconnectionpool.h \

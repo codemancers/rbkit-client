@@ -65,7 +65,7 @@ signals:
     void disconnected();
     void connected();
     void errored(const QString &);
-    void objectDumpAvailable(int snapshotVersion);
+    void dumpReceived(const QByteArray);
 
 public slots:
     void startListening(QString _commandsUrl, QString _eventsUrl);
