@@ -5,37 +5,24 @@
 
 namespace RBKit {
 
-void HeapItem::initializeDataMembers()
-{
-    parent = 0;
-    leafNode = false;
-    childrenFetched = false;
-    childrenCountFetched = -1;
-    isSnapshot = false;
-    objectsTableName = QString("rbkit_objects_%0").arg(snapShotVersion);
-    referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
-}
-
 HeapItem::HeapItem(int _snapShotVersion)
-    : snapShotVersion(_snapShotVersion)
+    : snapShotVersion(_snapShotVersion),
+      BaseHeapItem()
 {
-    initializeDataMembers();
 }
 
 HeapItem::HeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, int _snapShotVersion)
     : className(_className), count(_count),
-      referenceCount(_referenceCount), totalSize(_totalSize), snapShotVersion(_snapShotVersion)
+      referenceCount(_referenceCount), totalSize(_totalSize), snapShotVersion(_snapShotVersion),
+      BaseHeapItem()
 {
-    initializeDataMembers();
 }
 
 HeapItem::HeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, const QString _filename, int _snapShotVersion)
     : className(_className), count(_count), referenceCount(_referenceCount),
-      totalSize(_totalSize), filename(_filename), snapShotVersion(_snapShotVersion)
+      totalSize(_totalSize), filename(_filename), snapShotVersion(_snapShotVersion),
+      BaseHeapItem()
 {
-    initializeDataMembers();
-    leafNode = true;
-    isSnapshot = false;
 }
 
 HeapItem::~HeapItem()
@@ -158,7 +145,7 @@ QVariant HeapItem::data(int column) const
     }
 }
 
-void HeapItem::addChildren(HeapItem *item)
+void HeapItem::addChildren(BaseHeapItem *item)
 {
     item->setParent(this);
     children.push_back(item);
@@ -193,19 +180,6 @@ QVariant HeapItem::getClassOrFile() const
 int HeapItem::row()
 {
     return parent->children.indexOf(this);
-}
-
-QString HeapItem::leadingIdentifier()
-{
-    if (leafNode) {
-        if (filename.isEmpty()) {
-            return className;
-        } else {
-            return QString("%0 - %1").arg(className).arg(filename);
-        }
-    } else {
-        return className;
-    }
 }
 
 HeapItem *HeapItem::getSelectedReferences()
@@ -255,10 +229,10 @@ HeapItem *HeapItem::getParent() const
     return parent;
 }
 
-HeapItem *HeapItem::getChild(int index)
+BaseHeapItem *HeapItem::getChild(int index)
 {
    if (childrenFetched && index < children.size()) {
-       return const_cast<HeapItem *>(children.at(index));
+       return const_cast<BaseHeapItem *>(children.at(index));
    } else {
        return NULL;
    }
@@ -272,8 +246,6 @@ void HeapItem::setParent(HeapItem *value)
 
 bool HeapItem::hasChildren()
 {
-    if (leafNode)
-        return false;
     if (count > 1)
         return true;
     else

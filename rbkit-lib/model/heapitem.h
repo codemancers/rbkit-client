@@ -4,14 +4,14 @@
 #include <QUuid>
 #include <QCryptographicHash>
 #include "objectstore.h"
+#include "baseheapitem.h"
 
 namespace RBKit {
 
 class DiffItem;
 
-class HeapItem
+class HeapItem : public BaseHeapItem
 {
-    void initializeDataMembers();
 public:
     HeapItem(int _snapShotVersion);
     HeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, int _snapShotVersion);
@@ -19,20 +19,15 @@ public:
              quint32 _totalSize, const QString _filename, int _snapShotVersion);
     virtual ~HeapItem();
 
+    virtual bool hasChildren();
+    virtual quint32 childrenCount();
+    virtual void fetchChildren();
 
-    bool hasChildren();
-    quint32 childrenCount();
-    void fetchChildren();
-    HeapItem *getParent() const;
-    HeapItem *getChild(int index);
-    void setParent(HeapItem *value);
-    const QString toString() const;
-    QVariant data(int column) const;
-    void addChildren(HeapItem *item);
-    void computePercentage();
-    QVariant getClassOrFile() const;
-    int row();
-    QString leadingIdentifier();
+    virtual BaseHeapItem *getChild(int index);
+    virtual void addChildren(BaseHeapItem *item);
+
+    virtual void computePercentage();
+    virtual int row();
     HeapItem *getSelectedReferences();
     QString getObjectsTableName() const;
     void setObjectsTableName(const QString &value);

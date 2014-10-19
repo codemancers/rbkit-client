@@ -8,6 +8,7 @@ class BaseHeapItem
 {
 public:
     BaseHeapItem();
+    virtual ~BaseHeapItem();
     QString className;
     quint32 count;
     quint32 referenceCount;
@@ -19,31 +20,32 @@ public:
     int childrenCountFetched;
     int refPercentage;
     int snapShotVersion;
+    bool isSnapshot;
     QVector<BaseHeapItem *> children;
     QString objectsTableName;
     QString referenceTableName;
 
-    virtual bool hasChildren() = 0;
-    virtual quint32 childrenCount() = 0;
-    virtual void fetchChildren() = 0;
-    virtual int row() = 0;
+    virtual bool hasChildren();
+    virtual quint32 childrenCount();
+    virtual void fetchChildren();
+    virtual int row();
 
     virtual QVariant getClassOrFile() const;
 
     // return child at given position
-    BaseHeapItem *getChild(int index) = 0;
+    virtual BaseHeapItem *getChild(int index);
 
     virtual const QString toString() const;
 
     QVariant data(int column) const;
-    virtual void addChildren(BaseHeapItem *item) = 0;
+    virtual void addChildren(BaseHeapItem *item);
 
     virtual QString leadingIdentifier();
 
-    virtual void computePercentage() = 0;
-    virtual BaseHeapItem *getSelectedReferences() = 0;
+    virtual void computePercentage();
+    virtual BaseHeapItem *getSelectedReferences();
     virtual QString shortLeadingIdentifier();
-    virtual BaseHeapItem *minus(BaseHeapItem *other) = 0;
+    virtual BaseHeapItem *minus(BaseHeapItem *other);
 
     // getters and setters for table names
     QString getObjectsTableName() const;
@@ -54,6 +56,8 @@ public:
     // parent getters and setters
     BaseHeapItem *getParent() const;
     void setParent(BaseHeapItem *value);
+    bool getIsSnapshot() const;
+    void setIsSnapshot(bool value);
 };
 
 } // namespace RBKit

@@ -4,7 +4,49 @@ namespace RBKit {
 
 BaseHeapItem::BaseHeapItem()
 {
+    parent = 0;
+    childrenFetched = false;
+    childrenCountFetched = -1;
+    isSnapshot = false;
+    objectsTableName = QString("rbkit_objects_%0").arg(snapShotVersion);
+    referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
 }
+
+BaseHeapItem::~BaseHeapItem()
+{
+   // NOOP
+}
+
+bool BaseHeapItem::hasChildren()
+{
+    return false;
+}
+
+quint32 BaseHeapItem::childrenCount()
+{
+    return 0;
+}
+
+void BaseHeapItem::fetchChildren()
+{
+    // NOP
+}
+
+// return row number of child witin parent
+int BaseHeapItem::row()
+{
+    return 0;
+}
+bool BaseHeapItem::getIsSnapshot() const
+{
+    return isSnapshot;
+}
+
+void BaseHeapItem::setIsSnapshot(bool value)
+{
+    isSnapshot = value;
+}
+
 
 const QString BaseHeapItem::toString() const
 {
@@ -66,14 +108,34 @@ QVariant BaseHeapItem::data(int column) const
     }
 }
 
+void BaseHeapItem::addChildren(BaseHeapItem *item)
+{
+    // NOOP;
+}
+
 QString BaseHeapItem::leadingIdentifier()
 {
     return className;
 }
 
+void BaseHeapItem::computePercentage()
+{
+    // NOOP;
+}
+
+BaseHeapItem *BaseHeapItem::getSelectedReferences()
+{
+    return NULL;
+}
+
 QString BaseHeapItem::shortLeadingIdentifier()
 {
     return className;
+}
+
+BaseHeapItem *BaseHeapItem::minus(BaseHeapItem *other)
+{
+    return NULL;
 }
 
 QVariant BaseHeapItem::getClassOrFile() const
@@ -82,6 +144,11 @@ QVariant BaseHeapItem::getClassOrFile() const
         return QVariant(QString("<compiled>"));
     else
         return QVariant(filename);
+}
+
+BaseHeapItem *BaseHeapItem::getChild(int index)
+{
+    return NULL;
 }
 
 } // namespace RBKit
