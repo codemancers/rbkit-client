@@ -13,6 +13,8 @@
 namespace RBKit {
 
 class HeapItem;
+class RbDumpParser;
+
 
 class SqlConnectionPool
 {
@@ -28,9 +30,14 @@ public:
 
     void prepareTables();
     void beginTransaction();
+    void beginObjectInjection();
+    void beginReferenceInjection();
     void commitTransaction();
     void persistObject(const ObjectDetail& object);
     void loadSnapshot(ObjectStore *objectStore);
+
+    void persistObjects(RbDumpParser& parser);
+    void persistReferences(const QHash< quint64, QList<quint64> >&);
 
     HeapItem *rootOfSnapshot(int snapShotVersion);
 

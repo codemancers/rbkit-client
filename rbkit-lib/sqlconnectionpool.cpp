@@ -1,6 +1,9 @@
 #include "sqlconnectionpool.h"
 #include "model/appstate.h"
 #include "model/heap_item_types/heapitem.h"
+#include "rbdumpworker.h"
+#include "mpparser.h"
+
 
 namespace RBKit {
 
@@ -59,12 +62,32 @@ void SqlConnectionPool::prepareTables()
     qDebug() << "Preparing tables done";
 }
 
+
 void SqlConnectionPool::beginTransaction()
 {
     if (!query.exec(QString("begin transaction"))) {
         qDebug() << query.lastError();
     }
 }
+
+
+void SqlConnectionPool::beginObjectInjection()
+{
+    if (!query.prepare(
+                QString("insert into rbkit_objects_%0(id, class_name, size, reference_count, file) values (?, ?, ?, ?, ?)")
+                .arg(currentVersion))) {
+        qDebug() << query.lastError();
+    }
+}
+
+
+void SqlConnectionPool::beginReferenceInjection()
+{
+    if (!query.prepare(QString("insert into rbkit_object_references_%0(object_id, child_id) values (?, ?)").arg(currentVersion))) {
+        qDebug() << query.lastError();
+    }
+}
+
 
 void SqlConnectionPool::commitTransaction()
 {
@@ -98,6 +121,71 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
 
     commitTransaction();
 }
+
+
+void SqlConnectionPool::persistObjects(RBKit::RbDumpParser& parser)
+{
+    static const unsigned int batchSize = 1000;
+    QHash< quint64, QList<quint64> > references;
+    references.reserve(1000);
+
+    auto iter = parser.begin();
+
+    prepareTables();
+
+    beginTransaction();
+    for (unsigned int count = 0; iter != parser.end(); ++iter, ++count) {
+        RBKit::ObjectDetail object;
+        *iter >> object;
+
+        references[object.objectId] = object.references;
+        persistObject(object);
+
+        count += object.references.size();
+        if (count >= batchSize) {
+            persistReferences(references);
+
+            commitTransaction();
+            beginTransaction();
+
+            count = 0;
+        }
+    }
+    commitTransaction();
+}
+
+
+void SqlConnectionPool::persistObject(const RBKit::ObjectDetail& object)
+{
+    query.addBindValue(object.objectId);
+    query.addBindValue(object.className);
+    query.addBindValue(object.size);
+    query.addBindValue(object.references.size());
+    query.addBindValue(object.getFileLine());
+    if (!query.exec()) {
+        qDebug() << query.lastError();
+    }
+}
+
+
+void SqlConnectionPool::persistReferences(const QHash< quint64, QList<quint64> >& hash)
+{
+    beginReferenceInjection();
+
+    for (auto iter = hash.begin(); iter != hash.end(); ++iter) {
+        auto objectId = iter.key();
+        auto refs = iter.value();
+
+        for (auto ref : refs) {
+            query.addBindValue(objectId);
+            query.addBindValue(ref);
+            if (!query.exec()) {
+                qDebug() << query.lastError();
+            }
+        }
+    }
+}
+
 
 HeapItem *SqlConnectionPool::rootOfSnapshot(int snapShotVersion)
 {

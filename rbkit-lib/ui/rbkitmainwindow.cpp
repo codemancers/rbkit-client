@@ -7,7 +7,7 @@
 #include "diffviewform.h"
 #include "ui/actiontoolbar.h"
 #include "ui/aboutdialog.h"
-#include "dbheapdumper.h"
+#include "rbdumpworker.h"
 
 
 RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
@@ -164,10 +164,10 @@ void RbkitMainWindow::setupSubscriber()
 
 
     // create db heap dumper, and connect subscriber to dumper.
-    heapDumper.reset(new RBKit::DbHeapDumper());
-    heapDumper->moveToThread(&heapDumpThread);
+    heapWorker.reset(new RBKit::RbDumpWorker());
+    heapWorker->moveToThread(&heapDumpThread);
     connect(subscriber, SIGNAL(dumpReceived(msgpack::unpacked dump)),
-            heapDumper.data(), SLOT(dump(msgpack::unpacked dump)));
+            heapWorker.data(), SLOT(dump(msgpack::unpacked dump)));
 
     subscriberThread.start();
     heapDumpThread.start();

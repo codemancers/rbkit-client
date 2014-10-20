@@ -22,7 +22,7 @@ class RbkitMainWindow;
 }
 
 namespace RBKit {
-    class DbHeapDumper;
+    class RbDumpWorker;
     class JsBridge;
 }
 
@@ -45,7 +45,7 @@ class RbkitMainWindow : public QMainWindow
     bool connected;
     bool connectionInProgress;
 
-    QSharedPointer<RBKit::DbHeapDumper> heapDumper;
+    QSharedPointer<RBKit::RbDumpWorker> heapWorker;
     QThread heapDumpThread;
 
     void setupSubscriber();
