@@ -9,6 +9,7 @@ namespace RBKit
 {
     class ObjectDetail;
     class RbDumpParser;
+    class EventParser;
 
     class RbHeapWorker : public QObject
     {
@@ -27,6 +28,8 @@ namespace RBKit
         Q_OBJECT;
 
         const QByteArray rawMessage;
+
+        QSharedPointer<EventParser> eventParser;
         msgpack::object heapDump;
 
     public:
