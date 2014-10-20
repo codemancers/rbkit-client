@@ -53,7 +53,7 @@ namespace RBKit {
             return generationStats(4, 100000);
         }
 
-    private:
+    public:
         // follows half-open series convention: [begin, end)
         QHash<QString, quint64> generationStats(int begin, int end) const;
         // Store mapping between object-id and detail
