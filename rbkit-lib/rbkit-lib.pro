@@ -36,7 +36,9 @@ SOURCES += \
     model/parentobject.cpp \
     ui/parentviewform.cpp \
     model/diffitem.cpp \
-    model/baseheapitem.cpp
+    model/baseheapitem.cpp \
+    model/leafitem.cpp \
+    model/referenceitem.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -65,7 +67,9 @@ HEADERS +=  \
     model/parentobject.h \
     ui/parentviewform.h \
     model/diffitem.h \
-    model/baseheapitem.h
+    model/baseheapitem.h \
+    model/leafitem.h \
+    model/referenceitem.h
 
 
 # Include msgpack via pri file

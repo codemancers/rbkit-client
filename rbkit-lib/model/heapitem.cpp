@@ -210,15 +210,7 @@ HeapItem *HeapItem::getSelectedReferences()
     HeapItem *rootItem = new HeapItem(-1);
     rootItem->setObjectsTableName(viewName);
     rootItem->setIsSnapshot(false);
-    QSqlQuery searchQuery(QString("select class_name, count(id) as object_count, "
-                          "sum(reference_count) as total_ref_count, sum(size) as total_size from %0 group by (class_name)").arg(viewName));
-
-    while(searchQuery.next()) {
-        HeapItem* item = new HeapItem(searchQuery.value(0).toString(), searchQuery.value(1).toInt(),
-                                      searchQuery.value(2).toInt(), searchQuery.value(3).toInt(), -1);
-        item->setObjectsTableName(viewName);
-        rootItem->addChildren(item);
-    }
+    rootItem->findImmediateChildren();
     rootItem->childrenFetched = true;
     rootItem->computePercentage();
     return rootItem;

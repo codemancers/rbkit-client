@@ -12,6 +12,13 @@ BaseHeapItem::BaseHeapItem()
     referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
 }
 
+BaseHeapItem::BaseHeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, int _snapShotVersion)
+    : className(_className), count(_count),
+      referenceCount(_referenceCount), totalSize(_totalSize), snapShotVersion(_snapShotVersion),
+{
+
+}
+
 BaseHeapItem::~BaseHeapItem()
 {
    // NOOP
@@ -136,6 +143,20 @@ QString BaseHeapItem::shortLeadingIdentifier()
 BaseHeapItem *BaseHeapItem::minus(BaseHeapItem *other)
 {
     return NULL;
+}
+
+void BaseHeapItem::findImmediateChildren()
+{
+    QSqlQuery searchQuery(
+                QString("select class_name, count(id) as object_count, "
+                        "sum(reference_count) as total_ref_count, sum(size) as total_size from %0 group by (class_name)").arg(objectsTableName));
+
+    while(searchQuery.next()) {
+        HeapItem* item = new HeapItem(searchQuery.value(0).toString(), searchQuery.value(1).toInt(),
+                                      searchQuery.value(2).toInt(), searchQuery.value(3).toInt(), -1);
+        item->setObjectsTableName(objectsTableName);
+        addChildren(item);
+    }
 }
 
 QVariant BaseHeapItem::getClassOrFile() const
