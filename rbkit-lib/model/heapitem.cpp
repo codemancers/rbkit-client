@@ -2,6 +2,7 @@
 #include "stringutil.h"
 #include "diffitem.h"
 #include <QFileInfo>
+#include "leafitem.h"
 
 namespace RBKit {
 
@@ -14,13 +15,6 @@ HeapItem::HeapItem(int _snapShotVersion)
 HeapItem::HeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, int _snapShotVersion)
     : className(_className), count(_count),
       referenceCount(_referenceCount), totalSize(_totalSize), snapShotVersion(_snapShotVersion),
-      BaseHeapItem()
-{
-}
-
-HeapItem::HeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, const QString _filename, int _snapShotVersion)
-    : className(_className), count(_count), referenceCount(_referenceCount),
-      totalSize(_totalSize), filename(_filename), snapShotVersion(_snapShotVersion),
       BaseHeapItem()
 {
 }
@@ -41,30 +35,6 @@ bool HeapItem::getIsSnapshot() const
 void HeapItem::setIsSnapshot(bool value)
 {
     isSnapshot = value;
-}
-
-QString HeapItem::getReferenceTableName() const
-{
-    return referenceTableName;
-}
-
-void HeapItem::setReferenceTableName(const QString &value)
-{
-    referenceTableName = value;
-}
-
-QString HeapItem::shortLeadingIdentifier()
-{
-    if (leafNode) {
-        if (filename.isEmpty()) {
-            return className;
-        } else {
-            QString shortFileName = QFileInfo(filename).fileName();
-            return QString("%0 - %1").arg(className).arg(shortFileName);
-        }
-    } else {
-        return className;
-    }
 }
 
 DiffItem *HeapItem::minus(HeapItem *other)
@@ -122,29 +92,6 @@ const QString HeapItem::toString() const
    return resultString;
 }
 
-QVariant HeapItem::data(int column) const
-{
-    switch (column) {
-    case 0:
-        return getClassOrFile();
-        break;
-    case 1:
-        return QVariant(count);
-        break;
-    case 2:
-        return QVariant(referenceCount);
-        break;
-    case 3:
-        return QVariant(countPercentage);
-        break;
-    case 4:
-        return QVariant(totalSize);
-        break;
-    default:
-        return QVariant();
-    }
-}
-
 void HeapItem::addChildren(BaseHeapItem *item)
 {
     item->setParent(this);
@@ -165,18 +112,6 @@ void HeapItem::computePercentage()
     }
 }
 
-QVariant HeapItem::getClassOrFile() const
-{
-    if (!leafNode)
-        return QVariant(className);
-    else {
-        if (filename.isEmpty())
-            return QVariant(QString("<compiled>"));
-        else
-            return QVariant(filename);
-    }
-}
-
 int HeapItem::row()
 {
     return parent->children.indexOf(this);
@@ -186,18 +121,10 @@ HeapItem *HeapItem::getSelectedReferences()
 {
     QString queryString;
     QString viewName = QString("view_").append(RBKit::StringUtil::randomSHA());
-    qDebug() << "** Generated uuid is : " << viewName;
-    if (leafNode) {
-        queryString = QString("create view %0 AS select * from %1 where %1.id in "
-                            "(select %2.child_id from %2 "
-                            " INNER JOIN %1 ON %1.id = %2.object_id "
-                            " where %1.class_name = '%3' and %1.file='%4')").arg(viewName).arg(objectsTableName).arg(referenceTableName).arg(className).arg(filename);
-    } else {
-        queryString = QString("create view %0 AS select * from %1 where %1.id in "
-                            "(select %2.child_id from %2 "
-                            " INNER JOIN %1 ON %1.id = %2.object_id "
-                            " where %1.class_name = '%3')").arg(viewName).arg(objectsTableName).arg(referenceTableName).arg(className);
-    }
+    queryString = QString("create view %0 AS select * from %1 where %1.id in "
+                          "(select %2.child_id from %2 "
+                          " INNER JOIN %1 ON %1.id = %2.object_id "
+                          " where %1.class_name = '%3')").arg(viewName).arg(objectsTableName).arg(referenceTableName).arg(className);
 
     QSqlQuery query;
 
@@ -205,7 +132,6 @@ HeapItem *HeapItem::getSelectedReferences()
         qDebug() << "Error creating view with";
         qDebug() << query.lastError();
     }
-
 
     HeapItem *rootItem = new HeapItem(-1);
     rootItem->setObjectsTableName(viewName);
@@ -261,8 +187,11 @@ void HeapItem::fetchChildren()
 
      childrenFetched = true;
      while(searchQuery.next()) {
-         HeapItem* item = new HeapItem(className, searchQuery.value(1).toInt(),
-                                             searchQuery.value(2).toInt(), searchQuery.value(3).toInt(), searchQuery.value(0).toString(), snapShotVersion);
+         LeafItem* item = new LeafItem(className, searchQuery.value(1).toInt(),
+                                       searchQuery.value(2).toInt(),
+                                       searchQuery.value(3).toInt(), searchQuery.value(0).toString(), snapShotVersion);
+         item->setObjectsTableName(objectsTableName);
+         item->setReferenceTableName(referenceTableName);
          item->setParent(this);
          children.push_back(item);
      }
