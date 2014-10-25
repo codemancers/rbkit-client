@@ -18,7 +18,6 @@ SOURCES += \
     sqlconnectionpool.cpp\
     model/appstate.cpp \
     model/heapdatamodel.cpp \
-    model/heapitem.cpp \
     model/jsbridge.cpp \
     model/objectaggregator.cpp \
     model/objectdetail.cpp \
@@ -35,10 +34,11 @@ SOURCES += \
     ui/aboutdialog.cpp \
     model/parentobject.cpp \
     ui/parentviewform.cpp \
-    model/diffitem.cpp \
-    model/baseheapitem.cpp \
-    model/leafitem.cpp \
-    model/referenceitem.cpp
+    model/heap_item_types/baseheapitem.cpp \
+    model/heap_item_types/diffitem.cpp \
+    model/heap_item_types/heapitem.cpp \
+    model/heap_item_types/leafitem.cpp \
+    model/heap_item_types/referenceitem.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -49,12 +49,10 @@ HEADERS +=  \
     sqlconnectionpool.h \
     model/appstate.h \
     model/heapdatamodel.h \
-    model/heapitem.h \
     model/jsbridge.h \
     model/objectaggregator.h \
     model/objectdetail.h \
     model/objectstore.h \
-    model/snapshotstate.h \
     model/sortobjectproxymodel.h \
     ui/askhost.h \
     ui/comapresnapshotform.h \
@@ -66,10 +64,11 @@ HEADERS +=  \
     ui/aboutdialog.h \
     model/parentobject.h \
     ui/parentviewform.h \
-    model/diffitem.h \
-    model/baseheapitem.h \
-    model/leafitem.h \
-    model/referenceitem.h
+    model/heap_item_types/baseheapitem.h \
+    model/heap_item_types/diffitem.h \
+    model/heap_item_types/heapitem.h \
+    model/heap_item_types/leafitem.h \
+    model/heap_item_types/referenceitem.h
 
 
 # Include msgpack via pri file
