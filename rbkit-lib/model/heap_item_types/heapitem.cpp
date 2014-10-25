@@ -27,15 +27,6 @@ HeapItem::~HeapItem()
         }
     }
 }
-bool HeapItem::getIsSnapshot() const
-{
-    return isSnapshot;
-}
-
-void HeapItem::setIsSnapshot(bool value)
-{
-    isSnapshot = value;
-}
 
 DiffItem *HeapItem::minus(HeapItem *other)
 {
@@ -135,6 +126,7 @@ HeapItem *HeapItem::getSelectedReferences()
 
     HeapItem *rootItem = new HeapItem(-1);
     rootItem->setObjectsTableName(viewName);
+    rootItem->setReferenceTableName(referenceTableName);
     rootItem->setIsSnapshot(false);
     rootItem->findImmediateChildren();
     rootItem->childrenFetched = true;

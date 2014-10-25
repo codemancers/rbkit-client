@@ -3,7 +3,7 @@
 
 #include <QUuid>
 #include <QCryptographicHash>
-#include "objectstore.h"
+#include "../objectstore.h"
 #include "baseheapitem.h"
 
 namespace RBKit {
@@ -28,8 +28,6 @@ public:
     virtual int row();
     HeapItem *getSelectedReferences();
     DiffItem *minus(HeapItem *other);
-    bool getIsSnapshot() const;
-    void setIsSnapshot(bool value);
     virtual void getObjectParents();
 };
 
