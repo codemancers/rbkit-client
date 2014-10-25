@@ -29,10 +29,6 @@ public:
     virtual void computePercentage();
     virtual int row();
     HeapItem *getSelectedReferences();
-    QString getObjectsTableName() const;
-    void setObjectsTableName(const QString &value);
-    QString getReferenceTableName() const;
-    void setReferenceTableName(const QString &value);
     QString shortLeadingIdentifier();
     DiffItem *minus(HeapItem *other);
     bool getIsSnapshot() const;
