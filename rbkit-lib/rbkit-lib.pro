@@ -37,8 +37,7 @@ SOURCES += \
     model/heap_item_types/baseheapitem.cpp \
     model/heap_item_types/diffitem.cpp \
     model/heap_item_types/heapitem.cpp \
-    model/heap_item_types/leafitem.cpp \
-    model/heap_item_types/referenceitem.cpp
+    model/heap_item_types/leafitem.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -67,8 +66,7 @@ HEADERS +=  \
     model/heap_item_types/baseheapitem.h \
     model/heap_item_types/diffitem.h \
     model/heap_item_types/heapitem.h \
-    model/heap_item_types/leafitem.h \
-    model/heap_item_types/referenceitem.h
+    model/heap_item_types/leafitem.h
 
 
 # Include msgpack via pri file
