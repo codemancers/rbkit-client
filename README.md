@@ -4,9 +4,13 @@ rbkit-client
 
 ![Rbkit](https://github.com/code-mancers/rbkit-client/raw/master/images/rbkit2.gif "RBkit use")
 
-A build for OSX can be downloaded from:
+# Usage
 
-https://github.com/code-mancers/rbkit-client/releases/tag/0.1.2
+Rbkit client will be released as executable applications for OSX, Linux and Windows platforms.
+The app can be opened simply by double clicking on it. Currently, you can download and try
+the OSX build of the latest pre-release version from [here](https://github.com/code-mancers/rbkit-client/releases/latest).
+
+Click [here](https://www.youtube.com/watch?v=hcaYjiAIres&list=UUWnPjmqvljcafA0z2U1fwKQ#t=650) to watch a video of Hemant demonstrating some of the early Rbkit features at the RockyMountain RubyConf 2014.
 
 # Development
 
