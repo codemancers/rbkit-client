@@ -1,15 +1,16 @@
 #include "leafitem.h"
+#include <QSqlQuery>
 #include <QDebug>
-#include "heapitem.h"
 #include "stringutil.h"
+#include "heapitem.h"
 
 namespace RBKit {
 
-LeafItem::LeafItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, const QString _filename, int _snapShotVersion)
-    : className(_className), count(_count), referenceCount(_referenceCount),
-      totalSize(_totalSize), filename(_filename), snapShotVersion(_snapShotVersion),
-      BaseHeapItem()
+LeafItem::LeafItem(const QString _className, quint32 _count, quint32 _referenceCount,
+                   quint32 _totalSize, const QString _filename, int _snapShotVersion)
+    : BaseHeapItem(_className, _count, _referenceCount, _totalSize, _snapShotVersion)
 {
+    filename = _filename;
 }
 
 QString LeafItem::leadingIdentifier()
@@ -38,7 +39,9 @@ BaseHeapItem *LeafItem::getSelectedReferences()
     queryString = QString("create view %0 AS select * from %1 where %1.id in "
                           "(select %2.child_id from %2 "
                           " INNER JOIN %1 ON %1.id = %2.object_id "
-                          " where %1.class_name = '%3' and %1.file='%4')").arg(viewName).arg(objectsTableName).arg(referenceTableName).arg(className).arg(filename);
+                          " where %1.class_name = '%3' and %1.file='%4')").
+            arg(viewName).arg(objectsTableName).
+            arg(referenceTableName).arg(className).arg(filename);
 
     QSqlQuery query;
 

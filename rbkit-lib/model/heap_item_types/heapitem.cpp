@@ -39,7 +39,7 @@ BaseHeapItem *HeapItem::minus(BaseHeapItem *other)
             qDebug() << query.lastError();
         }
 
-        HeapItem *rootItem = new DiffItem(-1);
+        HeapItem *rootItem = new HeapItem(-1);
         rootItem->setObjectsTableName(viewName);
         rootItem->setReferenceTableName(referenceTableName);
         rootItem->setIsSnapshot(false);
@@ -112,11 +112,6 @@ HeapItem *HeapItem::getSelectedReferences()
     return rootItem;
 }
 
-HeapItem *HeapItem::getParent() const
-{
-    return parent;
-}
-
 BaseHeapItem *HeapItem::getChild(int index)
 {
    if (childrenFetched && index < children.size()) {
@@ -124,11 +119,6 @@ BaseHeapItem *HeapItem::getChild(int index)
    } else {
        return NULL;
    }
-}
-
-void HeapItem::setParent(HeapItem *value)
-{
-    parent = const_cast<HeapItem *>(value);
 }
 
 

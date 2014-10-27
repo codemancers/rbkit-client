@@ -1,6 +1,6 @@
 #include "heapdumpform.h"
 #include "ui_heapdumpform.h"
-
+#include "model/heap_item_types/heapitem.h"
 #include "rbkitmainwindow.h"
 #include <QStatusBar>
 

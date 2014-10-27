@@ -8,8 +8,6 @@
 
 namespace RBKit {
 
-class DiffItem;
-
 class HeapItem : public BaseHeapItem
 {
 public:
@@ -28,6 +26,7 @@ public:
     virtual int row();
     virtual HeapItem *getSelectedReferences();
     virtual void getObjectParents();
+    virtual BaseHeapItem* minus(BaseHeapItem *other);
 };
 
 } // namespace RBKit
