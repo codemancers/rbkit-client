@@ -1,6 +1,5 @@
 #include "heapitem.h"
 #include "stringutil.h"
-#include "diffitem.h"
 #include <QFileInfo>
 #include "leafitem.h"
 
@@ -28,7 +27,7 @@ HeapItem::~HeapItem()
     }
 }
 
-DiffItem *HeapItem::minus(HeapItem *other)
+BaseHeapItem *HeapItem::minus(HeapItem *other)
 {
     if (other->getIsSnapshot() && isSnapshot) {
         QString queryString;
@@ -43,7 +42,7 @@ DiffItem *HeapItem::minus(HeapItem *other)
             qDebug() << query.lastError();
         }
 
-        DiffItem *rootItem = new DiffItem(-1);
+        HeapItem *rootItem = new DiffItem(-1);
         rootItem->setObjectsTableName(viewName);
         rootItem->setReferenceTableName(referenceTableName);
         rootItem->setIsSnapshot(false);

@@ -35,7 +35,6 @@ SOURCES += \
     model/parentobject.cpp \
     ui/parentviewform.cpp \
     model/heap_item_types/baseheapitem.cpp \
-    model/heap_item_types/diffitem.cpp \
     model/heap_item_types/heapitem.cpp \
     model/heap_item_types/leafitem.cpp
 
@@ -64,7 +63,6 @@ HEADERS +=  \
     model/parentobject.h \
     ui/parentviewform.h \
     model/heap_item_types/baseheapitem.h \
-    model/heap_item_types/diffitem.h \
     model/heap_item_types/heapitem.h \
     model/heap_item_types/leafitem.h
 

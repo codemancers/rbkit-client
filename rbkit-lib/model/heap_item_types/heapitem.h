@@ -26,8 +26,7 @@ public:
 
     virtual void computePercentage();
     virtual int row();
-    HeapItem *getSelectedReferences();
-    DiffItem *minus(HeapItem *other);
+    virtual HeapItem *getSelectedReferences();
     virtual void getObjectParents();
 };
 
