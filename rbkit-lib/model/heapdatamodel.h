@@ -7,16 +7,17 @@
 
 #include "objectstore.h"
 #include "objectdetail.h"
-#include "heapitem.h"
 
 namespace RBKit {
+
+class BaseHeapItem;
 
 class HeapDataModel : public QAbstractItemModel
 {
     Q_OBJECT
-    HeapItem* rootItem;
+    BaseHeapItem* rootItem;
 public:
-    HeapDataModel(HeapItem * _rootItem, QObject* parent);
+    HeapDataModel(BaseHeapItem* _rootItem, QObject* parent);
     ~HeapDataModel();
 
     QVariant data(const QModelIndex &index, int role) const;

@@ -14,10 +14,10 @@ class DiffViewForm : public HeapDumpForm
     ParentViewForm *parentViewForm;
 public:
     DiffViewForm(QWidget *parent = 0, int _snapShotVersion = 0);
-    void loadFromSpecifiedRoot(RBKit::DiffItem *_rootItem);
+    void loadFromSpecifiedRoot(RBKit::BaseHeapItem*_rootItem);
 public slots:
     virtual void treeNodeSelected(const QModelIndex& index);
-    void updateParentView(RBKit::HeapItem *heapItem);
+    void updateParentView(RBKit::BaseHeapItem *heapItem);
     void initializeParentView();
 };
 

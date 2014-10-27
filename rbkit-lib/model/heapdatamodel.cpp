@@ -1,7 +1,8 @@
 #include "heapdatamodel.h"
+#include "heap_item_types/baseheapitem.h"
 
 namespace RBKit {
-HeapDataModel::HeapDataModel(HeapItem * _item, QObject *parent)
+HeapDataModel::HeapDataModel(BaseHeapItem *_item, QObject *parent)
     : QAbstractItemModel(parent), rootItem(_item)
 {
 }
@@ -19,7 +20,7 @@ QVariant HeapDataModel::data(const QModelIndex &index, int role) const
     if (role != Qt::DisplayRole) {
         return QVariant();
     }
-    HeapItem *item = static_cast<HeapItem *>(index.internalPointer());
+    BaseHeapItem *item = static_cast<BaseHeapItem *>(index.internalPointer());
 
     return item->data(index.column());
 }
@@ -56,15 +57,15 @@ QModelIndex HeapDataModel::index(int row, int column, const QModelIndex &parent)
     if(!hasIndex(row, column, parent))
         return QModelIndex();
 
-    HeapItem *parentItem;
+    BaseHeapItem *parentItem;
 
     if (!parent.isValid()) {
         parentItem = rootItem;
     } else {
-        parentItem = static_cast<HeapItem *>(parent.internalPointer());
+        parentItem = static_cast<BaseHeapItem *>(parent.internalPointer());
     }
 
-    HeapItem *childItem = parentItem->getChild(row);
+    BaseHeapItem *childItem = parentItem->getChild(row);
     if (childItem) {
         return createIndex(row, column, childItem);
     } else {
@@ -77,8 +78,8 @@ QModelIndex HeapDataModel::parent(const QModelIndex &child) const
     if (!child.isValid())
         return QModelIndex();
 
-    HeapItem *childItem = static_cast<HeapItem *>(child.internalPointer());
-    HeapItem *parentItem = childItem->getParent();
+    BaseHeapItem *childItem = static_cast<BaseHeapItem *>(child.internalPointer());
+    BaseHeapItem *parentItem = childItem->getParent();
 
     if (parentItem == rootItem) {
         return QModelIndex();
@@ -92,7 +93,7 @@ bool HeapDataModel::hasChildren(const QModelIndex &parent) const
     if(!parent.isValid())
         return true;
     else {
-        HeapItem *item = static_cast<HeapItem *>(parent.internalPointer());
+        BaseHeapItem *item = static_cast<BaseHeapItem *>(parent.internalPointer());
         return item->hasChildren();
     }
 }
@@ -102,7 +103,7 @@ bool HeapDataModel::canFetchMore(const QModelIndex &parent) const
     if(!parent.isValid())
         return true;
     else {
-        HeapItem *item = static_cast<HeapItem *>(parent.internalPointer());
+        BaseHeapItem *item = static_cast<BaseHeapItem *>(parent.internalPointer());
         return item->hasChildren();
     }
 }
@@ -112,7 +113,7 @@ void HeapDataModel::fetchMore(const QModelIndex &parent)
     if (parent.isValid()) {
         int row = parent.row();
         int startRow = row + 1 ;
-        HeapItem *item = static_cast<HeapItem *>(parent.internalPointer());
+        BaseHeapItem *item = static_cast<BaseHeapItem *>(parent.internalPointer());
         if (!item->childrenFetched) {
             item->fetchChildren();
         }
@@ -126,7 +127,7 @@ int HeapDataModel::rowCount(const QModelIndex &parent) const
     if(!parent.isValid())
         return rootItem->childrenCount();
     else {
-        HeapItem *item = static_cast<HeapItem *>(parent.internalPointer());
+        BaseHeapItem *item = static_cast<BaseHeapItem *>(parent.internalPointer());
         if (item->childrenFetched)
             return item->childrenCount();
         else
