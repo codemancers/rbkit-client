@@ -1,6 +1,7 @@
 #include "leafitem.h"
 #include <QDebug>
 #include "heapitem.h"
+#include "stringutil.h"
 
 namespace RBKit {
 

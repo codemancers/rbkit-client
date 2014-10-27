@@ -6,8 +6,7 @@
 namespace RBKit {
 
 HeapItem::HeapItem(int _snapShotVersion)
-    : snapShotVersion(_snapShotVersion),
-      BaseHeapItem()
+    : BaseHeapItem(_snapShotVersion)
 {
 }
 
@@ -25,7 +24,7 @@ HeapItem::~HeapItem()
     }
 }
 
-BaseHeapItem *HeapItem::minus(HeapItem *other)
+BaseHeapItem *HeapItem::minus(BaseHeapItem *other)
 {
     if (other->getIsSnapshot() && isSnapshot) {
         QString queryString;
@@ -60,24 +59,6 @@ BaseHeapItem *HeapItem::minus(HeapItem *other)
         return NULL;
     }
 
-}
-
-QString HeapItem::getObjectsTableName() const
-{
-    return objectsTableName;
-}
-
-void HeapItem::setObjectsTableName(const QString &value)
-{
-    objectsTableName = value;
-}
-
-
-const QString HeapItem::toString() const
-{
-    QString string("class : %0, count : %1, ref Count : %2, size : %3");
-    QString resultString = string.arg(className).arg(count).arg(referenceCount).arg(totalSize);
-   return resultString;
 }
 
 void HeapItem::addChildren(BaseHeapItem *item)

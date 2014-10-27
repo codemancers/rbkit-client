@@ -10,6 +10,7 @@ class BaseHeapItem
 {
 public:
     BaseHeapItem();
+    BaseHeapItem(int _snapShotVersion);
     BaseHeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, int _snapShotVersion);
     virtual ~BaseHeapItem();
     QString className;

@@ -13,6 +13,17 @@ BaseHeapItem::BaseHeapItem()
     referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
 }
 
+BaseHeapItem::BaseHeapItem(int _snapShotVersion)
+    : snapShotVersion(_snapShotVersion)
+{
+    parent = 0;
+    childrenFetched = false;
+    childrenCountFetched = -1;
+    isSnapshot = false;
+    objectsTableName = QString("rbkit_objects_%0").arg(snapShotVersion);
+    referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
+}
+
 BaseHeapItem::BaseHeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, int _snapShotVersion)
     : className(_className), count(_count),
       referenceCount(_referenceCount), totalSize(_totalSize), snapShotVersion(_snapShotVersion)
