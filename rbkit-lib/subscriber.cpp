@@ -1,4 +1,4 @@
-#include <QDebug>
+#include "debug.h"
 #include <QThread>
 #include <QTimer>
 #include <QScopedPointer>
@@ -42,7 +42,8 @@ void Subscriber::setContext(nzmqt::ZMQContext *value)
 Subscriber::Subscriber(RBKit::JsBridge* bridge)
     :jsBridge(bridge), connectionEstablished(false)
 {
-    qDebug() << "** Thread is is : " << QThread::currentThreadId();
+    ENTER0("\n");
+    EXIT0("\n");
 }
 
 void Subscriber::triggerGc() {
@@ -60,7 +61,9 @@ void Subscriber::takeSnapshot()
 
 void Subscriber::startSubscriber()
 {
-    qDebug() << "** Thread id is : " << QThread::currentThreadId();
+    qDebug() << "start subscriber";
+    ENTER0("\n");
+
     context = new nzmqt::SocketNotifierZMQContext(this, 1);
     commandSocket = new RBKit::ZmqCommandSocket(this, context);
     eventSocket   = new RBKit::ZmqEventSocket(this, context);
@@ -93,7 +96,8 @@ void Subscriber::handShakeCompleted()
     m_timer->start();
 
     emit connected();
-    qDebug() << "started";
+    qDebug("started 12");
+    EXIT0("\n");
 }
 
 void Subscriber::emitConnectionError(QString message)
@@ -104,7 +108,7 @@ void Subscriber::emitConnectionError(QString message)
 
 Subscriber::~Subscriber()
 {
-    qDebug() << "** Thread id is : " << QThread::currentThreadId();
+    ENTER0("\n");
     stop();
     delete m_timer;
     delete commandSocket;
