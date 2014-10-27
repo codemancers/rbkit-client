@@ -48,6 +48,7 @@ HEADERS +=  \
     rbcommands.h \
     stringutil.h \
     sqlconnectionpool.h \
+    debug.h \
     model/appstate.h \
     model/heapdatamodel.h \
     model/jsbridge.h \
