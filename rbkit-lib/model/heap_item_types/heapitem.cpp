@@ -12,9 +12,7 @@ HeapItem::HeapItem(int _snapShotVersion)
 }
 
 HeapItem::HeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, int _snapShotVersion)
-    : className(_className), count(_count),
-      referenceCount(_referenceCount), totalSize(_totalSize), snapShotVersion(_snapShotVersion),
-      BaseHeapItem()
+    : BaseHeapItem(_className, _count, _referenceCount, _totalSize, _snapShotVersion)
 {
 }
 

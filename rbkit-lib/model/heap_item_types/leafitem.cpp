@@ -20,7 +20,7 @@ QString LeafItem::leadingIdentifier()
     }
 }
 
-QString LeafItem::getClassOrFile() const
+QVariant LeafItem::getClassOrFile() const
 {
     if (filename.isEmpty())
         return QVariant(QString("<compiled>"));

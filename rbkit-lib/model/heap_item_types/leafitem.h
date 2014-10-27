@@ -13,7 +13,7 @@ public:
              quint32 _totalSize, const QString _filename, int _snapShotVersion);
 
     virtual QString leadingIdentifier();
-    virtual QString getClassOrFile() const;
+    virtual QVariant getClassOrFile() const;
     virtual BaseHeapItem *getSelectedReferences();
 };
 
