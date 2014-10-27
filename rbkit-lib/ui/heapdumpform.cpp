@@ -15,7 +15,7 @@ void HeapDumpForm::setParentWindow(RbkitMainWindow *value)
 }
 
 
-RBKit::HeapItem *HeapDumpForm::getRootItem() const
+RBKit::BaseHeapItem *HeapDumpForm::getRootItem() const
 {
     return rootItem;
 }
@@ -65,7 +65,7 @@ void HeapDumpForm::loaData()
     adjustColumnWidth();
 }
 
-void HeapDumpForm::loadSelectedReferences(RBKit::HeapItem *_selectedItem)
+void HeapDumpForm::loadSelectedReferences(RBKit::BaseHeapItem *_selectedItem)
 {
     rootItem = _selectedItem->getSelectedReferences();
     model = new RBKit::HeapDataModel(rootItem, this);
@@ -95,7 +95,7 @@ void HeapDumpForm::onCustomContextMenu(const QPoint &point)
     QPoint localPoint = ui->treeView->viewport()->mapToGlobal(point);
     QModelIndex index = proxyModel->mapToSource(ui->treeView->indexAt(point));
     if (index.isValid()) {
-        selecteItem = static_cast<RBKit::HeapItem *>(index.internalPointer());
+        selecteItem = static_cast<RBKit::BaseHeapItem *>(index.internalPointer());
         QMenu menu(this);
         menu.addAction(viewRefAct);
         menu.exec(localPoint);
@@ -113,7 +113,7 @@ void HeapDumpForm::viewReferences()
 void HeapDumpForm::treeNodeSelected(const QModelIndex &index)
 {
     QModelIndex sourceIndex = proxyModel->mapToSource(index);
-    RBKit::HeapItem *nodeItem = static_cast<RBKit::HeapItem *>(sourceIndex.internalPointer());
+    RBKit::BaseHeapItem *nodeItem = static_cast<RBKit::BaseHeapItem *>(sourceIndex.internalPointer());
     if (nodeItem != NULL)
         parentWindow->statusBar()->showMessage(nodeItem->leadingIdentifier());
 }

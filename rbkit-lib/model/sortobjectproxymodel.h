@@ -3,7 +3,10 @@
 
 #include <QObject>
 #include <QSortFilterProxyModel>
-#include "heapitem.h"
+
+namespace RBKit {
+class BaseHeapItem;
+}
 
 class SortObjectProxyModel : public QSortFilterProxyModel
 {

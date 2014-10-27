@@ -9,9 +9,10 @@
 #include <QSqlError>
 
 #include "model/objectstore.h"
-#include "model/heapitem.h"
 
 namespace RBKit {
+
+class HeapItem;
 
 class SqlConnectionPool
 {

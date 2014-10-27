@@ -64,7 +64,8 @@ HEADERS +=  \
     ui/parentviewform.h \
     model/heap_item_types/baseheapitem.h \
     model/heap_item_types/heapitem.h \
-    model/heap_item_types/leafitem.h
+    model/heap_item_types/leafitem.h \
+    model/snapshotstate.h
 
 
 # Include msgpack via pri file

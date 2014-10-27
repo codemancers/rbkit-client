@@ -2,6 +2,7 @@
 #define RBKIT_ABSTRACTHEAPITEM_H
 
 #include <QVector>
+#include <QString>
 
 namespace RBKit {
 class BaseHeapItem

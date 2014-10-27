@@ -1,4 +1,6 @@
 #include "sortobjectproxymodel.h"
+#include "model/heap_item_types/baseheapitem.h"
+#include "model/heap_item_types/heapitem.h"
 
 SortObjectProxyModel::SortObjectProxyModel(QObject *parent) :
     QSortFilterProxyModel(parent)
@@ -33,7 +35,7 @@ void SortObjectProxyModel::fetchMore(const QModelIndex &parent)
         int row = parent.row();
         int startRow = row + 1 ;
         const QModelIndex sourceIndex = mapToSource(parent);
-        RBKit::HeapItem *item = static_cast<RBKit::HeapItem *>(sourceIndex.internalPointer());
+        RBKit::BaseHeapItem *item = static_cast<RBKit::BaseHeapItem *>(sourceIndex.internalPointer());
         if (!item->childrenFetched) {
             qDebug() << "Insert New Rows at :" << startRow << " ending at : " << startRow + item->childrenCount();
             beginInsertRows(parent, startRow, startRow + item->childrenCount());
