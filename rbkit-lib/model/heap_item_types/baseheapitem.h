@@ -3,6 +3,7 @@
 
 #include <QVector>
 #include <QString>
+#include <QVariant>
 
 namespace RBKit {
 class BaseHeapItem

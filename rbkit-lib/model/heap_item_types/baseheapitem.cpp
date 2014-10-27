@@ -1,4 +1,5 @@
 #include "baseheapitem.h"
+#include <QSqlQuery>
 
 namespace RBKit {
 
@@ -14,9 +15,14 @@ BaseHeapItem::BaseHeapItem()
 
 BaseHeapItem::BaseHeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, int _snapShotVersion)
     : className(_className), count(_count),
-      referenceCount(_referenceCount), totalSize(_totalSize), snapShotVersion(_snapShotVersion),
+      referenceCount(_referenceCount), totalSize(_totalSize), snapShotVersion(_snapShotVersion)
 {
-
+    parent = 0;
+    childrenFetched = false;
+    childrenCountFetched = -1;
+    isSnapshot = false;
+    objectsTableName = QString("rbkit_objects_%0").arg(snapShotVersion);
+    referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
 }
 
 BaseHeapItem::~BaseHeapItem()
@@ -152,7 +158,7 @@ void BaseHeapItem::findImmediateChildren()
                         "sum(reference_count) as total_ref_count, sum(size) as total_size from %0 group by (class_name)").arg(objectsTableName));
 
     while(searchQuery.next()) {
-        HeapItem* item = new HeapItem(searchQuery.value(0).toString(), searchQuery.value(1).toInt(),
+        BaseHeapItem* item = new BaseHeapItem(searchQuery.value(0).toString(), searchQuery.value(1).toInt(),
                                       searchQuery.value(2).toInt(), searchQuery.value(3).toInt(), -1);
         item->setObjectsTableName(objectsTableName);
         addChildren(item);

@@ -245,7 +245,7 @@ void RbkitMainWindow::on_actionComapre_Heapsnapshots_triggered()
 
 void RbkitMainWindow::onDiffSnapshotsSelected(QList<int> selectedSnapshots)
 {
-    RBKit::DiffItem *newRootItem = snapShotState->diffRootItem(selectedSnapshots);
+    RBKit::BaseHeapItem *newRootItem = snapShotState->diffRootItem(selectedSnapshots);
 
     DiffViewForm *form = new DiffViewForm(this, -1);
     form->setDisableRightClick(true);
