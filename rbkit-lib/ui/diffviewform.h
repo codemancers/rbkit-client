@@ -5,10 +5,6 @@
 #include <QWidget>
 #include "parentviewform.h"
 
-namespace RBKit {
-class DiffItem;
-}
-
 class DiffViewForm : public HeapDumpForm
 {
     ParentViewForm *parentViewForm;
