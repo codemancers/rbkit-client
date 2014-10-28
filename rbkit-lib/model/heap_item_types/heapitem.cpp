@@ -29,6 +29,7 @@ BaseHeapItem *HeapItem::minus(BaseHeapItem *other)
     if (other->getIsSnapshot() && isSnapshot) {
         QString queryString;
         QString viewName = QString("view_").append(RBKit::StringUtil::randomSHA());
+        // create a view for objects which are in, current HeapItem tree but not in other
         queryString = QString("create view %0 AS select * from %1 where %1.id not in "
                               "(select %2.id from %2)").arg(viewName).arg(objectsTableName).arg(other->getObjectsTableName());
 
@@ -43,6 +44,7 @@ BaseHeapItem *HeapItem::minus(BaseHeapItem *other)
         rootItem->setObjectsTableName(viewName);
         rootItem->setReferenceTableName(referenceTableName);
         rootItem->setIsSnapshot(false);
+        rootItem->setOriginalObjectsTableName(objectsTableName);
         QSqlQuery searchQuery(QString("select class_name, count(id) as object_count, "
                                       "sum(reference_count) as total_ref_count, sum(size) as total_size from %0 group by (class_name)").arg(viewName));
 

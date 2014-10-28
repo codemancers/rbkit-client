@@ -11,6 +11,7 @@ BaseHeapItem::BaseHeapItem()
     isSnapshot = false;
     objectsTableName = QString("rbkit_objects_%0").arg(snapShotVersion);
     referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
+    originalObjectsTableName = objectsTableName;
 }
 
 BaseHeapItem::BaseHeapItem(int _snapShotVersion)
@@ -22,6 +23,7 @@ BaseHeapItem::BaseHeapItem(int _snapShotVersion)
     isSnapshot = false;
     objectsTableName = QString("rbkit_objects_%0").arg(snapShotVersion);
     referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
+    originalObjectsTableName = objectsTableName;
 }
 
 BaseHeapItem::BaseHeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, int _snapShotVersion)
@@ -34,12 +36,23 @@ BaseHeapItem::BaseHeapItem(const QString _className, quint32 _count, quint32 _re
     isSnapshot = false;
     objectsTableName = QString("rbkit_objects_%0").arg(snapShotVersion);
     referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
+    originalObjectsTableName = objectsTableName;
 }
 
 BaseHeapItem::~BaseHeapItem()
 {
    // NOOP
 }
+QString BaseHeapItem::getOriginalObjectsTableName() const
+{
+    return originalObjectsTableName;
+}
+
+void BaseHeapItem::setOriginalObjectsTableName(const QString &value)
+{
+    originalObjectsTableName = value;
+}
+
 
 bool BaseHeapItem::hasChildren()
 {

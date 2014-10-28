@@ -29,6 +29,8 @@ public:
     QVector<BaseHeapItem *> children;
     QString objectsTableName;
     QString referenceTableName;
+    // contains original objects table from which this view was derived
+    QString originalObjectsTableName;
 
     virtual bool hasChildren();
     virtual quint32 childrenCount();
@@ -64,6 +66,8 @@ public:
     void setParent(BaseHeapItem *value);
     bool getIsSnapshot() const;
     void setIsSnapshot(bool value);
+    QString getOriginalObjectsTableName() const;
+    void setOriginalObjectsTableName(const QString &value);
 };
 
 } // namespace RBKit
