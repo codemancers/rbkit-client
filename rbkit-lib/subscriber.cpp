@@ -1,4 +1,4 @@
-#include "debug.h"
+#include <QDebug>
 #include <QThread>
 #include <QTimer>
 #include <QScopedPointer>
@@ -42,8 +42,6 @@ void Subscriber::setContext(nzmqt::ZMQContext *value)
 Subscriber::Subscriber(RBKit::JsBridge* bridge)
     :jsBridge(bridge), connectionEstablished(false)
 {
-    ENTER0("\n");
-    EXIT0("\n");
 }
 
 void Subscriber::triggerGc() {
@@ -62,7 +60,6 @@ void Subscriber::takeSnapshot()
 void Subscriber::startSubscriber()
 {
     qDebug() << "start subscriber";
-    ENTER0("\n");
 
     context = new nzmqt::SocketNotifierZMQContext(this, 1);
     commandSocket = new RBKit::ZmqCommandSocket(this, context);
@@ -96,8 +93,7 @@ void Subscriber::handShakeCompleted()
     m_timer->start();
 
     emit connected();
-    qDebug("started 12");
-    EXIT0("\n");
+    qDebug("started");
 }
 
 void Subscriber::emitConnectionError(QString message)
@@ -108,7 +104,6 @@ void Subscriber::emitConnectionError(QString message)
 
 Subscriber::~Subscriber()
 {
-    ENTER0("\n");
     stop();
     delete m_timer;
     delete commandSocket;
@@ -141,7 +136,8 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
     for (QList<QByteArray>::ConstIterator iter = rawMessage.begin();
          rawMessage.end() != iter; ++iter)
     {
-        RBKit::EventDataBase* event = RBKit::parseEvent(*iter);
+        const RBKit::EventParser eventParser(*iter);
+        RBKit::EventDataBase* event = eventParser.parseEvent();
 
         if (NULL != event) {
             event->process(*this);
@@ -190,11 +186,11 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 
 void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 {
-    objectStore->updateFromSnapshot(dump.objects);
+    // objectStore->updateFromSnapshot(dump.objects);
 
-    RBKit::AppState::getInstance()->setAppState("heap_snapshot", 10);
-    RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
-    emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());
+    // RBKit::AppState::getInstance()->setAppState("heap_snapshot", 10);
+    // RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
+    // emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());
 }
 
 void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)

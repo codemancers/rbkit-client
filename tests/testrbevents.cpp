@@ -16,22 +16,32 @@ static QByteArray msgpackDataFromFile(const QString filename)
 void TestRbEvents::testParseObjectCreateEvent()
 {
     QByteArray data = msgpackDataFromFile(":/tests/msgpack/objcreated");
-    EventDataBase* base = parseEvent(data);
+    RBKit::EventParser eventParser(data);
+
+    EventDataBase* base = eventParser.parseEvent();
     QVERIFY(base);
 
-    EvtNewObject* event = dynamic_cast<EvtNewObject*>(base);
+    EvtCollection* collection = dynamic_cast<EvtCollection*>(base);
+    QVERIFY(collection);
+
+    EvtNewObject* event = dynamic_cast<EvtNewObject*>(collection->events[0].data());
     QVERIFY(event);
-    QVERIFY(0x7f879309d090 == event->object->objectId);
+    QVERIFY(0x10190ed70 == event->object->objectId);
 }
 
 // test whether parser is parsing destroy event properly or not.
 void TestRbEvents::testParseObjectDestroyEvent()
 {
     QByteArray data = msgpackDataFromFile(":/tests/msgpack/objdestroyed");
-    EventDataBase* base = parseEvent(data);
+    RBKit::EventParser eventParser(data);
+
+    EventDataBase* base = eventParser.parseEvent();
     QVERIFY(base);
 
-    EvtDelObject* event = dynamic_cast<EvtDelObject*>(base);
+    EvtCollection* collection = dynamic_cast<EvtCollection*>(base);
+    QVERIFY(collection);
+
+    EvtDelObject* event = dynamic_cast<EvtDelObject*>(collection->events[0].data());
     QVERIFY(event);
 }
 
@@ -39,21 +49,30 @@ void TestRbEvents::testParseObjectDestroyEvent()
 void TestRbEvents::testParseGcStatsEvent()
 {
     QByteArray data = msgpackDataFromFile(":/tests/msgpack/gcstats");
-    EventDataBase* base = parseEvent(data);
+    RBKit::EventParser eventParser(data);
+
+    EventDataBase* base = eventParser.parseEvent();
     QVERIFY(base);
 
-    EvtGcStats* event = dynamic_cast<EvtGcStats*>(base);
+    EvtCollection* collection = dynamic_cast<EvtCollection*>(base);
+    QVERIFY(collection);
+
+    EvtGcStats* event = dynamic_cast<EvtGcStats*>(collection->events[0].data());
     QVERIFY(event);
 }
 
 void TestRbEvents::testParseGCStartEvent()
 {
     QByteArray data = msgpackDataFromFile(":/tests/msgpack/gc_start");
-    EventDataBase *base = parseEvent(data);
+    RBKit::EventParser eventParser(data);
 
+    EventDataBase *base = eventParser.parseEvent();
     QVERIFY(base);
 
-    EvtGcStart *event = dynamic_cast<EvtGcStart *>(base);
+    EvtCollection* collection = dynamic_cast<EvtCollection*>(base);
+    QVERIFY(collection);
+
+    EvtGcStart* event = dynamic_cast<EvtGcStart*>(collection->events[0].data());
     QVERIFY(event);
 
     QVERIFY(event->eventName == "gc_start");
@@ -63,10 +82,14 @@ void TestRbEvents::testParseGCStartEvent()
 void TestRbEvents::testParseObjectDumpEvent()
 {
     QByteArray data = msgpackDataFromFile(":/tests/msgpack/objectdump");
-    EventDataBase *base = parseEvent(data);
+    RBKit::EventParser eventParser(data);
 
+    EventDataBase *base = eventParser.parseEvent();
     QVERIFY(base);
 
-    EvtObjectDump *event = dynamic_cast<EvtObjectDump *>(base);
+    EvtCollection* collection = dynamic_cast<EvtCollection*>(base);
+    QVERIFY(collection);
+
+    EvtObjectDump* event = dynamic_cast<EvtObjectDump*>(collection->events[0].data());
     QVERIFY(event);
 }
