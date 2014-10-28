@@ -41,11 +41,14 @@ void Subscriber::setContext(nzmqt::ZMQContext *value)
 Subscriber::Subscriber(RBKit::JsBridge* bridge)
     :jsBridge(bridge), connectionEstablished(false)
 {
-    ENTER0("\n");
-    EXIT0("\n");
+    ENTER0("");
+    EXIT0("");
 }
 
-void Subscriber::triggerGc() {
+void Subscriber::triggerGc()
+{
+    ENTER0("");
+
     RBKit::CmdTriggerGC triggerGC_Command;
     qDebug() << "Triggering GC";
     commandSocket->sendCommand(triggerGC_Command);
@@ -53,6 +56,8 @@ void Subscriber::triggerGc() {
 
 void Subscriber::takeSnapshot()
 {
+    ENTER0("");
+
    RBKit::CmdObjSnapshot triggerSnapshot;
    qDebug() << "Taking snapshot";
    commandSocket->sendCommand(triggerSnapshot);
@@ -61,7 +66,7 @@ void Subscriber::takeSnapshot()
 void Subscriber::startSubscriber()
 {
     qDebug() << "start subscriber";
-    ENTER0("\n");
+    ENTER0("");
 
     context = new nzmqt::SocketNotifierZMQContext(this, 1);
     commandSocket = new RBKit::ZmqCommandSocket(this, context);
@@ -96,7 +101,7 @@ void Subscriber::handShakeCompleted()
 
     emit connected();
     qDebug("started 12");
-    EXIT0("\n");
+    EXIT0("");
 }
 
 void Subscriber::emitConnectionError(QString message)
@@ -107,7 +112,7 @@ void Subscriber::emitConnectionError(QString message)
 
 Subscriber::~Subscriber()
 {
-    ENTER0("\n");
+    ENTER0("");
     stop();
     delete m_timer;
     delete commandSocket;
@@ -137,6 +142,8 @@ void Subscriber::stop()
 
 void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
 {
+    ENTER0("");
+
     for (QList<QByteArray>::ConstIterator iter = rawMessage.begin();
          rawMessage.end() != iter; ++iter)
     {

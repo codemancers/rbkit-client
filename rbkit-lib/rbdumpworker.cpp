@@ -1,7 +1,7 @@
 #include "sqlconnectionpool.h"
 #include "rbdumpworker.h"
 #include "mpparser.h"
-#include <QDebug>
+#include "debug.h"
 
 
 
@@ -15,6 +15,8 @@ RBKit::RbDumpParser::RbDumpParser(msgpack::unpacked dump)
 
 void RBKit::RbDumpWorker::dump(msgpack::unpacked dump)
 {
+    ENTER0("");
+
     auto connection = RBKit::SqlConnectionPool::getInstance();
     RBKit::RbDumpParser parser(dump);
 

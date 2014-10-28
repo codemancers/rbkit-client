@@ -147,7 +147,6 @@ void RbkitMainWindow::setupSubscriber()
 {
     //Create a subscriber and move it to it's own thread
     subscriber = new Subscriber(memoryView->getJsBridge());
-    subscriber->moveToThread(&subscriberThread);
 
     //Events to/from parent/subcriber thread
     connect(&subscriberThread, &QThread::finished, subscriber, &QObject::deleteLater);
@@ -165,10 +164,11 @@ void RbkitMainWindow::setupSubscriber()
 
     // create db heap dumper, and connect subscriber to dumper.
     heapWorker.reset(new RBKit::RbDumpWorker());
-    heapWorker->moveToThread(&heapDumpThread);
-    connect(subscriber, SIGNAL(dumpReceived(msgpack::unpacked dump)),
-            heapWorker.data(), SLOT(dump(msgpack::unpacked dump)));
+    connect(subscriber, SIGNAL(dumpReceived(msgpack::unpacked)),
+            heapWorker.data(), SLOT(dump(msgpack::unpacked)));
 
+    subscriber->moveToThread(&subscriberThread);
+    heapWorker->moveToThread(&heapDumpThread);
     subscriberThread.start();
     heapDumpThread.start();
 }

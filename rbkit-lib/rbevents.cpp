@@ -3,7 +3,7 @@
 #include "rbevents.h"
 #include "mpparser.h"
 
-#include <QDebug>
+#include "debug.h"
 
 
 static RBKit::EventDataBase* makeEventFromUnpacked(msgpack::unpacked& unpacked);
@@ -51,6 +51,7 @@ makeEventFromUnpacked(msgpack::unpacked& unpacked)
 {
     auto object = unpacked.get();
     auto type = guessEvent(object);
+    INFO1("event-type: %s", type.toStdString().c_str());
 
     if (type == "object_space_dump") {
         // special handling for object dump.

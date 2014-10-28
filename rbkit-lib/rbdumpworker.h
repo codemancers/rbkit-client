@@ -15,7 +15,7 @@ namespace RBKit
         Q_OBJECT;
 
     public slots:
-        void dump(msgpack::unpacked dump);
+        void dump(msgpack::unpacked);
     };
 
 

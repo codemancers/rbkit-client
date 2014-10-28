@@ -14,7 +14,10 @@
 
 
 #ifdef DEBUG_THREAD_IDS
-#define DUMP_THREAD_FORMAT  "tid:%x "
+
+#include <QThread>
+
+#define DUMP_THREAD_FORMAT  "tid:%p "
 #define DUMP_THREAD_ARG ,(QThread::currentThreadId())
 #else
 #define DUMP_THREAD_FORMAT
@@ -32,7 +35,7 @@
 
 
 #ifdef DEBUG_LINE_NUMBERS
-#define DUMP_LINE_NUMBER_FORMAT  ":" _XSTR_(__LINE__)
+#define DUMP_LINE_NUMBER_FORMAT  ":" _XSTR_(__LINE__) " "
 #else
 #define DUMP_LINE_NUMBER_FORMAT
 #endif
@@ -48,6 +51,7 @@
 // define macros here which can be used.
 #define ENTER_SIGN_  "> "
 #define EXIT_SIGN_   "< "
+#define INFO_SIGN_   "i "
 
 
 #define ENTER0(format)                        rbPrintf(ENTER_SIGN_ PREFIX_FORMAT format PREFIX_ARGS)
@@ -58,6 +62,10 @@
 #define EXIT0(format)                         rbPrintf(EXIT_SIGN_ PREFIX_FORMAT format PREFIX_ARGS)
 #define EXIT1(format, a1)                     rbPrintf(EXIT_SIGN_ PREFIX_FORMAT format PREFIX_ARGS, a1)
 #define EXIT2(format, a1, a2)                 rbPrintf(EXIT_SIGN_ PREFIX_FORMAT format PREFIX_ARGS, a1, a2)
+
+#define INFO0(format)                         rbPrintf(INFO_SIGN_ PREFIX_FORMAT format PREFIX_ARGS)
+#define INFO1(format, a1)                     rbPrintf(INFO_SIGN_ PREFIX_FORMAT format PREFIX_ARGS, a1)
+#define INFO2(format, a1, a2)                 rbPrintf(INFO_SIGN_ PREFIX_FORMAT format PREFIX_ARGS, a1, a2)
 
 
 #endif // RBKIT_DEBUG_H

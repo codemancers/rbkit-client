@@ -88,6 +88,22 @@ namespace RBKit
         QList<RBKit::EventPtr> events;
     };
 
+    class EventParser
+    {
+    public:
+        EventParser(msgpack::unpacked& unpacked_)
+            : unpacked(unpacked_)
+        {}
+
+    public:
+        QString guessEvent(msgpack::object&);
+        RBKit::EventDataBase* makeEventFromObject(msgpack::object&);
+        RBKit::EventDataBase* makeEventFromUnpacked(msgpack::unpacked&);
+
+    private:
+        msgpack::unpacked& unpacked;
+    };
+
     EventDataBase* parseEvent(const QByteArray& rawMessage);
     EventDataBase* makeEventFromQVariantMap(const QVariantMap& map);
 }
