@@ -16,9 +16,11 @@ void TestObjectDump::initTestCase()
 {
     // read object dump, and parse it
     objectDump = msgpackDataFromFile(":/tests/msgpack/hugedump");
+    RBKit::EventParser eventParser(objectDump);
 
-    auto evt = parseEvent(objectDump);
-    event.reset(dynamic_cast<EvtObjectDump *>(evt));
+    auto collection = dynamic_cast<EvtCollection*>(eventParser.parseEvent());
+    auto evt = dynamic_cast<EvtObjectDump *>(collection->events[0].data());
+    event.reset(evt);
 }
 
 void TestObjectDump::testBenchmarkParseObjectDump()
@@ -30,7 +32,8 @@ void TestObjectDump::testBenchmarkParseObjectDump()
 
     QVERIFY(base);
 
-    EvtObjectDump* event = dynamic_cast<EvtObjectDump *>(base);
+    auto collection = dynamic_cast<EvtCollection*>(base);
+    auto event = dynamic_cast<EvtObjectDump *>(collection->events[0].data());
     QVERIFY(event);
 
     qDebug() << "total objects :" << event->objects.size();

@@ -8,6 +8,7 @@
 #include <QString>
 #include "stringutil.h"
 #include "model/objectdetail.h"
+#include <msgpack.hpp>
 
 
 class Subscriber;               // this acts as processor also atm.
@@ -106,6 +107,27 @@ namespace RBKit
         void process(Subscriber& process) const;
 
         QList<RBKit::EventPtr> events;
+    };
+
+    class EventParser
+    {
+    public:
+        EventParser(const QByteArray& message);
+
+    public:
+        EventDataBase* parseEvent() const;
+
+    public:                     // helpers
+        RBKit::EventDataBase* eventFromMsgpackObject(msgpack::object&) const;
+        QList<RBKit::EventPtr> parseEvents(const msgpack::object&) const;
+        RBKit::EventType guessEvent(const msgpack::object&) const;
+
+    public:
+        QList<RBKit::ObjectDetailPtr> parseObjects(const msgpack::object&) const;
+
+    private:
+        const QByteArray rawMessage;
+        msgpack::unpacked unpacked;
     };
 
     EventDataBase* parseEvent(const QByteArray& rawMessage);
