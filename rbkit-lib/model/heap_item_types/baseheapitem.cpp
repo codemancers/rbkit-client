@@ -178,10 +178,7 @@ void BaseHeapItem::findImmediateChildren()
 
 QVariant BaseHeapItem::getClassOrFile() const
 {
-    if (filename.isEmpty())
-        return QVariant(QString("<compiled>"));
-    else
-        return QVariant(filename);
+    return QVariant(className);
 }
 
 BaseHeapItem *BaseHeapItem::getChild(int index)
