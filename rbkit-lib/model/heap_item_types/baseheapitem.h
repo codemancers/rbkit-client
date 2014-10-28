@@ -6,6 +6,8 @@
 #include <QVariant>
 
 namespace RBKit {
+class HeapItemDetail;
+
 class BaseHeapItem
 {
 public:
@@ -68,6 +70,7 @@ public:
     void setIsSnapshot(bool value);
     QString getOriginalObjectsTableName() const;
     void setOriginalObjectsTableName(const QString &value);
+    virtual HeapItemDetail *getObjectParents();
 };
 
 } // namespace RBKit

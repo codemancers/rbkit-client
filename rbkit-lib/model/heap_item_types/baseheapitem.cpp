@@ -1,5 +1,6 @@
 #include "baseheapitem.h"
 #include <QSqlQuery>
+#include "heapitemdetail.h"
 
 namespace RBKit {
 
@@ -51,6 +52,10 @@ QString BaseHeapItem::getOriginalObjectsTableName() const
 void BaseHeapItem::setOriginalObjectsTableName(const QString &value)
 {
     originalObjectsTableName = value;
+}
+
+HeapItemDetail *BaseHeapItem::getObjectParents()
+{
 }
 
 
