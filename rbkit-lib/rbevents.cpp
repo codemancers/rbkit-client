@@ -6,20 +6,9 @@
 #include "debug.h"
 
 
-static RBKit::EventDataBase* makeEventFromUnpacked(msgpack::unpacked& unpacked);
-static QList<RBKit::EventPtr> parseEventsFromMsg(const msgpack::object&);
-
-
-static QString guessEvent(msgpack::object& object)
+RBKit::EventDataBase*
+RBKit::EventParser::eventFromObject(msgpack::object& object) const
 {
-    auto map = object.as< QMap<QString, msgpack::object> >();
-    return map["event_type"].as<QString>();
-}
-
-static RBKit::EventDataBase*
-makeEventFromObject(msgpack::object& object)
-{
-    // first try to guess the event type.
     auto map = object.as< QMap<QString, msgpack::object> >();
 
     auto eventType = guessEvent(object);
@@ -37,41 +26,26 @@ makeEventFromObject(msgpack::object& object)
         return new RBKit::EvtGcStart(timestamp, eventType);
     } else if (eventType == "gc_end_s") {
         return new RBKit::EvtGcStop(timestamp, eventType);
-    } else if (eventType == "event_collection") {
-        auto events = parseEventsFromMsg(payload);
-        return new RBKit::EvtCollection(timestamp, eventType, events);
+    } else if (eventType == "object_dump_space") {
+        auto dump = *(msgpack::unpacked*)(&unpacked);
+        return new RBKit::EvtObjectDump(timestamp, eventType, dump);
     } else {
         qDebug() << "Unable to parse event of type" << eventType;
+        Q_ASSERT(false);
+
         return NULL;
     }
 }
 
-static RBKit::EventDataBase*
-makeEventFromUnpacked(msgpack::unpacked& unpacked)
-{
-    auto object = unpacked.get();
-    auto type = guessEvent(object);
-    INFO1("event-type: %s", type.toStdString().c_str());
 
-    if (type == "object_space_dump") {
-        // special handling for object dump.
-        auto map = object.as< QMap<QString, msgpack::object> >();
-        auto ts = QDateTime::fromMSecsSinceEpoch(map["timestamp"].as<double>());
-        return new RBKit::EvtObjectDump(ts, type, unpacked);
-    } else {
-        return makeEventFromObject(object);
-    }
-}
-
-
-static QList<RBKit::EventPtr>
-parseEventsFromMsg(const msgpack::object& objarray)
+QList<RBKit::EventPtr>
+RBKit::EventParser::parseEvents(const msgpack::object& objarray) const
 {
     QList<RBKit::EventPtr> events;
 
     auto array = objarray.as< QList<msgpack::object> >();
     for (auto& evtObj : array) {
-        auto event = makeEventFromObject(evtObj);
+        auto event = eventFromObject(evtObj);
         events.append(RBKit::EventPtr(event));
     }
 
@@ -79,14 +53,33 @@ parseEventsFromMsg(const msgpack::object& objarray)
 }
 
 
-RBKit::EventDataBase*
-RBKit::parseEvent(const QByteArray& message)
+RBKit::EventParser::EventParser(const QByteArray& message)
 {
-    msgpack::unpacked unpacked;
     msgpack::unpack(&unpacked, message.data(), message.size());
-
-    return makeEventFromUnpacked(unpacked);
 }
+
+
+RBKit::EventDataBase* RBKit::EventParser::parseEvent() const
+{
+    // by default event will be of type collection
+    auto type = guessEvent(unpacked.get());
+    Q_ASSERT(type == "event_collection");
+
+    auto map = unpacked.get().as< QMap<QString, msgpack::object> >();
+    auto timestamp = map["timestamp"].as<double>();
+    auto ts = QDateTime::fromMSecsSinceEpoch(timestamp);
+
+    auto events = parseEvents(map["payload"]);
+    return new RBKit::EvtCollection(ts, "event_collection", events);
+}
+
+
+QString RBKit::EventParser::guessEvent(const msgpack::object& object) const
+{
+    auto map = object.as< QMap<QString, msgpack::object> >();
+    return map["event_type"].as<QString>();
+}
+
 
 
 // ============================== different events ==============================
@@ -153,9 +146,9 @@ void RBKit::EvtGcStop::process(Subscriber& processor) const
 
 
 RBKit::EvtObjectDump::EvtObjectDump(QDateTime ts, QString eventName,
-                                    msgpack::unpacked heapDump)
+                                    msgpack::unpacked& dump_)
     : EventDataBase(ts, eventName)
-    , dump(heapDump)
+    , dump(dump_)
 { }
 
 void RBKit::EvtObjectDump::process(Subscriber& processor) const

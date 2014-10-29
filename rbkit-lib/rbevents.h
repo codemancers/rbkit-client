@@ -73,7 +73,7 @@ namespace RBKit
     class EvtObjectDump : public EventDataBase
     {
     public:
-        EvtObjectDump(QDateTime ts, QString eventName, msgpack::unpacked heapDump);
+        EvtObjectDump(QDateTime ts, QString eventName, msgpack::unpacked&);
         void process(Subscriber& processor) const;
 
         msgpack::unpacked dump;
@@ -91,21 +91,19 @@ namespace RBKit
     class EventParser
     {
     public:
-        EventParser(msgpack::unpacked& unpacked_)
-            : unpacked(unpacked_)
-        {}
+        EventParser(const QByteArray& message);
 
     public:
-        QString guessEvent(msgpack::object&);
-        RBKit::EventDataBase* makeEventFromObject(msgpack::object&);
-        RBKit::EventDataBase* makeEventFromUnpacked(msgpack::unpacked&);
+        EventDataBase* parseEvent() const;
+
+    public:                     // helpers
+        QList<RBKit::EventPtr> parseEvents(const msgpack::object&) const;
+        RBKit::EventDataBase* eventFromObject(msgpack::object&) const;
+        QString guessEvent(const msgpack::object&) const;
 
     private:
-        msgpack::unpacked& unpacked;
+        msgpack::unpacked unpacked;
     };
-
-    EventDataBase* parseEvent(const QByteArray& rawMessage);
-    EventDataBase* makeEventFromQVariantMap(const QVariantMap& map);
 }
 
 

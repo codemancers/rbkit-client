@@ -147,7 +147,8 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
     for (QList<QByteArray>::ConstIterator iter = rawMessage.begin();
          rawMessage.end() != iter; ++iter)
     {
-        RBKit::EventDataBase* event = RBKit::parseEvent(*iter);
+        const RBKit::EventParser eventParser(*iter);
+        RBKit::EventDataBase* event = eventParser.parseEvent();
 
         if (NULL != event) {
             event->process(*this);

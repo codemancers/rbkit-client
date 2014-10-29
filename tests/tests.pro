@@ -9,7 +9,6 @@ CONFIG += c++11
 
 SOURCES += \
     testobjectstore.cpp \
-    testrbevents.cpp \
     testjsbridge.cpp \
     main.cpp \
     testappstate.cpp \
@@ -25,7 +24,6 @@ INSTALLS += target
 HEADERS += \
     AutoTest.h \
     testobjectstore.h \
-    testrbevents.h \
     testjsbridge.h \
     testappstate.h \
     testsnapshotstate.h
