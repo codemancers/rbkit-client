@@ -13,7 +13,7 @@
 
 #include "model/objectstore.h"
 #include "model/heapdatamodel.h"
-#include "model/heapitem.h"
+#include "model/heap_item_types/baseheapitem.h"
 #include "sqlconnectionpool.h"
 #include "model/sortobjectproxymodel.h"
 
@@ -28,17 +28,17 @@ class HeapDumpForm : public QWidget
     Q_OBJECT
 protected:
     QAction *viewRefAct;
-    RBKit::HeapItem *rootItem;
+    RBKit::BaseHeapItem *rootItem;
     RBKit::HeapDataModel *model;
     SortObjectProxyModel *proxyModel;
-    RBKit::HeapItem *selecteItem;
+    RBKit::BaseHeapItem *selecteItem;
     RbkitMainWindow *parentWindow;
     bool disableRightClick;
 public:
     explicit HeapDumpForm(QWidget *parent = 0, int _snapShotVersion = 0);
     ~HeapDumpForm();
     void loaData();
-    void loadSelectedReferences(RBKit::HeapItem* _selectedItem);
+    void loadSelectedReferences(RBKit::BaseHeapItem* _selectedItem);
     void adjustColumnWidth();
     RbkitMainWindow *getParentWindow() const;
     void setParentWindow(RbkitMainWindow *value);
@@ -46,15 +46,14 @@ public:
     bool getDisableRightClick() const;
     void setTreeModel(SortObjectProxyModel* model);
 
-    RBKit::HeapItem *getRootItem() const;
-
-private:
+    RBKit::BaseHeapItem *getRootItem() const;
     Ui::HeapDumpForm *ui;
+private:
     int snapShotVersion;
 public slots:
     void onCustomContextMenu(const QPoint& point);
     void viewReferences();
-    void treeNodeSelected(const QModelIndex& index);
+    virtual void treeNodeSelected(const QModelIndex& index);
 };
 
 typedef QSharedPointer<HeapDumpForm> HeapDumpFormPtr;

@@ -1,5 +1,6 @@
 #include "sqlconnectionpool.h"
 #include "model/appstate.h"
+#include "model/heap_item_types/heapitem.h"
 
 namespace RBKit {
 

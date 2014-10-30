@@ -2,8 +2,6 @@
 #include "appstate.h"
 
 namespace RBKit {
-
-
 int SnapshotState::getSnapShotIndex() const
 {
     return snapShotIndex;
@@ -95,10 +93,10 @@ QList<int> SnapshotState::diffableSnapshotVersions() {
     return selectedSnapshots;
 }
 
-HeapItem *SnapshotState::diffRootItem(QList<int> selectedSnapshots)
+BaseHeapItem *SnapshotState::diffRootItem(QList<int> selectedSnapshots)
 {
-    HeapItem *item1 = heapForms[selectedSnapshots.at(0)]->getRootItem();
-    HeapItem *item2 = heapForms[selectedSnapshots.at(1)]->getRootItem();
+    BaseHeapItem *item1 = heapForms[selectedSnapshots.at(0)]->getRootItem();
+    BaseHeapItem *item2 = heapForms[selectedSnapshots.at(1)]->getRootItem();
 
     return item2->minus(item1);
 }

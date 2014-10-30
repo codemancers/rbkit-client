@@ -18,7 +18,6 @@ SOURCES += \
     sqlconnectionpool.cpp\
     model/appstate.cpp \
     model/heapdatamodel.cpp \
-    model/heapitem.cpp \
     model/jsbridge.cpp \
     model/objectaggregator.cpp \
     model/objectdetail.cpp \
@@ -32,7 +31,13 @@ SOURCES += \
     ui/memoryview.cpp \
     ui/rbkitmainwindow.cpp \
     ui/actiontoolbar.cpp \
-    ui/aboutdialog.cpp
+    ui/aboutdialog.cpp \
+    model/parentobject.cpp \
+    ui/parentviewform.cpp \
+    model/heap_item_types/baseheapitem.cpp \
+    model/heap_item_types/heapitem.cpp \
+    model/heap_item_types/leafitem.cpp \
+    model/heap_item_types/heapitemdetail.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -43,12 +48,10 @@ HEADERS +=  \
     sqlconnectionpool.h \
     model/appstate.h \
     model/heapdatamodel.h \
-    model/heapitem.h \
     model/jsbridge.h \
     model/objectaggregator.h \
     model/objectdetail.h \
     model/objectstore.h \
-    model/snapshotstate.h \
     model/sortobjectproxymodel.h \
     ui/askhost.h \
     ui/comapresnapshotform.h \
@@ -57,7 +60,14 @@ HEADERS +=  \
     ui/memoryview.h \
     ui/rbkitmainwindow.h \
     ui/actiontoolbar.h \
-    ui/aboutdialog.h
+    ui/aboutdialog.h \
+    model/parentobject.h \
+    ui/parentviewform.h \
+    model/heap_item_types/baseheapitem.h \
+    model/heap_item_types/heapitem.h \
+    model/heap_item_types/leafitem.h \
+    model/snapshotstate.h \
+    model/heap_item_types/heapitemdetail.h
 
 
 # Include msgpack via pri file
@@ -69,7 +79,8 @@ FORMS += \
     ui/heapdumpform.ui \
     ui/memoryview.ui \
     ui/comapresnapshotform.ui \
-    ui/aboutdialog.ui
+    ui/aboutdialog.ui \
+    ui/parentviewform.ui
 
 RESOURCES += \
     tool_icons.qrc
