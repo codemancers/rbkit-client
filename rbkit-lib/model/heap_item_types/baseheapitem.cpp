@@ -1,6 +1,6 @@
 #include "baseheapitem.h"
 #include <QSqlQuery>
-#include "heapitemdetail.h"
+#include "heapitem.h"
 
 namespace RBKit {
 
@@ -54,10 +54,31 @@ void BaseHeapItem::setOriginalObjectsTableName(const QString &value)
     originalObjectsTableName = value;
 }
 
-HeapItemDetail *BaseHeapItem::getObjectParents(BaseHeapItem *childItem)
+BaseHeapItem *BaseHeapItem::getObjectParents(BaseHeapItem *childItem)
 {
-    HeapItemDetail *heapItemDetail = new HeapItemDetail(childItem->className, childItem->className);
-    return heapItemDetail;
+    QString queryString;
+    QString viewName = QString("view_").append(RBKit::StringUtil::randomSHA());
+    queryString = QString("create view %0 AS select * from %1 where %1.id in "
+                          "(select %2.object_id from %2 "
+                          " INNER JOIN %3 ON %3.id = %2.child_id "
+                          " where %3.class_name = '%4' and %4.file='%5')").
+            arg(viewName).arg(originalObjectsTableName).
+            arg(referenceTableName).arg(objectsTableName).arg(className).arg(filename);
+
+    QSqlQuery query;
+
+    if (!query.exec(queryString)) {
+        qDebug() << "Error creating view with";
+        qDebug() << query.lastError();
+    }
+
+    HeapItem *rootItem = new HeapItem(-1);
+    rootItem->setObjectsTableName(viewName);
+    rootItem->setIsSnapshot(false);
+    rootItem->findImmediateChildren();
+    rootItem->childrenFetched = true;
+    rootItem->computePercentage();
+    return rootItem;
 }
 
 
