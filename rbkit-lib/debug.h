@@ -66,6 +66,7 @@
 #define INFO0(format)                         rbPrintf(INFO_SIGN_ PREFIX_FORMAT format PREFIX_ARGS)
 #define INFO1(format, a1)                     rbPrintf(INFO_SIGN_ PREFIX_FORMAT format PREFIX_ARGS, a1)
 #define INFO2(format, a1, a2)                 rbPrintf(INFO_SIGN_ PREFIX_FORMAT format PREFIX_ARGS, a1, a2)
+#define INFO3(format, a1, a2, a3)             rbPrintf(INFO_SIGN_ PREFIX_FORMAT format PREFIX_ARGS, a1, a2, a3)
 
 
 #endif // RBKIT_DEBUG_H

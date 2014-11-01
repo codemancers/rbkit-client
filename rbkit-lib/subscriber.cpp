@@ -142,8 +142,6 @@ void Subscriber::stop()
 
 void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
 {
-    ENTER0("");
-
     for (QList<QByteArray>::ConstIterator iter = rawMessage.begin();
          rawMessage.end() != iter; ++iter)
     {

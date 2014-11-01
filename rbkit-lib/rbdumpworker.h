@@ -16,6 +16,9 @@ namespace RBKit
 
     public slots:
         void dump(const QByteArray);
+
+    signals:
+        void dumpAvailable(int);
     };
 
 

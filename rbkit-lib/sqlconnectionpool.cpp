@@ -158,13 +158,14 @@ void SqlConnectionPool::persistObjects(RBKit::RbDumpParser& parser)
         if (count >= batchSize) {
             beginReferenceInjection();
             persistReferences(references);
+            references.clear();
 
             commitTransaction();
+
             beginTransaction();
             beginObjectInjection();
 
             count = 0;
-            break;
         }
     }
     commitTransaction();
@@ -178,9 +179,9 @@ void SqlConnectionPool::persistObject(const RBKit::ObjectDetail& object)
     query.addBindValue(object.size);
     query.addBindValue(object.references.size());
     query.addBindValue(object.getFileLine());
-    INFO1("id %llu", object.objectId);
     if (!query.exec()) {
-        INFO1("error: %s", query.lastError().text().toStdString().c_str());
+        INFO2("id %llu error: %s", object.objectId,
+              query.lastError().text().toStdString().c_str());
     }
 }
 
@@ -195,7 +196,8 @@ void SqlConnectionPool::persistReferences(const QHash< quint64, QList<quint64> >
             query.addBindValue(objectId);
             query.addBindValue(ref);
             if (!query.exec()) {
-                INFO1("error: %s", query.lastError().text().toStdString().c_str());
+                INFO3("id= %llu, ref=%llu, error: %s", objectId, ref,
+                      query.lastError().text().toStdString().c_str());
             }
         }
     }

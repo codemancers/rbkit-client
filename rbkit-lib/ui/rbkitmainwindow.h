@@ -75,7 +75,7 @@ private slots:
     void connectedToSocket();
     void disconnectedFromSocket();
     void onError(const QString &);
-    void objectDumpAvailable(int snapshotVersion);
+    void objectDumpAvailable(int); // arg int will be snapshot version
     void useSelectedHost(QString, QString);
 
     void on_action_Trigger_GC_triggered();

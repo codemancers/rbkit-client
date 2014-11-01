@@ -159,13 +159,15 @@ void RbkitMainWindow::setupSubscriber()
     connect(subscriber, &Subscriber::errored, this, &RbkitMainWindow::onError);
     connect(subscriber, &Subscriber::connected, this, &RbkitMainWindow::connectedToSocket);
     connect(subscriber, &Subscriber::disconnected, this, &RbkitMainWindow::disconnectedFromSocket);
-    connect(subscriber, &Subscriber::objectDumpAvailable, this, &RbkitMainWindow::objectDumpAvailable);
 
 
     // create db heap dumper, and connect subscriber to dumper.
     heapWorker.reset(new RBKit::RbDumpWorker());
     connect(subscriber, SIGNAL(dumpReceived(const QByteArray)),
             heapWorker.data(), SLOT(dump(const QByteArray)));
+    connect(heapWorker.data(), SIGNAL(dumpAvailable(int)),
+            this, SLOT(objectDumpAvailable(int)));
+
 
     subscriber->moveToThread(&subscriberThread);
     heapWorker->moveToThread(&heapDumpThread);

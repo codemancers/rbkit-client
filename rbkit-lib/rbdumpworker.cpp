@@ -1,6 +1,5 @@
 #include "sqlconnectionpool.h"
 #include "rbdumpworker.h"
-#include "mpparser.h"
 #include "rbevents.h"
 #include "debug.h"
 
@@ -24,4 +23,6 @@ void RBKit::RbDumpWorker::dump(const QByteArray rawMessage)
     RBKit::RbDumpParser parser(rawParser.extractObjectDump());
 
     connection->persistObjects(parser);
+
+    emit dumpAvailable(connection->getCurrentVersion());
 }
