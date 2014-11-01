@@ -35,6 +35,7 @@ void DiffViewForm::initializeParentView()
 {
     parentViewForm = new HeapDumpForm(this, -1);
     parentViewForm->setDisableRightClick(true);
+    parentViewForm->setParentWindow(getParentWindow());
     ui->treeVerticalLayout->addWidget(parentViewForm);
     qDebug() << "Showing the parent form";
     parentViewForm->show();

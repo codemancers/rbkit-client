@@ -222,7 +222,18 @@ void BaseHeapItem::findImmediateChildren()
 
 QVariant BaseHeapItem::getClassOrFile() const
 {
-    return QVariant(className);
+    if (count < 2) {
+        QString objectFileName;
+        QSqlQuery searchQuery(
+                    QString("selects file from %0 where class_name=%1").arg(objectsTableName).arg(className));
+
+        while(searchQuery.next()) {
+            objectFileName = searchQuery.value(0).toString();
+        }
+        QVariant(QString("%0 - %1").arg(className).arg(objectFileName));
+    } else {
+        return QVariant(className);
+    }
 }
 
 BaseHeapItem *BaseHeapItem::getChild(int index)
