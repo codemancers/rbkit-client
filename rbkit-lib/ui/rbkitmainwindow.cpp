@@ -164,8 +164,8 @@ void RbkitMainWindow::setupSubscriber()
 
     // create db heap dumper, and connect subscriber to dumper.
     heapWorker.reset(new RBKit::RbDumpWorker());
-    connect(subscriber, SIGNAL(dumpReceived(msgpack::unpacked)),
-            heapWorker.data(), SLOT(dump(msgpack::unpacked)));
+    connect(subscriber, SIGNAL(dumpReceived(const QByteArray)),
+            heapWorker.data(), SLOT(dump(const QByteArray)));
 
     subscriber->moveToThread(&subscriberThread);
     heapWorker->moveToThread(&heapDumpThread);

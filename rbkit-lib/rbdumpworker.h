@@ -15,7 +15,7 @@ namespace RBKit
         Q_OBJECT;
 
     public slots:
-        void dump(msgpack::unpacked);
+        void dump(const QByteArray);
     };
 
 
@@ -23,21 +23,20 @@ namespace RBKit
     {
         Q_OBJECT;
 
-        msgpack::unpacked heapDump;
-        msgpack::object objectArray;
+        msgpack::object heapDump;
 
     public:
-        RbDumpParser(msgpack::unpacked dump);
+        RbDumpParser(msgpack::object dump);
 
     public:                     // add iterator interface.
         typedef msgpack::object* Iterator;
 
         inline Iterator begin() {
-            return heapDump.get().via.array.ptr;
+            return heapDump.via.array.ptr;
         }
 
         inline Iterator end() {
-            auto array = heapDump.get().via.array;
+            auto array = heapDump.via.array;
             return array.ptr + array.size;
         }
     };

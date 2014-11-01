@@ -3,6 +3,7 @@
 #include "model/heap_item_types/heapitem.h"
 #include "rbdumpworker.h"
 #include "mpparser.h"
+#include "debug.h"
 
 
 namespace RBKit {
@@ -66,33 +67,44 @@ void SqlConnectionPool::prepareTables()
 void SqlConnectionPool::beginTransaction()
 {
     if (!query.exec(QString("begin transaction"))) {
-        qDebug() << query.lastError();
+        INFO1("error: %s", query.lastError().text().toStdString().c_str());
     }
 }
 
 
 void SqlConnectionPool::beginObjectInjection()
 {
-    if (!query.prepare(
-                QString("insert into rbkit_objects_%0(id, class_name, size, reference_count, file) values (?, ?, ?, ?, ?)")
-                .arg(currentVersion))) {
-        qDebug() << query.lastError();
+    QString insertStatement("insert into rbkit_objects_%0"
+                            "(id"
+                            ", class_name"
+                            ", size"
+                            ", reference_count"
+                            ", file)"
+                            " values (?, ?, ?, ?, ?)");
+
+    if ( !query.prepare(insertStatement.arg(currentVersion)) ) {
+        INFO1("error: %s", query.lastError().text().toStdString().c_str());
     }
 }
 
 
 void SqlConnectionPool::beginReferenceInjection()
 {
-    if (!query.prepare(QString("insert into rbkit_object_references_%0(object_id, child_id) values (?, ?)").arg(currentVersion))) {
-        qDebug() << query.lastError();
+    QString insertStatement("insert into rbkit_object_references_%0"
+                            "(object_id"
+                            ", child_id)"
+                            " values (?, ?)");
+    if ( !query.prepare(insertStatement.arg(currentVersion)) ) {
+        INFO1("error: %s", query.lastError().text().toStdString().c_str());
     }
 }
 
 
 void SqlConnectionPool::commitTransaction()
 {
-    if (!query.exec(QString("commit transaction")))
-        qDebug() << query.lastError();
+    if ( !query.exec(QString("commit transaction")) ) {
+        INFO1("error: %s", query.lastError().text().toStdString().c_str());
+    }
 
     RBKit::AppState::getInstance()->setAppState("heap_snapshot", 80);
 
@@ -125,7 +137,7 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
 
 void SqlConnectionPool::persistObjects(RBKit::RbDumpParser& parser)
 {
-    static const unsigned int batchSize = 1000;
+    static const unsigned int batchSize = 100;
     QHash< quint64, QList<quint64> > references;
     references.reserve(1000);
 
@@ -134,6 +146,7 @@ void SqlConnectionPool::persistObjects(RBKit::RbDumpParser& parser)
     prepareTables();
 
     beginTransaction();
+    beginObjectInjection();
     for (unsigned int count = 0; iter != parser.end(); ++iter, ++count) {
         RBKit::ObjectDetail object;
         *iter >> object;
@@ -143,12 +156,15 @@ void SqlConnectionPool::persistObjects(RBKit::RbDumpParser& parser)
 
         count += object.references.size();
         if (count >= batchSize) {
+            beginReferenceInjection();
             persistReferences(references);
 
             commitTransaction();
             beginTransaction();
+            beginObjectInjection();
 
             count = 0;
+            break;
         }
     }
     commitTransaction();
@@ -162,16 +178,15 @@ void SqlConnectionPool::persistObject(const RBKit::ObjectDetail& object)
     query.addBindValue(object.size);
     query.addBindValue(object.references.size());
     query.addBindValue(object.getFileLine());
+    INFO1("id %llu", object.objectId);
     if (!query.exec()) {
-        qDebug() << query.lastError();
+        INFO1("error: %s", query.lastError().text().toStdString().c_str());
     }
 }
 
 
 void SqlConnectionPool::persistReferences(const QHash< quint64, QList<quint64> >& hash)
 {
-    beginReferenceInjection();
-
     for (auto iter = hash.begin(); iter != hash.end(); ++iter) {
         auto objectId = iter.key();
         auto refs = iter.value();
@@ -180,7 +195,7 @@ void SqlConnectionPool::persistReferences(const QHash< quint64, QList<quint64> >
             query.addBindValue(objectId);
             query.addBindValue(ref);
             if (!query.exec()) {
-                qDebug() << query.lastError();
+                INFO1("error: %s", query.lastError().text().toStdString().c_str());
             }
         }
     }

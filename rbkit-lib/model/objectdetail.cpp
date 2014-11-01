@@ -2,6 +2,10 @@
 #include "stringutil.h"
 
 RBKit::ObjectDetail::ObjectDetail()
+    : objectId(0)
+    , lineNumber(0)
+    , objectGeneration(0)
+    , size(0)
 {
 }
 

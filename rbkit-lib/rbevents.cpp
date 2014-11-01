@@ -26,9 +26,8 @@ RBKit::EventParser::eventFromObject(msgpack::object& object) const
         return new RBKit::EvtGcStart(timestamp, eventType);
     } else if (eventType == "gc_end_s") {
         return new RBKit::EvtGcStop(timestamp, eventType);
-    } else if (eventType == "object_dump_space") {
-        auto dump = *(msgpack::unpacked*)(&unpacked);
-        return new RBKit::EvtObjectDump(timestamp, eventType, dump);
+    } else if (eventType == "object_space_dump") {
+        return new RBKit::EvtObjectDump(timestamp, eventType, rawMessage);
     } else {
         qDebug() << "Unable to parse event of type" << eventType;
         Q_ASSERT(false);
@@ -54,6 +53,7 @@ RBKit::EventParser::parseEvents(const msgpack::object& objarray) const
 
 
 RBKit::EventParser::EventParser(const QByteArray& message)
+    : rawMessage(message)
 {
     msgpack::unpack(&unpacked, message.data(), message.size());
 }
@@ -80,6 +80,25 @@ QString RBKit::EventParser::guessEvent(const msgpack::object& object) const
     return map["event_type"].as<QString>();
 }
 
+
+msgpack::object RBKit::EventParser::extractObjectDump() const
+{
+    // by default event will be of type collection
+    auto type = guessEvent(unpacked.get());
+    Q_ASSERT(type == "event_collection");
+
+    auto map = unpacked.get().as< QMap<QString, msgpack::object> >();
+    auto events = map["payload"].as< QList<msgpack::object> >();
+
+    for (auto& event : events) {
+        if ("object_space_dump" == guessEvent(event)) {
+            auto hash = event.as< QMap<QString, msgpack::object> >();
+            return hash["payload"];
+        }
+    }
+
+    Q_ASSERT(false);
+}
 
 
 // ============================== different events ==============================
@@ -146,9 +165,9 @@ void RBKit::EvtGcStop::process(Subscriber& processor) const
 
 
 RBKit::EvtObjectDump::EvtObjectDump(QDateTime ts, QString eventName,
-                                    msgpack::unpacked& dump_)
+                                    QByteArray message)
     : EventDataBase(ts, eventName)
-    , dump(dump_)
+    , rawMessage(message)
 { }
 
 void RBKit::EvtObjectDump::process(Subscriber& processor) const

@@ -1,24 +1,27 @@
 #include "sqlconnectionpool.h"
 #include "rbdumpworker.h"
 #include "mpparser.h"
+#include "rbevents.h"
 #include "debug.h"
 
 
 
-RBKit::RbDumpParser::RbDumpParser(msgpack::unpacked dump)
+RBKit::RbDumpParser::RbDumpParser(msgpack::object dump)
     : heapDump(dump)
 {
-    auto map = dump.get().as< QMap<QString, msgpack::object> >();
-    objectArray = map["payload"];
 }
 
 
-void RBKit::RbDumpWorker::dump(msgpack::unpacked dump)
+void RBKit::RbDumpWorker::dump(const QByteArray rawMessage)
 {
     ENTER0("");
 
+    RBKit::EventParser rawParser(rawMessage);
+    auto dump = rawParser.extractObjectDump();
+    INFO1("dump type: %d", dump.type);
+
     auto connection = RBKit::SqlConnectionPool::getInstance();
-    RBKit::RbDumpParser parser(dump);
+    RBKit::RbDumpParser parser(rawParser.extractObjectDump());
 
     connection->persistObjects(parser);
 }

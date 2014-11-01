@@ -73,10 +73,10 @@ namespace RBKit
     class EvtObjectDump : public EventDataBase
     {
     public:
-        EvtObjectDump(QDateTime ts, QString eventName, msgpack::unpacked&);
+        EvtObjectDump(QDateTime ts, QString eventName, const QByteArray);
         void process(Subscriber& processor) const;
 
-        msgpack::unpacked dump;
+        const QByteArray rawMessage;
     };
 
     class EvtCollection : public EventDataBase
@@ -101,7 +101,12 @@ namespace RBKit
         RBKit::EventDataBase* eventFromObject(msgpack::object&) const;
         QString guessEvent(const msgpack::object&) const;
 
+    public:
+        inline msgpack::unpacked& getUnpacked() { return unpacked; }
+        msgpack::object extractObjectDump() const;
+
     private:
+        const QByteArray rawMessage;
         msgpack::unpacked unpacked;
     };
 }
