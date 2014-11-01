@@ -17,7 +17,7 @@ static QByteArray msgpackDataFromFile(const QString filename)
 void TestObjectDump::initTestCase()
 {
     // read object dump, and parse it
-    objectDump = msgpackDataFromFile(":/tests/msgpack/hugedump");
+    objectDump = msgpackDataFromFile("/Users/yuva/00013-02-convert-id-to-int");
 
     EventParser eventParser(objectDump);
     EvtCollection* coll = dynamic_cast<EvtCollection*>(eventParser.parseEvent());
@@ -73,7 +73,7 @@ void TestObjectDump::testBenchmarkIterateParsedHeapDump()
         }
     }
 
-    QVERIFY(11326 == objects);
+    QVERIFY(1178271 == objects);
 }
 
 
@@ -96,5 +96,5 @@ void TestObjectDump::testBenchmarkParseAndConvertToObjects()
         }
     }
 
-    QVERIFY(11326 == objects);
+    QVERIFY(1178271 == objects);
 }

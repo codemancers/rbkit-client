@@ -5,6 +5,7 @@
 
 #include <QVariantMap>
 #include <QString>
+#include <QDebug>
 
 #include "model/objectdetail.h"
 #include "stringutil.h"
@@ -97,11 +98,10 @@ operator>>(msgpack::object obj, RBKit::ObjectDetail& object)
 {
     if (obj.type != msgpack::type::MAP) { throw msgpack::type_error(); }
 
-    auto map = obj.as< QMap<QString, msgpack::object> >();
+    auto map = obj.as< QMap<int, msgpack::object> >();
 
     if (! map["object_id"].is_nil()) {
-        auto objIdStr = map["object_id"].as<QString>();
-        object.objectId = RBKit::StringUtil::hextoInt(objIdStr);
+        object.objectId = map["object_id"].as<unsigned long long>();
     }
 
     if (! map["file"].is_nil()) {

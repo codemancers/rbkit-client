@@ -5,6 +5,5 @@
         <file>msgpack/gcstats</file>
         <file>msgpack/gc_start</file>
         <file>msgpack/objectdump</file>
-        <file>msgpack/hugedump</file>
     </qresource>
 </RCC>
