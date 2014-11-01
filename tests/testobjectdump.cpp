@@ -1,6 +1,8 @@
 #include "testobjectdump.h"
 #include "rbevents.h"
+#include "mpparser.h"
 #include "model/objectstore.h"
+#include "rbheapworker.h"
 #include <QDebug>
 
 using namespace RBKit;
@@ -17,50 +19,82 @@ void TestObjectDump::initTestCase()
     // read object dump, and parse it
     objectDump = msgpackDataFromFile(":/tests/msgpack/hugedump");
 
-    auto evt = parseEvent(objectDump);
-    event.reset(dynamic_cast<EvtObjectDump *>(evt));
+    EventParser eventParser(objectDump);
+    EvtCollection* coll = dynamic_cast<EvtCollection*>(eventParser.parseEvent());
+    event.reset( dynamic_cast<EvtObjectDump*>(coll->events[0].data()) );
 }
 
 void TestObjectDump::testBenchmarkParseObjectDump()
 {
     EventDataBase* base = NULL;
+
     QBENCHMARK {
-        base = parseEvent(objectDump);
+        EventParser eventParser(objectDump);
+        base = eventParser.parseEvent();
     }
 
     QVERIFY(base);
-
-    EvtObjectDump* event = dynamic_cast<EvtObjectDump *>(base);
-    QVERIFY(event);
-
-    qDebug() << "total objects :" << event->objects.size();
 }
 
 
-void TestObjectDump::testBenchmarkProcessObjectsWhenObjectSpaceIsEmpty()
+void TestObjectDump::testBenchmarkExtractObjectDump()
 {
-    qDebug() << "total objects :" << event->objects.size();
+    EventParser eventParser(objectDump);
+    msgpack::object dump;
 
-    // Create an objectstore
-    ObjectStore store;
+    QBENCHMARK_ONCE {
+        dump = eventParser.extractObjectDump();
+    }
 
-    qDebug() << "populating object store for first time";
-    QBENCHMARK {
-        store.updateFromSnapshot(event->objects);
+    QVERIFY(msgpack::type::ARRAY == dump.type);
+}
+
+
+void TestObjectDump::testBenchmarkHeapDumpParserParse()
+{
+    QBENCHMARK_ONCE {
+        RbDumpParser parser(objectDump);
+        parser.parse();
     }
 }
 
-void TestObjectDump::testBenchmarkProcessObjectsWhenObjectSpaceIsFull()
+
+void TestObjectDump::testBenchmarkIterateParsedHeapDump()
 {
-    qDebug() << "total objects :" << event->objects.size();
+    RbDumpParser parser(objectDump);
+    parser.parse();
 
-    // Create an objectstore
-    ObjectStore store;
+    int objects(0);
 
-    store.updateFromSnapshot(event->objects);
-
-    qDebug() << "populating object store again";
-    QBENCHMARK {
-        store.updateFromSnapshot(event->objects);
+    QBENCHMARK_ONCE {
+        auto iter = parser.begin();
+        for (; iter != parser.end(); ++iter) {
+            ++objects;
+        }
     }
+
+    QVERIFY(11326 == objects);
+}
+
+
+void TestObjectDump::testBenchmarkParseAndConvertToObjects()
+{
+    RbDumpParser parser(objectDump);
+    parser.parse();
+
+    int objects(0);
+
+    QBENCHMARK_ONCE {
+        auto iter = parser.begin();
+        for (; iter != parser.end(); ++iter) {
+            ObjectDetail object;
+            *iter >> object;
+
+            if (object.objectId > 0) {
+                ++objects;
+            }
+        }
+    }
+
+    QVERIFY(11326 == objects);
 }

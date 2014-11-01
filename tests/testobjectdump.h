@@ -18,8 +18,10 @@ private slots:
     void initTestCase();
 
     void testBenchmarkParseObjectDump();
-    void testBenchmarkProcessObjectsWhenObjectSpaceIsEmpty();
-    void testBenchmarkProcessObjectsWhenObjectSpaceIsFull();
+    void testBenchmarkExtractObjectDump();
+    void testBenchmarkHeapDumpParserParse();
+    void testBenchmarkIterateParsedHeapDump();
+    void testBenchmarkParseAndConvertToObjects();
 
 private:
     QByteArray objectDump;
