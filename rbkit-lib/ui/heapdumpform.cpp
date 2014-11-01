@@ -55,9 +55,24 @@ void HeapDumpForm::setTreeModel(SortObjectProxyModel *model)
     ui->treeView->setModel(model);
 }
 
+void HeapDumpForm::reset()
+{
+    ui->treeView->reset();
+}
+
 void HeapDumpForm::loaData()
 {
     rootItem = RBKit::SqlConnectionPool::getInstance()->rootOfSnapshot(snapShotVersion);
+    model = new RBKit::HeapDataModel(rootItem, this);
+    proxyModel = new SortObjectProxyModel(this);
+    proxyModel->setSourceModel(model);
+    setTreeModel(proxyModel);
+    adjustColumnWidth();
+}
+
+void HeapDumpForm::loadFromSpecifiedRoot(RBKit::BaseHeapItem *_rootItem)
+{
+    rootItem = _rootItem;
     model = new RBKit::HeapDataModel(rootItem, this);
     proxyModel = new SortObjectProxyModel(this);
     proxyModel->setSourceModel(model);

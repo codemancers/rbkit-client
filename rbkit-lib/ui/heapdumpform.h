@@ -40,11 +40,13 @@ public:
     void loaData();
     void loadSelectedReferences(RBKit::BaseHeapItem* _selectedItem);
     void adjustColumnWidth();
+    void loadFromSpecifiedRoot(RBKit::BaseHeapItem*_rootItem);
     RbkitMainWindow *getParentWindow() const;
     void setParentWindow(RbkitMainWindow *value);
     void setDisableRightClick(bool value);
     bool getDisableRightClick() const;
     void setTreeModel(SortObjectProxyModel* model);
+    void reset();
 
     RBKit::BaseHeapItem *getRootItem() const;
     Ui::HeapDumpForm *ui;

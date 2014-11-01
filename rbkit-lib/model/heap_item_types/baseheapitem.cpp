@@ -1,6 +1,7 @@
 #include "baseheapitem.h"
 #include <QSqlQuery>
 #include "heapitem.h"
+#include "stringutil.h"
 
 namespace RBKit {
 
@@ -61,9 +62,11 @@ BaseHeapItem *BaseHeapItem::getObjectParents(BaseHeapItem *childItem)
     queryString = QString("create view %0 AS select * from %1 where %1.id in "
                           "(select %2.object_id from %2 "
                           " INNER JOIN %3 ON %3.id = %2.child_id "
-                          " where %3.class_name = '%4' and %4.file='%5')").
+                          " where %3.class_name = '%4' and %3.file='%5')").
             arg(viewName).arg(originalObjectsTableName).
-            arg(referenceTableName).arg(objectsTableName).arg(className).arg(filename);
+            arg(referenceTableName).arg(objectsTableName).arg(childItem->className).arg(childItem->filename);
+
+    qDebug() << queryString;
 
     QSqlQuery query;
 
