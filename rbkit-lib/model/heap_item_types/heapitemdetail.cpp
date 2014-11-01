@@ -12,4 +12,9 @@ void HeapItemDetail::addParent(BaseHeapItem *parent)
     parents.append(parent);
 }
 
+void HeapItemDetail::populateDetails(BaseHeapItem *rootObject, BaseHeapItem *child)
+{
+
+}
+
 } // namespace RBKit

@@ -17,6 +17,7 @@ public:
     QVector<BaseHeapItem *> parents;
 
     void addParent(BaseHeapItem *parent);
+    void populateDetails(BaseHeapItem *rootObject, BaseHeapItem *child);
 };
 
 } // namespace RBKit

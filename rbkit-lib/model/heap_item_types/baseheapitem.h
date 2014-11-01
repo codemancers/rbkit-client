@@ -70,7 +70,7 @@ public:
     void setIsSnapshot(bool value);
     QString getOriginalObjectsTableName() const;
     void setOriginalObjectsTableName(const QString &value);
-    virtual HeapItemDetail *getObjectParents();
+    virtual HeapItemDetail *getObjectParents(BaseHeapItem *childItem);
 };
 
 } // namespace RBKit

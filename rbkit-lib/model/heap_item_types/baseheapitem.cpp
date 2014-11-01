@@ -54,8 +54,10 @@ void BaseHeapItem::setOriginalObjectsTableName(const QString &value)
     originalObjectsTableName = value;
 }
 
-HeapItemDetail *BaseHeapItem::getObjectParents()
+HeapItemDetail *BaseHeapItem::getObjectParents(BaseHeapItem *childItem)
 {
+    HeapItemDetail *heapItemDetail = new HeapItemDetail(childItem->className, childItem->className);
+    return heapItemDetail;
 }
 
 
