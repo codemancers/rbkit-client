@@ -15,6 +15,7 @@ BaseHeapItem::BaseHeapItem()
     objectsTableName = QString("rbkit_objects_%0").arg(snapShotVersion);
     referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
     originalObjectsTableName = objectsTableName;
+    objectParent = 0;
 }
 
 BaseHeapItem::BaseHeapItem(int _snapShotVersion)
@@ -27,6 +28,7 @@ BaseHeapItem::BaseHeapItem(int _snapShotVersion)
     objectsTableName = QString("rbkit_objects_%0").arg(snapShotVersion);
     referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
     originalObjectsTableName = objectsTableName;
+    objectParent = 0;
 }
 
 BaseHeapItem::BaseHeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, int _snapShotVersion)
@@ -40,6 +42,7 @@ BaseHeapItem::BaseHeapItem(const QString _className, quint32 _count, quint32 _re
     objectsTableName = QString("rbkit_objects_%0").arg(snapShotVersion);
     referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
     originalObjectsTableName = objectsTableName;
+    objectParent = 0;
 }
 
 BaseHeapItem::~BaseHeapItem()
@@ -70,6 +73,8 @@ BaseHeapItem *BaseHeapItem::getObjectParents(BaseHeapItem *rootItem)
                 arg(viewName).arg(rootItem->originalObjectsTableName).
                 arg(rootItem->referenceTableName).arg(rootItem->objectsTableName).
                 arg(className).arg(filename);
+
+        qDebug() << queryString;
 
         QSqlQuery query;
 
@@ -187,7 +192,11 @@ void BaseHeapItem::addChildren(BaseHeapItem *item)
 
 QString BaseHeapItem::leadingIdentifier()
 {
-    return className;
+    if (filename.isEmpty()) {
+        return className;
+    } else {
+        return QString("%0 - %1").arg(className).arg(filename);
+    }
 }
 
 void BaseHeapItem::computePercentage()

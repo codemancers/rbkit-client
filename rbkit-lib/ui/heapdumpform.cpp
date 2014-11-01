@@ -37,7 +37,6 @@ HeapDumpForm::HeapDumpForm(QWidget* parent, int _snapShotVersion)
 
 HeapDumpForm::~HeapDumpForm()
 {
-    qDebug() << "Delete stuff";
     delete ui;
     delete model;
     delete rootItem;

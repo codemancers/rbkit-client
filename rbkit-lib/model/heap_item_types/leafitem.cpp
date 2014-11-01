@@ -14,15 +14,6 @@ LeafItem::LeafItem(const QString _className, quint32 _count, quint32 _referenceC
     filename = _filename;
 }
 
-QString LeafItem::leadingIdentifier()
-{
-    if (filename.isEmpty()) {
-        return className;
-    } else {
-        return QString("%0 - %1").arg(className).arg(filename);
-    }
-}
-
 QVariant LeafItem::getClassOrFile() const
 {
     if (filename.isEmpty())
