@@ -21,7 +21,14 @@ public:
     quint32 referenceCount;
     quint32 totalSize;
     QString filename;
+    // this is parent of the Object in TreeView and has nothing to do with actual
+    // parent of object
     BaseHeapItem* parent;
+
+    // This is parent of Object on Ruby heap. In other words, this object owns
+    // current object.
+    BaseHeapItem *objectParent;
+
     bool childrenFetched;
     int countPercentage;
     int childrenCountFetched;
@@ -70,7 +77,7 @@ public:
     void setIsSnapshot(bool value);
     QString getOriginalObjectsTableName() const;
     void setOriginalObjectsTableName(const QString &value);
-    virtual BaseHeapItem *getObjectParents(BaseHeapItem *childItem);
+    virtual BaseHeapItem *getObjectParents(BaseHeapItem *rootItem);
 };
 
 } // namespace RBKit

@@ -56,31 +56,36 @@ void BaseHeapItem::setOriginalObjectsTableName(const QString &value)
     originalObjectsTableName = value;
 }
 
-BaseHeapItem *BaseHeapItem::getObjectParents(BaseHeapItem *childItem)
+BaseHeapItem *BaseHeapItem::getObjectParents(BaseHeapItem *rootItem)
 {
-    QString queryString;
-    QString viewName = QString("view_").append(RBKit::StringUtil::randomSHA());
-    queryString = QString("create view %0 AS select * from %1 where %1.id in "
-                          "(select %2.object_id from %2 "
-                          " INNER JOIN %3 ON %3.id = %2.child_id "
-                          " where %3.class_name = '%4' and %3.file='%5')").
-            arg(viewName).arg(originalObjectsTableName).
-            arg(referenceTableName).arg(objectsTableName).arg(childItem->className).arg(childItem->filename);
+    if (objectParent != NULL) {
+        return objectParent;
+    } else {
+        QString queryString;
+        QString viewName = QString("view_").append(RBKit::StringUtil::randomSHA());
+        queryString = QString("create view %0 AS select * from %1 where %1.id in "
+                              "(select %2.object_id from %2 "
+                              " INNER JOIN %3 ON %3.id = %2.child_id "
+                              " where %3.class_name = '%4' and %3.file='%5')").
+                arg(viewName).arg(rootItem->originalObjectsTableName).
+                arg(rootItem->referenceTableName).arg(rootItem->objectsTableName).
+                arg(className).arg(filename);
 
-    QSqlQuery query;
+        QSqlQuery query;
 
-    if (!query.exec(queryString)) {
-        qDebug() << "Error creating view with";
-        qDebug() << query.lastError();
+        if (!query.exec(queryString)) {
+            qDebug() << "Error creating view with";
+            qDebug() << query.lastError();
+        }
+
+        objectParent = new HeapItem(-1);
+        objectParent->setObjectsTableName(viewName);
+        objectParent->setIsSnapshot(false);
+        objectParent->findImmediateChildren();
+        objectParent->childrenFetched = true;
+        objectParent->computePercentage();
+        return objectParent;
     }
-
-    HeapItem *rootItem = new HeapItem(-1);
-    rootItem->setObjectsTableName(viewName);
-    rootItem->setIsSnapshot(false);
-    rootItem->findImmediateChildren();
-    rootItem->childrenFetched = true;
-    rootItem->computePercentage();
-    return rootItem;
 }
 
 

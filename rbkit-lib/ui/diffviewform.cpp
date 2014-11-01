@@ -20,7 +20,6 @@ DiffViewForm::~DiffViewForm()
 
 void DiffViewForm::treeNodeSelected(const QModelIndex &index)
 {
-    qDebug() << "Calling this method here";
     QModelIndex sourceIndex = proxyModel->mapToSource(index);
     RBKit::BaseHeapItem *nodeItem = static_cast<RBKit::BaseHeapItem *>(sourceIndex.internalPointer());
     if (nodeItem != NULL) {
@@ -35,13 +34,14 @@ void DiffViewForm::treeNodeSelected(const QModelIndex &index)
 void DiffViewForm::updateParentView(RBKit::BaseHeapItem *heapItem)
 {
     parentViewForm->reset();
-    RBKit::BaseHeapItem *parentHeapItem = rootItem->getObjectParents(heapItem);
+    RBKit::BaseHeapItem *parentHeapItem = heapItem->getObjectParents(rootItem);
     parentViewForm->loadFromSpecifiedRoot(parentHeapItem);
 }
 
 void DiffViewForm::initializeParentView()
 {
     parentViewForm = new HeapDumpForm(this, -1);
+    parentViewForm->setMaximumHeight(200);
     parentViewForm->setDisableRightClick(true);
     parentViewForm->setParentWindow(getParentWindow());
     ui->treeVerticalLayout->addWidget(parentViewForm);
