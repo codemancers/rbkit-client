@@ -36,7 +36,7 @@ protected:
     bool disableRightClick;
 public:
     explicit HeapDumpForm(QWidget *parent = 0, int _snapShotVersion = 0);
-    ~HeapDumpForm();
+    virtual ~HeapDumpForm();
     void loaData();
     void loadSelectedReferences(RBKit::BaseHeapItem* _selectedItem);
     void adjustColumnWidth();

@@ -10,6 +10,14 @@ DiffViewForm::DiffViewForm(QWidget* parent, int _snapShotVersion)
 {
 }
 
+DiffViewForm::~DiffViewForm()
+{
+    if (parentViewForm != NULL)  {
+        qDebug() << "Delete parent view form";
+        delete parentViewForm;
+    }
+}
+
 void DiffViewForm::treeNodeSelected(const QModelIndex &index)
 {
     qDebug() << "Calling this method here";
