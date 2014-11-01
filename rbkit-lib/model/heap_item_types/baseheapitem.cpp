@@ -2,6 +2,7 @@
 #include <QSqlQuery>
 #include "heapitem.h"
 #include "stringutil.h"
+#include <QFileInfo>
 
 namespace RBKit {
 
@@ -65,8 +66,6 @@ BaseHeapItem *BaseHeapItem::getObjectParents(BaseHeapItem *childItem)
                           " where %3.class_name = '%4' and %3.file='%5')").
             arg(viewName).arg(originalObjectsTableName).
             arg(referenceTableName).arg(objectsTableName).arg(childItem->className).arg(childItem->filename);
-
-    qDebug() << queryString;
 
     QSqlQuery query;
 
@@ -210,29 +209,24 @@ void BaseHeapItem::findImmediateChildren()
 {
     QSqlQuery searchQuery(
                 QString("select class_name, count(id) as object_count, "
-                        "sum(reference_count) as total_ref_count, sum(size) as total_size from %0 group by (class_name)").arg(objectsTableName));
+                        "sum(reference_count) as total_ref_count, sum(size) as total_size, file from %0 group by (class_name)").arg(objectsTableName));
 
     while(searchQuery.next()) {
         BaseHeapItem* item = new BaseHeapItem(searchQuery.value(0).toString(), searchQuery.value(1).toInt(),
                                       searchQuery.value(2).toInt(), searchQuery.value(3).toInt(), -1);
         item->setObjectsTableName(objectsTableName);
+        item->filename = searchQuery.value(4).toString();
         addChildren(item);
     }
 }
 
 QVariant BaseHeapItem::getClassOrFile() const
 {
-    if (count < 2) {
-        QString objectFileName;
-        QSqlQuery searchQuery(
-                    QString("selects file from %0 where class_name=%1").arg(objectsTableName).arg(className));
-
-        while(searchQuery.next()) {
-            objectFileName = searchQuery.value(0).toString();
-        }
-        QVariant(QString("%0 - %1").arg(className).arg(objectFileName));
+    if (filename.isEmpty()) {
+        return className;
     } else {
-        return QVariant(className);
+        QString shortFileName = QFileInfo(filename).fileName();
+        return QString("%0 - %1").arg(className).arg(shortFileName);
     }
 }
 

@@ -1,6 +1,7 @@
 #include "leafitem.h"
 #include <QSqlQuery>
 #include <QDebug>
+#include <QFileInfo>
 #include "stringutil.h"
 #include "heapitem.h"
 
@@ -57,6 +58,16 @@ BaseHeapItem *LeafItem::getSelectedReferences()
     rootItem->childrenFetched = true;
     rootItem->computePercentage();
     return rootItem;
+}
+
+QString LeafItem::shortLeadingIdentifier()
+{
+    if (filename.isEmpty()) {
+        return className;
+    } else {
+        QString shortFileName = QFileInfo(filename).fileName();
+        return QString("%0 - %1").arg(className).arg(shortFileName);
+    }
 }
 
 } // namespace RBKit

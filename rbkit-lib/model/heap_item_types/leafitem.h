@@ -15,6 +15,7 @@ public:
     virtual QString leadingIdentifier();
     virtual QVariant getClassOrFile() const;
     virtual BaseHeapItem *getSelectedReferences();
+    virtual QString shortLeadingIdentifier();
 };
 
 } // namespace RBKit
