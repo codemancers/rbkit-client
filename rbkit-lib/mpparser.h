@@ -106,30 +106,40 @@ operator>>(msgpack::object obj, RBKit::ObjectDetail& object)
 {
     if (obj.type != msgpack::type::MAP) { throw msgpack::type_error(); }
 
-    auto map = obj.as< QMap<unsigned int, msgpack::object> >();
+    msgpack::object_kv* list = obj.via.map.ptr;
+    for (uint32_t iter = 0; iter != obj.via.map.size; ++iter) {
+        auto val = list->val;
 
-    if (! map[0].is_nil()) {
-        object.objectId = map[0].as<unsigned long long>();
-    }
+        if (msgpack::type::NIL == val.type) {
+            continue;
+        }
 
-    if (! map[3].is_nil()) {
-        object.fileName = map[3].as<QString>();
-    }
+        auto key = list->key.as<unsigned int>();
 
-    if (! map[1].is_nil()) {
-        object.className = map[1].as<QString>();
-    }
+        switch (key) {
+        case 0:
+            object.objectId = val.as<unsigned long long>();
+            break;
+        case 3:
+            object.fileName = val.as<QString>();
+            break;
+        case 1:
+            object.className = val.as<QString>();
+            break;
+        case 4:
+            object.lineNumber = val.as<int>();
+            break;
+        case 2:
+            val >> object.references;
+            break;
+        case 5:
+            object.size = val.as<int>();
+            break;
+        default:
+            Q_ASSERT(false);
+        }
 
-    if (! map[4].is_nil()) {
-        object.lineNumber = map[4].as<int>();
-    }
-
-    if (! map[2].is_nil()) {
-        map[2] >> object.references;
-    }
-
-    if (! map[5].is_nil()) {
-        object.size = map[5].as<int>();
+        ++list;
     }
 
     return object;
