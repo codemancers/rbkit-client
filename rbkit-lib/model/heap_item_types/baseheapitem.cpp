@@ -74,8 +74,6 @@ BaseHeapItem *BaseHeapItem::getObjectParents(BaseHeapItem *rootItem)
                 arg(rootItem->referenceTableName).arg(rootItem->objectsTableName).
                 arg(className).arg(filename);
 
-        qDebug() << queryString;
-
         QSqlQuery query;
 
         if (!query.exec(queryString)) {
