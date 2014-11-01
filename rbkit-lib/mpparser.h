@@ -125,7 +125,7 @@ operator>>(msgpack::object obj, RBKit::ObjectDetail& object)
     }
 
     if (! map[2].is_nil()) {
-        object.addReferences(map[2].as<QVariantList>());
+        map[2] >> object.references;
     }
 
     if (! map[5].is_nil()) {

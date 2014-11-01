@@ -17,7 +17,7 @@ static QByteArray msgpackDataFromFile(const QString filename)
 void TestObjectDump::initTestCase()
 {
     // read object dump, and parse it
-    objectDump = msgpackDataFromFile("/Users/yuva/00013-03-object-keys-to-enums");
+    objectDump = msgpackDataFromFile("/Users/yuva/00013-04-object-refs-to-ints");
 
     EventParser eventParser(objectDump);
     EvtCollection* coll = dynamic_cast<EvtCollection*>(eventParser.parseEvent());
@@ -82,7 +82,8 @@ void TestObjectDump::testBenchmarkParseAndConvertToObjects()
     RbDumpParser parser(objectDump);
     parser.parse();
 
-    int objects(0);
+    quint64 objects(0);
+    quint64 refs(0);
 
     QBENCHMARK_ONCE {
         auto iter = parser.begin();
@@ -91,10 +92,12 @@ void TestObjectDump::testBenchmarkParseAndConvertToObjects()
             *iter >> object;
 
             if (object.objectId > 0) {
+                refs += object.references.size();
                 ++objects;
             }
         }
     }
 
     QVERIFY(1178271 == objects);
+    QVERIFY(2885823 == refs);
 }
