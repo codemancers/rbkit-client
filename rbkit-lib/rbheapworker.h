@@ -13,7 +13,7 @@ namespace RBKit
 
     class RbHeapWorker : public QObject
     {
-        Q_OBJECT;
+        Q_OBJECT
 
     public slots:
         void dump(const QByteArray);
@@ -25,7 +25,7 @@ namespace RBKit
 
     class RbDumpParser : public QObject
     {
-        Q_OBJECT;
+        Q_OBJECT
 
         const QByteArray rawMessage;
 

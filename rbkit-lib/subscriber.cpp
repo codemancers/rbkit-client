@@ -1,4 +1,4 @@
-#include <QDebug>
+#include "rbdebug.h"
 #include <QThread>
 #include <QTimer>
 #include <QScopedPointer>
@@ -8,6 +8,7 @@
 #include "subscriber.h"
 #include "zmqsockets.h"
 #include "rbcommands.h"
+#include "rbheapworker.h"
 #include "model/jsbridge.h"
 #include "model/appstate.h"
 
@@ -43,6 +44,22 @@ Subscriber::Subscriber(RBKit::JsBridge* bridge)
     :jsBridge(bridge), connectionEstablished(false)
 {
 }
+
+
+void Subscriber::setup()
+{
+    // create db heap dumper, and connect subscriber to dumper.
+    heapWorker.reset(new RBKit::RbHeapWorker());
+
+    connect(this, SIGNAL(dumpReceived(const QByteArray)),
+            heapWorker.data(), SLOT(dump(const QByteArray)));
+    connect(heapWorker.data(), SIGNAL(dumpAvailable(int)),
+            this, SIGNAL(objectDumpAvailable(int)));
+
+    heapWorker->moveToThread(&heapDumpThread);
+    heapDumpThread.start();
+}
+
 
 void Subscriber::triggerGc() {
     RBKit::CmdTriggerGC triggerGC_Command;
@@ -186,6 +203,7 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 
 void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 {
+    INFO1("dump ptr: %p", (*(QByteArray *)(&dump.rawMessage)).data_ptr());
     emit dumpReceived(dump.rawMessage);
 }
 

@@ -22,7 +22,6 @@ class RbkitMainWindow;
 }
 
 namespace RBKit {
-    class RbHeapWorker;
     class JsBridge;
 }
 
@@ -44,9 +43,6 @@ class RbkitMainWindow : public QMainWindow
     ActionToolbar *actionToolbar;
     bool connected;
     bool connectionInProgress;
-
-    QSharedPointer<RBKit::RbHeapWorker> heapWorker;
-    QThread heapDumpThread;
 
     void setupSubscriber();
     void disconnectFromSocket();
@@ -75,7 +71,7 @@ private slots:
     void connectedToSocket();
     void disconnectedFromSocket();
     void onError(const QString &);
-    void objectDumpAvailable(int); // arg int will be snapshot version
+    void objectDumpAvailable(int snapshotVersion);
     void useSelectedHost(QString, QString);
 
     void on_action_Trigger_GC_triggered();

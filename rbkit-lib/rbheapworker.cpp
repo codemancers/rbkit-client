@@ -21,7 +21,7 @@ void RBKit::RbDumpParser::parse()
 
 void RBKit::RbHeapWorker::dump(const QByteArray rawMessage)
 {
-    ENTER0("");
+    INFO1("dump ptr: %p", (*(QByteArray *)(&rawMessage)).data_ptr());
 
     auto connection = RBKit::SqlConnectionPool::getInstance();
     RBKit::RbDumpParser parser(rawMessage);

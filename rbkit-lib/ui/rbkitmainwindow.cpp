@@ -7,8 +7,6 @@
 #include "diffviewform.h"
 #include "ui/actiontoolbar.h"
 #include "ui/aboutdialog.h"
-#include "rbheapworker.h"
-
 
 RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     QMainWindow(parent), connected(false), host(""), connectionInProgress(false),
@@ -147,6 +145,8 @@ void RbkitMainWindow::setupSubscriber()
 {
     //Create a subscriber and move it to it's own thread
     subscriber = new Subscriber(memoryView->getJsBridge());
+    subscriber->moveToThread(&subscriberThread);
+    subscriber->setup();
 
     //Events to/from parent/subcriber thread
     connect(&subscriberThread, &QThread::finished, subscriber, &QObject::deleteLater);
@@ -159,20 +159,9 @@ void RbkitMainWindow::setupSubscriber()
     connect(subscriber, &Subscriber::errored, this, &RbkitMainWindow::onError);
     connect(subscriber, &Subscriber::connected, this, &RbkitMainWindow::connectedToSocket);
     connect(subscriber, &Subscriber::disconnected, this, &RbkitMainWindow::disconnectedFromSocket);
-
-
-    // create db heap dumper, and connect subscriber to dumper.
-    heapWorker.reset(new RBKit::RbHeapWorker());
-    connect(subscriber, SIGNAL(dumpReceived(const QByteArray)),
-            heapWorker.data(), SLOT(dump(const QByteArray)));
-    connect(heapWorker.data(), SIGNAL(dumpAvailable(int)),
-            this, SLOT(objectDumpAvailable(int)));
-
-    subscriber->moveToThread(&subscriberThread);
-    heapWorker->moveToThread(&heapDumpThread);
+    connect(subscriber, &Subscriber::objectDumpAvailable, this, &RbkitMainWindow::objectDumpAvailable);
 
     subscriberThread.start();
-    heapDumpThread.start();
 }
 
 void RbkitMainWindow::disconnectedFromSocket()

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QVariantMap>
+#include <QThread>
 
 #include "rbevents.h"
 #include "model/objectstore.h"
@@ -22,6 +23,7 @@ namespace RBKit
 {
     class ZmqCommandSocket;
     class ZmqEventSocket;
+    class RbHeapWorker;
     class JsBridge;
 }
 
@@ -42,9 +44,14 @@ class Subscriber : public QObject
     nzmqt::ZMQContext *context;
     bool connectionEstablished;
 
+    QSharedPointer<RBKit::RbHeapWorker> heapWorker;
+    QThread heapDumpThread;
+
 public:
     explicit Subscriber(RBKit::JsBridge* jsBridge);
     ~Subscriber();
+
+    void setup();               // 2nd constructor
 
 public:
     // function overloading
@@ -65,6 +72,7 @@ signals:
     void disconnected();
     void connected();
     void errored(const QString &);
+    void objectDumpAvailable(int snapshotVersion);
     void dumpReceived(const QByteArray);
 
 public slots:
