@@ -17,7 +17,7 @@ static QByteArray msgpackDataFromFile(const QString filename)
 void TestObjectDump::initTestCase()
 {
     // read object dump, and parse it
-    objectDump = msgpackDataFromFile("/Users/yuva/00013-02-convert-id-to-int");
+    objectDump = msgpackDataFromFile("/Users/yuva/00013-03-object-keys-to-enums");
 
     EventParser eventParser(objectDump);
     EvtCollection* coll = dynamic_cast<EvtCollection*>(eventParser.parseEvent());

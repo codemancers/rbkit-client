@@ -2,6 +2,7 @@
 #define RBKIT_MSGPACK_PARSER_H
 
 #include <msgpack.hpp>
+#include "rbdebug.h"
 
 #include <QVariantMap>
 #include <QString>
@@ -92,36 +93,43 @@ operator>>(msgpack::object obj, QVariant& var)
 }
 
 
+inline QDebug operator<<(QDebug dbg, const msgpack::object& object)
+{
+    dbg.space() << object.type;
+    return dbg.space();
+}
+
+
 // convert a payload into objectdetail.
 inline RBKit::ObjectDetail&
 operator>>(msgpack::object obj, RBKit::ObjectDetail& object)
 {
     if (obj.type != msgpack::type::MAP) { throw msgpack::type_error(); }
 
-    auto map = obj.as< QMap<int, msgpack::object> >();
+    auto map = obj.as< QMap<unsigned int, msgpack::object> >();
 
-    if (! map["object_id"].is_nil()) {
-        object.objectId = map["object_id"].as<unsigned long long>();
+    if (! map[0].is_nil()) {
+        object.objectId = map[0].as<unsigned long long>();
     }
 
-    if (! map["file"].is_nil()) {
-        object.fileName = map["file"].as<QString>();
+    if (! map[3].is_nil()) {
+        object.fileName = map[3].as<QString>();
     }
 
-    if (! map["class_name"].is_nil()) {
-        object.className = map["class_name"].as<QString>();
+    if (! map[1].is_nil()) {
+        object.className = map[1].as<QString>();
     }
 
-    if (! map["line"].is_nil()) {
-        object.lineNumber = map["line"].as<int>();
+    if (! map[4].is_nil()) {
+        object.lineNumber = map[4].as<int>();
     }
 
-    if (! map["references"].is_nil()) {
-        object.addReferences(map["references"].as<QVariantList>());
+    if (! map[2].is_nil()) {
+        object.addReferences(map[2].as<QVariantList>());
     }
 
-    if (! map["size"].is_nil()) {
-        object.size = map["size"].as<int>();
+    if (! map[5].is_nil()) {
+        object.size = map[5].as<int>();
     }
 
     return object;
