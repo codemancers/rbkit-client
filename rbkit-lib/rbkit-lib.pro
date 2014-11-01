@@ -36,8 +36,7 @@ SOURCES += \
     ui/parentviewform.cpp \
     model/heap_item_types/baseheapitem.cpp \
     model/heap_item_types/heapitem.cpp \
-    model/heap_item_types/leafitem.cpp \
-    model/heap_item_types/heapitemdetail.cpp
+    model/heap_item_types/leafitem.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -66,8 +65,7 @@ HEADERS +=  \
     model/heap_item_types/baseheapitem.h \
     model/heap_item_types/heapitem.h \
     model/heap_item_types/leafitem.h \
-    model/snapshotstate.h \
-    model/heap_item_types/heapitemdetail.h
+    model/snapshotstate.h
 
 
 # Include msgpack via pri file
