@@ -15,7 +15,7 @@ namespace RBKit
     public:
         void objCreated(RBKit::ObjectDetailPtr objectPtr);
         void objDeleted(quint64 key);
-        void updateFromSnapshot(const QList<ObjectDetailPtr>&);
+        void updateFromSnapshot(const RBKit::QHashObjectIdToPtr);
         void onGcStats(const QVariantMap& map);
 
         QHash<QString, double> liveStats() const;

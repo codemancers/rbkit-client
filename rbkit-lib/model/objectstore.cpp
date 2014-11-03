@@ -1,5 +1,7 @@
 #include "objectstore.h"
 #include "objectaggregator.h"
+#include "rbdebug.h"
+
 
 void RBKit::ObjectStore::insertObjectsInDB(QSqlQuery query)
 {
@@ -72,7 +74,7 @@ void RBKit::ObjectStore::updateObject(RBKit::ObjectDetailPtr newObject)
 }
 
 
-void RBKit::ObjectStore::updateFromSnapshot(const QList<RBKit::ObjectDetailPtr>& objects)
+void RBKit::ObjectStore::updateFromSnapshot(const RBKit::QHashObjectIdToPtr objects)
 {
     QHash<quint64, RBKit::ObjectDetailPtr> newStore;
 

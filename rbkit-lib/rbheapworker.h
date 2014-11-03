@@ -3,6 +3,7 @@
 
 #include <QSharedPointer>
 #include <msgpack.hpp>
+#include "model/objectdetail.h"
 
 
 namespace RBKit
@@ -19,6 +20,7 @@ namespace RBKit
         void dump(const QByteArray);
 
     signals:
+        void parsedObjects(const RBKit::QHashObjectIdToPtr);
         void dumpAvailable(int);
     };
 
@@ -49,5 +51,6 @@ namespace RBKit
         }
     };
 }
+
 
 #endif // RBKIT_HEAP_DUMPER_H

@@ -27,7 +27,9 @@ void RBKit::RbHeapWorker::dump(const QByteArray rawMessage)
     RBKit::RbDumpParser parser(rawMessage);
     parser.parse();
 
-    connection->persistObjects(parser);
+    auto hash = connection->persistObjects(parser);
 
     emit dumpAvailable(connection->getCurrentVersion());
+
+    emit parsedObjects(hash);
 }

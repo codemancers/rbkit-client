@@ -98,3 +98,29 @@ void TestObjectDump::testBenchmarkParseAndConvertToObjects()
 
     QVERIFY(11326 == objects);
 }
+
+
+void TestObjectDump::testBenchmarkParseAndHashObjects()
+{
+    RbDumpParser parser(objectDump);
+    parser.parse();
+
+    QHash<quint64, ObjectDetailPtr> hash;
+    int objects(0);
+
+    QBENCHMARK_ONCE {
+        auto iter = parser.begin();
+        for (; iter != parser.end(); ++iter) {
+            ObjectDetailPtr object(new ObjectDetail());
+            *iter >> *object;
+
+            if (object->objectId > 0) {
+                hash[object->objectId] = object;
+                ++objects;
+            }
+        }
+    }
+
+    QVERIFY(8766 == hash.size());
+    QVERIFY(11326 == objects);
+}

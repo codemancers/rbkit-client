@@ -5,6 +5,8 @@
 #include <QSharedPointer>
 #include <QString>
 #include <QVariant>
+#include <QHash>
+
 
 namespace RBKit {
     class ObjectDetail
@@ -29,11 +31,14 @@ namespace RBKit {
 
     // typedef for the pointer.
     typedef QSharedPointer<ObjectDetail> ObjectDetailPtr;
+    typedef QHash<quint64, RBKit::ObjectDetailPtr> QHashObjectIdToPtr;
 
     QList<ObjectDetailPtr> payloadToObjects(const QVariantList& list);
     ObjectDetailPtr payloadToObject(const QVariantMap& map);
 }
 
-Q_DECLARE_METATYPE(RBKit::ObjectDetail)
+Q_DECLARE_METATYPE(RBKit::ObjectDetail);
+Q_DECLARE_METATYPE(RBKit::QHashObjectIdToPtr);
+
 
 #endif // OBJECTDETAIL_H

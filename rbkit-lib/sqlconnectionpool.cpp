@@ -128,9 +128,13 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
 }
 
 
-void SqlConnectionPool::persistObjects(RBKit::RbDumpParser& parser)
+QHash<quint64, RBKit::ObjectDetailPtr>
+SqlConnectionPool::persistObjects(RBKit::RbDumpParser& parser)
 {
     static const unsigned int batchSize = 100;
+
+    QHash<quint64, RBKit::ObjectDetailPtr> hash;
+
     QHash< quint64, QList<quint64> > references;
     references.reserve(1000);
 
@@ -141,13 +145,14 @@ void SqlConnectionPool::persistObjects(RBKit::RbDumpParser& parser)
     beginTransaction();
     beginObjectInsertion();
     for (unsigned int count = 0; iter != parser.end(); ++iter, ++count) {
-        RBKit::ObjectDetail object;
-        *iter >> object;
+        RBKit::ObjectDetailPtr object(new RBKit::ObjectDetail());
+        *iter >> *object;
 
-        references[object.objectId] = object.references;
-        persistObject(object);
+        hash[object->objectId] = object;
+        references[object->objectId] = object->references;
+        persistObject(*object);
 
-        count += object.references.size();
+        count += object->references.size();
         if (count >= batchSize) {
             beginReferenceInsertion();
             persistReferences(references);
@@ -162,6 +167,8 @@ void SqlConnectionPool::persistObjects(RBKit::RbDumpParser& parser)
         }
     }
     commitTransaction();
+
+    return hash;
 }
 
 

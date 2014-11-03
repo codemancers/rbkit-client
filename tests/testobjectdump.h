@@ -22,6 +22,8 @@ private slots:
     void testBenchmarkHeapDumpParserParse();
     void testBenchmarkIterateParsedHeapDump();
     void testBenchmarkParseAndConvertToObjects();
+    void testBenchmarkParseAndHashObjects();
+
 
 private:
     QByteArray objectDump;

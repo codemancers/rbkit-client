@@ -6,6 +6,7 @@
 #include <QThread>
 
 #include "rbevents.h"
+#include "model/objectdetail.h"
 #include "model/objectstore.h"
 #include "sqlconnectionpool.h"
 
@@ -79,6 +80,7 @@ public slots:
     void startListening(QString _commandsUrl, QString _eventsUrl);
     void stop();
     void onMessageReceived(const QList<QByteArray>&);
+    void onParsedObjects(const RBKit::QHashObjectIdToPtr);
     void onTimerExpiry();
     void triggerGc();
     void takeSnapshot();

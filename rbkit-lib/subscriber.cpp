@@ -48,6 +48,8 @@ Subscriber::Subscriber(RBKit::JsBridge* bridge)
 
 void Subscriber::setup()
 {
+    qRegisterMetaType<RBKit::QHashObjectIdToPtr>();
+
     // create db heap dumper, and connect subscriber to dumper.
     heapWorker.reset(new RBKit::RbHeapWorker());
 
@@ -55,6 +57,8 @@ void Subscriber::setup()
             heapWorker.data(), SLOT(dump(const QByteArray)));
     connect(heapWorker.data(), SIGNAL(dumpAvailable(int)),
             this, SIGNAL(objectDumpAvailable(int)));
+    connect(heapWorker.data(), SIGNAL(parsedObjects(const RBKit::QHashObjectIdToPtr)),
+            this, SLOT(onParsedObjects(const RBKit::QHashObjectIdToPtr)));
 
     heapWorker->moveToThread(&heapDumpThread);
     heapDumpThread.start();
@@ -214,6 +218,13 @@ void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)
         event->process(*this);
     }
 }
+
+
+void Subscriber::onParsedObjects(const RBKit::QHashObjectIdToPtr objects)
+{
+    objectStore->updateFromSnapshot(objects);
+}
+
 
 void Subscriber::performHandshake()
 {
