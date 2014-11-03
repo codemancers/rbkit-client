@@ -148,6 +148,11 @@ SqlConnectionPool::persistObjects(RBKit::RbDumpParser& parser)
         RBKit::ObjectDetailPtr object(new RBKit::ObjectDetail());
         *iter >> *object;
 
+        // TODO: Temporary hack to ignore already existing object ids
+        if (hash.find(object->objectId) != hash.end()) {
+            continue;
+        }
+
         hash[object->objectId] = object;
         references[object->objectId] = object->references;
         persistObject(*object);
