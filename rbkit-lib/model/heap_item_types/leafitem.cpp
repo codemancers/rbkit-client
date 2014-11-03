@@ -1,6 +1,7 @@
 #include "leafitem.h"
 #include <QSqlQuery>
 #include <QDebug>
+#include <QFileInfo>
 #include "stringutil.h"
 #include "heapitem.h"
 
@@ -11,15 +12,6 @@ LeafItem::LeafItem(const QString _className, quint32 _count, quint32 _referenceC
     : BaseHeapItem(_className, _count, _referenceCount, _totalSize, _snapShotVersion)
 {
     filename = _filename;
-}
-
-QString LeafItem::leadingIdentifier()
-{
-    if (filename.isEmpty()) {
-        return className;
-    } else {
-        return QString("%0 - %1").arg(className).arg(filename);
-    }
 }
 
 QVariant LeafItem::getClassOrFile() const
@@ -57,6 +49,16 @@ BaseHeapItem *LeafItem::getSelectedReferences()
     rootItem->childrenFetched = true;
     rootItem->computePercentage();
     return rootItem;
+}
+
+QString LeafItem::shortLeadingIdentifier()
+{
+    if (filename.isEmpty()) {
+        return className;
+    } else {
+        QString shortFileName = QFileInfo(filename).fileName();
+        return QString("%0 - %1").arg(className).arg(shortFileName);
+    }
 }
 
 } // namespace RBKit

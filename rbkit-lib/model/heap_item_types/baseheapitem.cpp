@@ -1,6 +1,8 @@
 #include "baseheapitem.h"
 #include <QSqlQuery>
-#include "heapitemdetail.h"
+#include "heapitem.h"
+#include "stringutil.h"
+#include <QFileInfo>
 
 namespace RBKit {
 
@@ -13,6 +15,7 @@ BaseHeapItem::BaseHeapItem()
     objectsTableName = QString("rbkit_objects_%0").arg(snapShotVersion);
     referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
     originalObjectsTableName = objectsTableName;
+    objectParent = 0;
 }
 
 BaseHeapItem::BaseHeapItem(int _snapShotVersion)
@@ -25,6 +28,7 @@ BaseHeapItem::BaseHeapItem(int _snapShotVersion)
     objectsTableName = QString("rbkit_objects_%0").arg(snapShotVersion);
     referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
     originalObjectsTableName = objectsTableName;
+    objectParent = 0;
 }
 
 BaseHeapItem::BaseHeapItem(const QString _className, quint32 _count, quint32 _referenceCount, quint32 _totalSize, int _snapShotVersion)
@@ -38,6 +42,7 @@ BaseHeapItem::BaseHeapItem(const QString _className, quint32 _count, quint32 _re
     objectsTableName = QString("rbkit_objects_%0").arg(snapShotVersion);
     referenceTableName = QString("rbkit_object_references_%0").arg(snapShotVersion);
     originalObjectsTableName = objectsTableName;
+    objectParent = 0;
 }
 
 BaseHeapItem::~BaseHeapItem()
@@ -54,8 +59,36 @@ void BaseHeapItem::setOriginalObjectsTableName(const QString &value)
     originalObjectsTableName = value;
 }
 
-HeapItemDetail *BaseHeapItem::getObjectParents()
+BaseHeapItem *BaseHeapItem::getObjectParents(BaseHeapItem *rootItem)
 {
+    if (objectParent != NULL) {
+        return objectParent;
+    } else {
+        QString queryString;
+        QString viewName = QString("view_").append(RBKit::StringUtil::randomSHA());
+        queryString = QString("create view %0 AS select * from %1 where %1.id in "
+                              "(select %2.object_id from %2 "
+                              " INNER JOIN %3 ON %3.id = %2.child_id "
+                              " where %3.class_name = '%4' and %3.file='%5')").
+                arg(viewName).arg(rootItem->originalObjectsTableName).
+                arg(rootItem->referenceTableName).arg(rootItem->objectsTableName).
+                arg(className).arg(filename);
+
+        QSqlQuery query;
+
+        if (!query.exec(queryString)) {
+            qDebug() << "Error creating view with";
+            qDebug() << query.lastError();
+        }
+
+        objectParent = new HeapItem(-1);
+        objectParent->setObjectsTableName(viewName);
+        objectParent->setIsSnapshot(false);
+        objectParent->findImmediateChildren();
+        objectParent->childrenFetched = true;
+        objectParent->computePercentage();
+        return objectParent;
+    }
 }
 
 
@@ -157,7 +190,11 @@ void BaseHeapItem::addChildren(BaseHeapItem *item)
 
 QString BaseHeapItem::leadingIdentifier()
 {
-    return className;
+    if (filename.isEmpty()) {
+        return className;
+    } else {
+        return QString("%0 - %1").arg(className).arg(filename);
+    }
 }
 
 void BaseHeapItem::computePercentage()
@@ -184,19 +221,25 @@ void BaseHeapItem::findImmediateChildren()
 {
     QSqlQuery searchQuery(
                 QString("select class_name, count(id) as object_count, "
-                        "sum(reference_count) as total_ref_count, sum(size) as total_size from %0 group by (class_name)").arg(objectsTableName));
+                        "sum(reference_count) as total_ref_count, sum(size) as total_size, file from %0 group by (class_name)").arg(objectsTableName));
 
     while(searchQuery.next()) {
         BaseHeapItem* item = new BaseHeapItem(searchQuery.value(0).toString(), searchQuery.value(1).toInt(),
                                       searchQuery.value(2).toInt(), searchQuery.value(3).toInt(), -1);
         item->setObjectsTableName(objectsTableName);
+        item->filename = searchQuery.value(4).toString();
         addChildren(item);
     }
 }
 
 QVariant BaseHeapItem::getClassOrFile() const
 {
-    return QVariant(className);
+    if (filename.isEmpty()) {
+        return className;
+    } else {
+        QString shortFileName = QFileInfo(filename).fileName();
+        return QString("%0 - %1").arg(className).arg(shortFileName);
+    }
 }
 
 BaseHeapItem *BaseHeapItem::getChild(int index)

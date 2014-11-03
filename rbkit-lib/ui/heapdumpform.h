@@ -36,15 +36,17 @@ protected:
     bool disableRightClick;
 public:
     explicit HeapDumpForm(QWidget *parent = 0, int _snapShotVersion = 0);
-    ~HeapDumpForm();
+    virtual ~HeapDumpForm();
     void loaData();
     void loadSelectedReferences(RBKit::BaseHeapItem* _selectedItem);
     void adjustColumnWidth();
+    void loadFromSpecifiedRoot(RBKit::BaseHeapItem*_rootItem);
     RbkitMainWindow *getParentWindow() const;
     void setParentWindow(RbkitMainWindow *value);
     void setDisableRightClick(bool value);
     bool getDisableRightClick() const;
     void setTreeModel(SortObjectProxyModel* model);
+    void reset();
 
     RBKit::BaseHeapItem *getRootItem() const;
     Ui::HeapDumpForm *ui;

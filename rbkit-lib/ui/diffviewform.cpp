@@ -2,6 +2,7 @@
 #include "rbkitmainwindow.h"
 #include "ui_heapdumpform.h"
 #include "parentviewform.h"
+#include "model/heap_item_types/baseheapitem.h"
 #include <QStatusBar>
 
 DiffViewForm::DiffViewForm(QWidget* parent, int _snapShotVersion)
@@ -9,19 +10,16 @@ DiffViewForm::DiffViewForm(QWidget* parent, int _snapShotVersion)
 {
 }
 
-void DiffViewForm::loadFromSpecifiedRoot(RBKit::BaseHeapItem *_rootItem)
+DiffViewForm::~DiffViewForm()
 {
-    rootItem = _rootItem;
-    model = new RBKit::HeapDataModel(rootItem, this);
-    proxyModel = new SortObjectProxyModel(this);
-    proxyModel->setSourceModel(model);
-    setTreeModel(proxyModel);
-    adjustColumnWidth();
+    if (parentViewForm != NULL)  {
+        qDebug() << "Delete parent view form";
+        delete parentViewForm;
+    }
 }
 
 void DiffViewForm::treeNodeSelected(const QModelIndex &index)
 {
-    qDebug() << "Calling this method here";
     QModelIndex sourceIndex = proxyModel->mapToSource(index);
     RBKit::BaseHeapItem *nodeItem = static_cast<RBKit::BaseHeapItem *>(sourceIndex.internalPointer());
     if (nodeItem != NULL) {
@@ -35,12 +33,17 @@ void DiffViewForm::treeNodeSelected(const QModelIndex &index)
 
 void DiffViewForm::updateParentView(RBKit::BaseHeapItem *heapItem)
 {
-    parentViewForm->setLabel(heapItem->className);
+    parentViewForm->reset();
+    RBKit::BaseHeapItem *parentHeapItem = heapItem->getObjectParents(rootItem);
+    parentViewForm->loadFromSpecifiedRoot(parentHeapItem);
 }
 
 void DiffViewForm::initializeParentView()
 {
-    parentViewForm = new ParentViewForm(this);
+    parentViewForm = new HeapDumpForm(this, -1);
+    parentViewForm->setMaximumHeight(200);
+    parentViewForm->setDisableRightClick(true);
+    parentViewForm->setParentWindow(getParentWindow());
     ui->treeVerticalLayout->addWidget(parentViewForm);
     qDebug() << "Showing the parent form";
     parentViewForm->show();
