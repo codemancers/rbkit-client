@@ -1,5 +1,5 @@
 #include "objectaggregator.h"
-#include <QDebug>
+#include "rbdebug.h"
 
 
 RBKit::ObjectAggregator::ObjectAggregator()
@@ -32,7 +32,7 @@ void RBKit::ObjectAggregator::objDeleted(quint64 key)
 }
 
 void RBKit::ObjectAggregator::
-updateFromSnapshot(const QList<RBKit::ObjectDetailPtr>& objects)
+updateFromSnapshot(const RBKit::QHashObjectIdToPtr objects)
 {
     typeToCount.clear();
     idToName.clear();

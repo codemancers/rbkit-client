@@ -30,7 +30,7 @@ namespace RBKit {
         bool hasKey(quint64 key) const;
         QList<quint64> keys() const;
 
-        void updateFromSnapshot(const QList<RBKit::ObjectDetailPtr>& objects);
+        void updateFromSnapshot(const RBKit::QHashObjectIdToPtr objects);
         void updateObjectGeneration();
 
         inline void onGcStats(const QVariantMap& stats) {

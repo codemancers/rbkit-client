@@ -8,6 +8,7 @@
 #include <QString>
 #include "stringutil.h"
 #include "model/objectdetail.h"
+#include <msgpack.hpp>
 
 
 class Subscriber;               // this acts as processor also atm.
@@ -72,11 +73,10 @@ namespace RBKit
     class EvtObjectDump : public EventDataBase
     {
     public:
-        EvtObjectDump(QDateTime ts, QString eventName,
-                      QList<RBKit::ObjectDetailPtr> objects);
+        EvtObjectDump(QDateTime ts, QString eventName, const QByteArray);
         void process(Subscriber& processor) const;
 
-        QList<RBKit::ObjectDetailPtr> objects;
+        const QByteArray rawMessage;
     };
 
     class EvtCollection : public EventDataBase
@@ -88,8 +88,27 @@ namespace RBKit
         QList<RBKit::EventPtr> events;
     };
 
-    EventDataBase* parseEvent(const QByteArray& rawMessage);
-    EventDataBase* makeEventFromQVariantMap(const QVariantMap& map);
+    class EventParser
+    {
+    public:
+        EventParser(const QByteArray& message);
+
+    public:
+        EventDataBase* parseEvent() const;
+
+    public:                     // helpers
+        QList<RBKit::EventPtr> parseEvents(const msgpack::object&) const;
+        RBKit::EventDataBase* eventFromObject(msgpack::object&) const;
+        QString guessEvent(const msgpack::object&) const;
+
+    public:
+        inline msgpack::unpacked& getUnpacked() { return unpacked; }
+        msgpack::object extractObjectDump() const;
+
+    private:
+        const QByteArray rawMessage;
+        msgpack::unpacked unpacked;
+    };
 }
 
 

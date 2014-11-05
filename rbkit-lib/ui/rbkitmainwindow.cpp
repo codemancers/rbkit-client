@@ -146,6 +146,7 @@ void RbkitMainWindow::setupSubscriber()
     //Create a subscriber and move it to it's own thread
     subscriber = new Subscriber(memoryView->getJsBridge());
     subscriber->moveToThread(&subscriberThread);
+    subscriber->setup();
 
     //Events to/from parent/subcriber thread
     connect(&subscriberThread, &QThread::finished, subscriber, &QObject::deleteLater);

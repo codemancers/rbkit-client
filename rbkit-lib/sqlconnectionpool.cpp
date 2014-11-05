@@ -1,6 +1,10 @@
 #include "sqlconnectionpool.h"
 #include "model/appstate.h"
 #include "model/heap_item_types/heapitem.h"
+#include "rbheapworker.h"
+#include "mpparser.h"
+#include "rbdebug.h"
+
 
 namespace RBKit {
 
@@ -40,6 +44,8 @@ void SqlConnectionPool::setupDatabase()
 
 void SqlConnectionPool::prepareTables()
 {
+    currentVersion += 1;
+
     QVector<QString> objectCreation;
     objectCreation.append(QString("create table rbkit_objects_%0(id integer primary key"
                                   ", class_name varchar, size integer "
@@ -57,35 +63,135 @@ void SqlConnectionPool::prepareTables()
     qDebug() << "Preparing tables done";
 }
 
+
+void SqlConnectionPool::beginTransaction()
+{
+    if (!query.exec(QString("begin transaction"))) {
+        INFO1("error: %s", query.lastError().text().toStdString().c_str());
+    }
+}
+
+
+void SqlConnectionPool::beginObjectInsertion()
+{
+    QString insertStatement("insert into rbkit_objects_%0"
+                            "(id"
+                            ", class_name"
+                            ", size"
+                            ", reference_count"
+                            ", file)"
+                            " values (?, ?, ?, ?, ?)");
+
+    if ( !query.prepare(insertStatement.arg(currentVersion)) ) {
+        INFO1("error: %s", query.lastError().text().toStdString().c_str());
+    }
+}
+
+
+void SqlConnectionPool::beginReferenceInsertion()
+{
+    QString insertStatement("insert into rbkit_object_references_%0"
+                            "(object_id"
+                            ", child_id)"
+                            " values (?, ?)");
+    if ( !query.prepare(insertStatement.arg(currentVersion)) ) {
+        INFO1("error: %s", query.lastError().text().toStdString().c_str());
+    }
+}
+
+
+void SqlConnectionPool::commitTransaction()
+{
+    if ( !query.exec(QString("commit transaction")) ) {
+        INFO1("error: %s", query.lastError().text().toStdString().c_str());
+    }
+
+    RBKit::AppState::getInstance()->setAppState("heap_snapshot", 80);
+
+}
+
 void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
 {
-    currentVersion += 1;
     prepareTables();
+    beginTransaction();
 
     qDebug() << "Loading db snapshot";
-    if (!query.exec(QString("begin transaction"))) {
-        qDebug() << query.lastError();
-    }
-    if (!query.prepare(
-                QString("insert into rbkit_objects_%0(id, class_name, size, reference_count, file) values (?, ?, ?, ?, ?)")
-                .arg(currentVersion))) {
-        qDebug() << query.lastError();
-        return;
-    }
 
+    beginObjectInsertion();
     objectStore->insertObjectsInDB(query);
     RBKit::AppState::getInstance()->setAppState("heap_snapshot", 50);
 
-    if (!query.prepare(QString("insert into rbkit_object_references_%0(object_id, child_id) values (?, ?)").arg(currentVersion)))
-        qDebug() << query.lastError();
-
+    beginReferenceInsertion();
     objectStore->insertReferences(query);
 
-    if (!query.exec(QString("commit transaction")))
-        qDebug() << query.lastError();
-
-    RBKit::AppState::getInstance()->setAppState("heap_snapshot", 80);
+    commitTransaction();
 }
+
+
+QHash<quint64, RBKit::ObjectDetailPtr>
+SqlConnectionPool::persistObjects(RBKit::RbDumpParser& parser)
+{
+    RBKit::QHashObjectIdToPtr hash;
+
+    prepareTables();
+
+    beginTransaction();
+
+    beginObjectInsertion();
+
+    for (auto iter = parser.begin(); iter != parser.end(); ++iter) {
+        RBKit::ObjectDetailPtr object(new RBKit::ObjectDetail());
+        *iter >> *object;
+
+        // TODO: Temporary hack to ignore already existing object ids
+        if (hash.find(object->objectId) != hash.end()) {
+            continue;
+        }
+
+        hash[object->objectId] = object;
+        persistObject(*object);
+    }
+
+    beginReferenceInsertion();
+    persistReferences(hash);
+
+    commitTransaction();
+
+    return hash;
+}
+
+
+void SqlConnectionPool::persistObject(const RBKit::ObjectDetail& object)
+{
+    query.addBindValue(object.objectId);
+    query.addBindValue(object.className);
+    query.addBindValue(object.size);
+    query.addBindValue(object.references.size());
+    query.addBindValue(object.getFileLine());
+    if (!query.exec()) {
+        INFO2("id %llu error: %s", object.objectId,
+              query.lastError().text().toStdString().c_str());
+    }
+}
+
+
+void SqlConnectionPool::persistReferences(const RBKit::QHashObjectIdToPtr hash)
+{
+    for (auto& object : hash) {
+        auto objectId = object->objectId;
+        auto refs = object->references;
+
+        for (auto ref : refs) {
+            query.addBindValue(objectId);
+            query.addBindValue(ref);
+            if (!query.exec()) {
+                INFO3("id= %llu, ref=%llu, error: %s", objectId, ref,
+                      query.lastError().text().toStdString().c_str());
+            }
+        }
+    }
+}
+
 
 HeapItem *SqlConnectionPool::rootOfSnapshot(int snapShotVersion)
 {

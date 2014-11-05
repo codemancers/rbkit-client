@@ -1,4 +1,4 @@
-#include <QDebug>
+#include "rbdebug.h"
 #include <QThread>
 #include <QTimer>
 #include <QScopedPointer>
@@ -8,6 +8,7 @@
 #include "subscriber.h"
 #include "zmqsockets.h"
 #include "rbcommands.h"
+#include "rbheapworker.h"
 #include "model/jsbridge.h"
 #include "model/appstate.h"
 
@@ -42,8 +43,27 @@ void Subscriber::setContext(nzmqt::ZMQContext *value)
 Subscriber::Subscriber(RBKit::JsBridge* bridge)
     :jsBridge(bridge), connectionEstablished(false)
 {
-    qDebug() << "** Thread is is : " << QThread::currentThreadId();
 }
+
+
+void Subscriber::setup()
+{
+    qRegisterMetaType<RBKit::QHashObjectIdToPtr>();
+
+    // create db heap dumper, and connect subscriber to dumper.
+    heapWorker.reset(new RBKit::RbHeapWorker());
+
+    connect(this, SIGNAL(dumpReceived(const QByteArray)),
+            heapWorker.data(), SLOT(dump(const QByteArray)));
+    connect(heapWorker.data(), SIGNAL(dumpAvailable(int)),
+            this, SIGNAL(objectDumpAvailable(int)));
+    connect(heapWorker.data(), SIGNAL(parsedObjects(const RBKit::QHashObjectIdToPtr)),
+            this, SLOT(onParsedObjects(const RBKit::QHashObjectIdToPtr)));
+
+    heapWorker->moveToThread(&heapDumpThread);
+    heapDumpThread.start();
+}
+
 
 void Subscriber::triggerGc() {
     RBKit::CmdTriggerGC triggerGC_Command;
@@ -60,7 +80,8 @@ void Subscriber::takeSnapshot()
 
 void Subscriber::startSubscriber()
 {
-    qDebug() << "** Thread id is : " << QThread::currentThreadId();
+    qDebug() << "start subscriber";
+
     context = new nzmqt::SocketNotifierZMQContext(this, 1);
     commandSocket = new RBKit::ZmqCommandSocket(this, context);
     eventSocket   = new RBKit::ZmqEventSocket(this, context);
@@ -93,7 +114,7 @@ void Subscriber::handShakeCompleted()
     m_timer->start();
 
     emit connected();
-    qDebug() << "started";
+    qDebug("started");
 }
 
 void Subscriber::emitConnectionError(QString message)
@@ -104,7 +125,6 @@ void Subscriber::emitConnectionError(QString message)
 
 Subscriber::~Subscriber()
 {
-    qDebug() << "** Thread id is : " << QThread::currentThreadId();
     stop();
     delete m_timer;
     delete commandSocket;
@@ -137,7 +157,8 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
     for (QList<QByteArray>::ConstIterator iter = rawMessage.begin();
          rawMessage.end() != iter; ++iter)
     {
-        RBKit::EventDataBase* event = RBKit::parseEvent(*iter);
+        const RBKit::EventParser eventParser(*iter);
+        RBKit::EventDataBase* event = eventParser.parseEvent();
 
         if (NULL != event) {
             event->process(*this);
@@ -186,12 +207,10 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 
 void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 {
-    objectStore->updateFromSnapshot(dump.objects);
-
-    RBKit::AppState::getInstance()->setAppState("heap_snapshot", 10);
-    RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
-    emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());
+    INFO1("dump ptr: %p", (*(QByteArray *)(&dump.rawMessage)).data_ptr());
+    emit dumpReceived(dump.rawMessage);
 }
+
 
 void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)
 {
@@ -199,6 +218,13 @@ void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)
         event->process(*this);
     }
 }
+
+
+void Subscriber::onParsedObjects(const RBKit::QHashObjectIdToPtr objects)
+{
+    objectStore->updateFromSnapshot(objects);
+}
+
 
 void Subscriber::performHandshake()
 {

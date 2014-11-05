@@ -14,6 +14,7 @@ SOURCES += \
     rbcommands.cpp \
     zmqsockets.cpp \
     rbevents.cpp \
+    rbheapworker.cpp \
     stringutil.cpp \
     sqlconnectionpool.cpp\
     model/appstate.cpp \
@@ -41,10 +42,14 @@ SOURCES += \
 HEADERS +=  \
     subscriber.h \
     zmqsockets.h \
+    mpparser.h \
     rbevents.h \
     rbcommands.h \
+    rbheapworker.h \
+    rbdebug.h \
     stringutil.h \
     sqlconnectionpool.h \
+    debug.h \
     model/appstate.h \
     model/heapdatamodel.h \
     model/jsbridge.h \
