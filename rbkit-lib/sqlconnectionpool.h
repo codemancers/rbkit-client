@@ -37,7 +37,7 @@ public:
     void loadSnapshot(ObjectStore *objectStore);
     QHash<quint64, RBKit::ObjectDetailPtr> persistObjects(RbDumpParser& parser);
 
-    void persistReferences(const QHash< quint64, QList<quint64> >&);
+    void persistReferences(const RBKit::QHashObjectIdToPtr hash);
     void persistObject(const ObjectDetail& object);
 
     HeapItem *rootOfSnapshot(int snapShotVersion);

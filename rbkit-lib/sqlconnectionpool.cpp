@@ -131,20 +131,15 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
 QHash<quint64, RBKit::ObjectDetailPtr>
 SqlConnectionPool::persistObjects(RBKit::RbDumpParser& parser)
 {
-    static const unsigned int batchSize = 100;
-
-    QHash<quint64, RBKit::ObjectDetailPtr> hash;
-
-    QHash< quint64, QList<quint64> > references;
-    references.reserve(1000);
-
-    auto iter = parser.begin();
+    RBKit::QHashObjectIdToPtr hash;
 
     prepareTables();
 
     beginTransaction();
+
     beginObjectInsertion();
-    for (unsigned int count = 0; iter != parser.end(); ++iter, ++count) {
+
+    for (auto iter = parser.begin(); iter != parser.end(); ++iter) {
         RBKit::ObjectDetailPtr object(new RBKit::ObjectDetail());
         *iter >> *object;
 
@@ -154,23 +149,12 @@ SqlConnectionPool::persistObjects(RBKit::RbDumpParser& parser)
         }
 
         hash[object->objectId] = object;
-        references[object->objectId] = object->references;
         persistObject(*object);
-
-        count += object->references.size();
-        if (count >= batchSize) {
-            beginReferenceInsertion();
-            persistReferences(references);
-            references.clear();
-
-            commitTransaction();
-
-            beginTransaction();
-            beginObjectInsertion();
-
-            count = 0;
-        }
     }
+
+    beginReferenceInsertion();
+    persistReferences(hash);
+
     commitTransaction();
 
     return hash;
@@ -191,11 +175,11 @@ void SqlConnectionPool::persistObject(const RBKit::ObjectDetail& object)
 }
 
 
-void SqlConnectionPool::persistReferences(const QHash< quint64, QList<quint64> >& hash)
+void SqlConnectionPool::persistReferences(const RBKit::QHashObjectIdToPtr hash)
 {
-    for (auto iter = hash.begin(); iter != hash.end(); ++iter) {
-        auto objectId = iter.key();
-        auto refs = iter.value();
+    for (auto& object : hash) {
+        auto objectId = object->objectId;
+        auto refs = object->references;
 
         for (auto ref : refs) {
             query.addBindValue(objectId);
