@@ -56,7 +56,7 @@ void TestRbEvents::testParseGCStartEvent()
     EvtGcStart *event = dynamic_cast<EvtGcStart *>(base);
     QVERIFY(event);
 
-    QVERIFY(event->eventName == "gc_start");
+    QVERIFY(RBKit::EtGcStart == event->eventType);
 }
 
 
