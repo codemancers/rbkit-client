@@ -56,28 +56,56 @@ static QVariantMap parseMsgpackObjectMap(const msgpack::object_map& obj)
 
 RBKit::EventDataBase* RBKit::makeEventFromQVariantMap(const QVariantMap &map) {
     QDateTime timestamp = QDateTime::fromMSecsSinceEpoch(map["timestamp"].toULongLong());
-    QString eventType = map["event_type"].toString();
-    if (eventType == "obj_created") {
+    auto eventType = static_cast<RBKit::EventType>( map["event_type"].toInt() );
+
+    RBKit::EventDataBase* event(nullptr);
+    switch (eventType) {
+    case RBKit::EtObjCreated:
+    {
         auto object = RBKit::payloadToObject(map["payload"].toMap());
-        return new RBKit::EvtNewObject(timestamp, eventType, object);
-    } else if (eventType == "obj_destroyed") {
-        return new RBKit::EvtDelObject(timestamp, eventType, map["payload"].toMap());
-    } else if (eventType == "gc_stats") {
-        return new RBKit::EvtGcStats(timestamp, eventType, map["payload"].toMap());
-    } else if (eventType == "gc_start") {
-        return new RBKit::EvtGcStart(timestamp, eventType);
-    } else if (eventType == "gc_end_s") {
-        return new RBKit::EvtGcStop(timestamp, eventType);
-    } else if (eventType == "object_space_dump") {
-        auto objects = RBKit::payloadToObjects(map["payload"].toList());
-        return new RBKit::EvtObjectDump(timestamp, eventType, objects);
-    } else if (eventType == "event_collection") {
-        auto events = parseEventCollection(map["payload"].toList());
-        return new RBKit::EvtCollection(timestamp, eventType, events);
-    } else {
-        qDebug() << "Unable to parse event of type" << map["event_type"];
-        return NULL;
+        event = new RBKit::EvtNewObject(timestamp, eventType, object);
     }
+    break;
+
+    case RBKit::EtObjDestroyed:
+        event = new RBKit::EvtDelObject(timestamp, eventType, map["payload"].toMap());
+        break;
+
+    case RBKit::EtGcStats:
+        event = new RBKit::EvtGcStats(timestamp, eventType, map["payload"].toMap());
+        break;
+
+    case RBKit::EtGcStart:
+        event = new RBKit::EvtGcStart(timestamp, eventType);
+        break;
+
+    case RBKit::EtGcStartM:
+        event = new RBKit::EvtGcStartM(timestamp, eventType);
+        break;
+
+    case RBKit::EtGcEndS:
+        event = new RBKit::EvtGcStop(timestamp, eventType);
+        break;
+
+    case RBKit::EtObjectSpaceDump:
+    {
+        auto objects = RBKit::payloadToObjects(map["payload"].toList());
+        event = new RBKit::EvtObjectDump(timestamp, eventType, objects);
+    }
+    break;
+
+    case RBKit::EtEventCollection:
+    {
+        auto events = parseEventCollection(map["payload"].toList());
+        event = new RBKit::EvtCollection(timestamp, eventType, events);
+    }
+    break;
+
+    default:
+        qDebug() << "Unable to parse event of type: " << eventType;
+    }
+
+    return event;
 }
 
 
@@ -118,15 +146,15 @@ static QList<RBKit::EventPtr> parseEventCollection(const QVariantList& list)
 
 // ============================== different events ==============================
 
-RBKit::EventDataBase::EventDataBase(QDateTime ts, QString eventName)
-    : timestamp(ts), eventName(eventName)
+RBKit::EventDataBase::EventDataBase(QDateTime ts, RBKit::EventType eventType)
+    : timestamp(ts), eventType(eventType)
 {
 }
 
 
-RBKit::EvtNewObject::EvtNewObject(QDateTime ts, QString eventName,
+RBKit::EvtNewObject::EvtNewObject(QDateTime ts, RBKit::EventType eventType,
                                   RBKit::ObjectDetailPtr _object)
-    : EventDataBase(ts, eventName)
+    : EventDataBase(ts, eventType)
     , object(_object)
 {
 
@@ -137,9 +165,10 @@ void RBKit::EvtNewObject::process(Subscriber& processor) const
     processor.processEvent(*this);
 }
 
-RBKit::EvtDelObject::EvtDelObject(QDateTime ts, QString eventName, QVariantMap payload)
-    : EventDataBase(ts, eventName)
-    , objectId(StringUtil::hextoInt(payload["object_id"].toString()))
+RBKit::EvtDelObject::EvtDelObject(QDateTime ts, RBKit::EventType eventType,
+                                  QVariantMap payload)
+    : EventDataBase(ts, eventType)
+    , objectId(payload["object_id"].toULongLong())
 { }
 
 void RBKit::EvtDelObject::process(Subscriber& processor) const
@@ -148,8 +177,9 @@ void RBKit::EvtDelObject::process(Subscriber& processor) const
 }
 
 
-RBKit::EvtGcStats::EvtGcStats(QDateTime ts, QString eventName, QVariantMap _payload)
-    : EventDataBase(ts, eventName)
+RBKit::EvtGcStats::EvtGcStats(QDateTime ts, RBKit::EventType eventType,
+                              QVariantMap _payload)
+    : EventDataBase(ts, eventType)
     , payload(_payload)
 { }
 
@@ -159,8 +189,8 @@ void RBKit::EvtGcStats::process(Subscriber& processor) const
 }
 
 
-RBKit::EvtGcStart::EvtGcStart(QDateTime ts, QString eventName)
-    : EventDataBase(ts, eventName)
+RBKit::EvtGcStart::EvtGcStart(QDateTime ts, RBKit::EventType eventType)
+    : EventDataBase(ts, eventType)
 {}
 
 void RBKit::EvtGcStart::process(Subscriber& processor) const
@@ -169,8 +199,18 @@ void RBKit::EvtGcStart::process(Subscriber& processor) const
 }
 
 
-RBKit::EvtGcStop::EvtGcStop(QDateTime ts, QString eventName)
-    : EventDataBase(ts, eventName)
+RBKit::EvtGcStartM::EvtGcStartM(QDateTime ts, RBKit::EventType eventType)
+    : EventDataBase(ts, eventType)
+{}
+
+void RBKit::EvtGcStartM::process(Subscriber& processor) const
+{
+    processor.processEvent(*this);
+}
+
+
+RBKit::EvtGcStop::EvtGcStop(QDateTime ts, RBKit::EventType eventType)
+    : EventDataBase(ts, eventType)
 {}
 
 void RBKit::EvtGcStop::process(Subscriber& processor) const
@@ -179,9 +219,9 @@ void RBKit::EvtGcStop::process(Subscriber& processor) const
 }
 
 
-RBKit::EvtObjectDump::EvtObjectDump(QDateTime ts, QString eventName,
+RBKit::EvtObjectDump::EvtObjectDump(QDateTime ts, RBKit::EventType eventType,
                                     QList<RBKit::ObjectDetailPtr> _objects)
-    : EventDataBase(ts, eventName)
+    : EventDataBase(ts, eventType)
     , objects(_objects)
 { }
 
@@ -190,9 +230,9 @@ void RBKit::EvtObjectDump::process(Subscriber& processor) const
     processor.processEvent(*this);
 }
 
-RBKit::EvtCollection::EvtCollection(QDateTime ts, QString eventName,
+RBKit::EvtCollection::EvtCollection(QDateTime ts, RBKit::EventType eventType,
                                     QList<RBKit::EventPtr> _events)
-    : EventDataBase(ts, eventName)
+    : EventDataBase(ts, eventType)
     , events(_events)
 {}
 

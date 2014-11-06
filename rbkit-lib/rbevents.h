@@ -14,15 +14,28 @@ class Subscriber;               // this acts as processor also atm.
 
 namespace RBKit
 {
+    // https://github.com/code-mancers/rbkit/blob/833c4bb/ext/rbkit_event.h#L5
+    enum EventType
+    {
+        EtObjCreated       = 0,
+        EtObjDestroyed     = 1,
+        EtGcStart          = 2,
+        EtGcStartM         = 3,
+        EtGcEndS           = 4,
+        EtObjectSpaceDump  = 5,
+        EtGcStats          = 6,
+        EtEventCollection  = 7
+    };
+
     class EventDataBase
     {
     public:
-        EventDataBase(QDateTime ts, QString eventName);
+        EventDataBase(QDateTime ts, EventType eventType);
         virtual void process(Subscriber& processor) const = 0;
         virtual ~EventDataBase() {}
 
         QDateTime timestamp;
-        QString eventName;
+        EventType eventType;
     };
 
     // event pointer.
@@ -31,7 +44,7 @@ namespace RBKit
     class EvtNewObject : public EventDataBase
     {
     public:
-        EvtNewObject(QDateTime ts, QString eventName, RBKit::ObjectDetailPtr object);
+        EvtNewObject(QDateTime ts, EventType eventType, RBKit::ObjectDetailPtr object);
         void process(Subscriber& processor) const;
 
         RBKit::ObjectDetailPtr object;
@@ -40,7 +53,7 @@ namespace RBKit
     class EvtDelObject : public EventDataBase
     {
     public:
-        EvtDelObject(QDateTime ts, QString eventName, QVariantMap payload);
+        EvtDelObject(QDateTime ts, EventType eventType, QVariantMap payload);
         void process(Subscriber& processor) const;
 
         quint64 objectId;
@@ -49,7 +62,7 @@ namespace RBKit
     class EvtGcStats : public EventDataBase
     {
     public:
-        EvtGcStats(QDateTime ts, QString eventName, QVariantMap payload);
+        EvtGcStats(QDateTime ts, EventType eventType, QVariantMap payload);
         void process(Subscriber& processor) const;
 
         QVariantMap payload;
@@ -58,21 +71,28 @@ namespace RBKit
     class EvtGcStart : public EventDataBase
     {
     public:
-        EvtGcStart(QDateTime ts, QString eventName);
+        EvtGcStart(QDateTime ts, EventType eventType);
+        void process(Subscriber &processor) const;
+    };
+
+    class EvtGcStartM : public EventDataBase
+    {
+    public:
+        EvtGcStartM(QDateTime ts, EventType eventType);
         void process(Subscriber &processor) const;
     };
 
     class EvtGcStop : public EventDataBase
     {
     public:
-        EvtGcStop(QDateTime ts, QString eventName);
+        EvtGcStop(QDateTime ts, EventType eventType);
         void process(Subscriber &processor) const;
     };
 
     class EvtObjectDump : public EventDataBase
     {
     public:
-        EvtObjectDump(QDateTime ts, QString eventName,
+        EvtObjectDump(QDateTime ts, EventType eventType,
                       QList<RBKit::ObjectDetailPtr> objects);
         void process(Subscriber& processor) const;
 
@@ -82,7 +102,7 @@ namespace RBKit
     class EvtCollection : public EventDataBase
     {
     public:
-        EvtCollection(QDateTime ts, QString eventName, QList<RBKit::EventPtr>);
+        EvtCollection(QDateTime ts, EventType eventType, QList<RBKit::EventPtr>);
         void process(Subscriber& process) const;
 
         QList<RBKit::EventPtr> events;

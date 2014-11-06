@@ -25,10 +25,8 @@ void RBKit::ObjectDetail::addReference(quint64 reference)
 
 void RBKit::ObjectDetail::addReferences(QList<QVariant> _references)
 {
-    QList<QVariant>::const_iterator referIter;
-    for(referIter = _references.constBegin();
-        referIter != _references.constEnd(); ++referIter) {
-        references.append(RBKit::StringUtil::hextoInt((*referIter).toString()));
+    for (auto ref : _references) {
+        references.append(ref.toULongLong());
     }
 }
 
@@ -50,7 +48,7 @@ QString RBKit::ObjectDetail::getFileLine()
 
 RBKit::ObjectDetailPtr RBKit::payloadToObject(const QVariantMap& map)
 {
-    auto objectId = RBKit::StringUtil::hextoInt(map["object_id"].toString());
+    auto objectId = map["object_id"].toULongLong();
     auto className = map["class_name"].toString();
 
     RBKit::ObjectDetailPtr object(new RBKit::ObjectDetail(className, objectId));

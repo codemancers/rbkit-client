@@ -174,6 +174,14 @@ void Subscriber::processEvent(const RBKit::EvtGcStart &gcEvent) {
     jsBridge->sendMapToJs(eventName, gcEvent.timestamp, map);
 }
 
+
+void Subscriber::processEvent(const RBKit::EvtGcStartM &gcEvent) {
+    qDebug() << "Received gc start-m"
+             << gcEvent.timestamp
+             << "not doing anything";
+}
+
+
 void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 {
     qDebug() << "Received gc stop" << gcEvent.timestamp;

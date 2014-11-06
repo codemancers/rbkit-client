@@ -33,6 +33,7 @@ void TestRbEvents::testParseObjectDestroyEvent()
 
     EvtDelObject* event = dynamic_cast<EvtDelObject*>(base);
     QVERIFY(event);
+    QVERIFY(0x7f879309ff98 == event->objectId);
 }
 
 // test whether parser is parsing gc stats event properly or not.
@@ -56,7 +57,7 @@ void TestRbEvents::testParseGCStartEvent()
     EvtGcStart *event = dynamic_cast<EvtGcStart *>(base);
     QVERIFY(event);
 
-    QVERIFY(event->eventName == "gc_start");
+    QVERIFY(RBKit::EtGcStart == event->eventType);
 }
 
 
