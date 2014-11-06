@@ -168,7 +168,7 @@ void RBKit::EvtNewObject::process(Subscriber& processor) const
 RBKit::EvtDelObject::EvtDelObject(QDateTime ts, RBKit::EventType eventType,
                                   QVariantMap payload)
     : EventDataBase(ts, eventType)
-    , objectId(StringUtil::hextoInt(payload["object_id"].toString()))
+    , objectId(payload["object_id"].toULongLong())
 { }
 
 void RBKit::EvtDelObject::process(Subscriber& processor) const

@@ -33,6 +33,7 @@ void TestRbEvents::testParseObjectDestroyEvent()
 
     EvtDelObject* event = dynamic_cast<EvtDelObject*>(base);
     QVERIFY(event);
+    QVERIFY(0x7f879309ff98 == event->objectId);
 }
 
 // test whether parser is parsing gc stats event properly or not.
