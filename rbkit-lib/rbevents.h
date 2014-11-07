@@ -15,6 +15,15 @@ class Subscriber;               // this acts as processor also atm.
 
 namespace RBKit
 {
+    // https://github.com/code-mancers/rbkit/blob/47b461/ext/rbkit_event_packer.h#L6
+    enum EventField
+    {
+        EfEventType       = 0,
+        EfTimestamp       = 1,
+        EfPayload         = 2,
+        EfMessageCounter  = 9
+    };
+
     // https://github.com/code-mancers/rbkit/blob/833c4bb/ext/rbkit_event.h#L5
     enum EventType
     {
@@ -27,6 +36,7 @@ namespace RBKit
         EtGcStats          = 6,
         EtEventCollection  = 7
     };
+
 
     class EventDataBase
     {
@@ -54,7 +64,7 @@ namespace RBKit
     class EvtDelObject : public EventDataBase
     {
     public:
-        EvtDelObject(QDateTime ts, EventType eventType, QVariantMap payload);
+        EvtDelObject(QDateTime ts, EventType eventType, quint64 objectId);
         void process(Subscriber& processor) const;
 
         quint64 objectId;

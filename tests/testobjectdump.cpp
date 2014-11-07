@@ -27,7 +27,8 @@ void TestObjectDump::testBenchmarkParseObjectDump()
 {
     EventDataBase* base = NULL;
     QBENCHMARK {
-        base = parseEvent(objectDump);
+        RBKit::EventParser eventParser(objectDump);
+        base = eventParser.parseEvent();
     }
 
     QVERIFY(base);

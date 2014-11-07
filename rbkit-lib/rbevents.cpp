@@ -67,7 +67,7 @@ RBKit::EventDataBase* RBKit::makeEventFromQVariantMap(const QVariantMap &map) {
     break;
 
     case RBKit::EtObjDestroyed:
-        event = new RBKit::EvtDelObject(timestamp, eventType, map["payload"].toMap());
+        // event = new RBKit::EvtDelObject(timestamp, eventType, map["payload"].toMap());
         break;
 
     case RBKit::EtGcStats:
@@ -148,11 +148,12 @@ static QList<RBKit::EventPtr> parseEventCollection(const QVariantList& list)
 RBKit::EventDataBase*
 RBKit::EventParser::eventFromMsgpackObject(msgpack::object& object) const
 {
-    auto map = object.as< QMap<QString, msgpack::object> >();
+    auto map = object.as< QMap<unsigned int, msgpack::object> >();
 
     auto eventType = guessEvent(object);
-    auto timestamp = QDateTime::fromMSecsSinceEpoch(map["timestamp"].as<double>());
-    auto payload = map["payload"];
+    auto ts = map[RBKit::EfTimestamp].as<double>();
+    auto timestamp = QDateTime::fromMSecsSinceEpoch(ts);
+    auto payload = map[RBKit::EfPayload];
 
     RBKit::EventDataBase* event(nullptr);
     switch (eventType) {
@@ -162,9 +163,12 @@ RBKit::EventParser::eventFromMsgpackObject(msgpack::object& object) const
         break;
 
     case RBKit::EtObjDestroyed:
-        event = new RBKit::EvtDelObject(timestamp, eventType,
-                                        payload.as<QVariantMap>());
-        break;
+    {
+        auto map = payload.as< QMap<int, msgpack::object> >();
+        auto id = map[RBKit::OfObjectId].as< unsigned long long >();
+        event = new RBKit::EvtDelObject(timestamp, eventType, id);
+    }
+    break;
 
     case RBKit::EtGcStats:
         event = new RBKit::EvtGcStats(timestamp, eventType,
@@ -224,11 +228,11 @@ RBKit::EventDataBase* RBKit::EventParser::parseEvent() const
     auto eventType = guessEvent(unpacked.get());
     Q_ASSERT(RBKit::EtEventCollection == eventType);
 
-    auto map = unpacked.get().as< QMap<QString, msgpack::object> >();
-    auto timestamp = map["timestamp"].as<double>();
+    auto map = unpacked.get().as< QMap<unsigned int, msgpack::object> >();
+    auto timestamp = map[RBKit::EfTimestamp].as<double>();
     auto ts = QDateTime::fromMSecsSinceEpoch(timestamp);
 
-    auto events = parseEvents(map["payload"]);
+    auto events = parseEvents(map[RBKit::EfPayload]);
     return new RBKit::EvtCollection(ts, eventType, events);
 }
 
@@ -236,8 +240,8 @@ RBKit::EventDataBase* RBKit::EventParser::parseEvent() const
 RBKit::EventType
 RBKit::EventParser::guessEvent(const msgpack::object& object) const
 {
-    auto map = object.as< QMap<QString, msgpack::object> >();
-    auto eventType = map["event_type"].as<unsigned int>();
+    auto map = object.as< QMap<unsigned int, msgpack::object> >();
+    auto eventType = map[RBKit::EfEventType].as<unsigned int>();
     return static_cast<RBKit::EventType>(eventType);
 }
 
@@ -279,9 +283,9 @@ void RBKit::EvtNewObject::process(Subscriber& processor) const
 }
 
 RBKit::EvtDelObject::EvtDelObject(QDateTime ts, RBKit::EventType eventType,
-                                  QVariantMap payload)
+                                  quint64 objectId_)
     : EventDataBase(ts, eventType)
-    , objectId(payload["object_id"].toULongLong())
+    , objectId(objectId_)
 { }
 
 void RBKit::EvtDelObject::process(Subscriber& processor) const

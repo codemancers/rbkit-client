@@ -49,30 +49,30 @@ RBKit::ObjectDetail& operator>>(msgpack::object obj, RBKit::ObjectDetail& object
 {
     if (obj.type != msgpack::type::MAP) { throw msgpack::type_error(); }
 
-    auto map = obj.as< QMap<QString, msgpack::object> >();
+    auto map = obj.as< QMap<unsigned int, msgpack::object> >();
 
-    if (! map["object_id"].is_nil()) {
-        object.objectId = map["object_id"].as<unsigned long long>();
+    if (! map[RBKit::OfObjectId].is_nil()) {
+        object.objectId = map[RBKit::OfObjectId].as<unsigned long long>();
     }
 
-    if (! map["file"].is_nil()) {
-        object.fileName = map["file"].as<QString>();
+    if (! map[RBKit::OfFile].is_nil()) {
+        object.fileName = map[RBKit::OfFile].as<QString>();
     }
 
-    if (! map["class_name"].is_nil()) {
-        object.className = map["class_name"].as<QString>();
+    if (! map[RBKit::OfClassName].is_nil()) {
+        object.className = map[RBKit::OfClassName].as<QString>();
     }
 
-    if (! map["line"].is_nil()) {
-        object.lineNumber = map["line"].as<int>();
+    if (! map[RBKit::OfLine].is_nil()) {
+        object.lineNumber = map[RBKit::OfLine].as<int>();
     }
 
-    if (! map["references"].is_nil()) {
-        object.addReferences(map["references"].as<QVariantList>());
+    if (! map[RBKit::OfReferences].is_nil()) {
+        object.addReferences(map[RBKit::OfReferences].as<QVariantList>());
     }
 
-    if (! map["size"].is_nil()) {
-        object.size = map["size"].as<int>();
+    if (! map[RBKit::OfSize].is_nil()) {
+        object.size = map[RBKit::OfSize].as<int>();
     }
 
     return object;

@@ -6,7 +6,20 @@
 #include <QString>
 #include <QVariant>
 
-namespace RBKit {
+namespace RBKit
+{
+    // https://github.com/code-mancers/rbkit/blob/47b461/ext/rbkit_event_packer.h#L6
+    enum ObjectField
+    {
+        OfObjectId    = 3,
+        OfClassName   = 4,
+        OfReferences  = 5,
+        OfFile        = 6,
+        OfLine        = 7,
+        OfSize        = 8
+    };
+
+
     class ObjectDetail
     {
     public:
