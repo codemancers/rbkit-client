@@ -164,8 +164,8 @@ RBKit::EventParser::eventFromMsgpackObject(msgpack::object& object) const
 
     case RBKit::EtObjDestroyed:
     {
-        auto map = payload.as< QMap<int, msgpack::object> >();
-        auto id = map[RBKit::OfObjectId].as< unsigned long long >();
+        auto map = payload.via.map.ptr;
+        auto id = (map->val).as< unsigned long long >();
         event = new RBKit::EvtDelObject(timestamp, eventType, id);
     }
     break;

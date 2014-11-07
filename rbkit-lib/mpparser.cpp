@@ -49,30 +49,39 @@ RBKit::ObjectDetail& operator>>(msgpack::object obj, RBKit::ObjectDetail& object
 {
     if (obj.type != msgpack::type::MAP) { throw msgpack::type_error(); }
 
-    auto map = obj.as< QMap<unsigned int, msgpack::object> >();
+    msgpack::object_kv* list = obj.via.map.ptr;
+    for (uint32_t iter = 0; iter != obj.via.map.size; ++iter) {
+        auto val = list->val;
 
-    if (! map[RBKit::OfObjectId].is_nil()) {
-        object.objectId = map[RBKit::OfObjectId].as<unsigned long long>();
-    }
+        if (msgpack::type::NIL == val.type) {
+            continue;
+        }
 
-    if (! map[RBKit::OfFile].is_nil()) {
-        object.fileName = map[RBKit::OfFile].as<QString>();
-    }
+        auto key = list->key.as<unsigned int>();
 
-    if (! map[RBKit::OfClassName].is_nil()) {
-        object.className = map[RBKit::OfClassName].as<QString>();
-    }
-
-    if (! map[RBKit::OfLine].is_nil()) {
-        object.lineNumber = map[RBKit::OfLine].as<int>();
-    }
-
-    if (! map[RBKit::OfReferences].is_nil()) {
-        object.addReferences(map[RBKit::OfReferences].as<QVariantList>());
-    }
-
-    if (! map[RBKit::OfSize].is_nil()) {
-        object.size = map[RBKit::OfSize].as<int>();
+        switch (key) {
+        case RBKit::OfObjectId:
+            object.objectId = val.as<unsigned long long>();
+            break;
+        case RBKit::OfFile:
+            object.fileName = val.as<QString>();
+            break;
+        case RBKit::OfClassName:
+            object.className = val.as<QString>();
+            break;
+        case RBKit::OfLine:
+            object.lineNumber = val.as<int>();
+            break;
+        case RBKit::OfReferences:
+            val >> object.references;
+            break;
+        case RBKit::OfSize:
+            object.size = val.as<int>();
+            break;
+        default:
+            Q_ASSERT(false);
+        }
+        ++list;
     }
 
     return object;
