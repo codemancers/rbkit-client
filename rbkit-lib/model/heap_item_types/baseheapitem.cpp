@@ -221,13 +221,13 @@ void BaseHeapItem::findImmediateChildren()
 {
     QSqlQuery searchQuery(
                 QString("select class_name, count(id) as object_count, "
-                        "sum(reference_count) as total_ref_count, sum(size) as total_size, file from %0 group by (class_name)").arg(objectsTableName));
+                        "sum(reference_count) as total_ref_count, sum(size) as total_size from %0 group by (class_name)").arg(objectsTableName));
 
     while(searchQuery.next()) {
-        BaseHeapItem* item = new BaseHeapItem(searchQuery.value(0).toString(), searchQuery.value(1).toInt(),
+        int objectCount = searchQuery.value(1).toInt();
+        BaseHeapItem* item = new HeapItem(searchQuery.value(0).toString(), objectCount,
                                       searchQuery.value(2).toInt(), searchQuery.value(3).toInt(), -1);
         item->setObjectsTableName(objectsTableName);
-        item->filename = searchQuery.value(4).toString();
         addChildren(item);
     }
 }

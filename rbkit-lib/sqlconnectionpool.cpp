@@ -28,7 +28,7 @@ void SqlConnectionPool::setupDatabase()
         file.remove();
     }
     database = QSqlDatabase::addDatabase("QSQLITE");
-    database.setDatabaseName("/tmp/rbkit.db");
+    database.setDatabaseName(":memory:");
 
     if (!database.open()) {
         qDebug() << query.lastError();
