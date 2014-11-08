@@ -108,7 +108,6 @@ QString BaseHeapItem::fullFileName()
         filename = lazyLoadObjectFileName();
     }
     QFileInfo fileInfo(filename.split(":").at(0));
-    qDebug() << fileInfo.canonicalFilePath();
     return fileInfo.canonicalFilePath();
 }
 

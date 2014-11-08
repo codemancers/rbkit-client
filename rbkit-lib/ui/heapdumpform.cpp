@@ -150,12 +150,10 @@ void HeapDumpForm::viewParents()
 
 void HeapDumpForm::viewFile()
 {
-    qDebug() << "FileName is " << selecteItem->fullFileName();
     QFile file(selecteItem->fullFileName());
     if (file.exists()) {
         QString editor(qgetenv("EDITOR"));
         QString command(editor + " " + selecteItem->fullFileName());
-        qDebug() << command;
         QProcess::startDetached(command);
     }
 
