@@ -42,9 +42,6 @@ namespace RBKit
 
     // typedef for the pointer.
     typedef QSharedPointer<ObjectDetail> ObjectDetailPtr;
-
-    QList<ObjectDetailPtr> payloadToObjects(const QVariantList& list);
-    ObjectDetailPtr payloadToObject(const QVariantMap& map);
 }
 
 Q_DECLARE_METATYPE(RBKit::ObjectDetail)

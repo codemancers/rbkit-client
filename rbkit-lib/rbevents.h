@@ -108,9 +108,6 @@ namespace RBKit
 
         QList<RBKit::EventPtr> events;
     };
-
-    EventDataBase* parseEvent(const QByteArray& rawMessage);
-    EventDataBase* makeEventFromQVariantMap(const QVariantMap& map);
 }
 
 
