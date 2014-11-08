@@ -42,6 +42,8 @@ class Subscriber : public QObject
     nzmqt::ZMQContext *context;
     bool connectionEstablished;
 
+    quint64 messageCounter;
+
 public:
     explicit Subscriber(RBKit::JsBridge* jsBridge);
     ~Subscriber();
@@ -76,6 +78,9 @@ public slots:
     void triggerGc();
     void takeSnapshot();
     void startSubscriber();
+
+private:
+    void checkForMissingMessages(const quint64 counter);
 };
 
 #endif // SUBSCRIBER_H

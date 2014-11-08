@@ -89,9 +89,11 @@ void RBKit::EvtObjectDump::process(Subscriber& processor) const
 }
 
 RBKit::EvtCollection::EvtCollection(QDateTime ts, RBKit::EventType eventType,
-                                    QList<RBKit::EventPtr> _events)
+                                    QList<RBKit::EventPtr> _events,
+                                    quint64 _counter)
     : EventDataBase(ts, eventType)
     , events(_events)
+    , messageCounter(_counter)
 {}
 
 void RBKit::EvtCollection::process(Subscriber& processor) const

@@ -76,7 +76,7 @@ RBKit::EventParser::parseEvents(const msgpack::object& objarray) const
 RBKit::EventParser::EventParser(const QByteArray& message)
     : rawMessage(message)
 {
-    if (1*1024*1024 < message.size()) {
+    if (5*1024*1024 < message.size()) {
         qDebug() << "probably got objdump" << QTime::currentTime();
     }
 
@@ -94,8 +94,10 @@ RBKit::EventDataBase* RBKit::EventParser::parseEvent() const
     auto timestamp = map[RBKit::EfTimestamp].as<double>();
     auto ts = QDateTime::fromMSecsSinceEpoch(timestamp);
 
+    auto counter = map[RBKit::EfMessageCounter].as<unsigned long long>();
+
     auto events = parseEvents(map[RBKit::EfPayload]);
-    return new RBKit::EvtCollection(ts, eventType, events);
+    return new RBKit::EvtCollection(ts, eventType, events, counter);
 }
 
 

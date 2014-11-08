@@ -40,11 +40,16 @@ void Subscriber::setContext(nzmqt::ZMQContext *value)
 {
     context = value;
 }
+
+
 Subscriber::Subscriber(RBKit::JsBridge* bridge)
-    :jsBridge(bridge), connectionEstablished(false)
+    : jsBridge(bridge)
+    , connectionEstablished(false)
+    , messageCounter(0)
 {
     qDebug() << "** Thread is is : " << QThread::currentThreadId();
 }
+
 
 void Subscriber::triggerGc() {
     RBKit::CmdTriggerGC triggerGC_Command;
@@ -209,6 +214,8 @@ void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 
 void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)
 {
+    checkForMissingMessages(evtCollection.messageCounter);
+
     for (auto& event : evtCollection.events) {
         event->process(*this);
     }
@@ -240,4 +247,14 @@ void Subscriber::onTimerExpiry()
 
     QVariantMap map = hashToQVarMap(objectStore->liveStats());
     jsBridge->sendMapToJs(eventName, QDateTime(), map);
+}
+
+
+void Subscriber::checkForMissingMessages(const quint64 counter)
+{
+    if (counter != ++messageCounter) {
+        qDebug() << "missed message pack event messages from"
+                 << messageCounter << "to" << counter - 1;
+        messageCounter = counter;
+    }
 }
