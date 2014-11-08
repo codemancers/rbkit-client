@@ -76,6 +76,10 @@ RBKit::EventParser::parseEvents(const msgpack::object& objarray) const
 RBKit::EventParser::EventParser(const QByteArray& message)
     : rawMessage(message)
 {
+    if (1*1024*1024 < message.size()) {
+        qDebug() << "probably got objdump" << QTime::currentTime();
+    }
+
     msgpack::unpack(&unpacked, message.data(), message.size());
 }
 
@@ -107,6 +111,8 @@ RBKit::EventParser::guessEvent(const msgpack::object& object) const
 QList<RBKit::ObjectDetailPtr>
 RBKit::EventParser::parseObjects(const msgpack::object& object) const
 {
+    qDebug() << "parsing objects begin:" << QTime::currentTime();
+
     QList<RBKit::ObjectDetailPtr> objects;
 
     msgpack::object_array list = object.via.array;
@@ -114,6 +120,7 @@ RBKit::EventParser::parseObjects(const msgpack::object& object) const
         objects << list.ptr[iter].as< RBKit::ObjectDetailPtr >();
     }
 
+    qDebug() << "parsing objects end:" << QTime::currentTime();
     qDebug() << objects.size();
     return objects;
 }

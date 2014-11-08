@@ -196,10 +196,14 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 
 void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 {
+    qDebug() << "update snapshot begin:" << QTime::currentTime();
     objectStore->updateFromSnapshot(dump.objects);
+    qDebug() << "update snapshot end:" << QTime::currentTime();
 
+    qDebug() << "persisting to db begin:" << QTime::currentTime();
     RBKit::AppState::getInstance()->setAppState("heap_snapshot", 10);
     RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
+    qDebug() << "persisting to db end:" << QTime::currentTime();
     emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());
 }
 
