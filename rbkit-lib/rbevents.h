@@ -27,6 +27,7 @@ namespace RBKit
         EtEventCollection  = 7
     };
 
+
     class EventDataBase
     {
     public:
@@ -53,7 +54,7 @@ namespace RBKit
     class EvtDelObject : public EventDataBase
     {
     public:
-        EvtDelObject(QDateTime ts, EventType eventType, QVariantMap payload);
+        EvtDelObject(QDateTime ts, EventType eventType, quint64 objectId);
         void process(Subscriber& processor) const;
 
         quint64 objectId;

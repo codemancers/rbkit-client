@@ -2,19 +2,30 @@
 #include "stringutil.h"
 
 RBKit::ObjectDetail::ObjectDetail()
+    : objectId(0)
+    , lineNumber(0)
+    , objectGeneration(0)
+    , size(0)
 {
 }
 
 RBKit::ObjectDetail::ObjectDetail(QString className, quint64 objectId)
     : className(className)
-    , objectId(objectId), objectGeneration(0)
+    , objectId(objectId)
+    , lineNumber(0)
+    , objectGeneration(0)
+    , size(0)
 {
 }
 
 RBKit::ObjectDetail::ObjectDetail(const RBKit::ObjectDetail &original)
-    : className(original.className), objectId(original.objectId)
-    , objectGeneration(original.objectGeneration), fileName(original.fileName)
-    , lineNumber(original.lineNumber), references(original.references)
+    : className(original.className)
+    , objectId(original.objectId)
+    , fileName(original.fileName)
+    , lineNumber(original.lineNumber)
+    , objectGeneration(original.objectGeneration)
+    , references(original.references)
+    , size(original.size)
 {
 }
 

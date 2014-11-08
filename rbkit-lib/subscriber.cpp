@@ -10,6 +10,7 @@
 #include "rbcommands.h"
 #include "model/jsbridge.h"
 #include "model/appstate.h"
+#include "rbeventparser.h"
 
 
 static const int rbkcZmqTotalIoThreads = 1;
@@ -60,7 +61,8 @@ void Subscriber::takeSnapshot()
 
 void Subscriber::startSubscriber()
 {
-    qDebug() << "** Thread id is : " << QThread::currentThreadId();
+    qDebug() << "** (start subscriber) Thread id is : " << QThread::currentThreadId();
+
     context = new nzmqt::SocketNotifierZMQContext(this, 1);
     commandSocket = new RBKit::ZmqCommandSocket(this, context);
     eventSocket   = new RBKit::ZmqEventSocket(this, context);
@@ -105,6 +107,7 @@ void Subscriber::emitConnectionError(QString message)
 Subscriber::~Subscriber()
 {
     qDebug() << "** Thread id is : " << QThread::currentThreadId();
+
     stop();
     delete m_timer;
     delete commandSocket;
@@ -137,13 +140,12 @@ void Subscriber::onMessageReceived(const QList<QByteArray>& rawMessage)
     for (QList<QByteArray>::ConstIterator iter = rawMessage.begin();
          rawMessage.end() != iter; ++iter)
     {
-        RBKit::EventDataBase* event = RBKit::parseEvent(*iter);
+        const RBKit::EventParser eventParser(*iter);
+        RBKit::EventPtr event( eventParser.parseEvent() );
 
-        if (NULL != event) {
+        if (event) {
             event->process(*this);
         }
-
-        delete event;
     }
 }
 
@@ -194,10 +196,14 @@ void Subscriber::processEvent(const RBKit::EvtGcStop &gcEvent)
 
 void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 {
+    qDebug() << "update snapshot begin:" << QTime::currentTime();
     objectStore->updateFromSnapshot(dump.objects);
+    qDebug() << "update snapshot end:" << QTime::currentTime();
 
+    qDebug() << "persisting to db begin:" << QTime::currentTime();
     RBKit::AppState::getInstance()->setAppState("heap_snapshot", 10);
     RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
+    qDebug() << "persisting to db end:" << QTime::currentTime();
     emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());
 }
 

@@ -1,8 +1,7 @@
 #include <msgpack.hpp>
 #include "subscriber.h"
 #include "rbevents.h"
-
-#include <QDebug>
+#include "mpparser.h"
 
 
 static QVariantList parseMsgpackObjectArray(const msgpack::object_array&);
@@ -68,7 +67,7 @@ RBKit::EventDataBase* RBKit::makeEventFromQVariantMap(const QVariantMap &map) {
     break;
 
     case RBKit::EtObjDestroyed:
-        event = new RBKit::EvtDelObject(timestamp, eventType, map["payload"].toMap());
+        // event = new RBKit::EvtDelObject(timestamp, eventType, map["payload"].toMap());
         break;
 
     case RBKit::EtGcStats:
@@ -144,6 +143,7 @@ static QList<RBKit::EventPtr> parseEventCollection(const QVariantList& list)
     return events;
 }
 
+
 // ============================== different events ==============================
 
 RBKit::EventDataBase::EventDataBase(QDateTime ts, RBKit::EventType eventType)
@@ -166,9 +166,9 @@ void RBKit::EvtNewObject::process(Subscriber& processor) const
 }
 
 RBKit::EvtDelObject::EvtDelObject(QDateTime ts, RBKit::EventType eventType,
-                                  QVariantMap payload)
+                                  quint64 objectId_)
     : EventDataBase(ts, eventType)
-    , objectId(payload["object_id"].toULongLong())
+    , objectId(objectId_)
 { }
 
 void RBKit::EvtDelObject::process(Subscriber& processor) const
