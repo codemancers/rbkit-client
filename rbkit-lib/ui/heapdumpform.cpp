@@ -3,6 +3,7 @@
 #include "model/heap_item_types/heapitem.h"
 #include "rbkitmainwindow.h"
 #include <QStatusBar>
+#include <QProcess>
 
 RbkitMainWindow *HeapDumpForm::getParentWindow() const
 {
@@ -37,6 +38,10 @@ HeapDumpForm::HeapDumpForm(QWidget* parent, int _snapShotVersion)
     viewParentsAct = new QAction(tr("View Parents"), this);
     viewParentsAct->setStatusTip("View Object parents");
     connect(viewParentsAct, SIGNAL(triggered()), this, SLOT(viewParents()));
+
+    viewFileAct = new QAction(tr("View File"), this);
+    viewFileAct->setStatusTip("View file in your editor");
+    connect(viewFileAct, SIGNAL(triggered()), this, SLOT(viewFile()));
 }
 
 HeapDumpForm::~HeapDumpForm()
@@ -44,6 +49,9 @@ HeapDumpForm::~HeapDumpForm()
     delete ui;
     delete model;
     delete rootItem;
+    delete viewFileAct;
+    delete viewParentsAct;
+    delete viewRefAct;
 }
 
 void HeapDumpForm::setDisableRightClick(bool value) {
@@ -118,6 +126,7 @@ void HeapDumpForm::onCustomContextMenu(const QPoint &point)
         QMenu menu(this);
         menu.addAction(viewRefAct);
         menu.addAction(viewParentsAct);
+        menu.addAction(viewFileAct);
         menu.exec(localPoint);
     }
 }
@@ -137,6 +146,19 @@ void HeapDumpForm::viewParents()
     RBKit::BaseHeapItem *parentHeapItem = selecteItem->getObjectParents(rootItem);
     form->loadFromSpecifiedRoot(parentHeapItem);
     parentWindow->addTabWidget(form, QString("Parents for : %0").arg(selecteItem->shortLeadingIdentifier()));
+}
+
+void HeapDumpForm::viewFile()
+{
+    qDebug() << "FileName is " << selecteItem->fullFileName();
+    QFile file(selecteItem->fullFileName());
+    if (file.exists()) {
+        QString editor(qgetenv("EDITOR"));
+        QString command(editor + " " + selecteItem->fullFileName());
+        qDebug() << command;
+        QProcess::startDetached(command);
+    }
+
 }
 
 void HeapDumpForm::treeNodeSelected(const QModelIndex &index)

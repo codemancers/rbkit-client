@@ -102,6 +102,16 @@ QString BaseHeapItem::lazyLoadObjectFileName()
     return QString("<compiled>");
 }
 
+QString BaseHeapItem::fullFileName()
+{
+    if (filename.isEmpty()) {
+        filename = lazyLoadObjectFileName();
+    }
+    QFileInfo fileInfo(filename.split(":").at(0));
+    qDebug() << fileInfo.canonicalFilePath();
+    return fileInfo.canonicalFilePath();
+}
+
 
 bool BaseHeapItem::hasChildren()
 {
@@ -205,7 +215,8 @@ QString BaseHeapItem::leadingIdentifier()
         if (count > 1)
             return className;
         else {
-            return lazyLoadObjectFileName();
+            filename = lazyLoadObjectFileName();
+            return filename;
         }
     } else {
         return QString("%0 - %1").arg(className).arg(filename);

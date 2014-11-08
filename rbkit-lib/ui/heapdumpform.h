@@ -29,6 +29,7 @@ class HeapDumpForm : public QWidget
 protected:
     QAction *viewRefAct;
     QAction *viewParentsAct;
+    QAction *viewFileAct;
     RBKit::BaseHeapItem *rootItem;
     RBKit::HeapDataModel *model;
     SortObjectProxyModel *proxyModel;
@@ -57,6 +58,7 @@ public slots:
     void onCustomContextMenu(const QPoint& point);
     void viewReferences();
     void viewParents();
+    void viewFile();
     virtual void treeNodeSelected(const QModelIndex& index);
 };
 
