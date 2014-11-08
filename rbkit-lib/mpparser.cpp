@@ -70,13 +70,13 @@ RBKit::ObjectDetail& operator>>(msgpack::object obj, RBKit::ObjectDetail& object
             object.className = val.as<QString>();
             break;
         case RBKit::OfLine:
-            object.lineNumber = val.as<int>();
+            object.lineNumber = val.as<unsigned long>();
             break;
         case RBKit::OfReferences:
             val >> object.references;
             break;
         case RBKit::OfSize:
-            object.size = val.as<int>();
+            object.size = val.as<unsigned int>();
             break;
         default:
             Q_ASSERT(false);
