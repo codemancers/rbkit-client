@@ -78,6 +78,7 @@ public:
     QString getOriginalObjectsTableName() const;
     void setOriginalObjectsTableName(const QString &value);
     virtual BaseHeapItem *getObjectParents(BaseHeapItem *rootItem);
+    virtual QString lazyLoadObjectFileName();
 };
 
 } // namespace RBKit

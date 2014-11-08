@@ -91,6 +91,17 @@ BaseHeapItem *BaseHeapItem::getObjectParents(BaseHeapItem *rootItem)
     }
 }
 
+QString BaseHeapItem::lazyLoadObjectFileName()
+{
+    QSqlQuery searchQuery(
+                QString("select file from %0 where class_name = '%1'").arg(objectsTableName).arg(className));
+
+    while(searchQuery.next()) {
+        return searchQuery.value(0).toString();
+    }
+    return QString("<compiled>");
+}
+
 
 bool BaseHeapItem::hasChildren()
 {
@@ -191,7 +202,11 @@ void BaseHeapItem::addChildren(BaseHeapItem *item)
 QString BaseHeapItem::leadingIdentifier()
 {
     if (filename.isEmpty()) {
-        return className;
+        if (count > 1)
+            return className;
+        else {
+            return lazyLoadObjectFileName();
+        }
     } else {
         return QString("%0 - %1").arg(className).arg(filename);
     }

@@ -33,6 +33,10 @@ HeapDumpForm::HeapDumpForm(QWidget* parent, int _snapShotVersion)
     viewRefAct = new QAction(tr("View References"), this);
     viewRefAct->setStatusTip("View object references");
     connect(viewRefAct, SIGNAL(triggered()), this, SLOT(viewReferences()));
+
+    viewParentsAct = new QAction(tr("View Parents"), this);
+    viewParentsAct->setStatusTip("View Object parents");
+    connect(viewParentsAct, SIGNAL(triggered()), this, SLOT(viewParents()));
 }
 
 HeapDumpForm::~HeapDumpForm()
@@ -113,6 +117,7 @@ void HeapDumpForm::onCustomContextMenu(const QPoint &point)
         selecteItem = static_cast<RBKit::BaseHeapItem *>(index.internalPointer());
         QMenu menu(this);
         menu.addAction(viewRefAct);
+        menu.addAction(viewParentsAct);
         menu.exec(localPoint);
     }
 }
@@ -123,6 +128,15 @@ void HeapDumpForm::viewReferences()
     form->setDisableRightClick(true);
     form->loadSelectedReferences(selecteItem);
     parentWindow->addTabWidget(form, QString("References for : %0").arg(selecteItem->shortLeadingIdentifier()));
+}
+
+void HeapDumpForm::viewParents()
+{
+    HeapDumpForm *form = new HeapDumpForm(this, -1);
+    form->setDisableRightClick(true);
+    RBKit::BaseHeapItem *parentHeapItem = selecteItem->getObjectParents(rootItem);
+    form->loadFromSpecifiedRoot(parentHeapItem);
+    parentWindow->addTabWidget(form, QString("Parents for : %0").arg(selecteItem->shortLeadingIdentifier()));
 }
 
 void HeapDumpForm::treeNodeSelected(const QModelIndex &index)

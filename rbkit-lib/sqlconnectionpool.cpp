@@ -47,6 +47,8 @@ void SqlConnectionPool::prepareTables()
     objectCreation.append(QString("create table rbkit_object_references_%0(id integer primary key asc"
                                   ", object_id integer"
                                   ", child_id integer)").arg(currentVersion));
+//    objectCreation.append(QString("create index index_on_classname on rbkit_objects_%0 (class_name)").arg(currentVersion));
+//    objectCreation.append(QString("create index index_on_child_id on rbkit_object_references_%0 (child_id)").arg(currentVersion));
 
     for(auto createStatement : objectCreation) {
         if (!query.exec(createStatement)) {
