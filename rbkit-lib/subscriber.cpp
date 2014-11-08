@@ -10,6 +10,7 @@
 #include "rbcommands.h"
 #include "model/jsbridge.h"
 #include "model/appstate.h"
+#include "rbeventparser.h"
 
 
 static const int rbkcZmqTotalIoThreads = 1;

@@ -1,5 +1,5 @@
 #include "testrbevents.h"
-#include "rbevents.h"
+#include "rbeventparser.h"
 #include <QDebug>
 
 using namespace RBKit;
