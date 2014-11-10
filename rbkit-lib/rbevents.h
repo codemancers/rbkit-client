@@ -103,14 +103,13 @@ namespace RBKit
     class EvtCollection : public EventDataBase
     {
     public:
-        EvtCollection(QDateTime ts, EventType eventType, QList<RBKit::EventPtr>);
+        EvtCollection(QDateTime ts, EventType eventType, QList<RBKit::EventPtr>,
+            quint64 counter);
         void process(Subscriber& process) const;
 
         QList<RBKit::EventPtr> events;
+        quint64 messageCounter;
     };
-
-    EventDataBase* parseEvent(const QByteArray& rawMessage);
-    EventDataBase* makeEventFromQVariantMap(const QVariantMap& map);
 }
 
 

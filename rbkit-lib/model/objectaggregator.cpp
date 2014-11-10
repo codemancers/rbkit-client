@@ -12,9 +12,12 @@ RBKit::ObjectAggregator::ObjectAggregator()
 
 void RBKit::ObjectAggregator::objCreated(RBKit::ObjectDetailPtr object)
 {
+    if (idToName.end() == idToName.find(object->objectId)) {
+        ++typeToCount[object->className];
+        ++totalObjects;
+    }
+
     idToName[object->objectId] = object->className;
-    ++typeToCount[object->className];
-    ++totalObjects;
 }
 
 void RBKit::ObjectAggregator::objDeleted(quint64 key)
