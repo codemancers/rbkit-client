@@ -16,7 +16,7 @@ static QByteArray msgpackDataFromFile(const QString filename)
 void TestBmHeapSnapshot::initTestCase()
 {
     // read object dump, and parse it
-    auto objectDump = msgpackDataFromFile(":/tests/msgpack/hugedump");
+    auto objectDump = msgpackDataFromFile("/Users/yuva/00013-13-final");
     RBKit::EventParser eventParser(objectDump);
 
     auto collection = dynamic_cast<EvtCollection*>(eventParser.parseEvent());
@@ -29,7 +29,7 @@ void TestBmHeapSnapshot::initTestCase()
 
 void TestBmHeapSnapshot::testBenchmarkPersistingToDb()
 {
-    QBENCHMARK {
+    QBENCHMARK_ONCE {
         RBKit::SqlConnectionPool::getInstance()->loadSnapshot(store.data());
     }
 }
