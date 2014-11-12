@@ -12,6 +12,7 @@ SOURCES += \
     testrbevents.cpp \
     testjsbridge.cpp \
     testobjectdump.cpp \
+    testbmheapsnapshot.cpp \
     main.cpp \
     testappstate.cpp \
     testsnapshotstate.cpp
@@ -33,6 +34,7 @@ HEADERS += \
     testrbevents.h \
     testjsbridge.h \
     testobjectdump.h \
+    testbmheapsnapshot.h \
     testappstate.h \
     testsnapshotstate.h
 
