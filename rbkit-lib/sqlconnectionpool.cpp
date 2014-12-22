@@ -1,14 +1,29 @@
 #include "sqlconnectionpool.h"
 #include "model/appstate.h"
 #include "model/heap_item_types/heapitem.h"
+#include "sqlite3.h"
 
 namespace RBKit {
 
 SqlConnectionPool* SqlConnectionPool::singleton = NULL;
 
+
+class SQlite3Wrapper
+{
+public:
+    int setup() {
+        return sqlite_open("/tmp/rbkit.db", &db)
+    }
+
+private:
+    sqlite3* db;
+};
+
+
 SqlConnectionPool::SqlConnectionPool()
     : currentVersion(0)
 {
+    sqlite3.reset(new SQlite3Wrapper());
     setupDatabase();
 }
 
@@ -27,15 +42,16 @@ void SqlConnectionPool::setupDatabase()
     if (file.exists()) {
         file.remove();
     }
+
     database = QSqlDatabase::addDatabase("QSQLITE");
     database.setDatabaseName("/tmp/rbkit.db");
     currentVersion = 0;
 
-    if (!database.open()) {
-        qDebug() << query.lastError();
+    auto error = sqlite3->setup();
+    if (SQLITE_OK != error) {
+        qDebug() << error;
         return;
     }
-    query = QSqlQuery(database);
     qDebug() << "Setting up database done";
 }
 

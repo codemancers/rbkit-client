@@ -12,12 +12,18 @@
 
 namespace RBKit {
 
+// forward declarations
+struct SQlite3Wrapper;
+
+
 class HeapItem;
 
 class SqlConnectionPool
 {
     SqlConnectionPool();
     static SqlConnectionPool *singleton;
+
+    QSharedPointer<SQlite3Wrapper> sqlite3;
     int currentVersion;
     QSqlDatabase database;
     QSqlQuery query;
