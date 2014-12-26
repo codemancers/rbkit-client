@@ -5,6 +5,7 @@
 #include "nzmqt/nzmqt.hpp"
 #include <QThread>
 #include "rbeventparser.h"
+#include "model/appstate.h"
 
 
 static const int rbkcZmqTotalIoThreads = 1;
@@ -52,14 +53,14 @@ bool RBKit::ZmqCommandSocket::performHandShake()
     nzmqt::ZMQMessage msg(handShake.serialize().toLocal8Bit());
     bool sent = socket->sendMessage(msg);
     if(sent) {
-        qDebug() << "Waiting for handshake";
         QByteArray response = socket->receiveBlockingMessage();
-        qDebug() << response;
         EventParser parser(response);
         EvtHandshake *handShake = parser.parseHandShake();
-        qDebug() << handShake;
+        RBKit::AppState::getInstance()->setAppState("pwd", handShake->pwd);
+        RBKit::AppState::getInstance()->setAppState("pid", handShake->pid);
         if (handShake != NULL) {
             return true;
+            delete handShake;
         } else {
             return false;
         }
