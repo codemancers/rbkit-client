@@ -4,7 +4,7 @@
 
 
 RBKit::EventDataBase*
-RBKit::EventParser::eventFromMsgpackObject(msgpack::object& object) const
+RBKit::EventParser::eventFromMsgpackObject(const msgpack::object& object) const
 {
     auto map = object.as< QMap<unsigned int, msgpack::object> >();
 
@@ -106,7 +106,7 @@ RBKit::EventDataBase* RBKit::EventParser::parseEvent() const
 
 RBKit::EvtHandshake *RBKit::EventParser::parseHandShake() const
 {
-    auto handShakeEvent = eventFromMsgpackObject(unpacked.get());
+    EvtHandshake *handShakeEvent = dynamic_cast<EvtHandshake *>(eventFromMsgpackObject(unpacked.get()));
     return handShakeEvent;
 }
 

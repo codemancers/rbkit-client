@@ -25,7 +25,7 @@ namespace RBKit
         EvtHandshake* parseHandShake() const;
 
     public:                     // helpers
-        RBKit::EventDataBase* eventFromMsgpackObject(msgpack::object&) const;
+        RBKit::EventDataBase* eventFromMsgpackObject(const msgpack::object&) const;
         QList<RBKit::EventPtr> parseEvtArray(const msgpack::object&) const;
         RBKit::EventType guessEvent(const msgpack::object&) const;
 
