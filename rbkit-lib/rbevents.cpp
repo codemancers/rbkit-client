@@ -100,3 +100,13 @@ void RBKit::EvtCollection::process(Subscriber& processor) const
 {
     processor.processEvent(*this);
 }
+
+
+RBKit::EvtHandshake::EvtHandshake(QDateTime ts, RBKit::EventType eventType, QString pwd, quint32 pid, bool tracingFlag)
+    : EventDataBase(ts, eventType)
+    , pwd(pwd)
+    , pid(pid)
+    , tracingFlag(tracingFlag)
+{
+
+}

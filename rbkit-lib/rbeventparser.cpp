@@ -100,6 +100,21 @@ RBKit::EventDataBase* RBKit::EventParser::parseEvent() const
     return new RBKit::EvtCollection(ts, eventType, events, counter);
 }
 
+RBKit::EvtHandshake *RBKit::EventParser::parseHandShake() const
+{
+    auto eventType = guessEvent(unpacked.get());
+    Q_ASSERT(RBKit::EtHandshake == eventType);
+
+    auto map = unpacked.get().as< QMap<unsigned int, msgpack::object> >();
+    auto timestamp = map[RBKit::EfTimestamp].as<double>();
+    auto ts = QDateTime::fromMSecsSinceEpoch(timestamp);
+
+    auto counter = map[RBKit::EfMessageCounter].as<unsigned long long>();
+
+    auto events = parseEvents(map[RBKit::EfPayload]);
+    return new RBKit::EvtCollection(ts, eventType, events, counter);
+}
+
 
 RBKit::EventType
 RBKit::EventParser::guessEvent(const msgpack::object& object) const

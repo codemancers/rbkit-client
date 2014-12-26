@@ -22,6 +22,7 @@ namespace RBKit
 
     public:
         EventDataBase* parseEvent() const;
+        EvtHandshake* parseHandShake() const;
 
     public:                     // helpers
         RBKit::EventDataBase* eventFromMsgpackObject(msgpack::object&) const;

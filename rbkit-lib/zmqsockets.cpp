@@ -47,8 +47,8 @@ bool RBKit::ZmqCommandSocket::sendCommand(RBKit::CommandBase& cmd)
 
 bool RBKit::ZmqCommandSocket::performHandShake()
 {
-    RBKit::CmdPing ping;
-    nzmqt::ZMQMessage msg(ping.serialize().toLocal8Bit());
+    RBKit::CmdHandshake handShake;
+    nzmqt::ZMQMessage msg(handShake.serialize().toLocal8Bit());
     bool sent = socket->sendMessage(msg);
     if(sent) {
         qDebug() << "Waiting for handshake";

@@ -37,6 +37,12 @@ namespace RBKit
     public:
         virtual QString serialize();
     };
+
+    class CmdHandshake : public CommandBase
+    {
+    public:
+        virtual QString serialize();
+    };
 }
 
 #endif // RBKIT_COMMANDS_H

@@ -24,7 +24,8 @@ namespace RBKit
         EtGcEndS           = 4,
         EtObjectSpaceDump  = 5,
         EtGcStats          = 6,
-        EtEventCollection  = 7
+        EtEventCollection  = 7,
+        EtHandshake        = 8
     };
 
 
@@ -109,6 +110,15 @@ namespace RBKit
 
         QList<RBKit::EventPtr> events;
         quint64 messageCounter;
+    };
+
+    class EvtHandshake : public EventDataBase
+    {
+    public:
+        EvtHandshake(QDateTime ts, EventType eventType, QString pwd, quint32 pid, bool tracingFlag);
+        QString pwd;
+        quint32 pid;
+        bool tracingFlag;
     };
 }
 

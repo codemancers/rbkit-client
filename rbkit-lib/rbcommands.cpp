@@ -28,3 +28,9 @@ QString RBKit::CmdPing::serialize()
 {
     return QString("ping");
 }
+
+
+QString RBKit::CmdHandshake::serialize()
+{
+    return QString("handshake");
+}
