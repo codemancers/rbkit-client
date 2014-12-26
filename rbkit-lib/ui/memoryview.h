@@ -7,6 +7,8 @@
 
 #include "model/jsbridge.h"
 
+class ProcessDetail;
+
 namespace RBKit {
 
 namespace Ui {
@@ -16,6 +18,7 @@ class MemoryView;
 class MemoryView : public QWidget
 {
     Q_OBJECT
+    ProcessDetail *processDetail;
 
 public:
     explicit MemoryView(QWidget *parent = 0);
