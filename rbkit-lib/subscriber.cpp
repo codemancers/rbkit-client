@@ -221,6 +221,11 @@ void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)
     }
 }
 
+void Subscriber::processEvent(const RBKit::EvtHandshake &handShake)
+{
+    qDebug() << "Should not have come here";
+}
+
 void Subscriber::performHandshake()
 {
     context->start();

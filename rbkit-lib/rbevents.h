@@ -115,7 +115,8 @@ namespace RBKit
     class EvtHandshake : public EventDataBase
     {
     public:
-        EvtHandshake(QDateTime ts, EventType eventType, QString pwd, quint32 pid, bool tracingFlag);
+        EvtHandshake(QDateTime ts, EventType eventType, QVariantMap payload);
+        void process(Subscriber &processor) const;
         QString pwd;
         quint32 pid;
         bool tracingFlag;

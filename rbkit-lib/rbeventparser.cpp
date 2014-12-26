@@ -50,6 +50,10 @@ RBKit::EventParser::eventFromMsgpackObject(msgpack::object& object) const
                                          parseObjects(payload));
         break;
 
+    case RBKit::EtHandshake:
+        event = new RBKit::EvtHandshake(timestamp, eventType, payload.as<QVariantMap>());
+        break;
+
     default:
         qDebug() << "Unable to parse event of type: " << eventType;
     }
@@ -102,17 +106,8 @@ RBKit::EventDataBase* RBKit::EventParser::parseEvent() const
 
 RBKit::EvtHandshake *RBKit::EventParser::parseHandShake() const
 {
-    auto eventType = guessEvent(unpacked.get());
-    Q_ASSERT(RBKit::EtHandshake == eventType);
-
-    auto map = unpacked.get().as< QMap<unsigned int, msgpack::object> >();
-    auto timestamp = map[RBKit::EfTimestamp].as<double>();
-    auto ts = QDateTime::fromMSecsSinceEpoch(timestamp);
-
-    auto counter = map[RBKit::EfMessageCounter].as<unsigned long long>();
-
-    auto events = parseEvtArray(map[RBKit::EfPayload]);
-    return new RBKit::EvtCollection(ts, eventType, events, counter);
+    auto handShakeEvent = eventFromMsgpackObject(unpacked.get());
+    return handShakeEvent;
 }
 
 
