@@ -59,7 +59,7 @@ RBKit::EventParser::eventFromMsgpackObject(msgpack::object& object) const
 
 
 QList<RBKit::EventPtr>
-RBKit::EventParser::parseEvents(const msgpack::object& objarray) const
+RBKit::EventParser::parseEvtArray(const msgpack::object& objarray) const
 {
     QList<RBKit::EventPtr> events;
 
@@ -96,7 +96,7 @@ RBKit::EventDataBase* RBKit::EventParser::parseEvent() const
 
     auto counter = map[RBKit::EfMessageCounter].as<unsigned long long>();
 
-    auto events = parseEvents(map[RBKit::EfPayload]);
+    auto events = parseEvtArray(map[RBKit::EfPayload]);
     return new RBKit::EvtCollection(ts, eventType, events, counter);
 }
 
@@ -111,7 +111,7 @@ RBKit::EvtHandshake *RBKit::EventParser::parseHandShake() const
 
     auto counter = map[RBKit::EfMessageCounter].as<unsigned long long>();
 
-    auto events = parseEvents(map[RBKit::EfPayload]);
+    auto events = parseEvtArray(map[RBKit::EfPayload]);
     return new RBKit::EvtCollection(ts, eventType, events, counter);
 }
 
