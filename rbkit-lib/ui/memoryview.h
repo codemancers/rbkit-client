@@ -18,7 +18,6 @@ class MemoryView;
 class MemoryView : public QWidget
 {
     Q_OBJECT
-    ProcessDetail *processDetail;
 
 public:
     explicit MemoryView(QWidget *parent = 0);
@@ -26,11 +25,10 @@ public:
 
     RBKit::JsBridge *getJsBridge() const;
     void setJsBridge(RBKit::JsBridge *value);
-
+    ProcessDetail *processDetail;
 private:
     Ui::MemoryView *ui;
     RBKit::JsBridge *jsBridge;
-
 private slots:
     void onPageLoad(bool ok);
 };

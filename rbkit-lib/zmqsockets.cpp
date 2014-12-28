@@ -56,6 +56,7 @@ bool RBKit::ZmqCommandSocket::performHandShake()
         QByteArray response = socket->receiveBlockingMessage();
         EventParser parser(response);
         EvtHandshake *handShake = parser.parseHandShake();
+        RBKit::AppState::getInstance()->setAppState("process_name", handShake->processName);
         RBKit::AppState::getInstance()->setAppState("pwd", handShake->pwd);
         RBKit::AppState::getInstance()->setAppState("pid", handShake->pid);
         if (handShake != NULL) {

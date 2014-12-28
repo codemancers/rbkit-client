@@ -117,6 +117,7 @@ namespace RBKit
     public:
         EvtHandshake(QDateTime ts, EventType eventType, QVariantMap payload);
         void process(Subscriber &processor) const;
+        QString processName;
         QString pwd;
         quint32 pid;
         bool tracingFlag;

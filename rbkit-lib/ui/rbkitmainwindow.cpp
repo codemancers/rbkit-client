@@ -7,6 +7,7 @@
 #include "diffviewform.h"
 #include "ui/actiontoolbar.h"
 #include "ui/aboutdialog.h"
+#include "ui/processdetail.h"
 
 RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     QMainWindow(parent), connected(false), host(""), connectionInProgress(false),
@@ -180,6 +181,7 @@ void RbkitMainWindow::connectedToSocket()
     ui->action_Connect->setText(tr("&Disconnect"));
     ui->action_Connect->setIcon(QIcon(":/icons/disconnect-32.png"));
     ui->statusbar->showMessage("Currently Profiling Ruby application");
+    memoryView->processDetail->displayProcessDetail();
     this->connected = true;
 }
 
