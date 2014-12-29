@@ -9,6 +9,9 @@ TEMPLATE = lib
 CONFIG += staticlib
 CONFIG += c++11
 
+# Include msgpack via pri file
+include($$RC_ROOT_SOURCE_DIR/common.pri)
+
 SOURCES += \
     subscriber.cpp \
     rbcommands.cpp \
@@ -70,10 +73,6 @@ HEADERS +=  \
     model/heap_item_types/heapitem.h \
     model/heap_item_types/leafitem.h \
     model/snapshotstate.h
-
-
-# Include msgpack via pri file
-include($$RC_ROOT_SOURCE_DIR/common.pri)
 
 FORMS += \
     ui/rbkitmainwindow.ui \
