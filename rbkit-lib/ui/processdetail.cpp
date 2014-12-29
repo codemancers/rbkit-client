@@ -5,7 +5,12 @@
 #include "../model/appstate.h"
 #include <QDebug>
 #include <QHBoxLayout>
-    #include <QTableView>
+#include <QTableView>
+#include <QStandardItemModel>
+#include <QStandardItem>
+#include <QSortFilterProxyModel>
+#include <iostream>
+#include <QHeaderView>
 
 ProcessDetail::ProcessDetail()
 {
@@ -36,47 +41,99 @@ void ProcessDetail::displayProcessDetail()
 void ProcessDetail::createGenerationTable()
 {
     QWidget *widget = new QWidget();
-    QHBoxLayout *horizontalTables = new QHBoxLayout();
+    horizontalTables = new QHBoxLayout();
     horizontalTables->setMargin(0);
 
-    QWidget *gc1 = new QWidget();
-    QVBoxLayout *gc1Layout = new QVBoxLayout();
-    gc1Layout->setMargin(0);
-    gc1->setLayout(gc1Layout);
+    youngView = createTableView("Young Generation");
+    youngModel = createModel(*youngView);
 
-    QLabel *gc1Label = new QLabel("Young Generation");
-    gc1Layout->addWidget(gc1Label);
-    QTableView *view1 = new QTableView();
-    gc1Layout->addWidget(view1);
-    horizontalTables->addWidget(gc1);
+    fixTableDisplay(youngView);
+    secondGenView = createTableView("Second Generation");
+    secondGenModel = createModel(*secondGenView);
+    fixTableDisplay(secondGenView);
 
 
-
-    QWidget *gc2 = new QWidget();
-    QVBoxLayout *gc2Layout = new QVBoxLayout();
-    gc2Layout->setMargin(0);
-    gc2->setLayout(gc2Layout);
-
-    QLabel *gc2Label = new QLabel("Medium Generation");
-    gc2Layout->addWidget(gc2Label);
-    QTableView *view2 = new QTableView();
-    gc2Layout->addWidget(view2);
-    horizontalTables->addWidget(gc2);
-
-
-
-    QWidget *gc3 = new QWidget();
-    QVBoxLayout *gc3Layout = new QVBoxLayout();
-    gc3Layout->setMargin(0);
-    gc3->setLayout(gc3Layout);
-
-    QLabel *gc3Label = new QLabel("Old Generation");
-    gc3Layout->addWidget(gc3Label);
-    QTableView *view3 = new QTableView();
-    gc3Layout->addWidget(view3);
-    horizontalTables->addWidget(gc3);
+    oldView = createTableView("Old Generation");
+    oldGenModel = createModel(*oldView);
+    fixTableDisplay(oldView);
 
     widget->setLayout(horizontalTables);
 
     addWidget(widget);
+}
+
+QTableView *ProcessDetail::createTableView(const QString &label)
+{
+    QWidget *tableViewContainer = new QWidget();
+
+    QVBoxLayout *viewLayout = new QVBoxLayout();
+    viewLayout->setMargin(0);
+    tableViewContainer->setLayout(viewLayout);
+
+    QLabel *gcLabel = new QLabel(label);
+    viewLayout->addWidget(gcLabel);
+    QTableView *tableView = new QTableView();
+    viewLayout->addWidget(tableView);
+    horizontalTables->addWidget(tableViewContainer);
+    return tableView;
+}
+
+void ProcessDetail::receiveGenerationStats(int genType, QVariantMap map)
+{
+    switch (genType) {
+    case 0:
+        updateModel(youngModel, map);
+        break;
+    case 1:
+        updateModel(secondGenModel, map);
+        break;
+    case 2:
+        updateModel(oldGenModel, map);
+        break;
+    default:
+        break;
+    }
+}
+
+void ProcessDetail::createTableHeader(QStandardItemModel &model)
+{
+    model.setHorizontalHeaderItem(0, new QStandardItem(QString("Class")));
+    model.setHorizontalHeaderItem(1, new QStandardItem(QString("Count")));
+}
+
+QStandardItemModel *ProcessDetail::createModel(QTableView &tableView)
+{
+    QStandardItemModel *model = new QStandardItemModel(this);
+    createTableHeader(*model);
+
+    QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
+    proxyModel->setSourceModel(model);
+    tableView.setModel(proxyModel);
+    return model;
+
+}
+
+void ProcessDetail::updateModel(QStandardItemModel *model, QVariantMap &map)
+{
+        model->removeRows(0, model->rowCount());
+        int counter = 0;
+        for(auto row : map.toStdMap() ) {
+            QStandardItem *className = new QStandardItem(row.first);
+            model->setItem(counter, 0, className);
+
+            QStandardItem *count = new QStandardItem(QString("%0").arg(row.second.toUInt()));
+            model->setItem(counter, 1, count);
+            counter += 1;
+        }
+}
+
+void ProcessDetail::fixTableDisplay(QTableView *view)
+{
+    view->setSortingEnabled(true);
+    view->setAlternatingRowColors(true);
+    view->sortByColumn(1, Qt::DescendingOrder);
+    view->setColumnWidth(0, 240);
+    view->setColumnWidth(1, 80);
+    view->horizontalHeader()->setStretchLastSection(true);
+    view->verticalHeader()->setVisible(false);
 }

@@ -252,6 +252,9 @@ void Subscriber::onTimerExpiry()
 
     QVariantMap map = hashToQVarMap(objectStore->liveStats());
     jsBridge->sendMapToJs(eventName, QDateTime(), map);
+    emit youngGenStats(hashToQVarMap(objectStore->youngGenStats()));
+    emit secondGenStats(hashToQVarMap(objectStore->secondGenStats()));
+    emit oldGenStats(hashToQVarMap(objectStore->oldGenStats()));
 }
 
 

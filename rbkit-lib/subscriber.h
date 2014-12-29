@@ -69,6 +69,9 @@ signals:
     void disconnected();
     void connected();
     void errored(const QString &);
+    void youngGenStats(QVariantMap map);
+    void secondGenStats(QVariantMap map);
+    void oldGenStats(QVariantMap map);
     void objectDumpAvailable(int snapshotVersion);
 
 public slots:

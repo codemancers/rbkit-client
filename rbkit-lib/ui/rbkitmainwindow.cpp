@@ -161,6 +161,11 @@ void RbkitMainWindow::setupSubscriber()
     connect(subscriber, &Subscriber::disconnected, this, &RbkitMainWindow::disconnectedFromSocket);
     connect(subscriber, &Subscriber::objectDumpAvailable, this, &RbkitMainWindow::objectDumpAvailable);
 
+    connect(subscriber, &Subscriber::youngGenStats, this, &RbkitMainWindow::receiveYoungGenStats);
+    connect(subscriber, &Subscriber::secondGenStats, this, &RbkitMainWindow::receiveSecondGenStats);
+    connect(subscriber, &Subscriber::oldGenStats, this, &RbkitMainWindow::receiveOldGenStats);
+
+
     subscriberThread.start();
 }
 
@@ -253,4 +258,19 @@ void RbkitMainWindow::onDiffSnapshotsSelected(QList<int> selectedSnapshots)
     form->setDisableRightClick(true);
     form->loadFromSpecifiedRoot(newRootItem);
     addTabWidget(form, QString("Comapre Snapshots"));
+}
+
+void RbkitMainWindow::receiveYoungGenStats(QVariantMap map)
+{
+    memoryView->processDetail->receiveGenerationStats(0, map);
+}
+
+void RbkitMainWindow::receiveSecondGenStats(QVariantMap map)
+{
+    memoryView->processDetail->receiveGenerationStats(1, map);
+}
+
+void RbkitMainWindow::receiveOldGenStats(QVariantMap map)
+{
+    memoryView->processDetail->receiveGenerationStats(2, map);
 }
