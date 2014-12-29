@@ -16,6 +16,10 @@ SOURCES += \
     testappstate.cpp \
     testsnapshotstate.cpp
 
+# Include rbkit related include and lib paths
+INCLUDEPATH += $$RC_ROOT_SOURCE_DIR/rbkit-lib
+LIBS += $$RC_ROOT_BUILD_DIR/rbkit-lib/librbkit.a
+
 # Include everything via one common pri file
 include($$RC_ROOT_SOURCE_DIR/common.pri)
 
