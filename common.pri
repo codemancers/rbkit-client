@@ -1,7 +1,3 @@
-# Include rbkit related include and lib paths
-INCLUDEPATH += $$RC_ROOT_SOURCE_DIR/rbkit-lib
-LIBS += $$RC_ROOT_BUILD_DIR/rbkit-lib/librbkit.a
-
 # Include msgpack related include and lib paths
 INCLUDEPATH += $$RC_ROOT_BUILD_DIR/msgpack/include
 LIBS += $$RC_ROOT_BUILD_DIR/msgpack/lib/libmsgpack.a
