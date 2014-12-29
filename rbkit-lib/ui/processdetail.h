@@ -37,6 +37,7 @@ public:
     QStandardItemModel* createModel(QTableView& tableView);
     void updateModel(QStandardItemModel* model, QVariantMap &map);
     void fixTableDisplay(QTableView *view);
+    void disconnectedFromProcess();
 
 };
 

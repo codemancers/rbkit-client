@@ -176,6 +176,7 @@ void RbkitMainWindow::disconnectedFromSocket()
     this->connected = false;
     ui->statusbar->showMessage("Not connected to any Ruby application");
     actionToolbar->disableProfileActions();
+    memoryView->processDetail->disconnectedFromProcess();
     connectionInProgress = false;
 }
 

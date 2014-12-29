@@ -18,6 +18,11 @@ ProcessDetail::ProcessDetail()
     processInfoLabel->setStyleSheet("border-bottom: 2px; border-bottom-color: black");
     addWidget(processInfoLabel);
     displayProcessDetail();
+    QWidget *horizontalLineWidget = new QWidget;
+    horizontalLineWidget->setFixedHeight(2);
+    horizontalLineWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    horizontalLineWidget->setStyleSheet(QString("background-color: #c0c0c0;"));
+    addWidget(horizontalLineWidget);
     createGenerationTable();
 }
 
@@ -44,16 +49,16 @@ void ProcessDetail::createGenerationTable()
     horizontalTables = new QHBoxLayout();
     horizontalTables->setMargin(0);
 
-    youngView = createTableView("Young Generation");
+    youngView = createTableView("<b> Young Generation </b> ( &lt; 2 )");
     youngModel = createModel(*youngView);
 
     fixTableDisplay(youngView);
-    secondGenView = createTableView("Second Generation");
+    secondGenView = createTableView("<b> Second Generation </b> ( &lt; 4 )");
     secondGenModel = createModel(*secondGenView);
     fixTableDisplay(secondGenView);
 
 
-    oldView = createTableView("Old Generation");
+    oldView = createTableView("<b> Old Generation </b> ( &gt; 4 )");
     oldGenModel = createModel(*oldView);
     fixTableDisplay(oldView);
 
@@ -73,6 +78,7 @@ QTableView *ProcessDetail::createTableView(const QString &label)
     QLabel *gcLabel = new QLabel(label);
     viewLayout->addWidget(gcLabel);
     QTableView *tableView = new QTableView();
+    tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     viewLayout->addWidget(tableView);
     horizontalTables->addWidget(tableViewContainer);
     return tableView;
@@ -118,11 +124,9 @@ void ProcessDetail::updateModel(QStandardItemModel *model, QVariantMap &map)
         model->removeRows(0, model->rowCount());
         int counter = 0;
         for(auto row : map.toStdMap() ) {
-            QStandardItem *className = new QStandardItem(row.first);
-            model->setItem(counter, 0, className);
-
-            QStandardItem *count = new QStandardItem(QString("%0").arg(row.second.toUInt()));
-            model->setItem(counter, 1, count);
+            model->insertRow(0);
+            model->setData(model->index(0,0), row.first);
+            model->setData(model->index(0, 1), row.second);
             counter += 1;
         }
 }
@@ -136,4 +140,12 @@ void ProcessDetail::fixTableDisplay(QTableView *view)
     view->setColumnWidth(1, 80);
     view->horizontalHeader()->setStretchLastSection(true);
     view->verticalHeader()->setVisible(false);
+}
+
+void ProcessDetail::disconnectedFromProcess()
+{
+    processInfoLabel->setText("Currently not profiling any Application");
+    youngModel->removeRows(0, youngModel->rowCount());
+    secondGenModel->removeRows(0, secondGenModel->rowCount());
+    oldGenModel->removeRows(0, oldGenModel->rowCount());
 }
