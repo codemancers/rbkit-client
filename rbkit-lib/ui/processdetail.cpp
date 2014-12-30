@@ -34,7 +34,7 @@ ProcessDetail::~ProcessDetail()
 void ProcessDetail::displayProcessDetail()
 {
     if (RBKit::AppState::getInstance()->getState("process_name").isValid()) {
-        processInfoLabel->setText("<b> Process Name </b> :" + RBKit::AppState::getInstance()->getState("process_name").toString() + "<br />" +
+        processInfoLabel->setText("<b> Process Name </b>: " + RBKit::AppState::getInstance()->getState("process_name").toString() + "<br />" +
                                   "<b> Process pid </b>: " + RBKit::AppState::getInstance()->getState("pid").toString() + "<br />" +
                                   "<b> Process directory </b>: " + RBKit::AppState::getInstance()->getState("pwd").toString()
                               );
