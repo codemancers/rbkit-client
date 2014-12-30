@@ -256,6 +256,7 @@ void RbkitMainWindow::onDiffSnapshotsSelected(QList<int> selectedSnapshots)
     RBKit::BaseHeapItem *newRootItem = snapShotState->diffRootItem(selectedSnapshots);
 
     DiffViewForm *form = new DiffViewForm(this, -1);
+    form->setSnapshotDiffNumbers(selectedSnapshots);
     form->setDisableRightClick(true);
     form->loadFromSpecifiedRoot(newRootItem);
     addTabWidget(form, QString("Comapre Snapshots"));
