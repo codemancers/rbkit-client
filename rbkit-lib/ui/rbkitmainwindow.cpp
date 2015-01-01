@@ -7,6 +7,7 @@
 #include "diffviewform.h"
 #include "ui/actiontoolbar.h"
 #include "ui/aboutdialog.h"
+#include "ui/processdetail.h"
 
 RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     QMainWindow(parent), connected(false), host(""), connectionInProgress(false),
@@ -160,6 +161,11 @@ void RbkitMainWindow::setupSubscriber()
     connect(subscriber, &Subscriber::disconnected, this, &RbkitMainWindow::disconnectedFromSocket);
     connect(subscriber, &Subscriber::objectDumpAvailable, this, &RbkitMainWindow::objectDumpAvailable);
 
+    connect(subscriber, &Subscriber::youngGenStats, this, &RbkitMainWindow::receiveYoungGenStats);
+    connect(subscriber, &Subscriber::secondGenStats, this, &RbkitMainWindow::receiveSecondGenStats);
+    connect(subscriber, &Subscriber::oldGenStats, this, &RbkitMainWindow::receiveOldGenStats);
+
+
     subscriberThread.start();
 }
 
@@ -170,6 +176,7 @@ void RbkitMainWindow::disconnectedFromSocket()
     this->connected = false;
     ui->statusbar->showMessage("Not connected to any Ruby application");
     actionToolbar->disableProfileActions();
+    memoryView->processDetail->disconnectedFromProcess();
     connectionInProgress = false;
 }
 
@@ -180,6 +187,7 @@ void RbkitMainWindow::connectedToSocket()
     ui->action_Connect->setText(tr("&Disconnect"));
     ui->action_Connect->setIcon(QIcon(":/icons/disconnect-32.png"));
     ui->statusbar->showMessage("Currently Profiling Ruby application");
+    memoryView->processDetail->displayProcessDetail();
     this->connected = true;
 }
 
@@ -248,7 +256,23 @@ void RbkitMainWindow::onDiffSnapshotsSelected(QList<int> selectedSnapshots)
     RBKit::BaseHeapItem *newRootItem = snapShotState->diffRootItem(selectedSnapshots);
 
     DiffViewForm *form = new DiffViewForm(this, -1);
+    form->setSnapshotDiffNumbers(selectedSnapshots);
     form->setDisableRightClick(true);
     form->loadFromSpecifiedRoot(newRootItem);
     addTabWidget(form, QString("Comapre Snapshots"));
+}
+
+void RbkitMainWindow::receiveYoungGenStats(QVariantMap map)
+{
+    memoryView->processDetail->receiveGenerationStats(0, map);
+}
+
+void RbkitMainWindow::receiveSecondGenStats(QVariantMap map)
+{
+    memoryView->processDetail->receiveGenerationStats(1, map);
+}
+
+void RbkitMainWindow::receiveOldGenStats(QVariantMap map)
+{
+    memoryView->processDetail->receiveGenerationStats(2, map);
 }

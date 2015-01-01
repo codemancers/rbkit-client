@@ -100,3 +100,18 @@ void RBKit::EvtCollection::process(Subscriber& processor) const
 {
     processor.processEvent(*this);
 }
+
+
+RBKit::EvtHandshake::EvtHandshake(QDateTime ts, RBKit::EventType eventType, QVariantMap payload)
+    : EventDataBase(ts, eventType)
+{
+    processName = payload["process_name"].toString();
+    pwd = payload["pwd"].toString();
+    pid = payload["pid"].toUInt();
+    tracingFlag = payload["object_trace_enabled"].toInt() == 0 ? false : true;
+}
+
+void RBKit::EvtHandshake::process(Subscriber &processor) const
+{
+    processor.processEvent(*this);
+}

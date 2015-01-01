@@ -7,6 +7,8 @@
 
 #include "model/jsbridge.h"
 
+class ProcessDetail;
+
 namespace RBKit {
 
 namespace Ui {
@@ -23,11 +25,10 @@ public:
 
     RBKit::JsBridge *getJsBridge() const;
     void setJsBridge(RBKit::JsBridge *value);
-
+    ProcessDetail *processDetail;
 private:
     Ui::MemoryView *ui;
     RBKit::JsBridge *jsBridge;
-
 private slots:
     void onPageLoad(bool ok);
 };

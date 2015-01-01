@@ -221,6 +221,11 @@ void Subscriber::processEvent(const RBKit::EvtCollection& evtCollection)
     }
 }
 
+void Subscriber::processEvent(const RBKit::EvtHandshake &handShake)
+{
+    qDebug() << "Should not have come here";
+}
+
 void Subscriber::performHandshake()
 {
     context->start();
@@ -247,6 +252,9 @@ void Subscriber::onTimerExpiry()
 
     QVariantMap map = hashToQVarMap(objectStore->liveStats());
     jsBridge->sendMapToJs(eventName, QDateTime(), map);
+    emit youngGenStats(hashToQVarMap(objectStore->youngGenStats()));
+    emit secondGenStats(hashToQVarMap(objectStore->secondGenStats()));
+    emit oldGenStats(hashToQVarMap(objectStore->oldGenStats()));
 }
 
 

@@ -13,8 +13,15 @@ DiffViewForm::DiffViewForm(QWidget* parent, int _snapShotVersion)
 DiffViewForm::~DiffViewForm()
 {
     if (parentViewForm != NULL)  {
-        qDebug() << "Delete parent view form";
         delete parentViewForm;
+    }
+
+    if (parentLabel != NULL) {
+        delete parentLabel;
+    }
+
+    if (diffLabel != NULL) {
+        delete diffLabel;
     }
 }
 
@@ -40,11 +47,18 @@ void DiffViewForm::updateParentView(RBKit::BaseHeapItem *heapItem)
 
 void DiffViewForm::initializeParentView()
 {
+    parentLabel = new QLabel("<b> Parents of selected object </b>");
+    ui->treeVerticalLayout->addWidget(parentLabel);
     parentViewForm = new HeapDumpForm(this, -1);
     parentViewForm->setMaximumHeight(200);
     parentViewForm->setDisableRightClick(true);
     parentViewForm->setParentWindow(getParentWindow());
     ui->treeVerticalLayout->addWidget(parentViewForm);
-    qDebug() << "Showing the parent form";
     parentViewForm->show();
+}
+
+void DiffViewForm::setSnapshotDiffNumbers(QList<int> selectedSnapshots)
+{
+    diffLabel = new QLabel(QString("<b> Showing Comparison of Snapshot#%0-Snapshot#%1</b>").arg(selectedSnapshots.at(1)).arg(selectedSnapshots.at(0)));
+    ui->treeVerticalLayout->insertWidget(0, diffLabel);
 }

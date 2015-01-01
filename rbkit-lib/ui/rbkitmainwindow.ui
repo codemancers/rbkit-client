@@ -154,7 +154,7 @@
      <normaloff>:/icons/Comapre-48.png</normaloff>:/icons/Comapre-48.png</iconset>
    </property>
    <property name="text">
-    <string>Comapre  Snapshots</string>
+    <string>Compare  Snapshots</string>
    </property>
    <property name="toolTip">
     <string>Comapre Heapsnpshot</string>

@@ -58,6 +58,7 @@ public:
     void processEvent(const RBKit::EvtGcStop&);
     void processEvent(const RBKit::EvtObjectDump&);
     void processEvent(const RBKit::EvtCollection&);
+    void processEvent(const RBKit::EvtHandshake&handShake);
     void performHandshake();
     void handShakeCompleted();
     void emitConnectionError(QString message);
@@ -68,6 +69,9 @@ signals:
     void disconnected();
     void connected();
     void errored(const QString &);
+    void youngGenStats(QVariantMap map);
+    void secondGenStats(QVariantMap map);
+    void oldGenStats(QVariantMap map);
     void objectDumpAvailable(int snapshotVersion);
 
 public slots:

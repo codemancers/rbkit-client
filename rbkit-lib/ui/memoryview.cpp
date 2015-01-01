@@ -1,5 +1,6 @@
 #include "memoryview.h"
 #include "ui_memoryview.h"
+#include "processdetail.h"
 
 namespace RBKit {
 
@@ -24,6 +25,9 @@ MemoryView::MemoryView(QWidget *parent) :
 
     connect(ui->chartingView, SIGNAL(loadFinished(bool)), this, SLOT(onPageLoad(bool)));
     ui->chartingView->setUrl(QUrl("qrc:/rbcharts/src/index.qt.html"));
+
+    processDetail = new ProcessDetail();
+    ui->detailTab->setLayout(processDetail);
 
     jsBridge = new RBKit::JsBridge();
 }

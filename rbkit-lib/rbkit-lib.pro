@@ -41,7 +41,8 @@ SOURCES += \
     ui/parentviewform.cpp \
     model/heap_item_types/baseheapitem.cpp \
     model/heap_item_types/heapitem.cpp \
-    model/heap_item_types/leafitem.cpp
+    model/heap_item_types/leafitem.cpp \
+    ui/processdetail.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -72,7 +73,8 @@ HEADERS +=  \
     model/heap_item_types/baseheapitem.h \
     model/heap_item_types/heapitem.h \
     model/heap_item_types/leafitem.h \
-    model/snapshotstate.h
+    model/snapshotstate.h \
+    ui/processdetail.h
 
 FORMS += \
     ui/rbkitmainwindow.ui \
