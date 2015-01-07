@@ -7,21 +7,21 @@
 #include "model/appstate.h"
 
 DiffViewForm::DiffViewForm(QWidget* parent, int _snapShotVersion)
-    : HeapDumpForm(parent, _snapShotVersion), parentViewForm(0)
+    : HeapDumpForm(parent, _snapShotVersion), parentViewForm(nullptr), parentLabel(nullptr), diffLabel(nullptr)
 {
 }
 
 DiffViewForm::~DiffViewForm()
 {
-    if (parentViewForm != NULL)  {
+    if (parentViewForm)  {
         delete parentViewForm;
     }
 
-    if (parentLabel != NULL) {
+    if (parentLabel) {
         delete parentLabel;
     }
 
-    if (diffLabel != NULL) {
+    if (diffLabel) {
         delete diffLabel;
     }
 }
