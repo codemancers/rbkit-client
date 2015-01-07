@@ -43,7 +43,7 @@ executable=$1
 distro=`lsb_release -d | awk '{print $2$3$4}' | sed 's/\./_/g'`
 
 # Create the directory that will be tarred up for distribution.
-tardir=`echo $executable"_"$distro | awk '{print tolower($0)}'`
+tardir="rbkit"
 mkdir $tardir
 echo "Created tar ball directory: "$tardir
 
@@ -77,6 +77,12 @@ cp -r $qtfontsdir/* $fontsdir
 
 # You will need to change this to point to wherever libqxcb.so lives on your PC.
 qtplatformplugin=$QT_HOME/5.4/gcc_64/plugins/platforms/libqxcb.so
+for dep in `ldd $qtplatformplugin | awk '{print $3}' | grep -v "("`
+do
+  cp $dep $libsdir
+  echo "Copied dependency "$dep" to "$libsdir
+done
+
 qtplatformplugindir=$tardir/platforms
 mkdir $qtplatformplugindir
 echo "Created platforms directory: "$qtplatformplugindir
@@ -161,7 +167,7 @@ cp $qtsqliteplugin $qtsqliteplugindir
 echo "Copied "$qtsqliteplugin" to "$qtsqliteplugindir
 
 # Create the run script.
-execscript=$tardir/"run$executable.sh"
+execscript=$tardir/"rbkit"
 echo "Created run script: "$execscript
 
 echo "#!/bin/sh" > $execscript
