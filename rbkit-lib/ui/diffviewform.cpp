@@ -4,6 +4,7 @@
 #include "parentviewform.h"
 #include "model/heap_item_types/baseheapitem.h"
 #include <QStatusBar>
+#include "model/appstate.h"
 
 DiffViewForm::DiffViewForm(QWidget* parent, int _snapShotVersion)
     : HeapDumpForm(parent, _snapShotVersion), parentViewForm(0)
@@ -59,6 +60,9 @@ void DiffViewForm::initializeParentView()
 
 void DiffViewForm::setSnapshotDiffNumbers(QList<int> selectedSnapshots)
 {
-    diffLabel = new QLabel(QString("<b> Showing Comparison of Snapshot#%0-Snapshot#%1</b>").arg(selectedSnapshots.at(1)).arg(selectedSnapshots.at(0)));
+    diffLabel = new QLabel(QString("<b> Showing Comparison of %0-%1</b>")
+                           .arg(RBKit::AppState::getInstance()->getSnapshotName(selectedSnapshots.at(1)))
+                           .arg(RBKit::AppState::getInstance()->getSnapshotName(selectedSnapshots.at(0))));
+
     ui->treeVerticalLayout->insertWidget(0, diffLabel);
 }
