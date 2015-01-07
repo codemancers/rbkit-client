@@ -32,7 +32,7 @@ void DiffViewForm::treeNodeSelected(const QModelIndex &index)
     RBKit::BaseHeapItem *nodeItem = static_cast<RBKit::BaseHeapItem *>(sourceIndex.internalPointer());
     if (nodeItem != NULL) {
         parentWindow->statusBar()->showMessage(nodeItem->leadingIdentifier());
-        if (parentViewForm == 0) {
+        if (!parentViewForm) {
             initializeParentView();
         }
         updateParentView(nodeItem);
