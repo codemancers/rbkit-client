@@ -19,8 +19,9 @@ var heapRandomData = function () {
   };
 };
 
+var heapTimeout;
 var heapCharts = function() {
-  setTimeout(heapCharts, 1000);
+  heapTimeout = setTimeout(heapCharts, 1000);
 
   Rbkit.updateLiveObjectsChart(heapRandomData());
   Rbkit.updateHeapChart(heapRandomData());
@@ -32,14 +33,16 @@ heapCharts();
 // =============================== code for gc charts ==============================
 // assuming max gc time is 10s
 
+var gcStartTimeout;
 var gcChartStart = function () {
-  setTimeout(gcChartEnd, _.random(0, 10) * 1000);
+  gcStartTimeout = setTimeout(gcChartEnd, _.random(0, 10) * 1000);
 
   Rbkit.gcStarted(new Date());
 };
 
+var gcEndTimeout;
 var gcChartEnd = function () {
-  setTimeout(gcChartStart, 5000);
+  gcEndTimeout = setTimeout(gcChartStart, 5000);
 
   Rbkit.gcEnded(new Date());
 };
@@ -108,10 +111,28 @@ var gcRandomStats = function () {
   };
 };
 
+var gcStatsTimeout;
 var gcStatsTable = function () {
-  setTimeout(gcStatsTable, 5000);
+  gcStatsTimeout = setTimeout(gcStatsTable, 5000);
 
   Rbkit.updateGcStats(gcRandomStats());
 };
 
 gcStatsTable();
+
+var reset = function() {
+  clearTimeout(heapTimeout);
+  clearTimeout(gcEndTimeout);
+  clearTimeout(gcStartTimeout);
+  clearTimeout(gcStatsTimeout);
+
+  Rbkit.reset();
+
+  setTimeout(function() {
+    heapCharts();
+    gcChartStart();
+    gcStatsTable();
+  }, 2000);
+};
+
+document.getElementById("reset").addEventListener("click", reset);
