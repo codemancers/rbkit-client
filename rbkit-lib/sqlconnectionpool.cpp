@@ -39,6 +39,12 @@ void SqlConnectionPool::setupDatabase()
     qDebug() << "Setting up database done";
 }
 
+void SqlConnectionPool::closeDatabase()
+{
+    database.close();
+    database.removeDatabase("/tmp/rbkit.db");
+}
+
 void SqlConnectionPool::prepareTables()
 {
     QVector<QString> objectCreation;

@@ -177,6 +177,7 @@ void RbkitMainWindow::disconnectedFromSocket()
     actionToolbar->disableProfileActions();
     memoryView->processDetail->disconnectedFromProcess();
     snapShotState->reset();
+    RBKit::SqlConnectionPool::getInstance()->closeDatabase();
     RBKit::SqlConnectionPool::getInstance()->setupDatabase();
     connectionInProgress = false;
 }
