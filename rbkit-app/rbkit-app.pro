@@ -8,6 +8,7 @@ TEMPLATE = app
 SOURCES += main.cpp
 
 CONFIG += c++11
+CONFIG += static
 ICON = rbkit.icns
 
 # Include rbkit related include and lib paths

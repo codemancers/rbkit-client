@@ -14,3 +14,4 @@ SUBDIRS =     \
 
 CONFIG += ordered
 CONFIG += c++11
+CONFIG += static

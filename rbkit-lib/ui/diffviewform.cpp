@@ -4,23 +4,24 @@
 #include "parentviewform.h"
 #include "model/heap_item_types/baseheapitem.h"
 #include <QStatusBar>
+#include "model/appstate.h"
 
 DiffViewForm::DiffViewForm(QWidget* parent, int _snapShotVersion)
-    : HeapDumpForm(parent, _snapShotVersion), parentViewForm(0)
+    : HeapDumpForm(parent, _snapShotVersion), parentViewForm(nullptr), parentLabel(nullptr), diffLabel(nullptr)
 {
 }
 
 DiffViewForm::~DiffViewForm()
 {
-    if (parentViewForm != NULL)  {
+    if (parentViewForm)  {
         delete parentViewForm;
     }
 
-    if (parentLabel != NULL) {
+    if (parentLabel) {
         delete parentLabel;
     }
 
-    if (diffLabel != NULL) {
+    if (diffLabel) {
         delete diffLabel;
     }
 }
@@ -31,7 +32,7 @@ void DiffViewForm::treeNodeSelected(const QModelIndex &index)
     RBKit::BaseHeapItem *nodeItem = static_cast<RBKit::BaseHeapItem *>(sourceIndex.internalPointer());
     if (nodeItem != NULL) {
         parentWindow->statusBar()->showMessage(nodeItem->leadingIdentifier());
-        if (parentViewForm == 0) {
+        if (!parentViewForm) {
             initializeParentView();
         }
         updateParentView(nodeItem);
@@ -59,6 +60,9 @@ void DiffViewForm::initializeParentView()
 
 void DiffViewForm::setSnapshotDiffNumbers(QList<int> selectedSnapshots)
 {
-    diffLabel = new QLabel(QString("<b> Showing Comparison of Snapshot#%0-Snapshot#%1</b>").arg(selectedSnapshots.at(1)).arg(selectedSnapshots.at(0)));
+    diffLabel = new QLabel(QString("<b> Showing Comparison of %0-%1</b>")
+                           .arg(RBKit::AppState::getInstance()->getSnapshotName(selectedSnapshots.at(1)))
+                           .arg(RBKit::AppState::getInstance()->getSnapshotName(selectedSnapshots.at(0))));
+
     ui->treeVerticalLayout->insertWidget(0, diffLabel);
 }
