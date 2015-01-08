@@ -90,7 +90,6 @@ var Rbkit = {
   // function to record gc end time
   gcEnded: function (timestamp) {
     if (!this.gcStartTime) {
-      console.info("not sure why gc start time is not set");
       return;
     }
 
@@ -306,17 +305,14 @@ var Rbkit = {
       this.updateLiveObjectsChart(data.payload);
       this.updateHeapChart(data.payload);
       break;
+    case "disconnected":
+      this.reset();
+      break;
     }
   },
 
   reset: function() {
-    this.liveObjectsChart.destroy();
-    this.heapDataChart.destroy();
-    this.gcChart.destroy();
-    this.youngGenerationChart.destroy();
-    this.secondGenerationChart.destroy();
-    this.oldGenerationChart.destroy();
-    this.updateGcStats({});
+      location.reload();
   }
 };
 
