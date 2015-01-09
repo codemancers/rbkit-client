@@ -90,7 +90,6 @@ var Rbkit = {
   // function to record gc end time
   gcEnded: function (timestamp) {
     if (!this.gcStartTime) {
-      console.info("not sure why gc start time is not set");
       return;
     }
 
@@ -155,6 +154,11 @@ var Rbkit = {
   },
 
   updateGcStats: function (gcStats) {
+    if (Object.keys(gcStats).length === 0) {
+      document.getElementById('gc-stats-table').lastElementChild.innerHTML = '';
+      return;
+    }
+
     var gcStatsKeys = Object.keys(this.gcStatsImportantFields);
     for (var iter = 0; iter != gcStatsKeys.length; ++iter) {
       var token = gcStatsKeys[iter];
@@ -231,6 +235,7 @@ var Rbkit = {
   insertLegend: function (chart, canvasDiv) {
     var chartLegend = chart.generateLegend();
     var node = this.stringToNode(chartLegend);
+    canvasDiv.parentNode.lastChild.remove();
     canvasDiv.parentNode.appendChild(node);
   },
 
@@ -300,7 +305,14 @@ var Rbkit = {
       this.updateLiveObjectsChart(data.payload);
       this.updateHeapChart(data.payload);
       break;
+    case "disconnected":
+      this.reset();
+      break;
     }
+  },
+
+  reset: function() {
+      location.reload();
   }
 };
 

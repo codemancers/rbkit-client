@@ -14,7 +14,6 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     ui(new Ui::RbkitMainWindow)
 {
     Q_INIT_RESOURCE(tool_icons);
-    RBKit::SqlConnectionPool::getInstance()->setupDatabase();
     ui->setupUi(this);
     actionToolbar = new ActionToolbar(ui);
     setupToolbarStyle();
@@ -177,12 +176,16 @@ void RbkitMainWindow::disconnectedFromSocket()
     ui->statusbar->showMessage("Not connected to any Ruby application");
     actionToolbar->disableProfileActions();
     memoryView->processDetail->disconnectedFromProcess();
+    snapShotState->reset();
+    RBKit::SqlConnectionPool::getInstance()->closeDatabase();
+    RBKit::SqlConnectionPool::getInstance()->setupDatabase();
     connectionInProgress = false;
 }
 
 
 void RbkitMainWindow::connectedToSocket()
 {
+    RBKit::SqlConnectionPool::getInstance()->setupDatabase();
     actionToolbar->enableProfileActions();
     ui->action_Connect->setText(tr("&Disconnect"));
     ui->action_Connect->setIcon(QIcon(":/icons/disconnect-32.png"));

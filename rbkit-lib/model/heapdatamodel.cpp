@@ -17,12 +17,17 @@ QVariant HeapDataModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    if (role != Qt::DisplayRole) {
+    BaseHeapItem *item = static_cast<BaseHeapItem *>(index.internalPointer());
+    switch(role) {
+    case Qt::DisplayRole:
+        return item->data(index.column());
+        break;
+    case Qt::ToolTipRole:
+        return QVariant(item->leadingIdentifier());
+        break;
+    default:
         return QVariant();
     }
-    BaseHeapItem *item = static_cast<BaseHeapItem *>(index.internalPointer());
-
-    return item->data(index.column());
 }
 
 Qt::ItemFlags HeapDataModel::flags(const QModelIndex &index) const

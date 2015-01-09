@@ -136,6 +136,9 @@ void Subscriber::stop()
         commandSocket->sendCommand(stopCmd);
     }
     objectStore->reset();
+    static const QString eventName("disconnected");
+    QVariantMap map;
+    jsBridge->sendMapToJs(eventName, QDateTime(), map);
     qDebug() << "stopped";
 }
 
