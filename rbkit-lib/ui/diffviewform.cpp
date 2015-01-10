@@ -52,7 +52,7 @@ void DiffViewForm::initializeParentView()
     ui->treeVerticalLayout->addWidget(parentLabel);
     parentViewForm = new HeapDumpForm(this, -1);
     parentViewForm->setMaximumHeight(200);
-    parentViewForm->setDisableRightClick(true);
+    parentViewForm->setContextDetail(RbkitContextDetail::ONLY_FILE);
     parentViewForm->setParentWindow(getParentWindow());
     ui->treeVerticalLayout->addWidget(parentViewForm);
     parentViewForm->show();

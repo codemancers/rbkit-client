@@ -21,6 +21,12 @@ namespace Ui {
 class HeapDumpForm;
 }
 
+enum class RbkitContextDetail {
+    ALL = 0,
+    ONLY_FILE = 1,
+    NONE = 2
+};
+
 class RbkitMainWindow;
 
 class HeapDumpForm : public QWidget
@@ -35,7 +41,7 @@ protected:
     SortObjectProxyModel *proxyModel;
     RBKit::BaseHeapItem *selecteItem;
     RbkitMainWindow *parentWindow;
-    bool disableRightClick;
+    RbkitContextDetail contextDetail;
 public:
     explicit HeapDumpForm(QWidget *parent = 0, int _snapShotVersion = 0);
     virtual ~HeapDumpForm();
@@ -45,13 +51,14 @@ public:
     void loadFromSpecifiedRoot(RBKit::BaseHeapItem*_rootItem);
     RbkitMainWindow *getParentWindow() const;
     void setParentWindow(RbkitMainWindow *value);
-    void setDisableRightClick(bool value);
-    bool getDisableRightClick() const;
     void setTreeModel(SortObjectProxyModel* model);
     void reset();
 
     RBKit::BaseHeapItem *getRootItem() const;
     Ui::HeapDumpForm *ui;
+    RbkitContextDetail getContextDetail() const;
+    void setContextDetail(const RbkitContextDetail &value);
+
 private:
     int snapShotVersion;
 public slots:
