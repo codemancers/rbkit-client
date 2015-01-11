@@ -21,8 +21,19 @@ RBKit::BaseHeapItem *HeapDumpForm::getRootItem() const
     return rootItem;
 }
 
+
+RbkitContextDetail HeapDumpForm::getContextDetail() const
+{
+    return contextDetail;
+}
+
+void HeapDumpForm::setContextDetail(const RbkitContextDetail &value)
+{
+    contextDetail = value;
+}
+
 HeapDumpForm::HeapDumpForm(QWidget* parent, int _snapShotVersion)
-    : QWidget(parent), ui(new Ui::HeapDumpForm), snapShotVersion(_snapShotVersion), disableRightClick(false)
+    : QWidget(parent), ui(new Ui::HeapDumpForm), snapShotVersion(_snapShotVersion), contextDetail(RbkitContextDetail::ALL)
 {
     selecteItem = NULL;
     ui->setupUi(this);
@@ -54,13 +65,6 @@ HeapDumpForm::~HeapDumpForm()
     delete viewRefAct;
 }
 
-void HeapDumpForm::setDisableRightClick(bool value) {
-    disableRightClick = value;
-}
-
-bool HeapDumpForm::getDisableRightClick() const {
-    return disableRightClick;
-}
 
 void HeapDumpForm::setTreeModel(SortObjectProxyModel *model)
 {
@@ -117,16 +121,23 @@ void HeapDumpForm::adjustColumnWidth()
 
 void HeapDumpForm::onCustomContextMenu(const QPoint &point)
 {
-    if (disableRightClick)
+    if (contextDetail == RbkitContextDetail::NONE)
         return;
     QPoint localPoint = ui->treeView->viewport()->mapToGlobal(point);
     QModelIndex index = proxyModel->mapToSource(ui->treeView->indexAt(point));
     if (index.isValid()) {
         selecteItem = static_cast<RBKit::BaseHeapItem *>(index.internalPointer());
         QMenu menu(this);
-        menu.addAction(viewRefAct);
-        menu.addAction(viewParentsAct);
-        menu.addAction(viewFileAct);
+        switch (contextDetail) {
+        case RbkitContextDetail::ONLY_FILE:
+            menu.addAction(viewFileAct);
+            break;
+        case RbkitContextDetail::ALL:
+            menu.addAction(viewRefAct);
+            menu.addAction(viewParentsAct);
+            menu.addAction(viewFileAct);
+            break;
+        }
         menu.exec(localPoint);
     }
 }
@@ -134,7 +145,7 @@ void HeapDumpForm::onCustomContextMenu(const QPoint &point)
 void HeapDumpForm::viewReferences()
 {
     HeapDumpForm *form = new HeapDumpForm(this, 0);
-    form->setDisableRightClick(true);
+    form->setContextDetail(RbkitContextDetail::ONLY_FILE);
     form->loadSelectedReferences(selecteItem);
     parentWindow->addTabWidget(form, QString("References for : %0").arg(selecteItem->shortLeadingIdentifier()));
 }
@@ -142,7 +153,7 @@ void HeapDumpForm::viewReferences()
 void HeapDumpForm::viewParents()
 {
     HeapDumpForm *form = new HeapDumpForm(this, -1);
-    form->setDisableRightClick(true);
+    form->setContextDetail(RbkitContextDetail::ONLY_FILE);
     RBKit::BaseHeapItem *parentHeapItem = selecteItem->getObjectParents(rootItem);
     form->loadFromSpecifiedRoot(parentHeapItem);
     parentWindow->addTabWidget(form, QString("Parents for : %0").arg(selecteItem->shortLeadingIdentifier()));
