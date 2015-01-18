@@ -25,7 +25,7 @@ class DeployQt
 
   def remove_existing_files
     FileUtils.rm_rf(dst)
-    FileUtils.rm_rf("rbkit.tar.gz")
+    FileUtils.rm_rf("rbkit-#{os_type}.tar.gz")
   end
 
   def create_archive
@@ -38,7 +38,7 @@ class DeployQt
 
   def create_tar_file
     FileUtils.cd(@pwd) do
-      system("tar -zcvf rbkit.tar.gz rbkit")
+      system("tar -zcvf rbkit-#{os_type}.tar.gz rbkit")
     end
   end
 
@@ -86,12 +86,11 @@ export QT_QPA_FONTDIR=\`pwd\`/fonts
   end
 
   def compiler_version
-    os_type = `uname -m`.strip
-    if os_type == "i686"
-      "gcc"
-    else
-      "gcc_64"
-    end
+    os_type == 'i686' ? 'gcc' : 'gcc_64'
+  end
+
+  def os_type
+    `uname -m`.strip
   end
 end
 
