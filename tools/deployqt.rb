@@ -1,14 +1,13 @@
 #!/usr/bin/env ruby
 
 require "fileutils"
-require "pry"
 
 class DeployQt
   attr_accessor :qt_home, :executable, :dst
   def initialize(executable)
     @pwd = ENV["PWD"]
     @executable = File.expand_path(File.join(@pwd, executable))
-    @qt_home = "#{ENV['QT_HOME']}/5.4/gcc_64"
+    @qt_home = "#{ENV['QT_HOME']}/5.4/#{compiler_version}"
     @dst = File.expand_path(File.join(@pwd, "/rbkit"))
     remove_existing_files
     @platform_plugin = File.expand_path(File.join(@qt_home, "/plugins/platforms/libqxcb.so"))
@@ -26,7 +25,7 @@ class DeployQt
 
   def remove_existing_files
     FileUtils.rm_rf(dst)
-    FileUtils.rm_rf("rbkit.tar.gz")
+    FileUtils.rm_rf("rbkit-#{arch}.tar.gz")
   end
 
   def create_archive
@@ -39,7 +38,7 @@ class DeployQt
 
   def create_tar_file
     FileUtils.cd(@pwd) do
-      system("tar -zcvf rbkit.tar.gz rbkit")
+      system("tar -zcvf rbkit-#{arch}.tar.gz rbkit")
     end
   end
 
@@ -84,6 +83,14 @@ export QT_QPA_FONTDIR=\`pwd\`/fonts
     if !dep_path.empty? && dep_path.match(/^#{ENV['HOME']}/)
       FileUtils.cp(File.expand_path(dep_path), "#{dst}/libs")
     end
+  end
+
+  def compiler_version
+    arch == 'i686' ? 'gcc' : 'gcc_64'
+  end
+
+  def arch
+    `uname -m`.strip
   end
 end
 
