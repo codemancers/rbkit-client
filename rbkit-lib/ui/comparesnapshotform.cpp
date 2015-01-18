@@ -1,20 +1,20 @@
-#include "comapresnapshotform.h"
-#include "ui_comapresnapshotform.h"
+#include "comparesnapshotform.h"
+#include "ui_comparesnapshotform.h"
 #include "model/appstate.h"
 
-ComapreSnapshotForm::ComapreSnapshotForm(QWidget *parent) :
+CompareSnapshotForm::CompareSnapshotForm(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ComapreSnapshotForm)
+    ui(new Ui::CompareSnapshotForm)
 {
     ui->setupUi(this);
 }
 
-ComapreSnapshotForm::~ComapreSnapshotForm()
+CompareSnapshotForm::~CompareSnapshotForm()
 {
     delete ui;
 }
 
-void ComapreSnapshotForm::setSnapshotVersions(QList<int> _snapshotVersions) {
+void CompareSnapshotForm::setSnapshotVersions(QList<int> _snapshotVersions) {
     snapshotVersions = _snapshotVersions;
     for(auto version : snapshotVersions) {
         ui->snapshot1->addItem(RBKit::AppState::getInstance()->getSnapshotName(version));
@@ -22,11 +22,11 @@ void ComapreSnapshotForm::setSnapshotVersions(QList<int> _snapshotVersions) {
     }
 }
 
-QList<int> ComapreSnapshotForm::getSnapshotVersions() const {
+QList<int> CompareSnapshotForm::getSnapshotVersions() const {
     return snapshotVersions;
 }
 
-void ComapreSnapshotForm::on_okButton_clicked()
+void CompareSnapshotForm::on_okButton_clicked()
 {
     QList<int> selections;
     int selection1 = ui->snapshot1->currentIndex();
@@ -37,7 +37,7 @@ void ComapreSnapshotForm::on_okButton_clicked()
     this->close();
 }
 
-void ComapreSnapshotForm::on_cancelButton_clicked()
+void CompareSnapshotForm::on_cancelButton_clicked()
 {
     this->close();
 }

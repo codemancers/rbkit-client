@@ -64,7 +64,7 @@
     </property>
     <addaction name="action_Trigger_GC"/>
     <addaction name="actionHeap_Snapshot"/>
-    <addaction name="actionComapre_Heapsnapshots"/>
+    <addaction name="actionCompare_Heapsnapshots"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Memory_Profiling"/>
@@ -103,7 +103,7 @@
    <addaction name="action_Connect"/>
    <addaction name="action_Trigger_GC"/>
    <addaction name="actionHeap_Snapshot"/>
-   <addaction name="actionComapre_Heapsnapshots"/>
+   <addaction name="actionCompare_Heapsnapshots"/>
   </widget>
   <action name="action_Connect">
    <property name="icon">
@@ -151,16 +151,16 @@
     <string>Record heapsnapshot</string>
    </property>
   </action>
-  <action name="actionComapre_Heapsnapshots">
+  <action name="actionCompare_Heapsnapshots">
    <property name="icon">
     <iconset resource="../tool_icons.qrc">
-     <normaloff>:/icons/Comapre-48.png</normaloff>:/icons/Comapre-48.png</iconset>
+     <normaloff>:/icons/Compare-48.png</normaloff>:/icons/Compare-48.png</iconset>
    </property>
    <property name="text">
     <string>Compare  Snapshots</string>
    </property>
    <property name="toolTip">
-    <string>Comapre Heapsnpshot</string>
+    <string>Compare Heapsnpshot</string>
    </property>
   </action>
  </widget>
