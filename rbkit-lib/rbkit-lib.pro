@@ -30,7 +30,7 @@ SOURCES += \
     model/snapshotstate.cpp \
     model/sortobjectproxymodel.cpp \
     ui/askhost.cpp \
-    ui/comapresnapshotform.cpp \
+    ui/comparesnapshotform.cpp \
     ui/diffviewform.cpp \
     ui/heapdumpform.cpp \
     ui/memoryview.cpp \
@@ -61,7 +61,7 @@ HEADERS +=  \
     model/objectstore.h \
     model/sortobjectproxymodel.h \
     ui/askhost.h \
-    ui/comapresnapshotform.h \
+    ui/comparesnapshotform.h \
     ui/diffviewform.h \
     ui/heapdumpform.h \
     ui/memoryview.h \
@@ -81,7 +81,7 @@ FORMS += \
     ui/askhost.ui \
     ui/heapdumpform.ui \
     ui/memoryview.ui \
-    ui/comapresnapshotform.ui \
+    ui/comparesnapshotform.ui \
     ui/aboutdialog.ui \
     ui/parentviewform.ui
 

@@ -80,7 +80,7 @@ private slots:
     void tabClosed(int index);
     void updateProgressBar();
 
-    void on_actionComapre_Heapsnapshots_triggered();
+    void on_actionCompare_Heapsnapshots_triggered();
     void onDiffSnapshotsSelected(QList<int> selectedSnapshots);
     void receiveYoungGenStats(QVariantMap map);
     void receiveSecondGenStats(QVariantMap map);

@@ -1,22 +1,22 @@
-#ifndef COMAPRESNAPSHOTFORM_H
-#define COMAPRESNAPSHOTFORM_H
+#ifndef COMPARESNAPSHOTFORM_H
+#define COMPARESNAPSHOTFORM_H
 
 #include <QWidget>
 #include <QDialog>
 #include <QList>
 
 namespace Ui {
-class ComapreSnapshotForm;
+class CompareSnapshotForm;
 }
 
-class ComapreSnapshotForm : public QDialog
+class CompareSnapshotForm : public QDialog
 {
     Q_OBJECT
     QList<int> snapshotVersions;
 
 public:
-    explicit ComapreSnapshotForm(QWidget *parent = 0);
-    ~ComapreSnapshotForm();
+    explicit CompareSnapshotForm(QWidget *parent = 0);
+    ~CompareSnapshotForm();
     void setSnapshotVersions(QList<int> _snapshotVersions);
     QList<int> getSnapshotVersions() const;
 
@@ -26,9 +26,9 @@ private slots:
     void on_cancelButton_clicked();
 
 private:
-    Ui::ComapreSnapshotForm *ui;
+    Ui::CompareSnapshotForm *ui;
 signals:
     void snapshotSelected(QList<int> selected);
 };
 
-#endif // COMAPRESNAPSHOTFORM_H
+#endif // COMPARESNAPSHOTFORM_H

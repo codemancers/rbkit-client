@@ -3,7 +3,7 @@
 #include "askhost.h"
 #include "model/jsbridge.h"
 #include "model/appstate.h"
-#include "comapresnapshotform.h"
+#include "comparesnapshotform.h"
 #include "diffviewform.h"
 #include "ui/actiontoolbar.h"
 #include "ui/aboutdialog.h"
@@ -242,9 +242,9 @@ void RbkitMainWindow::updateProgressBar()
 }
 
 
-void RbkitMainWindow::on_actionComapre_Heapsnapshots_triggered()
+void RbkitMainWindow::on_actionCompare_Heapsnapshots_triggered()
 {
-    ComapreSnapshotForm *compareSnapshots = new ComapreSnapshotForm(this);
+    CompareSnapshotForm *compareSnapshots = new CompareSnapshotForm(this);
     QList<int> snapShotVersions = diffableSnapshotVersions();
     if (!snapShotVersions.isEmpty() && snapShotVersions.size() > 1) {
         compareSnapshots->setSnapshotVersions(snapShotVersions);
@@ -262,7 +262,7 @@ void RbkitMainWindow::onDiffSnapshotsSelected(QList<int> selectedSnapshots)
     form->setSnapshotDiffNumbers(selectedSnapshots);
     form->setContextDetail(RbkitContextDetail::ONLY_FILE);
     form->loadFromSpecifiedRoot(newRootItem);
-    addTabWidget(form, QString("Comapre Snapshots"));
+    addTabWidget(form, QString("Compare Snapshots"));
 }
 
 void RbkitMainWindow::receiveYoungGenStats(QVariantMap map)
