@@ -46,7 +46,7 @@ void RBKit::ObjectDetail::updateGeneration()
     ++objectGeneration;
 }
 
-QString RBKit::ObjectDetail::getFileLine() const
+QString RBKit::ObjectDetail::getFileLine()
 {
     if (fileName.isEmpty())
         return "";

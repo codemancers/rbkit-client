@@ -37,7 +37,7 @@ namespace RBKit
         void addReference(quint64 reference);
         void addReferences(QList<QVariant> _references);
         void updateGeneration();
-        QString getFileLine() const;
+        QString getFileLine();
     };
 
     // typedef for the pointer.
