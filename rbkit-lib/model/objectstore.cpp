@@ -1,65 +1,26 @@
 #include "objectstore.h"
 #include "objectaggregator.h"
 
-
-static const int batchObjects = 10000;
-
-
-void RBKit::ObjectStore::insertObjectsInDB(QSqlQuery query, int version)
+void RBKit::ObjectStore::insertObjectsInDB(QSqlQuery query)
 {
-    for (auto iter = objectStore.begin(); iter != objectStore.end();) {
-        if (!query.exec(QString("begin transaction"))) {
+    int counter = 0;
+
+    for (auto& objectDetail : objectStore) {
+        query.addBindValue(objectDetail->objectId);
+        query.addBindValue(objectDetail->className);
+        query.addBindValue(objectDetail->size);
+        query.addBindValue(objectDetail->references.size());
+        query.addBindValue(objectDetail->getFileLine());
+        if (!query.exec()) {
             qDebug() << query.lastError();
         }
 
-        if (!query.prepare(
-                    QString("insert into rbkit_objects_%0(id, class_name, size, reference_count, file) values (?, ?, ?, ?, ?)")
-                    .arg(version))) {
-            qDebug() << query.lastError();
-            return;
-        }
-
-        QVariantList ids, names, sizes, references, fileLines;
-
-        for (unsigned int counter = 0; counter != batchObjects; ++counter) {
-            auto objectPtr = iter.value();
-
-            ids << objectPtr->objectId;
-            names << objectPtr->className;
-            sizes << objectPtr->size;
-            references << objectPtr->references.size();
-            fileLines  << objectPtr->getFileLine();
-
-            if (objectStore.end() == ++iter) {
-                break;
-            }
-        }
-
-        query.addBindValue(ids);
-        query.addBindValue(names);
-        query.addBindValue(sizes);
-        query.addBindValue(references);
-        query.addBindValue(fileLines);
-
-        if (!query.execBatch()) {
-            qDebug() << query.lastError();
-        }
-
-        if (!query.exec(QString("commit transaction"))) {
-            qDebug() << query.lastError();
-        }
+        ++counter;
     }
 }
 
-void RBKit::ObjectStore::insertReferences(QSqlQuery query, int version)
+void RBKit::ObjectStore::insertReferences(QSqlQuery query)
 {
-    if (!query.exec(QString("begin transaction"))) {
-        qDebug() << query.lastError();
-    }
-
-    if (!query.prepare(QString("insert into rbkit_object_references_%0(object_id, child_id) values (?, ?)").arg(version)))
-        qDebug() << query.lastError();
-
     for (auto& objectDetail : objectStore) {
         QList<quint64> references = objectDetail->references;
         if (!references.isEmpty()) {
@@ -72,10 +33,6 @@ void RBKit::ObjectStore::insertReferences(QSqlQuery query, int version)
                 }
             }
         }
-    }
-
-    if (!query.exec(QString("commit transaction"))) {
-        qDebug() << query.lastError();
     }
 }
 

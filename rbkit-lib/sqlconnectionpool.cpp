@@ -72,26 +72,26 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
     prepareTables();
 
     qDebug() << "Loading db snapshot";
-    // if (!query.exec(QString("begin transaction"))) {
-    //     qDebug() << query.lastError();
-    // }
-    // if (!query.prepare(
-    //             QString("insert into rbkit_objects_%0(id, class_name, size, reference_count, file) values (?, ?, ?, ?, ?)")
-    //             .arg(currentVersion))) {
-    //     qDebug() << query.lastError();
-    //     return;
-    // }
+    if (!query.exec(QString("begin transaction"))) {
+        qDebug() << query.lastError();
+    }
+    if (!query.prepare(
+                QString("insert into rbkit_objects_%0(id, class_name, size, reference_count, file) values (?, ?, ?, ?, ?)")
+                .arg(currentVersion))) {
+        qDebug() << query.lastError();
+        return;
+    }
 
-    objectStore->insertObjectsInDB(query, currentVersion);
+    objectStore->insertObjectsInDB(query);
     RBKit::AppState::getInstance()->setAppState("heap_snapshot", 50);
 
-    // if (!query.prepare(QString("insert into rbkit_object_references_%0(object_id, child_id) values (?, ?)").arg(currentVersion)))
-    //     qDebug() << query.lastError();
+    if (!query.prepare(QString("insert into rbkit_object_references_%0(object_id, child_id) values (?, ?)").arg(currentVersion)))
+        qDebug() << query.lastError();
 
-    objectStore->insertReferences(query, currentVersion);
+    objectStore->insertReferences(query);
 
-    // if (!query.exec(QString("commit transaction")))
-    //     qDebug() << query.lastError();
+    if (!query.exec(QString("commit transaction")))
+        qDebug() << query.lastError();
 
     RBKit::AppState::getInstance()->setAppState("heap_snapshot", 80);
 }

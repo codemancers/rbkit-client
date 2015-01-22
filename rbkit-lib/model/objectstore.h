@@ -20,8 +20,8 @@ namespace RBKit {
     {
     public:
         // database related functions
-        void insertObjectsInDB(QSqlQuery query, int version);
-        void insertReferences(QSqlQuery query, int version);
+        void insertObjectsInDB(QSqlQuery query);
+        void insertReferences(QSqlQuery query);
 
         void addObject(RBKit::ObjectDetailPtr objectPtr);
         void updateObject(RBKit::ObjectDetailPtr object);
