@@ -55,12 +55,10 @@ void TestBmHeapSnapshot::testBenchmarkPersistingToDb()
         qDebug() << error;
 
         for (auto& object : store->objectStore) {
-            auto objectSql = QString("INSERT INTO rbkit_objects VALUES (") +
-                QString::number(object->objectId) + ", " +
-                "'" + object->className + "', " +
-                QString::number(object->size) + ", " +
-                QString::number(object->references.size()) + ", " +
-                "'" + object->getFileLine() + "');";
+            auto objectSql =
+                QString("INSERT INTO rbkit_objects VALUES (%1, '%2', %3, %4, '%5');")
+                .arg(object->objectId).arg(object->className).arg(object->size)
+                .arg(object->references.size()).arg(object->getFileLine());
 
             char* sqlError(NULL);
             auto code = sqlite3_exec(db, objectSql.toStdString().c_str(), NULL,
@@ -71,9 +69,8 @@ void TestBmHeapSnapshot::testBenchmarkPersistingToDb()
 
             for (auto& ref : object->references) {
                 auto refSql =
-                    QString("INSERT INTO rbkit_object_references(object_id, child_id) VALUES (") +
-                    QString::number(object->objectId) + ", " +
-                    QString::number(ref) + ");";
+                    QString("INSERT INTO rbkit_object_references(object_id, child_id) VALUES (%1, %2);")
+                    .arg(object->objectId).arg(ref);
 
                 char* sqlError(NULL);
                 auto code = sqlite3_exec(db, refSql.toStdString().c_str(), NULL,
