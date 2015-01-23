@@ -30,8 +30,9 @@ void TestBmHeapSnapshot::initTestCase()
 
 void TestBmHeapSnapshot::testBenchmarkPersistingToDb()
 {
-    sqlite3* db;
-    sqlite3_stmt* stmt;
+    sqlite3* db(NULL);
+    sqlite3_stmt* objStmt(NULL);
+    sqlite3_stmt* refStmt(NULL);
 
     auto filename = (QString("/tmp/bm") + QTime::currentTime().toString())
         .toStdString().c_str();
@@ -47,6 +48,14 @@ void TestBmHeapSnapshot::testBenchmarkPersistingToDb()
         ", child_id integer)";
     qDebug() << sqlite3_exec(db, refsTable, NULL, NULL, NULL);
 
+    const char* tail(NULL);
+    qDebug() << sqlite3_prepare_v2(db,
+                                   "INSERT INTO rbkit_objects VALUES (?, ?, ?, ?, ?)",
+                                   500, &objStmt, &tail);
+    qDebug() << sqlite3_prepare_v2(db,
+                                   "INSERT INTO rbkit_object_references(object_id, child_id) VALUES (?, ?);",
+                                   500, &refStmt, &tail);
+
     QBENCHMARK_ONCE {
         // RBKit::SqlConnectionPool::getInstance()->loadSnapshot(store.data());
 
@@ -55,29 +64,25 @@ void TestBmHeapSnapshot::testBenchmarkPersistingToDb()
         qDebug() << error;
 
         for (auto& object : store->objectStore) {
-            auto objectSql =
-                QString("INSERT INTO rbkit_objects VALUES (%1, '%2', %3, %4, '%5');")
-                .arg(object->objectId).arg(object->className).arg(object->size)
-                .arg(object->references.size()).arg(object->getFileLine());
+            sqlite3_bind_int64(objStmt, 1, object->objectId);
+            sqlite3_bind_text(objStmt,  2, object->className.toStdString().c_str(),
+                              object->className.size(), SQLITE_TRANSIENT);
+            sqlite3_bind_int64(objStmt, 3, object->size);
+            sqlite3_bind_int64(objStmt, 4, object->references.size());
+            sqlite3_bind_text(objStmt,  5, object->getFileLine().toStdString().c_str(),
+                              object->getFileLine().size(), SQLITE_TRANSIENT);
 
-            char* sqlError(NULL);
-            auto code = sqlite3_exec(db, objectSql.toStdString().c_str(), NULL,
-                                     NULL, &sqlError);
-            if (0 != code) {
-                qDebug() << sqlError;
-            }
+            sqlite3_step(objStmt);
+            sqlite3_clear_bindings(objStmt);
+            sqlite3_reset(objStmt);
 
             for (auto& ref : object->references) {
-                auto refSql =
-                    QString("INSERT INTO rbkit_object_references(object_id, child_id) VALUES (%1, %2);")
-                    .arg(object->objectId).arg(ref);
+                sqlite3_bind_int64(refStmt, 1, object->objectId);
+                sqlite3_bind_int64(refStmt, 2, ref);
 
-                char* sqlError(NULL);
-                auto code = sqlite3_exec(db, refSql.toStdString().c_str(), NULL,
-                                         NULL, &sqlError);
-                if (0 != code) {
-                    qDebug() << sqlError;
-                }
+                sqlite3_step(refStmt);
+                sqlite3_clear_bindings(refStmt);
+                sqlite3_reset(refStmt);
             }
         }
 
