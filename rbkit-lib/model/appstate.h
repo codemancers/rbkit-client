@@ -15,6 +15,7 @@ class AppState
     QHash<int, QString> snapshotNames;
     AppState();
     static AppState *singleton;
+    QString protocolVersion;
 public:
     const QVariant getState(const QString& ket);
     void setAppState(const QString key, const QVariant value);
@@ -22,6 +23,8 @@ public:
     QString getSnapshotName(int key) const;
     void removeSnapshotName(int key);
     static AppState* getInstance();
+    QString getProtocolVersion() const;
+    void setProtocolVersion(const QString &value);
 };
 
 } // namespace RBKit

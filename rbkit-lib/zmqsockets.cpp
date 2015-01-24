@@ -11,6 +11,17 @@
 static const int rbkcZmqTotalIoThreads = 1;
 static const int timerIntervalInMs = 1000;
 
+bool verifyHandShakeResponse(RBKit::EvtHandshake* handShake) {
+    qDebug() << "Incoming version is: " << handShake->rbkitProtocolVersion << " Versio known is : " << RBKit::AppState::getInstance()->getProtocolVersion();
+    if (handShake->rbkitProtocolVersion != RBKit::AppState::getInstance()->getProtocolVersion()) {
+        return false;
+    }
+
+    RBKit::AppState::getInstance()->setAppState("process_name", handShake->processName);
+    RBKit::AppState::getInstance()->setAppState("pwd", handShake->pwd);
+    RBKit::AppState::getInstance()->setAppState("pid", handShake->pid);
+    return true;
+}
 
 RBKit::ZmqCommandSocket::ZmqCommandSocket(QObject* parent, nzmqt::ZMQContext *_context) :
     QObject(parent), context(_context)
@@ -52,19 +63,20 @@ bool RBKit::ZmqCommandSocket::performHandShake()
     RBKit::CmdHandshake handShake;
     nzmqt::ZMQMessage msg(handShake.serialize().toLocal8Bit());
     bool sent = socket->sendMessage(msg);
+    qDebug() << "Sent the handshake message";
     if(sent) {
         QByteArray response = socket->receiveBlockingMessage();
+        qDebug() << "Recived some message";
         if (response.isEmpty()) {
             return false;
         }
         EventParser parser(response);
+        qDebug() << "Received data is : " << response;
         EvtHandshake *handShake = parser.parseHandShake();
-        RBKit::AppState::getInstance()->setAppState("process_name", handShake->processName);
-        RBKit::AppState::getInstance()->setAppState("pwd", handShake->pwd);
-        RBKit::AppState::getInstance()->setAppState("pid", handShake->pid);
         if (handShake != NULL) {
-            return true;
+            bool verificationFlag = verifyHandShakeResponse(handShake);
             delete handShake;
+            return verificationFlag;
         } else {
             return false;
         }

@@ -38,7 +38,18 @@ AppState *AppState::getInstance()
 
 AppState::AppState()
 {
+    protocolVersion = QString("1.0");
 }
+QString AppState::getProtocolVersion() const
+{
+    return protocolVersion;
+}
+
+void AppState::setProtocolVersion(const QString &value)
+{
+    protocolVersion = value;
+}
+
 
 const QVariant AppState::getState(const QString &key)
 {
