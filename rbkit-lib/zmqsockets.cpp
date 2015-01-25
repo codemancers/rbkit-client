@@ -11,16 +11,15 @@
 static const int rbkcZmqTotalIoThreads = 1;
 static const int timerIntervalInMs = 1000;
 
-bool verifyHandShakeResponse(RBKit::EvtHandshake* handShake) {
-    qDebug() << "Incoming version is: " << handShake->rbkitProtocolVersion << " Versio known is : " << RBKit::AppState::getInstance()->getProtocolVersion();
+RBKit::HandShakeResponse verifyHandShakeResponse(RBKit::EvtHandshake* handShake) {
     if (handShake->rbkitProtocolVersion != RBKit::AppState::getInstance()->getProtocolVersion()) {
-        return false;
+        return RBKit::HandShakeResponse::VERSION_MISMATCH;
     }
 
     RBKit::AppState::getInstance()->setAppState("process_name", handShake->processName);
     RBKit::AppState::getInstance()->setAppState("pwd", handShake->pwd);
     RBKit::AppState::getInstance()->setAppState("pid", handShake->pid);
-    return true;
+    return RBKit::HandShakeResponse::VERSION_MATCH;
 }
 
 RBKit::ZmqCommandSocket::ZmqCommandSocket(QObject* parent, nzmqt::ZMQContext *_context) :
@@ -58,31 +57,27 @@ bool RBKit::ZmqCommandSocket::sendCommand(RBKit::CommandBase& cmd)
     }
 }
 
-bool RBKit::ZmqCommandSocket::performHandShake()
+RBKit::HandShakeResponse RBKit::ZmqCommandSocket::performHandShake()
 {
     RBKit::CmdHandshake handShake;
     nzmqt::ZMQMessage msg(handShake.serialize().toLocal8Bit());
     bool sent = socket->sendMessage(msg);
-    qDebug() << "Sent the handshake message";
     if(sent) {
         QByteArray response = socket->receiveBlockingMessage();
-        qDebug() << "Recived some message";
         if (response.isEmpty()) {
-            return false;
+            return NO_RESPONSE;
         }
         EventParser parser(response);
-        qDebug() << "Received data is : " << response;
         EvtHandshake *handShake = parser.parseHandShake();
         if (handShake != NULL) {
-            bool verificationFlag = verifyHandShakeResponse(handShake);
+            HandShakeResponse verificationFlag = verifyHandShakeResponse(handShake);
             delete handShake;
             return verificationFlag;
         } else {
-            return false;
+            return NO_RESPONSE;
         }
     } else {
-        qDebug() << "Failed to perform handshake";
-        return false;
+        return NO_RESPONSE;
     }
 }
 
