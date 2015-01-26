@@ -109,7 +109,7 @@ RBKit::EvtHandshake::EvtHandshake(QDateTime ts, RBKit::EventType eventType, QVar
     pwd = payload["pwd"].toString();
     pid = payload["pid"].toUInt();
     tracingFlag = payload["object_trace_enabled"].toInt() == 0 ? false : true;
-    rbkitServerVersion = payload["rbkit_serverion_version"].toString();
+    rbkitServerVersion = payload["rbkit_server_version"].toString();
     rbkitProtocolVersion = payload["rbkit_protocol_version"].toString();
 }
 
