@@ -11,6 +11,16 @@
 static const int rbkcZmqTotalIoThreads = 1;
 static const int timerIntervalInMs = 1000;
 
+RBKit::HandShakeResponse verifyHandShakeResponse(RBKit::EvtHandshake* handShake) {
+    if (handShake->rbkitProtocolVersion != RBKit::AppState::getInstance()->getProtocolVersion()) {
+        return RBKit::HandShakeResponse::VERSION_MISMATCH;
+    }
+
+    RBKit::AppState::getInstance()->setAppState("process_name", handShake->processName);
+    RBKit::AppState::getInstance()->setAppState("pwd", handShake->pwd);
+    RBKit::AppState::getInstance()->setAppState("pid", handShake->pid);
+    return RBKit::HandShakeResponse::VERSION_MATCH;
+}
 
 RBKit::ZmqCommandSocket::ZmqCommandSocket(QObject* parent, nzmqt::ZMQContext *_context) :
     QObject(parent), context(_context)
@@ -47,7 +57,7 @@ bool RBKit::ZmqCommandSocket::sendCommand(RBKit::CommandBase& cmd)
     }
 }
 
-bool RBKit::ZmqCommandSocket::performHandShake()
+RBKit::HandShakeResponse RBKit::ZmqCommandSocket::performHandShake()
 {
     RBKit::CmdHandshake handShake;
     nzmqt::ZMQMessage msg(handShake.serialize().toLocal8Bit());
@@ -55,22 +65,19 @@ bool RBKit::ZmqCommandSocket::performHandShake()
     if(sent) {
         QByteArray response = socket->receiveBlockingMessage();
         if (response.isEmpty()) {
-            return false;
+            return NO_RESPONSE;
         }
         EventParser parser(response);
         EvtHandshake *handShake = parser.parseHandShake();
-        RBKit::AppState::getInstance()->setAppState("process_name", handShake->processName);
-        RBKit::AppState::getInstance()->setAppState("pwd", handShake->pwd);
-        RBKit::AppState::getInstance()->setAppState("pid", handShake->pid);
         if (handShake != NULL) {
-            return true;
+            HandShakeResponse verificationFlag = verifyHandShakeResponse(handShake);
             delete handShake;
+            return verificationFlag;
         } else {
-            return false;
+            return NO_RESPONSE;
         }
     } else {
-        qDebug() << "Failed to perform handshake";
-        return false;
+        return NO_RESPONSE;
     }
 }
 

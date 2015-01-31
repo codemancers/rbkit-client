@@ -16,6 +16,11 @@ namespace nzmqt
 namespace RBKit
 {
     class CommandBase;
+    enum HandShakeResponse {
+        NO_RESPONSE,
+        VERSION_MISMATCH,
+        VERSION_MATCH
+    };
 
     class ZmqCommandSocket : public QObject
     {
@@ -32,7 +37,7 @@ namespace RBKit
         void start(QString socketUrl);
         void stop();
         bool sendCommand(CommandBase& cmd);
-        bool performHandShake();
+        HandShakeResponse performHandShake();
     signals:
         void handShakeCompleted();
     };

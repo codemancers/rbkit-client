@@ -119,6 +119,8 @@ namespace RBKit
         void process(Subscriber &processor) const;
         QString processName;
         QString pwd;
+        QString rbkitServerVersion;
+        QString rbkitProtocolVersion;
         quint32 pid;
         bool tracingFlag;
     };
