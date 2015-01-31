@@ -46,6 +46,8 @@ RBKit::EventParser::eventFromMsgpackObject(const msgpack::object& object) const
         break;
 
     case RBKit::EtObjectSpaceDump:
+        auto correlationId = map[RBKit::EfCorrelationId].as<int>();
+        auto completeMessageCount = map[RBKit::EfCompleteMessageCount].as<int>();
         event = new RBKit::EvtObjectDump(timestamp, eventType,
                                          parseObjects(payload));
         break;

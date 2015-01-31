@@ -38,7 +38,7 @@ AppState *AppState::getInstance()
 
 AppState::AppState()
 {
-    protocolVersion = QString("1.0");
+    protocolVersion = QString("2.0");
 }
 QString AppState::getProtocolVersion() const
 {
