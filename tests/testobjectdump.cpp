@@ -15,7 +15,7 @@ static QByteArray msgpackDataFromFile(const QString filename)
 void TestObjectDump::initTestCase()
 {
     // read object dump, and parse it
-    objectDump = msgpackDataFromFile(":/tests/msgpack/hugedump");
+    objectDump = msgpackDataFromFile(":/tests/msgpack/split_dump");
     RBKit::EventParser eventParser(objectDump);
 
     auto collection = dynamic_cast<EvtCollection*>(eventParser.parseEvent());

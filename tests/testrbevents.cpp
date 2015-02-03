@@ -82,7 +82,7 @@ void TestRbEvents::testParseGCStartEvent()
 
 void TestRbEvents::testParseObjectDumpEvent()
 {
-    QByteArray data = msgpackDataFromFile(":/tests/msgpack/objectdump");
+    QByteArray data = msgpackDataFromFile(":/tests/msgpack/split_dump");
     RBKit::EventParser eventParser(data);
 
     auto base = eventParser.parseEvent();

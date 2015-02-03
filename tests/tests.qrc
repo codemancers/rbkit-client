@@ -6,5 +6,7 @@
         <file>msgpack/gc_start</file>
         <file>msgpack/objectdump</file>
         <file>msgpack/hugedump</file>
+        <file>msgpack/split_dump</file>
     </qresource>
+    <qresource prefix="/"/>
 </RCC>
