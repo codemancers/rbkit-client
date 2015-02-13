@@ -4,6 +4,7 @@
 #include "sqlconnectionpool.h"
 #include <QDebug>
 #include "sqlite3.h"
+#include <cstdio>
 
 using namespace RBKit;
 
@@ -56,6 +57,13 @@ void TestBmHeapSnapshot::testBenchmarkPersistingToDb()
                                    "INSERT INTO rbkit_object_references(object_id, child_id) VALUES (?, ?);",
                                    500, &refStmt, &tail);
 
+    const char* insertStmt = "INSERT INTO rbkit_objects SELECT %ld AS id,"
+        "'%d' AS class_name,%d AS size,%d AS reference_count, '%d' AS file ";
+    const char* unionStmt  = "UNION SELECT %ld,'%d',%d,%d,'%d'";
+
+    QSharedPointer<char> buffer;
+    buffer.reset( (char*)malloc(102400) );
+
     QBENCHMARK_ONCE {
         // RBKit::SqlConnectionPool::getInstance()->loadSnapshot(store.data());
 
@@ -64,34 +72,33 @@ void TestBmHeapSnapshot::testBenchmarkPersistingToDb()
         qDebug() << error;
 
         quint64 objectCount = 0, referenceCount = 0;
-        QString objectSql, referenceSql;
+        auto iter = buffer.data();
+        quint64 sprintfLength = 0;
 
         for (auto& object : store->objectStore) {
             if (objectCount == 500) {
-                sqlite3_exec(db, objectSql.toStdString().c_str(),
-                             NULL, NULL, &error);
-                objectSql.clear();
+                *iter = '\0';
+
+                sqlite3_exec(db, buffer.data(), NULL, NULL, &error);
+                iter = buffer.data();
                 objectCount = 0;
             }
 
             if (!objectCount) {
-                objectSql
-                    .append("INSERT INTO rbkit_objects SELECT ")
-                    .append(QString::number(object->objectId)).append(" AS id,'")
-                    .append(object->className).append("' AS class_name,")
-                    .append(QString::number(object->size)).append(" AS size,")
-                    .append(QString::number(object->references.size())).append(" AS reference_count,'")
-                    .append(object->getFileLine()).append("' AS file ");
+                sprintfLength =
+                    sprintf(iter, insertStmt, object->objectId,
+                            object->objectId,
+                            object->size, object->references.size(),
+                            object->objectId);
             } else {
-                objectSql
-                    .append("UNION SELECT ")
-                    .append(QString::number(object->objectId)).append(",'")
-                    .append(object->className).append("',")
-                    .append(QString::number(object->size)).append(",")
-                    .append(QString::number(object->references.size())).append(",'")
-                    .append(object->getFileLine()).append("' ");
+                sprintfLength =
+                    sprintf(iter, unionStmt, object->objectId,
+                            object->objectId,
+                            object->size, object->references.size(),
+                            object->objectId);
             }
 
+            iter += sprintfLength;
             ++objectCount;
 
             // for (auto& ref : object->references) {
