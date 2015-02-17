@@ -78,10 +78,12 @@ void RBKit::EvtGcStop::process(Subscriber& processor) const
 
 
 RBKit::EvtObjectDump::EvtObjectDump(QDateTime ts, RBKit::EventType eventType,
-                                    QList<RBKit::ObjectDetailPtr> _objects)
+                                    QList<RBKit::ObjectDetailPtr> _objects,
+                                    const QByteArray _rawMessage)
     : EventDataBase(ts, eventType)
     , objects(_objects)
-{ }
+    , rawMessage(_rawMessage)
+{}
 
 void RBKit::EvtObjectDump::process(Subscriber& processor) const
 {

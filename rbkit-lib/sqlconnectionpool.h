@@ -27,6 +27,7 @@ public:
     void setupDatabase();
     void closeDatabase();
     void prepareTables();
+    void loadSnapshot2(const QByteArray rawMessage);
     void loadSnapshot(ObjectStore *objectStore);
     HeapItem *rootOfSnapshot(int snapShotVersion);
 

@@ -1,6 +1,7 @@
 #include "sqlconnectionpool.h"
 #include "model/appstate.h"
 #include "model/heap_item_types/heapitem.h"
+#include "rbeventparser.h"
 
 namespace RBKit {
 
@@ -72,9 +73,8 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
     prepareTables();
 
     qDebug() << "Loading db snapshot";
-    if (!query.exec(QString("begin transaction"))) {
-        qDebug() << query.lastError();
-    }
+    qDebug() << QSqlDatabase::database().transaction();
+
     if (!query.prepare(
                 QString("insert into rbkit_objects_%0(id, class_name, size, reference_count, file) values (?, ?, ?, ?, ?)")
                 .arg(currentVersion))) {
@@ -90,8 +90,39 @@ void SqlConnectionPool::loadSnapshot(ObjectStore *objectStore)
 
     objectStore->insertReferences(query);
 
-    if (!query.exec(QString("commit transaction")))
+    qDebug() << QSqlDatabase::database().commit();
+
+    RBKit::AppState::getInstance()->setAppState("heap_snapshot", 80);
+}
+
+void SqlConnectionPool::loadSnapshot2(const QByteArray rawMessage)
+{
+    currentVersion += 1;
+    prepareTables();
+
+    const RBKit::EventParser eventParser(*iter);
+    auto dump = eventParser->rawObjectDump();
+
+    qDebug() << "Loading db snapshot";
+    qDebug() << QSqlDatabase::database().transaction();
+
+    QSharedPointer<char> buffer;
+    buffer.reset( (char*)malloc(102400) );
+
+    msgpack::object_array list = object.via.array;
+    for (uint32_t iter = 0; iter != list.size; ++iter) {
+        objects << list.ptr[iter].as< RBKit::ObjectDetailPtr >();
+    }
+
+    objectStore->insertObjectsInDB(query);
+    RBKit::AppState::getInstance()->setAppState("heap_snapshot", 50);
+
+    if (!query.prepare(QString("insert into rbkit_object_references_%0(object_id, child_id) values (?, ?)").arg(currentVersion)))
         qDebug() << query.lastError();
+
+    objectStore->insertReferences(query);
+
+    qDebug() << QSqlDatabase::database().commit();
 
     RBKit::AppState::getInstance()->setAppState("heap_snapshot", 80);
 }

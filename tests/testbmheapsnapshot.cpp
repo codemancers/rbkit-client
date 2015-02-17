@@ -61,7 +61,12 @@ void TestBmHeapSnapshot::testBenchmarkPersistingToDb()
         "'%d' AS class_name,%d AS size,%d AS reference_count, '%d' AS file ";
     const char* unionStmt  = "UNION SELECT %ld,'%d',%d,%d,'%d'";
 
-    QSharedPointer<char> buffer;
+    const char* refInsertStmt = "INSERT INTO rbkit_object_references"
+        " SELECT %ld AS id,%ld AS object_id,%ld AS child_id";
+    const char* refUnionStmt  = " UNION SELECT %ld,%ld,%ld";
+
+    QSharedPointer<char> buffer, refBuffer;
+    refBuffer.reset( (char*)malloc(102400) );
     buffer.reset( (char*)malloc(102400) );
 
     QBENCHMARK_ONCE {
@@ -71,7 +76,8 @@ void TestBmHeapSnapshot::testBenchmarkPersistingToDb()
         qDebug() << sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &error);
         qDebug() << error;
 
-        quint64 objectCount = 0, referenceCount = 0;
+        quint64 objectCount = 0, referenceCount = 0, refId = 1;
+        auto refIter = refBuffer.data();
         auto iter = buffer.data();
         quint64 sprintfLength = 0;
 
@@ -101,14 +107,27 @@ void TestBmHeapSnapshot::testBenchmarkPersistingToDb()
             iter += sprintfLength;
             ++objectCount;
 
-            // for (auto& ref : object->references) {
-            //     sqlite3_bind_int64(refStmt, 1, object->objectId);
-            //     sqlite3_bind_int64(refStmt, 2, ref);
+            for (auto& ref : object->references) {
+                if (referenceCount == 500) {
+                    *refIter = '\0';
 
-            //     sqlite3_step(refStmt);
-            //     sqlite3_clear_bindings(refStmt);
-            //     sqlite3_reset(refStmt);
-            // }
+                    sqlite3_exec(db, refBuffer.data(), NULL, NULL, &error);
+                    refIter = refBuffer.data();
+                    referenceCount = 0;
+                }
+
+                if (!referenceCount) {
+                    sprintfLength =
+                        sprintf(refIter, refInsertStmt, refId, object->objectId, ref);
+                } else {
+                    sprintfLength =
+                        sprintf(refIter, refUnionStmt, refId, object->objectId, ref);
+                }
+
+                refIter += sprintfLength;
+                ++referenceCount;
+                ++refId;
+            }
         }
 
         qDebug() << sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &error);

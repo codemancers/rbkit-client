@@ -95,10 +95,12 @@ namespace RBKit
     {
     public:
         EvtObjectDump(QDateTime ts, EventType eventType,
-                      QList<RBKit::ObjectDetailPtr> objects);
+                      QList<RBKit::ObjectDetailPtr> objects,
+                      const QByteArray rawMessage);
         void process(Subscriber& processor) const;
 
         QList<RBKit::ObjectDetailPtr> objects;
+        const QByteArray rawMessage;
     };
 
     class EvtCollection : public EventDataBase

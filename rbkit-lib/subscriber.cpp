@@ -210,7 +210,7 @@ void Subscriber::processEvent(const RBKit::EvtObjectDump& dump)
 
     qDebug() << "persisting to db begin:" << QTime::currentTime();
     RBKit::AppState::getInstance()->setAppState("heap_snapshot", 10);
-    RBKit::SqlConnectionPool::getInstance()->loadSnapshot(objectStore);
+    // RBKit::SqlConnectionPool::getInstance()->loadSnapshot2(dump.rawMessage);
     qDebug() << "persisting to db end:" << QTime::currentTime();
     emit objectDumpAvailable(RBKit::SqlConnectionPool::getInstance()->getCurrentVersion());
 }

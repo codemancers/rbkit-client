@@ -31,6 +31,7 @@ namespace RBKit
 
     public:
         QList<RBKit::ObjectDetailPtr> parseObjects(const msgpack::object&) const;
+        const msgpack::object& rawObjectDump() const;
 
     private:
         const QByteArray rawMessage;

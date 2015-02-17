@@ -47,7 +47,8 @@ RBKit::EventParser::eventFromMsgpackObject(const msgpack::object& object) const
 
     case RBKit::EtObjectSpaceDump:
         event = new RBKit::EvtObjectDump(timestamp, eventType,
-                                         parseObjects(payload));
+                                         parseObjects(payload),
+                                         rawMessage);
         break;
 
     case RBKit::EtHandshake:
@@ -135,4 +136,22 @@ RBKit::EventParser::parseObjects(const msgpack::object& object) const
     qDebug() << "parsing objects end:" << QTime::currentTime();
     qDebug() << objects.size();
     return objects;
+}
+
+const msgpack::object& RBKit::EventParser::rawObjectDump() const
+{
+    auto map = unpacked.get().as< QMap<unsigned int, msgpack::object> >();
+    auto objarray = map[RBKit::EfPayload];
+
+    auto array = objarray.as< QList<msgpack::object> >();
+
+    for (auto& evtObj : array) {
+        auto eventType = guessEvent(evtObj);
+        if (RBKit::EtObjectSpaceDump == eventType) {
+            auto map = object.as< QMap<unsigned int, msgpack::object> >();
+            return map[RBKit::EfPayload];
+        }
+    }
+
+    Q_ASSERT(0);
 }
