@@ -147,3 +147,12 @@ QHash<QString, quint64> RBKit::ObjectStore::generationStats(int begin, int end) 
 
     return stats;
 }
+QHash<quint64, RBKit::ObjectDetailPtr> RBKit::ObjectStore::getSnapShotStore() const
+{
+    return snapShotStore;
+}
+
+quint64 RBKit::ObjectStore::getLoadedMessages() const
+{
+    return loadedMessages;
+}
