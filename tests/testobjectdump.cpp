@@ -76,10 +76,8 @@ void TestObjectDump::testLoadingSplitSnapshots()
     qDebug() << "Total number of actual objects" << event->objects.size();
 
     ObjectStore store;
-    QVERIFY(store.getLoadedMessages() == 0);
     QVERIFY2(store.getSnapShotStore().isEmpty(), "is not empty");
 
     store.loadPartialSnapshot(event->objects, event->completeObjectCount);
-    QVERIFY(store.getLoadedMessages() == 1000);
     QVERIFY(store.getSnapShotStore().size() == 1000);
 }

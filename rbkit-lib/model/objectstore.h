@@ -53,9 +53,6 @@ namespace RBKit {
         inline QHash<QString, quint64> oldGenStats() const {
             return generationStats(4, 100000);
         }
-        ObjectStore();
-
-        quint64 getLoadedMessages() const;
 
         QHash<quint64, RBKit::ObjectDetailPtr> getSnapShotStore() const;
     private:
@@ -66,7 +63,6 @@ namespace RBKit {
         ObjectAggregator aggregator;
         // A temporary store for holding snapshot data as it comes
         QHash<quint64, RBKit::ObjectDetailPtr> snapShotStore;
-        quint64 loadedMessages;
     };
 }
 
