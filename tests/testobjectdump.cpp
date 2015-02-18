@@ -15,7 +15,7 @@ static QByteArray msgpackDataFromFile(const QString filename)
 void TestObjectDump::initTestCase()
 {
     // read object dump, and parse it
-    objectDump = msgpackDataFromFile(":/tests/msgpack/hugedump");
+    objectDump = msgpackDataFromFile(":/tests/msgpack/split_dump");
     RBKit::EventParser eventParser(objectDump);
 
     auto collection = dynamic_cast<EvtCollection*>(eventParser.parseEvent());
@@ -67,4 +67,17 @@ void TestObjectDump::testBenchmarkProcessObjectsWhenObjectSpaceIsFull()
     QBENCHMARK {
         store.updateFromSnapshot(event->objects);
     }
+}
+
+void TestObjectDump::testLoadingSplitSnapshots()
+{
+    qDebug() << "Total objects : " << event->completeObjectCount;
+    qDebug() << "Objects in this event" << event->objectCount;
+    qDebug() << "Total number of actual objects" << event->objects.size();
+
+    ObjectStore store;
+    QVERIFY2(store.getSnapShotStore().isEmpty(), "is not empty");
+
+    store.loadPartialSnapshot(event->objects, event->completeObjectCount);
+    QVERIFY(store.getSnapShotStore().size() == 1000);
 }

@@ -94,11 +94,15 @@ namespace RBKit
     class EvtObjectDump : public EventDataBase
     {
     public:
-        EvtObjectDump(QDateTime ts, EventType eventType,
+        EvtObjectDump(QDateTime ts, EventType eventType, int correlationId,
+                      int completeObjectCount,
                       QList<RBKit::ObjectDetailPtr> objects);
         void process(Subscriber& processor) const;
 
         QList<RBKit::ObjectDetailPtr> objects;
+        quint64 completeObjectCount;
+        quint64 objectCount;
+        int correlationId;
     };
 
     class EvtCollection : public EventDataBase

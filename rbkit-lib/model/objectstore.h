@@ -31,6 +31,7 @@ namespace RBKit {
         QList<quint64> keys() const;
 
         void updateFromSnapshot(const QList<RBKit::ObjectDetailPtr>& objects);
+        bool loadPartialSnapshot(const QList<RBKit::ObjectDetailPtr>& objects, quint64 completeMessageCount);
         void updateObjectGeneration();
 
         inline void onGcStats(const QVariantMap& stats) {
@@ -53,12 +54,15 @@ namespace RBKit {
             return generationStats(4, 100000);
         }
 
+        QHash<quint64, RBKit::ObjectDetailPtr> getSnapShotStore() const;
     private:
         // follows half-open series convention: [begin, end)
         QHash<QString, quint64> generationStats(int begin, int end) const;
         // Store mapping between object-id and detail
         QHash<quint64, RBKit::ObjectDetailPtr> objectStore;
         ObjectAggregator aggregator;
+        // A temporary store for holding snapshot data as it comes
+        QHash<quint64, RBKit::ObjectDetailPtr> snapShotStore;
     };
 }
 

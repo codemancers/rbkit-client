@@ -77,11 +77,15 @@ void RBKit::EvtGcStop::process(Subscriber& processor) const
 }
 
 
-RBKit::EvtObjectDump::EvtObjectDump(QDateTime ts, RBKit::EventType eventType,
+RBKit::EvtObjectDump::EvtObjectDump(QDateTime ts, RBKit::EventType eventType, int correlationId,
+                                    int completeObjectCount,
                                     QList<RBKit::ObjectDetailPtr> _objects)
     : EventDataBase(ts, eventType)
+    , correlationId(correlationId), completeObjectCount(completeObjectCount)
     , objects(_objects)
-{ }
+{
+    objectCount = objects.size();
+}
 
 void RBKit::EvtObjectDump::process(Subscriber& processor) const
 {

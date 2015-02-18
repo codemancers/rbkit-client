@@ -94,6 +94,32 @@ void RBKit::ObjectStore::updateFromSnapshot(const QList<RBKit::ObjectDetailPtr>&
     aggregator.updateFromSnapshot(objects);
 }
 
+bool RBKit::ObjectStore::loadPartialSnapshot(const QList<RBKit::ObjectDetailPtr> &objects, quint64 completeMessageCount)
+{
+    for (auto& object : objects) {
+        auto objectId = object->objectId;
+        snapShotStore[objectId] = object;
+
+        auto oldObjectIter = objectStore.find(objectId);
+        if (oldObjectIter != objectStore.end()) {
+            // retain the object generation from old object
+            auto oldGeneration = oldObjectIter.value()->objectGeneration;
+            object->objectGeneration = oldGeneration;
+        }
+    }
+
+    if (snapShotStore.size() == completeMessageCount) {
+        qDebug() << "An event has been fully loaded";
+        aggregator.updateFromSnapshot(snapShotStore.values());
+        objectStore.swap(snapShotStore);
+        snapShotStore.clear();
+        return true;
+    } else {
+        qDebug() << "Of : " << completeMessageCount << " : " << snapShotStore.size() << " has been loaded";
+        return false;
+    }
+}
+
 
 void RBKit::ObjectStore::updateObjectGeneration()
 {
@@ -113,4 +139,8 @@ QHash<QString, quint64> RBKit::ObjectStore::generationStats(int begin, int end) 
     }
 
     return stats;
+}
+QHash<quint64, RBKit::ObjectDetailPtr> RBKit::ObjectStore::getSnapShotStore() const
+{
+    return snapShotStore;
 }

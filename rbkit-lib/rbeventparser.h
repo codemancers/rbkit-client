@@ -8,10 +8,12 @@ namespace RBKit
     // https://github.com/code-mancers/rbkit/blob/47b461/ext/rbkit_event_packer.h#L6
     enum EventField
     {
-        EfEventType       = 0,
-        EfTimestamp       = 1,
-        EfPayload         = 2,
-        EfMessageCounter  = 9
+        EfEventType            = 0,
+        EfTimestamp            = 1,
+        EfPayload              = 2,
+        EfMessageCounter       = 9,
+        EfCorrelationId        = 10,
+        EfCompleteMessageCount = 11
     };
 
 
