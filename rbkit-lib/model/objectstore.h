@@ -61,6 +61,7 @@ namespace RBKit {
         // Store mapping between object-id and detail
         QHash<quint64, RBKit::ObjectDetailPtr> objectStore;
         ObjectAggregator aggregator;
+        QHash<quint64, RBKit::ObjectDetailPtr> snapShotStore;
         quint64 loadedMessages;
     };
 }
