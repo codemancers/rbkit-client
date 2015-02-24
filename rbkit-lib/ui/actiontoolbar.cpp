@@ -1,12 +1,5 @@
 #include "actiontoolbar.h"
 
-#include "ui_rbkitmainwindow.h"
-
-ActionToolbar::ActionToolbar(Ui::RbkitMainWindow *_ui)
-    : ui(_ui)
-{
-}
-
 void ActionToolbar::enableProfileActions()
 {
     ui->actionCompare_Heapsnapshots->setEnabled(true);

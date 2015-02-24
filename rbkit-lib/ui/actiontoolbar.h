@@ -3,10 +3,6 @@
 
 #include <QToolBar>
 
-namespace Ui {
-class RbkitMainWindow;
-}
-
 // Maintains state of Toolbar
 class ActionToolbar
 {

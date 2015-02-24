@@ -18,7 +18,7 @@ void RibbonToolBar::insertRibbonWidget()
     ribbonUiWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     layout0->addWidget(ribbonUiWidget, 0, 0);
 
-    layout1 = new QVBoxLayout(this);
+    layout1 = new QVBoxLayout();
     tabBar = new QTabBar(this);
     // give a name to the TabBar to be used from CSS
     tabBar->setObjectName("action_tabbar");

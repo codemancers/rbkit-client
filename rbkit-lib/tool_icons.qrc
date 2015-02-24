@@ -16,5 +16,6 @@
         <file>icons/Compare-32.png</file>
         <file>icons/Compare-48.png</file>
         <file>icons/rbkitlogo-128.png</file>
+        <file>icons/style.css</file>
     </qresource>
 </RCC>
