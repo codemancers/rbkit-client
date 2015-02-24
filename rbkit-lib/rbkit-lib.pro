@@ -42,7 +42,10 @@ SOURCES += \
     model/heap_item_types/baseheapitem.cpp \
     model/heap_item_types/heapitem.cpp \
     model/heap_item_types/leafitem.cpp \
-    ui/processdetail.cpp
+    ui/processdetail.cpp \
+    ui/appmainwindow.cpp \
+    ui/centralwidget.cpp \
+    ui/ribbontoolbar.cpp
 
 HEADERS +=  \
     subscriber.h \
@@ -74,7 +77,10 @@ HEADERS +=  \
     model/heap_item_types/heapitem.h \
     model/heap_item_types/leafitem.h \
     model/snapshotstate.h \
-    ui/processdetail.h
+    ui/processdetail.h \
+    ui/appmainwindow.h \
+    ui/centralwidget.h \
+    ui/ribbontoolbar.h
 
 FORMS += \
     ui/rbkitmainwindow.ui \
