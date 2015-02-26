@@ -2,6 +2,7 @@
 #define CENTRALWIDGET_H
 
 #include <QWidget>
+#include "actiontoolbar.h"
 #include "ribbontoolbar.h"
 
 class QVBoxLayout;
@@ -10,7 +11,7 @@ class QHBoxLayout;
 class CentralWidget : public QWidget
 {
     Q_OBJECT
-    RibbonToolBar *toolBar;
+    ActionToolbar *actionToolBar;
     QVBoxLayout *mainLayout;
 public:
     explicit CentralWidget(QWidget *parent = 0);

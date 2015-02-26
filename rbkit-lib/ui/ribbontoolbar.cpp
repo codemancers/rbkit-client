@@ -59,7 +59,7 @@ void RibbonToolBar::loadStyleSheet(const QString &fileName)
 
 
 // this adds a action to main toolbar
-const QToolButton *RibbonToolBar::addRibbonAction(const QString &actionName,
+QToolButton *RibbonToolBar::addRibbonAction(const QString &actionName,
                                     const QString &actionIdentifier,
                                     const QIcon &icon)
 {
@@ -99,7 +99,7 @@ void RibbonToolBar::addRibbonTab(const QString &tabName,
 }
 
 // this adds an action to one of the tabs
-const QToolButton *RibbonToolBar::addRibbonAction(const QString &actionName,
+QToolButton *RibbonToolBar::addRibbonAction(const QString &actionName,
                                     const QString &actionIdentifier,
                                     const QIcon &icon,
                                     const QString &tabIdentifier)

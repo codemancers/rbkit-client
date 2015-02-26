@@ -1,17 +1,33 @@
 #ifndef ACTIONTOOLBAR_H
 #define ACTIONTOOLBAR_H
 
-#include <QToolBar>
+#include "ribbontoolbar.h"
+#include "centralwidget.h"
+
+#include <QObject>
+
+clas QToolButton;
 
 // Maintains state of Toolbar
-class ActionToolbar
+class ActionToolbar : public QObject
 {
+    Q_OBJECT
+
+    RibbonToolBar *toolBar;
 public:
-    ActionToolbar(Ui::RbkitMainWindow *ui);
+    explicit ActionToolbar(CentralWidget *widget);
     void enableProfileActions();
     void disableProfileActions();
+    RibbonToolBar *getToolBar() const;
+
 private:
-    Ui::RbkitMainWindow *ui;
+    QToolButton *gcButton;
+    QToolButton *connectButton;
+    QToolButton *snapshotButton;
+public slots:
+    void performGCAction();
+    void takeSnapshotAction();
+    void attemptConnection();
 };
 
 #endif // ACTIONTOOLBAR_H

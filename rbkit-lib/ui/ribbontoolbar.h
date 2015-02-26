@@ -61,9 +61,9 @@ public:
     explicit RibbonToolBar(QWidget *parent = 0);
     ~RibbonToolBar();
     void loadStyleSheet(const QString &fileName);
-    const QToolButton* addRibbonAction(const QString &actionName, const QString &actionIdentifier, const QIcon &icon);
+    QToolButton* addRibbonAction(const QString &actionName, const QString &actionIdentifier, const QIcon &icon);
     void addRibbonTab(const QString &tabName, const QString &tabIdentifier);
-    const QToolButton* addRibbonAction(const QString &actionName, const QString &actionIdentifier,
+    QToolButton* addRibbonAction(const QString &actionName, const QString &actionIdentifier,
                          const QIcon &icon, const QString &tabIdentifier);
 signals:
 
