@@ -80,7 +80,8 @@ HEADERS +=  \
     ui/processdetail.h \
     ui/appmainwindow.h \
     ui/centralwidget.h \
-    ui/ribbontoolbar.h
+    ui/ribbontoolbar.h \
+    layoututil.hpp
 
 FORMS += \
     ui/rbkitmainwindow.ui \

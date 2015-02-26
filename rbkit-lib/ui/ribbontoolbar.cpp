@@ -9,12 +9,7 @@
 #include <QSpacerItem>
 #include <QFile>
 #include <QDebug>
-
-static void makeMarginSpacingZero(QBoxLayout *layout) {
-    layout->setSpacing(0);
-    layout->setMargin(0);
-    layout->setContentsMargins(0, 0, 0, 0);
-}
+#include "layoututil.hpp"
 
 void RibbonToolBar::insertRibbonWidget()
 {
