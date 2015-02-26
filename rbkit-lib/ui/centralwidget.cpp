@@ -23,6 +23,13 @@ CentralWidget::CentralWidget(QWidget *parent) : QWidget(parent)
 
 CentralWidget::~CentralWidget()
 {
+    delete chartingTab;
+    delete memoryView;
+}
 
+void CentralWidget::setupCentralView()
+{
+    memoryView = new RBKit::MemoryView();
+    chartingTab->addTab(memoryView, "Object Charts");
 }
 

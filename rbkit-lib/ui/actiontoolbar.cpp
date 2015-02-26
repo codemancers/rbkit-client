@@ -26,7 +26,8 @@ ActionToolbar::ActionToolbar(CentralWidget *widget)
                                                      "compare_snapshot",
                                                      QIcon(":/icons/Compare-32.png"),
                                                      "memory_profiling");
-    connect(compareSnapshotButton, &QToolButton::clicked, this, &ActionToolbar::compareSnapshots);
+    connect(compareSnapshotButton, &QToolButton::clicked,
+            this, &ActionToolbar::compareSnapshots);
 
     snapshotButton = toolBar->addRibbonAction("Take Snapshot", "take_snapshot", QIcon(":/icons/snapshot-32.png"), "memory_profiling");
     connect(snapshotButton, &QToolButton::clicked, this, &ActionToolbar::takeSnapshotAction);

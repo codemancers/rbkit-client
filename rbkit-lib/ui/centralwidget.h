@@ -8,6 +8,8 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QTabWidget;
 
+#include "memoryview.h"
+
 class CentralWidget : public QWidget
 {
     Q_OBJECT
@@ -15,9 +17,11 @@ class CentralWidget : public QWidget
     ActionToolbar *actionToolBar;
     QVBoxLayout *mainLayout;
     QTabWidget *chartingTab;
+    RBKit::MemoryView *memoryView;
 public:
     explicit CentralWidget(QWidget *parent = 0);
     ~CentralWidget();
+    void setupCentralView();
 
 signals:
 

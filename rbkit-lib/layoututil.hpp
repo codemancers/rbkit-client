@@ -3,7 +3,7 @@
 
 #include <QBoxLayout>
 
-void makeMarginSpacingZero(QBoxLayout *layout) {
+inline void makeMarginSpacingZero(QBoxLayout *layout) {
     layout->setSpacing(0);
     layout->setMargin(0);
     layout->setContentsMargins(0, 0, 0, 0);

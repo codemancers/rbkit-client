@@ -1,13 +1,16 @@
 #ifndef ACTIONTOOLBAR_H
 #define ACTIONTOOLBAR_H
 
-#include "ribbontoolbar.h"
 
 #include <QObject>
 #include <QWidget>
 
+#include "ribbontoolbar.h"
+#include "model/snapshotstate.h"
+
 class QToolButton;
 class CentralWidget;
+class QTimer;
 
 // Maintains state of Toolbar
 class ActionToolbar : public QObject
@@ -16,6 +19,9 @@ class ActionToolbar : public QObject
 
     RibbonToolBar *toolBar;
     CentralWidget *centralWidget;
+    RBKit::SnapshotState *snapshotState;
+    QTimer *snapshotProgressTimer;
+
 public:
     explicit ActionToolbar(CentralWidget *widget);
     void enableProfileActions();
