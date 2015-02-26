@@ -2,11 +2,12 @@
 #define ACTIONTOOLBAR_H
 
 #include "ribbontoolbar.h"
-#include "centralwidget.h"
 
 #include <QObject>
+#include <QWidget>
 
-clas QToolButton;
+class QToolButton;
+class CentralWidget;
 
 // Maintains state of Toolbar
 class ActionToolbar : public QObject
@@ -14,6 +15,7 @@ class ActionToolbar : public QObject
     Q_OBJECT
 
     RibbonToolBar *toolBar;
+    CentralWidget *centralWidget;
 public:
     explicit ActionToolbar(CentralWidget *widget);
     void enableProfileActions();
@@ -24,10 +26,12 @@ private:
     QToolButton *gcButton;
     QToolButton *connectButton;
     QToolButton *snapshotButton;
+    QToolButton *compareSnapshotButton;
 public slots:
     void performGCAction();
     void takeSnapshotAction();
     void attemptConnection();
+    void compareSnapshots();
 };
 
 #endif // ACTIONTOOLBAR_H

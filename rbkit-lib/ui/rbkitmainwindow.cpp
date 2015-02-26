@@ -8,6 +8,7 @@
 #include "ui/actiontoolbar.h"
 #include "ui/aboutdialog.h"
 #include "ui/processdetail.h"
+#include "centralwidget.h"
 
 RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     QMainWindow(parent), connected(false), host(""), connectionInProgress(false),
@@ -15,7 +16,8 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
 {
     Q_INIT_RESOURCE(tool_icons);
     ui->setupUi(this);
-    actionToolbar = new ActionToolbar(ui);
+    CentralWidget *centralWidget = new CentralWidget();
+    actionToolbar = new ActionToolbar(centralWidget);
     setupToolbarStyle();
 
     snapshotProgressTimer = new QTimer(this);

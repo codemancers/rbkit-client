@@ -71,6 +71,4 @@ public slots:
     void tabSelectionChanged(int index);
 };
 
-
-void makeMarginSpacingZero(QBoxLayout *layout);
 #endif // RIBBONTOOLBAR_H

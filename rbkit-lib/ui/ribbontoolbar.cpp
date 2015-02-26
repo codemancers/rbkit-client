@@ -10,6 +10,12 @@
 #include <QFile>
 #include <QDebug>
 
+static void makeMarginSpacingZero(QBoxLayout *layout) {
+    layout->setSpacing(0);
+    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
+}
+
 void RibbonToolBar::insertRibbonWidget()
 {
     ribbonUiWidget = new QWidget(this);
@@ -126,8 +132,3 @@ void RibbonToolBar::tabSelectionChanged(int index)
     }
 }
 
-void makeMarginSpacingZero(QBoxLayout *layout) {
-    layout->setSpacing(0);
-    layout->setMargin(0);
-    layout->setContentsMargins(0, 0, 0, 0);
-}
