@@ -8,6 +8,7 @@
 class QVBoxLayout;
 class QHBoxLayout;
 class QTabWidget;
+class AppMainwindow;
 
 #include "memoryview.h"
 
@@ -18,16 +19,21 @@ class CentralWidget : public QWidget
     QVBoxLayout* mainLayout;
     QSharedPointer<QTabWidget> chartingTab;
     QSharedPointer<RBKit::MemoryView> memoryView;
+    AppMainwindow *mainWindow;
 
 public:
-    explicit CentralWidget(QWidget *parent = 0);
+    explicit CentralWidget(AppMainwindow *mainWindow);
     ~CentralWidget();
     void setupCentralView();
+    void showStatusMessage(const QString &message) const;
+    void setProgressBarValue(int value) const;
+    void resetProgressBar() const;
 
     QSharedPointer<RBKit::MemoryView> getMemoryView() const;
 signals:
 
 public slots:
+    void onError(const QString &);
 };
 
 #endif // CENTRALWIDGET_H

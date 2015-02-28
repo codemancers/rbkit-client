@@ -9,10 +9,12 @@
 #include "model/snapshotstate.h"
 #include "askhost.h"
 #include "subscriber.h"
+#include "common.h"
 
 class QToolButton;
 class CentralWidget;
 class QTimer;
+class RBKit::MemoryView;
 
 enum ConnectionStates {
     DISCONNECTED = 0,
@@ -33,6 +35,7 @@ class ActionToolbar : public QObject
     QString *host;
     Subscriber *subscriber;
     ConnectionStates connectionState;
+    QThread subscriberThread;
 public:
     explicit ActionToolbar(CentralWidget *widget);
     void enableProfileActions();
@@ -41,6 +44,8 @@ public:
     RibbonToolBar *getToolBar() const;
     void setupSubscriber();
     void askForServerInfo();
+    RBKit::MemoryView *memoryView() const;
+    void disconnectFromSocket();
 
 private:
     QToolButton *gcButton;
@@ -58,6 +63,7 @@ public slots:
     void attemptConnection();
     void compareSnapshots();
     void useSelectedHost(QString commandSocket, QString eventSocket);
+    void connectedToSocket();
 };
 
 #endif // ACTIONTOOLBAR_H
