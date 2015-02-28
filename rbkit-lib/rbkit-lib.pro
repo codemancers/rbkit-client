@@ -81,7 +81,8 @@ HEADERS +=  \
     ui/appmainwindow.h \
     ui/centralwidget.h \
     ui/ribbontoolbar.h \
-    layoututil.hpp
+    layoututil.hpp \
+    common.h
 
 FORMS += \
     ui/rbkitmainwindow.ui \

@@ -3,6 +3,8 @@
 #include <QStatusBar>
 #include <QLabel>
 #include <QProgressBar>
+#include "model/objectdetail.h"
+#include "model/objectstore.h"
 
 AppMainwindow::AppMainwindow(QWidget *parent) : QMainWindow(parent)
 {

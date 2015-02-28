@@ -5,15 +5,19 @@
 #include <QHBoxLayout>
 #include <QTabWidget>
 
+QSharedPointer<RBKit::MemoryView> CentralWidget::getMemoryView() const
+{
+    return memoryView;
+}
 
 CentralWidget::CentralWidget(QWidget *parent) : QWidget(parent)
 {
     mainLayout = new QVBoxLayout();
-    actionToolBar = new ActionToolbar(this);
+    actionToolBar = QSharedPointer<ActionToolbar>::create(this);
     mainLayout->addWidget(actionToolBar->getToolBar(), 0, Qt::AlignTop);
 
-    chartingTab = new QTabWidget(this);
-    chartingTab->setMinimumHeight(840);
+    chartingTab = QSharedPointer<QTabWidget>::create(this);
+    chartingTab->setMinimumHeight(700);
     chartingTab->setMinimumWidth(1100);
     mainLayout->addWidget(chartingTab);
 
@@ -23,13 +27,12 @@ CentralWidget::CentralWidget(QWidget *parent) : QWidget(parent)
 
 CentralWidget::~CentralWidget()
 {
-    delete chartingTab;
-    delete memoryView;
+    delete mainLayout;
 }
 
 void CentralWidget::setupCentralView()
 {
-    memoryView = new RBKit::MemoryView();
+    memoryView = QSharedPointer<RBKit::MemoryView>::create();
     chartingTab->addTab(memoryView, "Object Charts");
 }
 
