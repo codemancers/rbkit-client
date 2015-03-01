@@ -98,7 +98,7 @@ void ActionToolbar::askForServerInfo()
 
 RBKit::MemoryView *ActionToolbar::memoryView() const
 {
-    centralWidget->getMemoryView().data();
+    return centralWidget->getMemoryView().data();
 }
 
 void ActionToolbar::disconnectFromSocket()
