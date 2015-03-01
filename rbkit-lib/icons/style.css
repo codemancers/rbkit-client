@@ -2,7 +2,7 @@
 }
 
 #ribbon_toolbar QToolButton {
-  background: #fafafa;
+  background: #EDEDED;
   border: none;
 }
 
@@ -11,7 +11,7 @@
 }
 
 #ribbon_tab_container {
-  background: #fafafa;
+  background: #EDEDED;
 }
 
 #ribbon_tab_container QToolButton {
@@ -38,7 +38,7 @@ QTabBar::tab#action_tabbar {
 }
 
 QTabBar::tab:selected#action_tabbar {
-   background: #fafafa;
+   background: #EDEDED;
    border: none;
 }
 

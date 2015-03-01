@@ -40,7 +40,6 @@ class RbkitMainWindow : public QMainWindow
     QLabel *statusLabel;
     QProgressBar *progressBar;
     QTimer *snapshotProgressTimer;
-    ActionToolbar *actionToolbar;
     bool connected;
     bool connectionInProgress;
 

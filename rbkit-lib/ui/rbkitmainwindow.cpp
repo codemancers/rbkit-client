@@ -16,8 +16,6 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
 {
     Q_INIT_RESOURCE(tool_icons);
     ui->setupUi(this);
-    CentralWidget *centralWidget = new CentralWidget();
-    actionToolbar = new ActionToolbar(centralWidget);
     setupToolbarStyle();
 
     snapshotProgressTimer = new QTimer(this);
@@ -39,7 +37,6 @@ RbkitMainWindow::RbkitMainWindow(QWidget *parent) :
     ui->chartingTab->addTab(memoryView, "Object Charts");
     connect(ui->chartingTab, SIGNAL(tabCloseRequested(int)), this, SLOT(tabClosed(int)));
     disableCloseButtonOnFirstTab();
-    actionToolbar->disableProfileActions();
 }
 
 
@@ -51,7 +48,6 @@ RbkitMainWindow::~RbkitMainWindow()
 void RbkitMainWindow::addTabWidget(HeapDumpForm *heapDumpForm, const QString& title)
 {
     snapShotState->addNewSnapshot(HeapDumpFormPtr(heapDumpForm), title);
-    heapDumpForm->setParentWindow(this);
     ui->chartingTab->addTab(heapDumpForm, title);
 }
 
@@ -122,7 +118,6 @@ void RbkitMainWindow::on_action_About_Rbkit_triggered()
 void RbkitMainWindow::objectDumpAvailable(int snapshotVersion)
 {
     HeapDumpFormPtr heapUI = HeapDumpFormPtr(new HeapDumpForm(this, snapshotVersion));
-    heapUI->setParentWindow(this);
     heapUI->loaData();
     QString snapshotName = QString("Heap Dump #%0").arg(snapshotVersion);
     snapShotState->addNewSnapshot(heapUI, snapshotName);
@@ -176,7 +171,6 @@ void RbkitMainWindow::disconnectedFromSocket()
     ui->action_Connect->setIcon(QIcon(":/icons/connect-32.png"));
     this->connected = false;
     ui->statusbar->showMessage("Not connected to any Ruby application");
-    actionToolbar->disableProfileActions();
     memoryView->processDetail->disconnectedFromProcess();
     snapShotState->reset();
     RBKit::SqlConnectionPool::getInstance()->closeDatabase();
@@ -188,7 +182,6 @@ void RbkitMainWindow::disconnectedFromSocket()
 void RbkitMainWindow::connectedToSocket()
 {
     RBKit::SqlConnectionPool::getInstance()->setupDatabase();
-    actionToolbar->enableProfileActions();
     ui->action_Connect->setText(tr("&Disconnect"));
     ui->action_Connect->setIcon(QIcon(":/icons/disconnect-32.png"));
     ui->statusbar->showMessage("Currently Profiling Ruby application");

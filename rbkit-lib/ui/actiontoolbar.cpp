@@ -4,22 +4,23 @@
 #include <QToolButton>
 #include <QStatusBar>
 #include <QMessageBox>
+#include <QVariantMap>
 
 #include "centralwidget.h"
-#include "memoryview.h"
+#include "processdetail.h"
 
 static void toggleConnectButtonState(ConnectionStates state, QToolButton *btn) {
     switch (state) {
     case CONNECTED:
-        btn->setText(tr("&Disconnect"));
+        btn->setText("&Disconnect");
         btn->setIcon(QIcon(":/icons/disconnect-32.png"));
         break;
     case DISCONNECTED:
-        btn->setText(tr("&Connect"));
+        btn->setText("&Connect");
         btn->setIcon(QIcon(":/icons/connect-32.png"));
         break;
     default:
-        btn->setText(tr("&Disconnect"));
+        btn->setText("&Disconnect");
         btn->setIcon(QIcon(":/icons/disconnect-32.png"));
         break;
     }
@@ -69,13 +70,18 @@ void ActionToolbar::setupSubscriber()
     connect(this, SIGNAL(takeSnapshot()), subscriber, SLOT(takeSnapshot()));
 
     connect(subscriber, &Subscriber::errored, centralWidget, &CentralWidget::onError);
-    connect(subscriber, &Subscriber::connected, this, &RbkitMainWindow::connectedToSocket);
-    connect(subscriber, &Subscriber::disconnected, this, &RbkitMainWindow::disconnectedFromSocket);
-    connect(subscriber, &Subscriber::objectDumpAvailable, this, &RbkitMainWindow::objectDumpAvailable);
+    connect(subscriber, &Subscriber::connected, this, &ActionToolbar::connectedToSocket);
+    connect(subscriber, &Subscriber::disconnected, this,
+            &ActionToolbar::disconnectedFromSocket);
+    connect(subscriber, &Subscriber::objectDumpAvailable,
+            centralWidget, &CentralWidget::objectDumpAvailable);
 
-    connect(subscriber, &Subscriber::youngGenStats, this, &RbkitMainWindow::receiveYoungGenStats);
-    connect(subscriber, &Subscriber::secondGenStats, this, &RbkitMainWindow::receiveSecondGenStats);
-    connect(subscriber, &Subscriber::oldGenStats, this, &RbkitMainWindow::receiveOldGenStats);
+    connect(subscriber, &Subscriber::youngGenStats,
+            centralWidget, &CentralWidget::receiveYoungGenStats);
+    connect(subscriber, &Subscriber::secondGenStats,
+            centralWidget, &CentralWidget::receiveSecondGenStats);
+    connect(subscriber, &Subscriber::oldGenStats,
+            centralWidget, &CentralWidget::receiveOldGenStats);
 
     subscriberThread.start();
 }
@@ -83,7 +89,7 @@ void ActionToolbar::setupSubscriber()
 void ActionToolbar::askForServerInfo()
 {
     if(host.size() == 0) {
-        askHost = new AskHost(this);
+        askHost = new AskHost();
         connect(askHost, SIGNAL(userHasSelectedHost(QString, QString)),
                 this, SLOT(useSelectedHost(QString, QString)));
         askHost->show();
@@ -104,6 +110,11 @@ void ActionToolbar::disconnectFromSocket()
     qDebug() << "Thread has been stopped";
 }
 
+void ActionToolbar::shutDownApp()
+{
+    disconnectFromSocket();
+}
+
 void ActionToolbar::setupToolBar()
 {
     toolBar = new RibbonToolBar(centralWidget);
@@ -111,8 +122,8 @@ void ActionToolbar::setupToolBar()
     connect(connectButton, &QToolButton::clicked, this, &ActionToolbar::attemptConnection);
 
 
-    toolBar->addRibbonTab("CPU Profiling", "cpu_profiling");
     toolBar->addRibbonTab("Memory Profiling", "memory_profiling");
+    toolBar->addRibbonTab("CPU Profiling", "cpu_profiling");
 
     compareSnapshotButton = toolBar->addRibbonAction("Compare Snapshot",
                                                      "compare_snapshot",
@@ -151,31 +162,24 @@ void ActionToolbar::performGCAction()
 
 void ActionToolbar::takeSnapshotAction()
 {
-    if (snapshotState->snapShotInProgress()) {
-        QMessageBox alert(this);
-        alert.setText("A snapshot is already in progress");
-        alert.exec();
-        return;
-    } else {
-        // set heapsnapshot percentage to 2%
-        RBKit::AppState::getInstance()->setAppState("heap_snapshot", 2);
-        centralWidget->showStatusMessage("Snapshot Started");
-        centralWidget->resetProgressBar();
-        centralWidget->setProgressBarValue(2);
-        snapshotProgressTimer->start(500);
-        snapshotState->setSnapshotProgress(true);
+    if (centralWidget->attemptMemorySnapshot()) {
         emit takeSnapshot();
     }
 }
 
 void ActionToolbar::attemptConnection()
 {
-
+    if (connectionState != CONNECTION_IN_PROGRESS) {
+        setupSubscriber();
+        askForServerInfo();
+    } else {
+        disconnectFromSocket();
+    }
 }
 
 void ActionToolbar::compareSnapshots()
 {
-
+    centralWidget->compareSnapshots();
 }
 
 void ActionToolbar::useSelectedHost(QString commandSocket, QString eventSocket)
@@ -194,4 +198,9 @@ void ActionToolbar::connectedToSocket()
     toggleConnectButtonState(connectionState, connectButton);
     centralWidget->showStatusMessage("Currently Profiling Ruby application");
     memoryView()->processDetail->displayProcessDetail();
+}
+
+void ActionToolbar::disconnectedFromSocket()
+{
+
 }

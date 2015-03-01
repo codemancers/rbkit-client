@@ -4,17 +4,18 @@
 
 #include <QObject>
 #include <QWidget>
+#include <QThread>
 
 #include "ribbontoolbar.h"
 #include "model/snapshotstate.h"
 #include "askhost.h"
 #include "subscriber.h"
 #include "common.h"
+#include "memoryview.h"
 
 class QToolButton;
 class CentralWidget;
 class QTimer;
-class RBKit::MemoryView;
 
 enum ConnectionStates {
     DISCONNECTED = 0,
@@ -29,10 +30,8 @@ class ActionToolbar : public QObject
 
     RibbonToolBar *toolBar;
     CentralWidget *centralWidget;
-    RBKit::SnapshotState *snapshotState;
-    QTimer *snapshotProgressTimer;
     AskHost *askHost;
-    QString *host;
+    QString host;
     Subscriber *subscriber;
     ConnectionStates connectionState;
     QThread subscriberThread;
@@ -46,6 +45,7 @@ public:
     void askForServerInfo();
     RBKit::MemoryView *memoryView() const;
     void disconnectFromSocket();
+    void shutDownApp();
 
 private:
     QToolButton *gcButton;
@@ -64,6 +64,7 @@ public slots:
     void compareSnapshots();
     void useSelectedHost(QString commandSocket, QString eventSocket);
     void connectedToSocket();
+    void disconnectedFromSocket();
 };
 
 #endif // ACTIONTOOLBAR_H
