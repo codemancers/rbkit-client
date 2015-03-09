@@ -34,7 +34,6 @@ SOURCES += \
     ui/diffviewform.cpp \
     ui/heapdumpform.cpp \
     ui/memoryview.cpp \
-    ui/rbkitmainwindow.cpp \
     ui/actiontoolbar.cpp \
     ui/aboutdialog.cpp \
     model/parentobject.cpp \
@@ -68,7 +67,6 @@ HEADERS +=  \
     ui/diffviewform.h \
     ui/heapdumpform.h \
     ui/memoryview.h \
-    ui/rbkitmainwindow.h \
     ui/actiontoolbar.h \
     ui/aboutdialog.h \
     model/parentobject.h \
