@@ -16,6 +16,15 @@
 #include "diffviewform.h"
 #include "model/appstate.h"
 
+void disableCloseButtonOnFirstTab(QTabWidget *tabWidget) {
+    QWidget *tabButton = tabWidget->tabBar()->tabButton(0, QTabBar::RightSide);
+    if (tabButton) {
+        tabButton->resize(0, 0);
+    } else {
+        tabWidget->tabBar()->tabButton(0, QTabBar::LeftSide)->resize(0, 0);
+    }
+}
+
 QSharedPointer<RBKit::MemoryView> CentralWidget::getMemoryView() const
 {
     return memoryView;
@@ -39,6 +48,15 @@ void CentralWidget::addTabWidget(HeapDumpForm *form, const QString &title)
     snapshotState->addNewSnapshot(HeapDumpFormPtr(form), title);
     form->setParentWindow(this);
     chartingTab->addTab(form, title);
+}
+
+void CentralWidget::appDisconnected()
+{
+    showStatusMessage("Not connected to any Ruby application");
+    memoryView->processDetail->disconnectedFromProcess();
+    snapshotState->reset();
+    RBKit::SqlConnectionPool::getInstance()->closeDatabase();
+    RBKit::SqlConnectionPool::getInstance()->setupDatabase();
 }
 
 void CentralWidget::onError(const QString &error)
@@ -122,12 +140,16 @@ CentralWidget::CentralWidget(AppMainwindow *window) : QWidget(window)
             this, SLOT(updateProgressBar()));
 
     chartingTab = QSharedPointer<QTabWidget>::create(this);
+    chartingTab->setTabsClosable(true);
     chartingTab->setMinimumHeight(700);
     chartingTab->setMinimumWidth(1100);
+
+
     mainLayout->addWidget(chartingTab.data());
     connect(chartingTab.data(), &QTabWidget::tabCloseRequested, this, &CentralWidget::tabClosed);
     setupCentralView();
 
+    disableCloseButtonOnFirstTab(chartingTab.data());
     makeMarginSpacingZero(mainLayout);
     setLayout(mainLayout);
 }

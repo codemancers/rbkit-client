@@ -169,7 +169,7 @@ void ActionToolbar::takeSnapshotAction()
 
 void ActionToolbar::attemptConnection()
 {
-    if (connectionState != CONNECTION_IN_PROGRESS) {
+    if (connectionState == DISCONNECTED) {
         setupSubscriber();
         askForServerInfo();
     } else {
@@ -202,5 +202,8 @@ void ActionToolbar::connectedToSocket()
 
 void ActionToolbar::disconnectedFromSocket()
 {
-
+    connectionState = DISCONNECTED;
+    toggleConnectButtonState(connectionState, connectButton);
+    centralWidget->appDisconnected();
+    disableProfileActions();
 }

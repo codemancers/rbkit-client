@@ -42,6 +42,7 @@ public:
     QSharedPointer<RBKit::MemoryView> getMemoryView() const;
     void compareSnapshots();
     void addTabWidget(HeapDumpForm* form, const QString &title);
+    void appDisconnected();
 signals:
 
 public slots:
