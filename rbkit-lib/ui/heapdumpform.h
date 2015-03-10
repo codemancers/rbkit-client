@@ -27,7 +27,7 @@ enum class RbkitContextDetail {
     NONE = 2
 };
 
-class RbkitMainWindow;
+class CentralWidget;
 
 class HeapDumpForm : public QWidget
 {
@@ -40,7 +40,7 @@ protected:
     RBKit::HeapDataModel *model;
     SortObjectProxyModel *proxyModel;
     RBKit::BaseHeapItem *selecteItem;
-    RbkitMainWindow *parentWindow;
+    CentralWidget *parentWindow;
     RbkitContextDetail contextDetail;
 public:
     explicit HeapDumpForm(QWidget *parent = 0, int _snapShotVersion = 0);
@@ -49,8 +49,8 @@ public:
     void loadSelectedReferences(RBKit::BaseHeapItem* _selectedItem);
     void adjustColumnWidth();
     void loadFromSpecifiedRoot(RBKit::BaseHeapItem*_rootItem);
-    RbkitMainWindow *getParentWindow() const;
-    void setParentWindow(RbkitMainWindow *value);
+    CentralWidget *getParentWindow() const;
+    void setParentWindow(CentralWidget *window);
     void setTreeModel(SortObjectProxyModel* model);
     void reset();
 

@@ -1,21 +1,70 @@
 #ifndef ACTIONTOOLBAR_H
 #define ACTIONTOOLBAR_H
 
-#include <QToolBar>
 
-namespace Ui {
-class RbkitMainWindow;
-}
+#include <QObject>
+#include <QWidget>
+#include <QThread>
+
+#include "ribbontoolbar.h"
+#include "model/snapshotstate.h"
+#include "askhost.h"
+#include "subscriber.h"
+#include "common.h"
+#include "memoryview.h"
+
+class QToolButton;
+class CentralWidget;
+class QTimer;
+
+enum ConnectionStates {
+    DISCONNECTED = 0,
+    CONNECTION_IN_PROGRESS,
+    CONNECTED
+};
 
 // Maintains state of Toolbar
-class ActionToolbar
+class ActionToolbar : public QObject
 {
+    Q_OBJECT
+
+    RibbonToolBar *toolBar;
+    CentralWidget *centralWidget;
+    AskHost *askHost;
+    QString host;
+    Subscriber *subscriber;
+    ConnectionStates connectionState;
+    QThread subscriberThread;
 public:
-    ActionToolbar(Ui::RbkitMainWindow *ui);
+    explicit ActionToolbar(CentralWidget *widget);
     void enableProfileActions();
     void disableProfileActions();
+    void setupToolBar();
+    RibbonToolBar *getToolBar() const;
+    void setupSubscriber();
+    void askForServerInfo();
+    RBKit::MemoryView *memoryView() const;
+    void disconnectFromSocket();
+    void shutDownApp();
+
 private:
-    Ui::RbkitMainWindow *ui;
+    QToolButton *gcButton;
+    QToolButton *connectButton;
+    QToolButton *snapshotButton;
+    QToolButton *compareSnapshotButton;
+signals:
+    void connectToSocket(QString commandSocket, QString eventSocket);
+    void triggerGc();
+    void disconnectSubscriber();
+    void takeSnapshot();
+public slots:
+    void performGCAction();
+    void takeSnapshotAction();
+    void attemptConnection();
+    void compareSnapshots();
+    void useSelectedHost(QString commandSocket, QString eventSocket);
+    void connectedToSocket();
+    void disconnectedFromSocket();
 };
 
 #endif // ACTIONTOOLBAR_H

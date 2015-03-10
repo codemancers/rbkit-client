@@ -29,8 +29,6 @@ QVariantMap hashToQVarMap(const QHash<K, V>&& hash) {
     return map;
 }
 
-
-
 nzmqt::ZMQContext *Subscriber::getContext() const
 {
     return context;

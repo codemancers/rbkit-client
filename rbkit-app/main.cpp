@@ -1,7 +1,7 @@
-#include "ui/rbkitmainwindow.h"
 #include <QApplication>
 #include "model/appstate.h"
 #include <QIcon>
+#include "ui/appmainwindow.h"
 
 int main(int argc, char *argv[])
 {
@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 
     RBKit::AppState::getInstance()->setAppState("connection_established", false);
 
-    RbkitMainWindow mainWindow;
+    AppMainwindow mainWindow;
     mainWindow.setWindowIcon(QIcon(":/rbkit.icns"));
     app.processEvents();
     mainWindow.show();

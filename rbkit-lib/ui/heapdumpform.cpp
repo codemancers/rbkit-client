@@ -1,16 +1,16 @@
 #include "heapdumpform.h"
 #include "ui_heapdumpform.h"
 #include "model/heap_item_types/heapitem.h"
-#include "rbkitmainwindow.h"
+#include "centralwidget.h"
 #include <QStatusBar>
 #include <QProcess>
 
-RbkitMainWindow *HeapDumpForm::getParentWindow() const
+CentralWidget *HeapDumpForm::getParentWindow() const
 {
     return parentWindow;
 }
 
-void HeapDumpForm::setParentWindow(RbkitMainWindow *value)
+void HeapDumpForm::setParentWindow(CentralWidget *value)
 {
     parentWindow = value;
 }
@@ -175,7 +175,7 @@ void HeapDumpForm::treeNodeSelected(const QModelIndex &index)
     QModelIndex sourceIndex = proxyModel->mapToSource(index);
     RBKit::BaseHeapItem *nodeItem = static_cast<RBKit::BaseHeapItem *>(sourceIndex.internalPointer());
     if (nodeItem != NULL)
-        parentWindow->statusBar()->showMessage(nodeItem->leadingIdentifier());
+        parentWindow->showStatusMessage(nodeItem->leadingIdentifier());
 }
 
 

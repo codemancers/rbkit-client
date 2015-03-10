@@ -1,6 +1,6 @@
 #include "diffviewform.h"
-#include "rbkitmainwindow.h"
 #include "ui_heapdumpform.h"
+#include "centralwidget.h"
 #include "parentviewform.h"
 #include "model/heap_item_types/baseheapitem.h"
 #include <QStatusBar>
@@ -31,7 +31,7 @@ void DiffViewForm::treeNodeSelected(const QModelIndex &index)
     QModelIndex sourceIndex = proxyModel->mapToSource(index);
     RBKit::BaseHeapItem *nodeItem = static_cast<RBKit::BaseHeapItem *>(sourceIndex.internalPointer());
     if (nodeItem != NULL) {
-        parentWindow->statusBar()->showMessage(nodeItem->leadingIdentifier());
+        parentWindow->showStatusMessage(nodeItem->leadingIdentifier());
         if (!parentViewForm) {
             initializeParentView();
         }
