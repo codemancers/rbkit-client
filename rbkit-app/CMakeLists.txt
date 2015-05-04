@@ -16,8 +16,15 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/rbkit-lib)
 
 
+QT5_ADD_RESOURCES(RBKIT_APP_RESOURCES
+    appicon.qrc
+    ${CMAKE_SOURCE_DIR}/rbkit-charts/rbcharts.qrc)
+
+
 add_executable(RbkitClient
-    main.cpp)
+    main.cpp
+
+    ${RBKIT_APP_RESOURCES})
 
 
 set_property(TARGET RbkitClient PROPERTY CXX_STANDARD 11)
