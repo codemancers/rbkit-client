@@ -1,5 +1,8 @@
 #include "testobjectstore.h"
 
+DECLARE_TEST(TestObjectStore)
+
+
 TestObjectStore::TestObjectStore()
 {
     this->objectStore = new RBKit::ObjectStore();

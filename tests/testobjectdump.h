@@ -27,6 +27,4 @@ private:
     QSharedPointer<RBKit::EvtObjectDump> event;
 };
 
-DECLARE_TEST(TestObjectDump)
-
 #endif // TEST_RBKIT_OBJECTDUMP_H

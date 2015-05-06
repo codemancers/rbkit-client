@@ -16,6 +16,4 @@ private slots:
     void testParseObjectDumpEvent();
 };
 
-DECLARE_TEST(TestRbEvents)
-
 #endif // TEST_RBKIT_EVENTS_H

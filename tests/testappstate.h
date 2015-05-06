@@ -13,6 +13,4 @@ public slots:
     void testAppState();
 };
 
-DECLARE_TEST(TestAppState)
-
 #endif // TESTAPPSTATE_H

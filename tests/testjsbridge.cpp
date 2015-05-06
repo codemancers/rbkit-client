@@ -6,6 +6,9 @@
 using namespace RBKit;
 
 
+DECLARE_TEST(TestJsBridge)
+
+
 // test whether object stats are modified and sent to js bridge.
 void TestJsBridge::testSendMapToJs()
 {

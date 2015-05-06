@@ -1,6 +1,9 @@
 #include "testsnapshotstate.h"
 
 
+DECLARE_TEST(TestSnapshotState)
+
+
 TestSnapshotState::TestSnapshotState()
 {
    this->snapshotState = new RBKit::SnapshotState();
