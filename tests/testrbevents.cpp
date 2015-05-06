@@ -4,6 +4,10 @@
 
 using namespace RBKit;
 
+
+DECLARE_TEST(TestRbEvents)
+
+
 static QByteArray msgpackDataFromFile(const QString filename)
 {
     QFile file(filename);

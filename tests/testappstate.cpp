@@ -1,5 +1,9 @@
 #include "testappstate.h"
 
+
+DECLARE_TEST(TestAppState)
+
+
 TestAppState::TestAppState()
 {
 }

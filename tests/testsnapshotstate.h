@@ -20,6 +20,4 @@ private slots:
     void cleanup();
 };
 
-DECLARE_TEST(TestSnapshotState)
-
 #endif // TESTSNAPSHOTSTATE_H

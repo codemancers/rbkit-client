@@ -21,6 +21,4 @@ private:
     QVariantMap receivedData;
 };
 
-DECLARE_TEST(TestJsBridge)
-
 #endif // TEST_RBKIT_JSBRIDGE_H

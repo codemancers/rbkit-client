@@ -18,5 +18,4 @@ private slots:
     void testObjectDetailGetFileLine();
 };
 
-DECLARE_TEST(TestObjectStore)
 #endif // TESTOBJECTSTORE_H

@@ -192,13 +192,6 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
   add_definitions(-D_DARWIN_C_SOURCE)
 endif()
 
-set(CMAKE_PYTHON_VERSION 2.7 2.6 2.5 2.4)
-find_package(PythonInterp)
-find_package(AsciiDoc)
-
-cmake_dependent_option(WITH_DOC "Build Reference Guide documentation(requires DocBook)" ON
-                       "PYTHON_FOUND;ASCIIDOC_FOUND" OFF)
-
 if(MSVC)
   if(WITH_OPENPGM)
     #   set(OPENPGM_ROOT "" CACHE PATH "Location of OpenPGM")
@@ -397,12 +390,6 @@ include_directories(include ${CMAKE_CURRENT_BINARY_DIR})
 set(public_headers include/zmq.h
                    include/zmq_utils.h)
 
-set(readme-docs AUTHORS
-                COPYING
-                COPYING.LESSER
-                MAINTAINERS
-                NEWS)
-
 #-----------------------------------------------------------------------------
 # optional modules
 
@@ -454,32 +441,6 @@ if(MSVC)
     DEPENDS ${nsis-template})
 endif()
 
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc)
-file(GLOB docs RELATIVE ${CMAKE_CURRENT_BINARY_DIR}/ "${CMAKE_CURRENT_SOURCE_DIR}/doc/*.txt")
-set(html-docs)
-foreach(txt ${docs})
-  string(REGEX REPLACE ".*/(.*)\\.txt" "\\1.html" html ${txt})
-  set(src ${txt})
-  set(dst doc/${html})
-  add_custom_command(
-    OUTPUT  ${dst}
-    COMMAND ${PYTHON_EXECUTABLE}
-    ARGS    -x
-    ${ASCIIDOC_EXECUTABLE}
-    -d manpage
-    -b xhtml11
-    -f ${CMAKE_CURRENT_SOURCE_DIR}/doc/asciidoc.conf
-    -azmq_version=${ZMQ_VERSION}
-    -o ${dst}
-    ${src}
-    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${src}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT "Generating ${html}")
-  if(WITH_DOC)
-    list(APPEND html-docs ${CMAKE_CURRENT_BINARY_DIR}/${dst})
-  endif()
-endforeach()
-
 if(ZMQ_BUILD_FRAMEWORK)
   add_custom_command(
     TARGET libzmq
@@ -494,7 +455,7 @@ endif()
 # output
 
 if(MSVC)
-  add_library(libzmq SHARED ${sources} ${public_headers} ${html-docs} ${readme-docs} ${CMAKE_CURRENT_BINARY_DIR}/NSIS.template.in)
+  add_library(libzmq SHARED ${sources} ${public_headers} ${CMAKE_CURRENT_BINARY_DIR}/NSIS.template.in)
   target_link_libraries(libzmq ${OPTIONAL_LIBRARIES})
   set_target_properties(libzmq PROPERTIES
     PUBLIC_HEADER "${public_headers}"
@@ -508,7 +469,7 @@ if(MSVC)
     COMPILE_FLAGS "/D ZMQ_STATIC"
     OUTPUT_NAME "libzmq")
 else()
-    add_library(libzmq SHARED ${sources} ${public_headers} ${html-docs} ${readme-docs} ${zmq-pkgconfig})
+    add_library(libzmq SHARED ${sources} ${public_headers} ${zmq-pkgconfig})
     if(ZMQ_BUILD_FRAMEWORK)
       set_target_properties(libzmq PROPERTIES
                             FRAMEWORK TRUE
@@ -519,10 +480,6 @@ else()
                             MACOSX_FRAMEWORK_BUNDLE_VERSION ${ZMQ_VERSION}
                             VERSION ${ZMQ_VERSION}
                             SOVERSION "${ZMQ_VERSION_MAJOR}.${ZMQ_VERSION_MINOR}.0")
-      set_source_files_properties(${html-docs} PROPERTIES
-                                  MACOSX_PACKAGE_LOCATION doc)
-      set_source_files_properties(${readme-docs} PROPERTIES
-                                  MACOSX_PACKAGE_LOCATION etc)
       set_source_files_properties(${zmq-pkgconfig} PROPERTIES
                                   MACOSX_PACKAGE_LOCATION lib/pkgconfig)
     else()
@@ -706,25 +663,6 @@ if(NOT ZMQ_BUILD_FRAMEWORK)
           COMPONENT SourceCode)
 endif()
 
-foreach(readme ${readme-docs})
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${readme} ${CMAKE_CURRENT_BINARY_DIR}/${readme}.txt)
-
-  if(NOT ZMQ_BUILD_FRAMEWORK)
-    if(MSVC)
-      install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${readme}.txt DESTINATION .)
-    else()
-      install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${readme}.txt DESTINATION etc/zmq)
-    endif()
-  endif()
-endforeach()
-
-if(WITH_DOC)
-  if(NOT ZMQ_BUILD_FRAMEWORK)
-    install(FILES ${html-docs} DESTINATION doc/zmq COMPONENT RefGuide)
-  endif()
-endif()
-
-
 if(MSVC)
   include(InstallRequiredSystemLibraries)
 
@@ -795,12 +733,6 @@ if(MSVC)
     DISPLAY_NAME "ZeroMQ headers and libraries"
     INSTALL_TYPES FullInstall DevInstall
     GROUP Development)
-  if(WITH_DOC)
-    cpack_add_component(RefGuide
-      DISPLAY_NAME "ZeroMQ reference guide"
-      INSTALL_TYPES FullInstall DevInstall
-      GROUP Development)
-  endif()
   cpack_add_component(Runtime
     DISPLAY_NAME "ZeroMQ runtime files"
     REQUIRED
