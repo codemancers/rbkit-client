@@ -59,7 +59,7 @@ source code is cloned at `~/rbkit-client`
    run cmake
 
    ```bash
-   $ cmake -DZMQ_BUILD_TESTS=OFF ../rbkit-client
+   $ cmake ../rbkit-client
    ```
 
    start the app with
