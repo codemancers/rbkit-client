@@ -53,6 +53,7 @@ private:
     QToolButton *stopCPUButton;
     QToolButton *connectButton;
     QToolButton *snapshotButton;
+    QToolButton *cpusnapshotButton;
     QToolButton *compareSnapshotButton;
 signals:
     void connectToSocket(QString commandSocket, QString eventSocket);
@@ -61,11 +62,13 @@ signals:
     void stopCPUProfiling();
     void disconnectSubscriber();
     void takeSnapshot();
+    void startCPUSnapshot();
 public slots:
     void performGCAction();
     void performStartCPUAction();
     void performStopCPUAction();
     void takeSnapshotAction();
+    void performCPUSnapshot();
     void attemptConnection();
     void compareSnapshots();
     void useSelectedHost(QString commandSocket, QString eventSocket);

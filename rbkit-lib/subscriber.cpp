@@ -74,6 +74,10 @@ void Subscriber::takeSnapshot()
    commandSocket->sendCommand(triggerSnapshot);
 }
 
+void Subscriber::startCPUSnapshot() {
+    qDebug() <<"Start CPU Snapshot command received";
+}
+
 void Subscriber::startSubscriber()
 {
     qDebug() << "** (start subscriber) Thread id is : " << QThread::currentThreadId();
