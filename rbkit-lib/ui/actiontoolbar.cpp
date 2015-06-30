@@ -68,6 +68,7 @@ void ActionToolbar::setupSubscriber()
             subscriber, SLOT(startListening(QString, QString)));
     connect(this, SIGNAL(triggerGc()), subscriber, SLOT(triggerGc()));
     connect(this, SIGNAL(takeSnapshot()), subscriber, SLOT(takeSnapshot()));
+    connect(this, SIGNAL(startCPUProfiling()), subscriber, SLOT(startCPUProfiling()));
 
     connect(subscriber, &Subscriber::errored, centralWidget, &CentralWidget::onError);
     connect(subscriber, &Subscriber::connected, this, &ActionToolbar::connectedToSocket);
@@ -144,10 +145,12 @@ void ActionToolbar::setupToolBar()
     connect(gcButton, &QToolButton::clicked, this, &ActionToolbar::performGCAction);
 
 
-    toolBar->addRibbonAction("Start CPU Profiling",
+    startCPUButton = toolBar->addRibbonAction("Start CPU Profiling",
                              "start_cpu_profile",
                              QIcon(":/icons/disconnect-32.png"),
                              "cpu_profiling");
+    connect(startCPUButton, &QToolButton::clicked, this, &ActionToolbar::performStartCPUAction);
+
     toolBar->addRibbonAction("Stop Profiling",
                              "stop_cpu_profiling",
                              QIcon(":/icons/Compare-32.png"),
@@ -158,6 +161,10 @@ void ActionToolbar::setupToolBar()
 void ActionToolbar::performGCAction()
 {
     emit triggerGc();
+}
+
+void ActionToolbar::performStartCPUAction() {
+    emit startCPUProfiling();
 }
 
 void ActionToolbar::takeSnapshotAction()

@@ -80,6 +80,7 @@ public slots:
     void onMessageReceived(const QList<QByteArray>&);
     void onTimerExpiry();
     void triggerGc();
+    void startCPUProfiling();
     void takeSnapshot();
     void startSubscriber();
 

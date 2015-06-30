@@ -43,6 +43,11 @@ namespace RBKit
     public:
         virtual QString serialize();
     };
+
+    class CmdStartCPUProfile : public CommandBase
+    {
+        virtual QString serialize();
+    };
 }
 
 #endif // RBKIT_COMMANDS_H

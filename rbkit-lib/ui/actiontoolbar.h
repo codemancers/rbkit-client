@@ -49,16 +49,19 @@ public:
 
 private:
     QToolButton *gcButton;
+    QToolButton *startCPUButton;
     QToolButton *connectButton;
     QToolButton *snapshotButton;
     QToolButton *compareSnapshotButton;
 signals:
     void connectToSocket(QString commandSocket, QString eventSocket);
     void triggerGc();
+    void startCPUProfiling();
     void disconnectSubscriber();
     void takeSnapshot();
 public slots:
     void performGCAction();
+    void performStartCPUAction();
     void takeSnapshotAction();
     void attemptConnection();
     void compareSnapshots();
