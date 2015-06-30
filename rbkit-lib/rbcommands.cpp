@@ -37,5 +37,5 @@ QString RBKit::CmdHandshake::serialize()
 
 QString RBKit::CmdStartCPUProfile::serialize()
 {
-    return QString("start_cpu_profile");
+    return QString("start_cpu_profiling");
 }
