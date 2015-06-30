@@ -20,17 +20,36 @@ You need Qt on your system in order to build the project. It's recommended to
 install Qt Creator which is an IDE for Qt projects.
 
 ## Compiling on Linux
+Currently there are 2 ways to compile rbkit-client on mac, with Qt Creator and with cmake:
 
-Assuming you have Qt 5.3.x version installed somewhere on your Linux box, after
-cloning the repository you should run:
+1. Using Qt Creator
+   Assuming you have Qt 5.3.x version installed somewhere on your Linux box, after
+   cloning the repository you should follow the steps bellow:
+   * Open QtCreator
+   * Click on `Open Project`
+   * Navigate to the `rbkit-client` directory
+   * Double-click `RbkitClient.pro` file
+   * After configuring click the `run` icon to start the client
 
-```bash
-qmake
-make -j4
-```
+2. Using cmake
+   * Running a shadow build, i.e building from a separate directory is very
+simple. Just create a build directory, say `~/rbkit-build`. Lets say
+source code is cloned at `~/rbkit-client`.  
 
-And that should give you `rbkit-app/RBKitClient` executable, which you can
-go ahead and run.
+   * Create a build directory, say `~/rbkit-build`  
+      ```bash
+      $ mkdir -p ~/rbkit-build && cd ~/rbkit-client
+      ```
+   * Run cmake and make
+      ```bash
+      $ cmake ../rbkit-client
+      $ make
+      ```
+
+   * And that should give you `rbkit-app/RBKitClient` executable, which you can go ahead and run:
+      ```bash
+      $ ./rbkit-app/RBKitClient
+      ```
 
 ## OSX Yosmite  
 Currenty there are 2 ways to compile rbkit-client on mac, with Qt Creator and with cmake.
