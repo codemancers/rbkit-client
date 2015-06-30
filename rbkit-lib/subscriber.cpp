@@ -235,7 +235,7 @@ void Subscriber::performHandshake()
     try
     {
         commandSocket->start(commandUrl);
-        /*switch (commandSocket->performHandShake()) {
+        switch (commandSocket->performHandShake()) {
         case RBKit::HandShakeResponse::VERSION_MISMATCH:
             emitConnectionError(QString("RBkit is unable to connect to Server because either Server or Desktop version is too old"));
             break;
@@ -245,9 +245,7 @@ void Subscriber::performHandshake()
         default:
             emitConnectionError(QString("Error connecting to Ruby application"));
             break;
-        }*/
-        commandSocket->performHandShake();
-        handShakeCompleted();
+        }
     }
     catch(zmq::error_t err)
     {
