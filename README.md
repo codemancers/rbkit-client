@@ -55,11 +55,19 @@ source code is cloned at `~/rbkit-client`
    ```bash
    $ export CMAKE_PREFIX_PATH=/Users/ishan/Qt5.4.2/5.4/clang_64/
    ```
+   
+   If you have both qt4 and qt5 installed on your machine, then run the following lines as well
+   
+   ```bash
+   $ export CPPFLAGS=-L/usr/local/opt/qt5/include
+   $ export LDFLAGS=-L/usr/local/opt/qt5/lib
+   ```
 
-   run cmake
+   run cmake and make
 
    ```bash
    $ cmake ../rbkit-client
+   $ make
    ```
 
    start the app with
