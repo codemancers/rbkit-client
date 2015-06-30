@@ -39,3 +39,8 @@ QString RBKit::CmdStartCPUProfile::serialize()
 {
     return QString("start_cpu_profiling");
 }
+
+QString RBKit::CmdStopCPUProfile::serialize()
+{
+    return QString("stop_cpu_profiling");
+}

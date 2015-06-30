@@ -81,6 +81,7 @@ public slots:
     void onTimerExpiry();
     void triggerGc();
     void startCPUProfiling();
+    void stopCPUProfiling();
     void takeSnapshot();
     void startSubscriber();
 
