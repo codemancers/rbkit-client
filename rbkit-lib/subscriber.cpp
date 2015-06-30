@@ -56,7 +56,7 @@ void Subscriber::triggerGc() {
 }
 
 void Subscriber::startCPUProfiling() {
-    RBKit::CmdStartProfile startCPUProfile;
+    RBKit::CmdStartCPUProfile startCPUProfile;
     qDebug() << "Starting CPU Profiling";
     commandSocket->sendCommand(startCPUProfile);
 }
