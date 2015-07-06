@@ -17,8 +17,9 @@ AskHost::~AskHost()
 
 void AskHost::userSelectedHost()
 {
-    QString commandsSocket = ui->commandsSocket->text();
-    QString eventsSocket = ui->eventsSocket->text();
+    QString serverHost = ui->serverHost->text();
+    QString commandsSocket = serverHost + ":" + ui->commandsPort->text();
+    QString eventsSocket = serverHost + ":" + ui->eventsPort->text();
 
     qDebug() << commandsSocket << eventsSocket;
     emit userHasSelectedHost(commandsSocket, eventsSocket);
