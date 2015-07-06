@@ -8,6 +8,7 @@ AskHost::AskHost(QWidget *parent) :
 {
     ui->setupUi(this);
     connect(ui->hostSelectedButton, SIGNAL(clicked()), this, SLOT(userSelectedHost()));
+    connect(ui->hostResetButton, SIGNAL(clicked()), this, SLOT(userResetHost()));
 }
 
 AskHost::~AskHost()
@@ -23,4 +24,11 @@ void AskHost::userSelectedHost()
 
     qDebug() << commandsSocket << eventsSocket;
     emit userHasSelectedHost(commandsSocket, eventsSocket);
+}
+
+void AskHost::userResetHost()
+{
+  ui->commandsPort->setText("5556");
+  ui->eventsPort->setText("5555");
+  ui->serverHost->setText("tcp://127.0.0.1");
 }
