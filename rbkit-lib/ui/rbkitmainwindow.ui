@@ -16,6 +16,11 @@
     <height>840</height>
    </size>
   </property>
+  <property name="font">
+   <font>
+    <family>Lucida Grande</family>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Rbkit - A Ruby Profiler</string>
   </property>
@@ -23,6 +28,11 @@
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <widget class="QTabWidget" name="chartingTab">
+      <property name="font">
+       <font>
+        <family>Lucida Grande</family>
+       </font>
+      </property>
       <property name="tabPosition">
        <enum>QTabWidget::North</enum>
       </property>
@@ -45,6 +55,11 @@
      <height>22</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>13</pointsize>
+    </font>
+   </property>
    <widget class="QMenu" name="menu_File">
     <property name="title">
      <string>&amp;File</string>
@@ -53,12 +68,23 @@
     <addaction name="action_Quit"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+     </font>
+    </property>
     <property name="title">
      <string>&amp;Help</string>
     </property>
     <addaction name="action_About_Rbkit"/>
    </widget>
    <widget class="QMenu" name="menu_Memory_Profiling">
+    <property name="font">
+     <font>
+      <family>Lucida Grande</family>
+      <pointsize>13</pointsize>
+     </font>
+    </property>
     <property name="title">
      <string>&amp;Memory Profiling</string>
     </property>
@@ -72,6 +98,11 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
+   <property name="font">
+    <font>
+     <family>Lucida Grande</family>
+    </font>
+   </property>
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
@@ -106,12 +137,21 @@
    <addaction name="actionCompare_Heapsnapshots"/>
   </widget>
   <action name="action_Connect">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../tool_icons.qrc">
      <normaloff>:/icons/connect-48.png</normaloff>:/icons/connect-48.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Connect</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Lucida Grande</family>
+     <stylestrategy>PreferAntialias</stylestrategy>
+    </font>
    </property>
   </action>
   <action name="action_Quit">
@@ -120,6 +160,11 @@
    </property>
    <property name="toolTip">
     <string>Quit Rbkit</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Lucida Grande</family>
+    </font>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
@@ -138,6 +183,11 @@
    <property name="text">
     <string>&amp;Start GC</string>
    </property>
+   <property name="font">
+    <font>
+     <family>Lucida Grande</family>
+    </font>
+   </property>
   </action>
   <action name="actionHeap_Snapshot">
    <property name="icon">
@@ -150,6 +200,11 @@
    <property name="toolTip">
     <string>Record heapsnapshot</string>
    </property>
+   <property name="font">
+    <font>
+     <family>Lucida Grande</family>
+    </font>
+   </property>
   </action>
   <action name="actionCompare_Heapsnapshots">
    <property name="icon">
@@ -161,6 +216,11 @@
    </property>
    <property name="toolTip">
     <string>Compare Heapsnpshot</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>Lucida Grande</family>
+    </font>
    </property>
   </action>
  </widget>

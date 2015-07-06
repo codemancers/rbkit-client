@@ -28,6 +28,11 @@
    </property>
    <item>
     <widget class="QTabWidget" name="tabWidget">
+     <property name="font">
+      <font>
+       <family>Lucida Grande</family>
+      </font>
+     </property>
      <property name="tabPosition">
       <enum>QTabWidget::West</enum>
      </property>
