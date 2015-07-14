@@ -19,10 +19,10 @@ SOURCES += \
     main.cpp \
     storage.cpp \
     node.cpp \
-    test.cpp
+    cpuprof.cpp
 
 HEADERS += \
     storage.h \
     node.h \
     mapping.h \
-    test.h
+    cpuprof.h
