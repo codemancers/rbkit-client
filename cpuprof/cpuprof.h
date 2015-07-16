@@ -10,7 +10,9 @@ class CpuProf : public QObject
     Q_OBJECT
 
 public:
-    void decodeMap(QMap &);
+    static void decodeMap(QList<QMap<int, QVariant>> data) {
+        qDebug() << data;
+    }
 private slots:
     void testParsing();
 };

@@ -39,3 +39,25 @@ include_directories(
 #target_link_libraries(cpuprof msgpack)
 #target_link_libraries(cpuprof libzmq)
 #target_link_libraries(cpuprof nzmqt)
+#add_executable(cpuprof
+#    main.cpp
+#    storage.cpp
+#    node.cpp
+#    cpuprof.cpp
+
+#    storage.h
+#    node.h
+#    mapping.h
+#    cpuprof.h)
+
+
+set_property(TARGET cpuprof PROPERTY CXX_STANDARD 11)
+
+
+target_link_libraries(cpuprof Qt5::WebKitWidgets)
+target_link_libraries(cpuprof Qt5::Sql)
+target_link_libraries(cpuprof Qt5::Test)
+target_link_libraries(cpuprof rbkit)
+target_link_libraries(cpuprof msgpack)
+target_link_libraries(cpuprof libzmq)
+target_link_libraries(cpuprof nzmqt)

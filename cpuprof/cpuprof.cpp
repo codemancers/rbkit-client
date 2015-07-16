@@ -31,10 +31,6 @@ void parseFrames(QJsonObject *frames) {
 }
 
 
-void CpuProf::decodeMap(QMap &data) {
-    qDebug() << data;
-}
-
 QString decodeJson(QByteArray &byteJson) {
     QJsonDocument jsonDocument = QJsonDocument::fromJson(byteJson);
     QJsonArray jsonArray = jsonDocument.array();
