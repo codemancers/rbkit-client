@@ -121,3 +121,14 @@ void RBKit::EvtHandshake::process(Subscriber &processor) const
 {
     processor.processEvent(*this);
 }
+
+RBKit::EvtCpuSample::EvtCpuSample(QDateTime ts, RBKit::EventType eventType, QList<QMap<int, QVariant> > payload)
+    : EventDataBase(ts, eventType)
+{
+    qDebug() << payload;
+}
+
+void RBKit::EvtCpuSample::process(Subscriber &processor) const
+{
+    processor.processEvent(*this);
+}

@@ -98,3 +98,19 @@ void TestRbEvents::testParseObjectDumpEvent()
     EvtObjectDump* event = dynamic_cast<EvtObjectDump*>(collection->events[0].data());
     QVERIFY(event);
 }
+
+
+void TestRbEvents::testParseCpuSampleEvent()
+{
+    QByteArray data = msgpackDataFromFile(":/tests/msgpack/cpusample");
+    RBKit::EventParser eventParser(data);
+
+    auto base = eventParser.parseEvent();
+    QVERIFY(base);
+
+    auto collection = dynamic_cast<EvtCollection*>(base);
+    QVERIFY(collection);
+
+    EvtCpuSample* event = dynamic_cast<EvtCpuSample*>(collection->events[0].data());
+    QVERIFY(event);
+}

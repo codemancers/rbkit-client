@@ -58,6 +58,10 @@ RBKit::EventParser::eventFromMsgpackObject(const msgpack::object& object) const
         event = new RBKit::EvtHandshake(timestamp, eventType, payload.as<QVariantMap>());
         break;
 
+    case RBKit::EtCpuSample:
+        event = new RBKit::EvtCpuSample(timestamp, eventType, payload.as<QList<QMap<int, QVariant>>>());
+        break;
+
     default:
         qDebug() << "Unable to parse event of type: " << eventType;
     }

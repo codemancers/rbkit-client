@@ -7,6 +7,7 @@
         <file>msgpack/objectdump</file>
         <file>msgpack/hugedump</file>
         <file>msgpack/split_dump</file>
+        <file>msgpack/cpusample</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

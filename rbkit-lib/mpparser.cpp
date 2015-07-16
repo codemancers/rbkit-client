@@ -87,7 +87,6 @@ RBKit::ObjectDetail& operator>>(msgpack::object obj, RBKit::ObjectDetail& object
     return object;
 }
 
-
 RBKit::ObjectDetailPtr& operator>>(msgpack::object obj, RBKit::ObjectDetailPtr& ptr)
 {
     if (obj.type != msgpack::type::MAP) { throw msgpack::type_error(); }

@@ -59,6 +59,7 @@ public:
     void processEvent(const RBKit::EvtObjectDump&);
     void processEvent(const RBKit::EvtCollection&);
     void processEvent(const RBKit::EvtHandshake&handShake);
+    void processEvent(const RBKit::EvtCpuSample&);
     void performHandshake();
     void handShakeCompleted();
     void emitConnectionError(QString message);
