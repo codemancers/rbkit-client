@@ -41,6 +41,9 @@ inline QList<T>& operator>>(msgpack::object obj, QList<T>& list)
     return list;
 }
 
+// covert object to QMap
+//QMap<int, QVariant>& operator >>(msgpack::object obj, QMap<int, QVariant>&);
+
 
 // convert object to QString
 QString& operator>>(msgpack::object obj, QString& string);

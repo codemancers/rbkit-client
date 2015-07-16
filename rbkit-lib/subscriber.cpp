@@ -11,6 +11,7 @@
 #include "model/jsbridge.h"
 #include "model/appstate.h"
 #include "rbeventparser.h"
+#include "cpu/cpuprof.h"
 
 
 static const int rbkcZmqTotalIoThreads = 1;
@@ -236,7 +237,7 @@ void Subscriber::processEvent(const RBKit::EvtHandshake &handShake)
 }
 
 void Subscriber::processEvent(const RBKit::EvtCpuSample &cpuSample) {
-    qDebug() << cpuSample.eventType << "===";
+    qDebug() << cpuSample.eventType;
 }
 
 void Subscriber::performHandshake()
