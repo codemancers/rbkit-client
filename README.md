@@ -19,7 +19,7 @@ Click [here](https://www.youtube.com/watch?v=hcaYjiAIres&list=UUWnPjmqvljcafA0z2
 You need Qt on your system in order to build the project. It's recommended to
 install Qt Creator which is an IDE for Qt projects.
 
-## Compiling on Linux
+## Compiling on Linux & OS X
 Currently there are 2 ways to compile rbkit-client on mac, with Qt Creator and with cmake:
 
 1. Using Qt Creator
@@ -28,7 +28,10 @@ Currently there are 2 ways to compile rbkit-client on mac, with Qt Creator and w
    * Open QtCreator
    * Click on `Open Project`
    * Navigate to the `rbkit-client` directory
-   * Double-click `RbkitClient.pro` file
+   * Double-click `CMakeLists.txt` file
+   * In the wizard choose you build directory
+   * Next enter path to your `cmake` executable, usually in `/usr/local/bin/cmake`
+   * Next click on `Run Cmake`
    * After configuring click the `run` icon to start the client
 
 2. Using cmake
@@ -50,50 +53,6 @@ source code is cloned at `~/rbkit-client`.
       ```bash
       $ ./rbkit-app/RBKitClient
       ```
-
-## OSX Yosmite  
-Currenty there are 2 ways to compile rbkit-client on mac, with Qt Creator and with cmake.
-
-1. Using Qt Creator
-   Double click the `rbkit-client/RbkitClient.pro` file to open it in the qt creator. In the left menu-bar click on `Debug` button and select `rbkit-app` under the Run field.  
-   Hit the Run button, after compilation the GUI should pop-up.
-
-2. Using cmake
-   Running a shadow build, i.e building from a separate directory is very
-simple. Just create a build directory, say `~/rbkit-build`. Lets say
-source code is cloned at `~/rbkit-client`
-
-   ```bash
-   $ mkdir -p ~/rbkit-build
-   $ cd ~/rbkit-build
-   ```
-
-   Export `CMAKE_PREFIX_PATH`.  
-   For example, my `CMAKE_PREFIX_PATH` is:  
-
-   ```bash
-   $ export CMAKE_PREFIX_PATH=/Users/ishan/Qt5.4.2/5.4/clang_64/
-   ```
-   
-   If you have both qt4 and qt5 installed on your machine, then run the following lines as well
-   
-   ```bash
-   $ export CPPFLAGS=-L/usr/local/opt/qt5/include
-   $ export LDFLAGS=-L/usr/local/opt/qt5/lib
-   ```
-
-   run cmake and make
-
-   ```bash
-   $ cmake ../rbkit-client
-   $ make
-   ```
-
-   start the app with
-
-   ```bash
-   $ ./rbkit-app/RbkitClient
-   ```
 
 ## Testing Framework integration
 Right now, QTest framework is integrated. So, if you make a build, then
