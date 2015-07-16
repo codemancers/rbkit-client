@@ -1,5 +1,6 @@
 #include "subscriber.h"
 #include "rbevents.h"
+#include "cpu/cpuprof.h"
 
 
 // ============================== different events ==============================
@@ -125,7 +126,9 @@ void RBKit::EvtHandshake::process(Subscriber &processor) const
 RBKit::EvtCpuSample::EvtCpuSample(QDateTime ts, RBKit::EventType eventType, QList<QMap<int, QVariant> > payload)
     : EventDataBase(ts, eventType)
 {
-    qDebug() << payload;
+    //qDebug() << payload;
+    CpuProf::decodeMap(payload);
+
 }
 
 void RBKit::EvtCpuSample::process(Subscriber &processor) const

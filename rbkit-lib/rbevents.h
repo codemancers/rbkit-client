@@ -8,6 +8,7 @@
 #include <QString>
 #include "stringutil.h"
 #include "model/objectdetail.h"
+#include "cpu/cpuprof.h"
 
 
 class Subscriber;               // this acts as processor also atm.

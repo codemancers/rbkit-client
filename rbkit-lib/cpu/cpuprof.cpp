@@ -6,12 +6,12 @@
 #include <QTextStream>
 #include <QDebug>
 #include <typeinfo>
-#include "storage.h"
-#include "mapping.h"
+#include "cpustorage.h"
+#include "cpumapping.h"
 #include <iostream>
 #include <string.h>
 #include <QDebug>
-#include <qbenchmark.h>
+
 #include "cpuprof.h"
 
 
@@ -28,11 +28,6 @@ void parseFrames(QJsonObject *frames) {
         //method already added, update the values
         store->updateExistingMethod(newNodeData);
     }
-}
-
-
-void CpuProf::decodeMap(QMap &data) {
-    qDebug() << data;
 }
 
 QString decodeJson(QByteArray &byteJson) {
@@ -80,9 +75,7 @@ void CpuProf::testParsing() {
         QString jsonText = textStream.readAll();
         QByteArray byteJson = jsonText.toUtf8();
         //qDebug() <<"file contents -> " << jsonText;
-        QBENCHMARK {
-            decodeJson(byteJson);
-        }
+        decodeJson(byteJson);
     }
 
     //store->traverseNodes();
@@ -112,6 +105,3 @@ void CpuProf::testParsing() {
     }*/
 }
 
-
-
-QTEST_MAIN(CpuProf)
