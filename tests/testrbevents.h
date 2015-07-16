@@ -14,6 +14,7 @@ private slots:
     void testParseGcStatsEvent();
     void testParseGCStartEvent();
     void testParseObjectDumpEvent();
+    void testParseCpuSampleEvent();
 };
 
 #endif // TEST_RBKIT_EVENTS_H
