@@ -235,6 +235,10 @@ void Subscriber::processEvent(const RBKit::EvtHandshake &handShake)
     qDebug() << "Should not have come here";
 }
 
+void Subscriber::processEvent(const RBKit::EvtCpuSample &cpuSample) {
+    qDebug() << cpuSample.eventType << "===";
+}
+
 void Subscriber::performHandshake()
 {
     context->start();

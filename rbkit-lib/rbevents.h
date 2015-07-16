@@ -25,7 +25,8 @@ namespace RBKit
         EtObjectSpaceDump  = 5,
         EtGcStats          = 6,
         EtEventCollection  = 7,
-        EtHandshake        = 8
+        EtHandshake        = 8,
+        EtCpuSample        = 9
     };
 
 
@@ -127,6 +128,13 @@ namespace RBKit
         QString rbkitProtocolVersion;
         quint32 pid;
         bool tracingFlag;
+    };
+
+    class EvtCpuSample : public EventDataBase
+    {
+    public:
+        EvtCpuSample(QDateTime ts, EventType eventType, QList<QMap<int, QVariant>> payload);
+        void process(Subscriber& processor) const;
     };
 }
 
