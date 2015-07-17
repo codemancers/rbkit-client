@@ -8,13 +8,13 @@
 class CpuProf : public QObject
 {
     Q_OBJECT
-
+    storage *store = new storage();
 public:
-    static void decodeMap(QList<QMap<int, QVariant>> data) {
-        qDebug() << data;
-    }
-private slots:
-    void testParsing();
+    void decodeMap(QList<QMap<int, QVariant>> data);
+    void parseFrames(QMap<int, QVariant> *frames);
+
+    //handeling traversals
+    void startTraversals();
 };
 
 #endif // CPUPROF_H

@@ -134,6 +134,7 @@ namespace RBKit
     class EvtCpuSample : public EventDataBase
     {
     public:
+        CpuProf *cpuProf = new CpuProf();
         EvtCpuSample(QDateTime ts, EventType eventType, QList<QMap<int, QVariant>> payload);
         void process(Subscriber& processor) const;
     };
