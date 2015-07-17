@@ -44,3 +44,6 @@ void CpuProf::startTraversals() {
     store->handleCallGraph();
 }
 
+CpuProf::~CpuProf() {
+    startTraversals();
+}
