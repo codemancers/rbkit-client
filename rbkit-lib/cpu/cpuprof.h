@@ -15,6 +15,7 @@ public:
 
     //handeling traversals
     void startTraversals();
+    ~CpuProf();
 };
 
 #endif // CPUPROF_H
