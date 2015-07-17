@@ -127,7 +127,7 @@ RBKit::EvtCpuSample::EvtCpuSample(QDateTime ts, RBKit::EventType eventType, QLis
     : EventDataBase(ts, eventType)
 {
     //qDebug() << payload;
-    CpuProf::decodeMap(payload);
+    cpuProf->decodeMap(payload);
 
 }
 

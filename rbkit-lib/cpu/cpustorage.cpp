@@ -8,7 +8,7 @@ storage::storage()
 
 }
 
-void storage::addNewNode(QVariantMap data) {
+void storage::addNewNode(QMap<int, QVariant> data) {
     //qDebug() << data;
     Node *newNode = new Node(data[MAPS::method_name].toString(),
             data[MAPS::label].toString(),
@@ -35,15 +35,16 @@ void storage::updateNewNodeLocation(QString methodName, Node *location) {
     this->nodes[methodName] = location;
 }
 
-bool storage::exists(QString method_name) {
-QHash<QString, Node*>::iterator iter = this->nodes.find(method_name);
-    if(iter == this->nodes.end()) {
-        //qDebug() << method_name << " does not exists";
-        return false;
-    } else {
-        //qDebug() << method_name << " exists";
-        return true;
-    }
+bool storage::exists(QVariant name) {
+    QString method_name = name.toString();
+    QHash<QString, Node*>::iterator iter = this->nodes.find(method_name);
+        if(iter == this->nodes.end()) {
+            qDebug() << method_name << " does not exists";
+            return false;
+        } else {
+            qDebug() << method_name << " exists";
+            return true;
+        }
 }
 
 void storage::incrementSampleCount() {
@@ -56,12 +57,12 @@ int storage::getSampleCount() {
 
 void storage::traverseNodes() {
     for(QHash<QString, Node*>::iterator i = this->nodes.begin(); i != this->nodes.end(); i++) {
-        //qDebug() << "" << *i.value();
+        qDebug() << "" << *i.value();
     }
 }
 
 void storage::clearFrameStack() {
-    //qDebug() << "Reset Frame Stack";
+    qDebug() << "Reset Frame Stack";
     this->currentStack.clear();
 }
 
@@ -81,7 +82,7 @@ void storage::traverseFlatProfile() {
     }
 }
 
-void storage::updateExistingMethod(QVariantMap data) {
+void storage::updateExistingMethod(QMap<int, QVariant> data) {
     if(this->currentStack.empty()) {
         this->currentStack.push_back(data[MAPS::method_name].toString());
     } else {
