@@ -8,7 +8,6 @@
 class CpuProf : public QObject
 {
     Q_OBJECT
-    storage *store = new storage();
 public:
     void decodeMap(QList<QMap<int, QVariant>> data);
     void parseFrames(QMap<int, QVariant> *frames);
