@@ -70,15 +70,15 @@ void storage::traverseFlatProfile() {
     int indent;
     char space = ' ';
     for(QHash<QString, Node*>::iterator node = this->nodes.begin(); node != this->nodes.end(); node++) {
-        "\n" + node.value()->getMethodName();
+        qDebug() << "\n" + node.value()->getMethodName();
 
         std::vector<Node*> calledBy = node.value()->getCalledBy();
         indent=4;
         foreach(Node* node, calledBy) {
-            QString(indent, space) + node->getMethodName();
+            qDebug() << QString(indent, space) + node->getMethodName();
             indent+=4;
         }
-        calledBy.size();
+        //calledBy.size();
     }
 }
 
@@ -108,11 +108,11 @@ void storage::traverseCallGraph(Node *startingNode, int indent) {
     if(!this->notReached.contains(methodName)) {
         return;
     } else {
-        QString(indent, space) + methodName;
+        qDebug() << QString(indent, space) + methodName;
         this->notReached.removeOne(startingNode->getMethodName());
 
         foreach(Node* node, startingNode->getCalls()) {
-            QString(indent,space) + node->getMethodName();
+            qDebug() << QString(indent,space) + node->getMethodName();
             this->traverseCallGraph(node, indent+4);
         }
     }

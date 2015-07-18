@@ -13,6 +13,7 @@
 
 class Subscriber;               // this acts as processor also atm.
 
+
 namespace RBKit
 {
     // https://github.com/code-mancers/rbkit/blob/833c4bb/ext/rbkit_event.h#L5
@@ -29,7 +30,6 @@ namespace RBKit
         EtHandshake        = 8,
         EtCpuSample        = 9
     };
-
 
     class EventDataBase
     {
@@ -131,11 +131,12 @@ namespace RBKit
         bool tracingFlag;
     };
 
+    //
     class EvtCpuSample : public EventDataBase
     {
     public:
-        CpuProf *cpuProf = new CpuProf();
-        EvtCpuSample(QDateTime ts, EventType eventType, QList<QMap<int, QVariant>> payload);
+        QList<QMap<int, QVariant>> payload;
+        EvtCpuSample(QDateTime ts, EventType eventType, QList<QMap<int, QVariant>> p);
         void process(Subscriber& processor) const;
     };
 }
