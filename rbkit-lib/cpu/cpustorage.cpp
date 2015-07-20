@@ -70,15 +70,17 @@ void storage::traverseFlatProfile() {
     int indent;
     char space = ' ';
     for(QHash<QString, Node*>::iterator node = this->nodes.begin(); node != this->nodes.end(); node++) {
+        qDebug() << "\n=====================\n";
         qDebug() << "\n" + node.value()->getMethodName();
 
-        std::vector<Node*> calledBy = node.value()->getCalledBy();
+        QList<Node*> calledBy = node.value()->getCalledBy();
         indent=4;
         foreach(Node* node, calledBy) {
             qDebug() << QString(indent, space) + node->getMethodName();
-            indent+=4;
+            //indent+=4;
         }
-        //calledBy.size();
+        qDebug() << "\n=====================\n";
+        qDebug() << calledBy.size();
     }
 }
 
@@ -86,13 +88,18 @@ void storage::updateExistingMethod(QMap<int, QVariant> data) {
     if(this->currentStack.empty()) {
         this->currentStack.push_back(data[MAPS::method_name].toString());
     } else {
-        Node *newNode = this->nodes[data[MAPS::method_name].toString()];
+        Node *existingNode = this->nodes[data[MAPS::method_name].toString()];
         QString currentTop = this->currentStack.back();
-        this->nodes[currentTop]->updateCalls(newNode);
 
-        newNode->updateCalledBy(this->nodes[currentTop]);
+        if(!this->nodes[currentTop]->existInCalls(existingNode)) {
+            this->nodes[currentTop]->updateCalls(existingNode);
+        }
 
-        newNode->updateData(data[MAPS::method_name].toString(),
+        if(!this->nodes[data[MAPS::method_name].toString()]->existInCalledBy(this->nodes[currentTop])) {
+            existingNode->updateCalledBy(this->nodes[currentTop]);
+        }
+
+        existingNode->updateData(data[MAPS::method_name].toString(),
                 data[MAPS::label].toString(),
                 data[MAPS::file].toString(),
                 data[MAPS::thread_id].toString(),
@@ -112,11 +119,10 @@ void storage::traverseCallGraph(Node *startingNode, int indent) {
         this->notReached.removeOne(startingNode->getMethodName());
 
         foreach(Node* node, startingNode->getCalls()) {
-            qDebug() << QString(indent,space) + node->getMethodName();
+            //qDebug() << QString(indent,space) + node->getMethodName();
             this->traverseCallGraph(node, indent+4);
         }
     }
-
 }
 
 QHash<QString, Node *> storage::getNodes() {
@@ -125,6 +131,7 @@ QHash<QString, Node *> storage::getNodes() {
 
 void storage::handleCallGraph() {
     this->notReached = this->nodes.keys();
+    //qDebug() << notReached;
     while(!this->notReached.empty()) {
         storage::traverseCallGraph(this->nodes[this->notReached.front()]);
     }

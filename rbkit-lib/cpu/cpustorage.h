@@ -14,7 +14,7 @@ class storage
 
     void traverseCallGraph(Node*, int indent=1);
 public:
-    std::vector<QString> currentStack;
+    QList<QString> currentStack;
 
     storage();
 

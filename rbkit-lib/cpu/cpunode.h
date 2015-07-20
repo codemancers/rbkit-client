@@ -14,8 +14,8 @@ class Node
     int singleton_method;
     double line_no;
 
-    std::vector<Node*> calledBy;
-    std::vector<Node*> calls;
+    QList<Node*> calledBy;
+    QList<Node*> calls;
 public:
     Node(QString methodName,
          QString label,
@@ -27,8 +27,11 @@ public:
     void updateCalls(Node*);
     void updateCalledBy(Node*);
 
-    std::vector<Node*> getCalledBy();
-    std::vector<Node*> getCalls();
+    bool existInCalls(Node *method);
+    bool existInCalledBy(Node *method);
+
+    QList<Node*> getCalledBy();
+    QList<Node*> getCalls();
 
     QString getMethodName();
 
