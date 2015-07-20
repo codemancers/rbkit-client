@@ -19,14 +19,16 @@
 static storage *store = new storage();
 
 void CpuProf::parseFrames(QMap<int, QVariant> *frames) {
+    if(frames->value(MAPS::method_name).toString() == "") {
+        return;
+    }
+
     if(!store->exists(frames->value(MAPS::method_name).toString()) ) {
-        if(frames->value(MAPS::method_name).toString() != "") {
-            //method not yet added to the datastructure, add it
-            store->addNewNode(*frames);
-        }
+        //method not yet added to the datastructure, add it
+        store->addNewNode(*frames);
     } else {
         //method already added, update the values
-        //store->updateExistingMethod(*frames);
+        store->updateExistingMethod(*frames);
     }
 }
 
@@ -44,10 +46,8 @@ void CpuProf::startTraversals() {
     qDebug() << "STARTING TRAVERSALS\n\n";
     //flatprofile traversal
     store->traverseFlatProfile();
-    //callgraph traversal
-    //store->handleCallGraph();
-}
 
-CpuProf::~CpuProf() {
-    startTraversals();
+    qDebug() << "\n\n Call Graph";
+    //callgraph traversal
+    store->handleCallGraph();
 }

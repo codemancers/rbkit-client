@@ -34,11 +34,11 @@ void Node::updateCalledBy(Node *node) {
     this->calledBy.push_back(node);
 }
 
-std::vector<Node *> Node::getCalledBy() {
+QList<Node *> Node::getCalledBy() {
     return this->calledBy;
 }
 
-std::vector<Node *> Node::getCalls() {
+QList<Node *> Node::getCalls() {
     return this->calls;
 }
 
@@ -57,4 +57,20 @@ void Node::updateData(QString methodName,
     str.toUpper();
     a+10;
 
+}
+
+bool Node::existInCalls(Node* method) {
+    if(this->calls.indexOf(method) == -1) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+bool Node::existInCalledBy(Node* method) {
+    if(this->calledBy.indexOf(method) == -1) {
+        return false;
+    } else {
+        return true;
+    }
 }
