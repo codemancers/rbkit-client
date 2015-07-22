@@ -9,10 +9,10 @@ class CpuNode
     QString methodName,
             label,
             filename,
-            thread_id;
+            threadId;
 
-    int singleton_method;
-    double line_no;
+    int singletonMethod;
+    int lineNo;
 
     QList<CpuNode*> calledBy;
     QList<CpuNode*> calls;
@@ -20,9 +20,9 @@ public:
     CpuNode(QString methodName,
          QString label,
          QString filename,
-         QString thread_id,
-         int line_no,
-         int singleton_method);
+         QString threadId,
+         int lineNo,
+         int singletonMethod);
 
     void updateCalls(CpuNode&);
     void updateCalledBy(CpuNode&);
