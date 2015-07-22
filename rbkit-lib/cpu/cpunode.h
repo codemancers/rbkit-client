@@ -1,37 +1,37 @@
-#ifndef NODE_H
-#define NODE_H
+#ifndef CpuNode_H
+#define CpuNode_H
 #include <QString>
 #include <vector>
 #include <QDebug>
 
-class Node
+class CpuNode
 {
     QString methodName,
             label,
             filename,
-            thread_id;
+            threadId;
 
-    int singleton_method;
-    double line_no;
+    int singletonMethod;
+    int lineNo;
 
-    QList<Node*> calledBy;
-    QList<Node*> calls;
+    QList<CpuNode*> calledBy;
+    QList<CpuNode*> calls;
 public:
-    Node(QString methodName,
+    CpuNode(QString methodName,
          QString label,
          QString filename,
-         QString thread_id,
-         int line_no,
-         int singleton_method);
+         QString threadId,
+         int lineNo,
+         int singletonMethod);
 
-    void updateCalls(Node*);
-    void updateCalledBy(Node*);
+    void updateCalls(CpuNode&);
+    void updateCalledBy(CpuNode&);
 
-    bool existInCalls(Node *method);
-    bool existInCalledBy(Node *method);
+    bool existInCalls(CpuNode *method);
+    bool existInCalledBy(CpuNode *method);
 
-    QList<Node*> getCalledBy();
-    QList<Node*> getCalls();
+    QList<CpuNode*> getCalledBy();
+    QList<CpuNode*> getCalls();
 
     QString getMethodName();
 
@@ -43,7 +43,7 @@ public:
                     int singleton_method);
 
     //overloading << for printing using qDebug
-    friend QDebug &operator<<(QDebug&, const Node&);
+    friend QDebug &operator<<(QDebug&, const CpuNode&);
 };
 
-#endif // NODE_H
+#endif // CpuNode_H

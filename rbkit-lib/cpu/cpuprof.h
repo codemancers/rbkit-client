@@ -10,7 +10,7 @@ class CpuProf : public QObject
     Q_OBJECT
 public:
     void decodeMap(QList<QMap<int, QVariant>> data);
-    void parseFrames(QMap<int, QVariant> *frames);
+    void parseFrames(QMap<int, QVariant> frames);
 
     //handeling traversals
     void startTraversals();

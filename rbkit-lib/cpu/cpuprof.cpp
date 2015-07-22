@@ -16,19 +16,19 @@
 #include "cpuprof.h"
 
 
-static storage *store = new storage();
+static CpuStorage *store = new CpuStorage();
 
-void CpuProf::parseFrames(QMap<int, QVariant> *frames) {
-    if(frames->value(MAPS::method_name).toString() == "") {
+void CpuProf::parseFrames(QMap<int, QVariant> frames) {
+    if(frames.value(RBKit::methodName).toString() == "") {
         return;
     }
 
-    if(!store->exists(frames->value(MAPS::method_name).toString()) ) {
+    if(!store->exists(frames.value(RBKit::methodName).toString()) ) {
         //method not yet added to the datastructure, add it
-        store->addNewNode(*frames);
+        store->addNewNode(frames);
     } else {
         //method already added, update the values
-        store->updateExistingMethod(*frames);
+        store->updateExistingMethod(frames);
     }
 }
 
@@ -36,7 +36,7 @@ void CpuProf::decodeMap(QList<QMap<int, QVariant> > data) {
     for(int i = 0; i < data.size() ; i++) {
         //qDebug() << data[i];
         //detect starting of new frame
-        parseFrames(&data[i]);
+        parseFrames(data[i]);
         store->incrementSampleCount();
     }
     store->clearFrameStack();

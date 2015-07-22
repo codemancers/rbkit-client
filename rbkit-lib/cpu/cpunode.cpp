@@ -1,52 +1,49 @@
 #include "cpunode.h"
 
-Node::Node(QString methodName,
+CpuNode::CpuNode(QString methodName,
            QString label,
            QString filename,
-           QString thread_id,
-           int line_no,
-           int singleton_method)
-{
-    this->methodName = methodName;
-    this->label = label;
-    this->filename = filename;
-    this->thread_id = thread_id;
-    this->line_no = line_no;
-    this->singleton_method = singleton_method;
-}
+           QString threadId,
+           int lineNo,
+           int singletonMethod) : methodName(methodName),
+                                    label(label),
+                                    filename(filename),
+                                    threadId(threadId),
+                                    lineNo(lineNo),
+                                    singletonMethod(singletonMethod) {}
 
-QDebug &operator<<(QDebug &stream, const Node &myclass) {
+QDebug &operator<<(QDebug &stream, const CpuNode &myclass) {
     stream << "methodName :" << myclass.methodName;
     stream << "label :" << myclass.label;
     stream << "filename :" << myclass.filename;
-    stream << "thread_id :" << myclass.thread_id;
-    stream << "line_no :" << myclass.line_no;
-    stream << "singleton_method :" << myclass.singleton_method;
+    stream << "thread_id :" << myclass.threadId;
+    stream << "line_no :" << myclass.lineNo;
+    stream << "singleton_method :" << myclass.singletonMethod;
 
     return stream;
 }
 
-void Node::updateCalls(Node *node) {
-    this->calls.push_back(node);
+void CpuNode::updateCalls(CpuNode &CpuNode) {
+    this->calls.push_back(&CpuNode);
 }
 
-void Node::updateCalledBy(Node *node) {
-    this->calledBy.push_back(node);
+void CpuNode::updateCalledBy(CpuNode &CpuNode) {
+    this->calledBy.push_back(&CpuNode);
 }
 
-QList<Node *> Node::getCalledBy() {
+QList<CpuNode *> CpuNode::getCalledBy() {
     return this->calledBy;
 }
 
-QList<Node *> Node::getCalls() {
+QList<CpuNode *> CpuNode::getCalls() {
     return this->calls;
 }
 
-QString Node::getMethodName() {
+QString CpuNode::getMethodName() {
     return this->methodName;
 }
 
-void Node::updateData(QString methodName,
+void CpuNode::updateData(QString methodName,
                       QString label,
                       QString filename,
                       QString thread_id,
@@ -59,7 +56,7 @@ void Node::updateData(QString methodName,
 
 }
 
-bool Node::existInCalls(Node* method) {
+bool CpuNode::existInCalls(CpuNode* method) {
     if(this->calls.indexOf(method) == -1) {
         return false;
     } else {
@@ -67,7 +64,7 @@ bool Node::existInCalls(Node* method) {
     }
 }
 
-bool Node::existInCalledBy(Node* method) {
+bool CpuNode::existInCalledBy(CpuNode* method) {
     if(this->calledBy.indexOf(method) == -1) {
         return false;
     } else {

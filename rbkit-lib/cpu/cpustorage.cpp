@@ -3,79 +3,70 @@
 #include <QDebug>
 #include "cpumapping.h"
 
-storage::storage()
-{
-
-}
-
-void storage::addNewNode(QMap<int, QVariant> data) {
+void CpuStorage::addNewNode(QMap<int, QVariant> data) {
     //qDebug() << data;
-    Node *newNode = new Node(data[MAPS::method_name].toString(),
-            data[MAPS::label].toString(),
-            data[MAPS::file].toString(),
-            data[MAPS::thread_id].toString(),
-            data[MAPS::line].toDouble(),
-            data[MAPS::singleton_method].toInt());
+    CpuNode *newNode = new CpuNode(data[RBKit::methodName].toString(),
+            data[RBKit::label].toString(),
+            data[RBKit::file].toString(),
+            data[RBKit::threadId].toString(),
+            data[RBKit::line].toDouble(),
+            data[RBKit::singletonMethod].toInt());
 
-    storage::updateNewNodeLocation(data[MAPS::method_name].toString(), newNode);
+    CpuStorage::updateNewNodeLocation(data[RBKit::methodName].toString(), newNode);
 
     //add to current frame stack
     if(this->currentStack.empty()) {
-        this->currentStack.push_back(data[MAPS::method_name].toString());
+        this->currentStack.push_back(data[RBKit::methodName].toString());
     } else {
         QString currentTop = this->currentStack.back();
-        this->nodes[currentTop]->updateCalls(newNode);
-        newNode->updateCalledBy(this->nodes[currentTop]);
+        this->nodes[currentTop]->updateCalls(*newNode);
+        newNode->updateCalledBy(*this->nodes[currentTop]);
 
-        this->currentStack.push_back(data[MAPS::method_name].toString());
+        this->currentStack.push_back(data[RBKit::methodName].toString());
     }
 }
 
-void storage::updateNewNodeLocation(QString methodName, Node *location) {
+void CpuStorage::updateNewNodeLocation(QString methodName, CpuNode *location) {
     this->nodes[methodName] = location;
 }
 
-bool storage::exists(QVariant name) {
-    QString method_name = name.toString();
-    QHash<QString, Node*>::iterator iter = this->nodes.find(method_name);
+bool CpuStorage::exists(QVariant name) {
+    QString methodName = name.toString();
+    QHash<QString, CpuNode*>::iterator iter = this->nodes.find(methodName);
         if(iter == this->nodes.end()) {
-            qDebug() << method_name << " does not exists";
+            qDebug() << methodName << " does not exists";
             return false;
         } else {
-            qDebug() << method_name << " exists";
+            qDebug() << methodName << " exists";
             return true;
         }
 }
 
-void storage::incrementSampleCount() {
-    this->sample_count++;
-}
-
-int storage::getSampleCount() {
+int CpuStorage::getSampleCount() {
     return this->sample_count;
 }
 
-void storage::traverseNodes() {
-    for(QHash<QString, Node*>::iterator i = this->nodes.begin(); i != this->nodes.end(); i++) {
+void CpuStorage::traverseNodes() {
+    for(QHash<QString, CpuNode*>::iterator i = this->nodes.begin(); i != this->nodes.end(); i++) {
         qDebug() << "" << *i.value();
     }
 }
 
-void storage::clearFrameStack() {
+void CpuStorage::clearFrameStack() {
     qDebug() << "Reset Frame Stack";
     this->currentStack.clear();
 }
 
-void storage::traverseFlatProfile() {
+void CpuStorage::traverseFlatProfile() {
     int indent;
     char space = ' ';
-    for(QHash<QString, Node*>::iterator node = this->nodes.begin(); node != this->nodes.end(); node++) {
+    for(QHash<QString, CpuNode*>::iterator node = this->nodes.begin(); node != this->nodes.end(); node++) {
         //qDebug() << "\n=====================\n";
         qDebug() << "\n" + node.value()->getMethodName();
 
-        QList<Node*> calledBy = node.value()->getCalledBy();
+        QList<CpuNode*> calledBy = node.value()->getCalledBy();
         indent=4;
-        foreach(Node* node, calledBy) {
+        foreach(CpuNode* node, calledBy) {
             qDebug() << QString(indent, space) + node->getMethodName();
             //indent+=4;
         }
@@ -84,31 +75,31 @@ void storage::traverseFlatProfile() {
     }
 }
 
-void storage::updateExistingMethod(QMap<int, QVariant> data) {
+void CpuStorage::updateExistingMethod(QMap<int, QVariant> data) {
     if(this->currentStack.empty()) {
-        this->currentStack.push_back(data[MAPS::method_name].toString());
+        this->currentStack.push_back(data[RBKit::methodName].toString());
     } else {
-        Node *existingNode = this->nodes[data[MAPS::method_name].toString()];
+        CpuNode *existingNode = this->nodes[data[RBKit::methodName].toString()];
         QString currentTop = this->currentStack.back();
 
         if(!this->nodes[currentTop]->existInCalls(existingNode)) {
-            this->nodes[currentTop]->updateCalls(existingNode);
+            this->nodes[currentTop]->updateCalls(*existingNode);
         }
 
-        if(!this->nodes[data[MAPS::method_name].toString()]->existInCalledBy(this->nodes[currentTop])) {
-            existingNode->updateCalledBy(this->nodes[currentTop]);
+        if(!this->nodes[data[RBKit::methodName].toString()]->existInCalledBy(this->nodes[currentTop])) {
+            existingNode->updateCalledBy(*this->nodes[currentTop]);
         }
 
-        existingNode->updateData(data[MAPS::method_name].toString(),
-                data[MAPS::label].toString(),
-                data[MAPS::file].toString(),
-                data[MAPS::thread_id].toString(),
-                data[MAPS::line].toInt(),
-                data[MAPS::singleton_method].toInt());
+        existingNode->updateData(data[RBKit::methodName].toString(),
+                data[RBKit::label].toString(),
+                data[RBKit::file].toString(),
+                data[RBKit::threadId].toString(),
+                data[RBKit::line].toInt(),
+                data[RBKit::singletonMethod].toInt());
     }
 }
 
-void storage::traverseCallGraph(Node *startingNode, int indent) {
+void CpuStorage::traverseCallGraph(CpuNode *startingNode, int indent) {
     char space = ' ';
     QString methodName = startingNode->getMethodName();
 
@@ -119,21 +110,21 @@ void storage::traverseCallGraph(Node *startingNode, int indent) {
         qDebug() << QString(indent, space) + methodName;        
         this->notReached.removeOne(startingNode->getMethodName());
 
-        foreach(Node* node, startingNode->getCalls()) {
+        foreach(CpuNode* node, startingNode->getCalls()) {
             //qDebug() << QString(indent,space) + node->getMethodName();
             this->traverseCallGraph(node, indent+4);
         }
     }
 }
 
-QHash<QString, Node *> storage::getNodes() {
+QHash<QString, CpuNode *> CpuStorage::getNodes() {
     return this->nodes;
 }
 
-void storage::handleCallGraph() {
+void CpuStorage::handleCallGraph() {
     this->notReached = this->nodes.keys();
     //qDebug() << notReached;
     while(!this->notReached.empty()) {
-        storage::traverseCallGraph(this->nodes[this->notReached.front()]);
+        CpuStorage::traverseCallGraph(this->nodes[this->notReached.front()]);
     }
 }
