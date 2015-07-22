@@ -7,7 +7,7 @@
 #include "rbevents.h"
 #include "model/objectstore.h"
 #include "sqlconnectionpool.h"
-#include "cpu/cpuprof.h"
+#include "model/cpuprof.h"
 
 // forward declaration of nzmqt classes
 namespace nzmqt

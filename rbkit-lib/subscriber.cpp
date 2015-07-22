@@ -11,7 +11,6 @@
 #include "model/jsbridge.h"
 #include "model/appstate.h"
 #include "rbeventparser.h"
-#include "cpu/cpuprof.h"
 
 
 static const int rbkcZmqTotalIoThreads = 1;

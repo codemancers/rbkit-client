@@ -18,12 +18,13 @@
 
 static CpuStorage *store = new CpuStorage();
 
-void CpuProf::parseFrames(QMap<int, QVariant> frames) {
-    if(frames.value(RBKit::methodName).toString() == "") {
+void CpuProf::parseFrames(QMap<int, QVariant> frames)
+{
+    if(frames.value(RBKit::CeMethodName).toString() == "") {
         return;
     }
 
-    if(!store->exists(frames.value(RBKit::methodName).toString()) ) {
+    if(!store->exists(frames.value(RBKit::CeMethodName).toString())) {
         //method not yet added to the datastructure, add it
         store->addNewNode(frames);
     } else {
@@ -32,7 +33,8 @@ void CpuProf::parseFrames(QMap<int, QVariant> frames) {
     }
 }
 
-void CpuProf::decodeMap(QList<QMap<int, QVariant> > data) {
+void CpuProf::decodeMap(QList<QMap<int, QVariant> > data)
+{
     for(int i = 0; i < data.size() ; i++) {
         //qDebug() << data[i];
         //detect starting of new frame
@@ -42,7 +44,8 @@ void CpuProf::decodeMap(QList<QMap<int, QVariant> > data) {
     store->clearFrameStack();
 }
 
-void CpuProf::startTraversals() {
+void CpuProf::startTraversals()
+{
     qDebug() << "STARTING TRAVERSALS\n\n";
     //flatprofile traversal
     store->traverseFlatProfile();

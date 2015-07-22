@@ -65,9 +65,9 @@ add_library(rbkit
     ui/appmainwindow.cpp
     ui/centralwidget.cpp
     ui/ribbontoolbar.cpp
-    cpu/cpunode.cpp
-    cpu/cpuprof.cpp
-    cpu/cpustorage.cpp
+    model/cpunode.cpp
+    model/cpuprof.cpp
+    model/cpustorage.cpp
 
     subscriber.h
     zmqsockets.h
@@ -104,10 +104,10 @@ add_library(rbkit
     layoututil.hpp
     common.h
 
-    cpu/cpuprof.h
-    cpu/cpustorage.h
-    cpu/cpunode.h
-    cpu/cpumapping.h
+    model/cpuprof.h
+    model/cpustorage.h
+    model/cpunode.h
+    model/cpumapping.h
 
     ${RBKIT_UI_HEADERS}
     ${RBKIT_UI_RESOURCES})
