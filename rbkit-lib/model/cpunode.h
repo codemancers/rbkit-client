@@ -1,5 +1,5 @@
-#ifndef CpuNode_H
-#define CpuNode_H
+#ifndef CPUNODE_H
+#define CPUNODE_H
 #include <QString>
 #include <vector>
 #include <QDebug>
@@ -50,4 +50,4 @@ public:
     friend QDebug &operator<<(QDebug&, const CpuNode&);
 };
 
-#endif // CpuNode_H
+#endif // CPUNODE_H

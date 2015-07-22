@@ -27,7 +27,8 @@ CpuNode::CpuNode(QString methodName,
                                     lineNo(lineNo),
                                     singletonMethod(singletonMethod) {}
 
-QDebug &operator<<(QDebug &stream, const CpuNode &myclass) {
+QDebug &operator<<(QDebug &stream, const CpuNode &myclass)
+{
     stream << "methodName :" << myclass.methodName;
     stream << "label :" << myclass.label;
     stream << "filename :" << myclass.filename;
@@ -38,23 +39,28 @@ QDebug &operator<<(QDebug &stream, const CpuNode &myclass) {
     return stream;
 }
 
-void CpuNode::updateCalls(CpuNodePtr cpuNode) {
+void CpuNode::updateCalls(CpuNodePtr cpuNode)
+{
     this->calls.push_back(cpuNode);
 }
 
-void CpuNode::updateCalledBy(CpuNodePtr cpuNode) {
+void CpuNode::updateCalledBy(CpuNodePtr cpuNode)
+{
     this->calledBy.push_back(cpuNode);
 }
 
-QList<CpuNodePtr> CpuNode::getCalledBy() {
+QList<CpuNodePtr> CpuNode::getCalledBy()
+{
     return this->calledBy;
 }
 
-QList<CpuNodePtr> CpuNode::getCalls() {
+QList<CpuNodePtr> CpuNode::getCalls()
+{
     return this->calls;
 }
 
-QString CpuNode::getMethodName() {
+QString CpuNode::getMethodName()
+{
     return this->methodName;
 }
 
@@ -63,7 +69,8 @@ void CpuNode::updateData(QString methodName,
                       QString filename,
                       QString thread_id,
                       int line_no,
-                      int singleton_method) {
+                      int singleton_method)
+{
     QString str = methodName + label + filename + thread_id;
     int a = line_no + singleton_method;
     str.toUpper();
@@ -71,10 +78,12 @@ void CpuNode::updateData(QString methodName,
 
 }
 
-bool CpuNode::existInCalls(CpuNodePtr method) {
+bool CpuNode::existInCalls(CpuNodePtr method)
+{
     return this->calls.indexOf(method) != -1;
 }
 
-bool CpuNode::existInCalledBy(CpuNodePtr method) {
+bool CpuNode::existInCalledBy(CpuNodePtr method)
+{
     return this->calledBy.indexOf(method) != -1;
 }
