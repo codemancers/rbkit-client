@@ -10,7 +10,6 @@ SUBDIRS =     \
     zeromq    \
     rbkit-lib \
     rbkit-app \
-    cpuprof   \
     tests
 
 CONFIG += ordered
