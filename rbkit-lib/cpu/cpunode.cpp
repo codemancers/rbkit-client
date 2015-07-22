@@ -1,6 +1,6 @@
 #include "cpunode.h"
 
-CpuNode::CpuNode(QString methodName,
+/*CpuNode::CpuNode(QString methodName,
            QString label,
            QString filename,
            QString thread_id,
@@ -13,15 +13,27 @@ CpuNode::CpuNode(QString methodName,
     this->thread_id = thread_id;
     this->line_no = line_no;
     this->singleton_method = singleton_method;
-}
+}*/
+
+CpuNode::CpuNode(QString methodName,
+           QString label,
+           QString filename,
+           QString threadId,
+           int lineNo,
+           int singletonMethod) : methodName(methodName),
+                                    label(label),
+                                    filename(filename),
+                                    threadId(threadId),
+                                    lineNo(lineNo),
+                                    singletonMethod(singletonMethod) {}
 
 QDebug &operator<<(QDebug &stream, const CpuNode &myclass) {
     stream << "methodName :" << myclass.methodName;
     stream << "label :" << myclass.label;
     stream << "filename :" << myclass.filename;
-    stream << "thread_id :" << myclass.thread_id;
-    stream << "line_no :" << myclass.line_no;
-    stream << "singleton_method :" << myclass.singleton_method;
+    stream << "thread_id :" << myclass.threadId;
+    stream << "line_no :" << myclass.lineNo;
+    stream << "singleton_method :" << myclass.singletonMethod;
 
     return stream;
 }
