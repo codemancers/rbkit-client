@@ -3,24 +3,24 @@
 #ifndef MAPPING
 #define MAPPING
 
-inline namespace MAPS {
+namespace RBKit {
     enum Map {
-        event_type,
+        eventType,
         timestamp,
         payload,
-        object_id,
-        class_name,
+        objectId,
+        className,
         references,
         file,
         line,
         size,
-        message_counter,
-        correlation_id,
-        complete_message_count,
-        method_name,
+        messageCounter,
+        correlationId,
+        completeMessageCount,
+        methodName,
         label,
-        singleton_method,
-        thread_id
+        singletonMethod,
+        threadId
     };
 }
 

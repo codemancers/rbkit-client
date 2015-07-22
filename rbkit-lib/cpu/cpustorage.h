@@ -5,23 +5,20 @@
 #include <QVariant>
 #include <vector>
 
-class storage
+class CpuStorage
 {
     int sample_count;
-    QHash<QString, Node*> nodes;
+    QHash<QString, CpuNode*> nodes;
     QList<QString> notReached;
 
 
-    void traverseCallGraph(Node*, int indent=1);
+    void traverseCallGraph(CpuNode*, int indent=1);
 public:
     QList<QString> currentStack;
 
-    storage();
-
     void addNewNode(QMap<int, QVariant>);
-    void updateNewNodeLocation(QString methodName, Node*);
+    void updateNewNodeLocation(QString methodName, CpuNode*);
     bool exists(QVariant name);
-    void incrementSampleCount();
     int getSampleCount();
     void traverseNodes();
     void clearFrameStack();
@@ -29,7 +26,11 @@ public:
 
     void traverseFlatProfile();
     void handleCallGraph();
-    QHash<QString, Node*> getNodes();
+    QHash<QString, CpuNode*> getNodes();
+
+    inline void incrementSampleCount() {
+        this->sample_count++;
+    }
 };
 
 #endif // STORAGE_H
