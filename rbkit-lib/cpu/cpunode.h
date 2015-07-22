@@ -3,6 +3,10 @@
 #include <QString>
 #include <vector>
 #include <QDebug>
+#include <QSharedPointer>
+
+class CpuNode;
+typedef QSharedPointer<CpuNode> CpuNodePtr;
 
 class CpuNode
 {
@@ -14,8 +18,8 @@ class CpuNode
     int singletonMethod;
     int lineNo;
 
-    QList<CpuNode*> calledBy;
-    QList<CpuNode*> calls;
+    QList<CpuNodePtr> calledBy;
+    QList<CpuNodePtr> calls;
 public:
     CpuNode(QString methodName,
          QString label,
@@ -24,14 +28,14 @@ public:
          int lineNo,
          int singletonMethod);
 
-    void updateCalls(CpuNode&);
-    void updateCalledBy(CpuNode&);
+    void updateCalls(CpuNodePtr);
+    void updateCalledBy(CpuNodePtr);
 
-    bool existInCalls(CpuNode *method);
-    bool existInCalledBy(CpuNode *method);
+    bool existInCalls(CpuNodePtr method);
+    bool existInCalledBy(CpuNodePtr method);
 
-    QList<CpuNode*> getCalledBy();
-    QList<CpuNode*> getCalls();
+    QList<CpuNodePtr> getCalledBy();
+    QList<CpuNodePtr> getCalls();
 
     QString getMethodName();
 

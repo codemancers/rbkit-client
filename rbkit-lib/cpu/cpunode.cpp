@@ -38,19 +38,19 @@ QDebug &operator<<(QDebug &stream, const CpuNode &myclass) {
     return stream;
 }
 
-void CpuNode::updateCalls(CpuNode &CpuNode) {
-    this->calls.push_back(&CpuNode);
+void CpuNode::updateCalls(CpuNodePtr cpuNode) {
+    this->calls.push_back(cpuNode);
 }
 
-void CpuNode::updateCalledBy(CpuNode &CpuNode) {
-    this->calledBy.push_back(&CpuNode);
+void CpuNode::updateCalledBy(CpuNodePtr cpuNode) {
+    this->calledBy.push_back(cpuNode);
 }
 
-QList<CpuNode *> CpuNode::getCalledBy() {
+QList<CpuNodePtr> CpuNode::getCalledBy() {
     return this->calledBy;
 }
 
-QList<CpuNode *> CpuNode::getCalls() {
+QList<CpuNodePtr> CpuNode::getCalls() {
     return this->calls;
 }
 
@@ -71,18 +71,10 @@ void CpuNode::updateData(QString methodName,
 
 }
 
-bool CpuNode::existInCalls(CpuNode* method) {
-    if(this->calls.indexOf(method) == -1) {
-        return false;
-    } else {
-        return true;
-    }
+bool CpuNode::existInCalls(CpuNodePtr method) {
+    return this->calls.indexOf(method) != -1;
 }
 
-bool CpuNode::existInCalledBy(CpuNode* method) {
-    if(this->calledBy.indexOf(method) == -1) {
-        return false;
-    } else {
-        return true;
-    }
+bool CpuNode::existInCalledBy(CpuNodePtr method) {
+    return this->calledBy.indexOf(method) != -1;
 }

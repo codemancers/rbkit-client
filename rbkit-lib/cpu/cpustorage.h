@@ -8,16 +8,16 @@
 class CpuStorage
 {
     int sample_count;
-    QHash<QString, CpuNode*> nodes;
+    QHash<QString, CpuNodePtr> nodes;
     QList<QString> notReached;
 
 
-    void traverseCallGraph(CpuNode*, int indent=1);
+    void traverseCallGraph(CpuNodePtr, int indent=1);
 public:
     QList<QString> currentStack;
 
     void addNewNode(QMap<int, QVariant>);
-    void updateNewNodeLocation(QString methodName, CpuNode*);
+    void updateNewNodeLocation(QString methodName, QSharedPointer<CpuNode>);
     bool exists(QVariant name);
     int getSampleCount();
     void traverseNodes();
@@ -26,11 +26,13 @@ public:
 
     void traverseFlatProfile();
     void handleCallGraph();
-    QHash<QString, CpuNode*> getNodes();
+    QHash<QString, CpuNodePtr> getNodes();
 
     inline void incrementSampleCount() {
         this->sample_count++;
     }
 };
+
+typedef QSharedPointer<CpuStorage> CpuStoragePtr;
 
 #endif // STORAGE_H
