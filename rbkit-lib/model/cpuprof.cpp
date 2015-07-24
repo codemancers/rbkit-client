@@ -20,7 +20,7 @@ static RBKit::CpuStoragePtr store(new RBKit::CpuStorage());
 
 void RBKit::CpuProf::parseFrames(QMap<int, QVariant> frames)
 {
-    if(frames.value(RBKit::CeMethodName).toString() == "") {
+    if(frames.value(RBKit::CeMethodName).toString().isEmpty()) {
         return;
     }
 
