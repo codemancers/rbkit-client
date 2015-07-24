@@ -6,7 +6,9 @@
 void RBKit::CpuStorage::addNewNode(QMap<int, QVariant> data)
 {
     //qDebug() << data;
-    RBKit::CpuNodePtr newNode( new RBKit::CpuNode(data[RBKit::CeMethodName].toString(),
+    auto methodName = data[RBKit::CeMethodName].toString();
+
+    RBKit::CpuNodePtr newNode( new RBKit::CpuNode(methodName,
                 data[RBKit::CeLabel].toString(),
                 data[RBKit::CeFile].toString(),
                 data[RBKit::CeThreadId].toString(),
@@ -14,7 +16,7 @@ void RBKit::CpuStorage::addNewNode(QMap<int, QVariant> data)
                 data[RBKit::CeSingletonMethod].toInt())
             );
 
-    CpuStorage::updateNewNodeLocation(data[RBKit::CeMethodName].toString(), newNode);
+    CpuStorage::updateNewNodeLocation(methodName, newNode);
 
     //add to current frame stack
     if(this->currentStack.empty()) {
