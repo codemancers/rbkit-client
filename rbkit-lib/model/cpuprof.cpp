@@ -16,7 +16,7 @@
 #include "cpuprof.h"
 
 
-static RBKit::CpuStoragePtr store(new RBKit::CpuStorage());
+RBKit::CpuStoragePtr store(new RBKit::CpuStorage());
 
 void RBKit::CpuProf::parseFrames(QMap<int, QVariant> frames)
 {
