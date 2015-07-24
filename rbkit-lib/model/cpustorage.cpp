@@ -16,6 +16,8 @@ void RBKit::CpuStorage::addNewNode(QMap<int, QVariant> data)
                 data[RBKit::CeSingletonMethod].toInt())
             );
 
+    Q_ASSERT(newNode != NULL);
+
     CpuStorage::updateNewNodeLocation(methodName, newNode);
 
     //add to current frame stack
