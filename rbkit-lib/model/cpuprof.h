@@ -5,15 +5,17 @@
 #include <QMap>
 #include "cpustorage.h"
 
-class CpuProf : public QObject
+namespace RBKit
 {
-    Q_OBJECT
-public:
-    void decodeMap(QList<QMap<int, QVariant>> data);
-    void parseFrames(QMap<int, QVariant> frames);
+    class CpuProf : public QObject
+    {
+        Q_OBJECT
+    public:
+        void decodeMap(QList<QMap<int, QVariant>> data);
+        void parseFrames(QMap<int, QVariant> frames);
 
-    //handeling traversals
-    void startTraversals();
-};
-
+        //handeling traversals
+        void startTraversals();
+    };
+}
 #endif // CPUPROF_H

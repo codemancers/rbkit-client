@@ -43,9 +43,6 @@ QVariant& operator>>(msgpack::object obj, QVariant& var)
     return var;
 }
 
-//convert msgpack object to QMap
-//QMap<int,QVariant>& operator >>()
-
 // convert a payload into objectdetail.
 RBKit::ObjectDetail& operator>>(msgpack::object obj, RBKit::ObjectDetail& object)
 {

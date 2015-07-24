@@ -5,34 +5,37 @@
 #include <QVariant>
 #include <vector>
 
-class CpuStorage
+namespace RBKit
 {
-    int sample_count;
-    QHash<QString, CpuNodePtr> nodes;
-    QList<QString> notReached;
+    class CpuStorage
+    {
+        int sample_count;
+        QHash<QString, RBKit::CpuNodePtr> nodes;
+        QList<QString> notReached;
 
 
-    void traverseCallGraph(CpuNodePtr, int indent=1);
-public:
-    QList<QString> currentStack;
+        void traverseCallGraph(RBKit::CpuNodePtr, int indent=1);
+    public:
+        QList<QString> currentStack;
 
-    void addNewNode(QMap<int, QVariant>);
-    void updateNewNodeLocation(QString methodName, QSharedPointer<CpuNode>);
-    bool exists(QVariant name);
-    int getSampleCount();
-    void traverseNodes();
-    void clearFrameStack();
-    void updateExistingMethod(QMap<int, QVariant>);
+        void addNewNode(QMap<int, QVariant>);
+        void updateNewNodeLocation(QString methodName, RBKit::CpuNodePtr);
+        bool exists(QVariant name);
+        int getSampleCount();
+        void traverseNodes();
+        void clearFrameStack();
+        void updateExistingMethod(QMap<int, QVariant>);
 
-    void traverseFlatProfile();
-    void handleCallGraph();
-    QHash<QString, CpuNodePtr> getNodes();
+        void traverseFlatProfile();
+        void handleCallGraph();
+        QHash<QString, RBKit::CpuNodePtr> getNodes();
 
-    inline void incrementSampleCount() {
-        this->sample_count++;
-    }
-};
+        inline void incrementSampleCount() {
+            this->sample_count++;
+        }
+    };
 
-typedef QSharedPointer<CpuStorage> CpuStoragePtr;
+    typedef QSharedPointer<CpuStorage> CpuStoragePtr;
+}
 
 #endif // STORAGE_H

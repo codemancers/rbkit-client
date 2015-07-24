@@ -16,9 +16,9 @@
 #include "cpuprof.h"
 
 
-static CpuStorage *store = new CpuStorage();
+static RBKit::CpuStoragePtr store(new RBKit::CpuStorage());
 
-void CpuProf::parseFrames(QMap<int, QVariant> frames)
+void RBKit::CpuProf::parseFrames(QMap<int, QVariant> frames)
 {
     if(frames.value(RBKit::CeMethodName).toString() == "") {
         return;
@@ -33,7 +33,7 @@ void CpuProf::parseFrames(QMap<int, QVariant> frames)
     }
 }
 
-void CpuProf::decodeMap(QList<QMap<int, QVariant> > data)
+void RBKit::CpuProf::decodeMap(QList<QMap<int, QVariant> > data)
 {
     for(int i = 0; i < data.size() ; i++) {
         //qDebug() << data[i];
@@ -44,7 +44,7 @@ void CpuProf::decodeMap(QList<QMap<int, QVariant> > data)
     store->clearFrameStack();
 }
 
-void CpuProf::startTraversals()
+void RBKit::CpuProf::startTraversals()
 {
     qDebug() << "STARTING TRAVERSALS\n\n";
     //flatprofile traversal

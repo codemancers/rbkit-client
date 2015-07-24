@@ -45,7 +45,7 @@ class Subscriber : public QObject
 
     quint64 messageCounter;
 
-    CpuProf cpuProf;
+    RBKit::CpuProf cpuProf;
 
 public:
     explicit Subscriber(RBKit::JsBridge* jsBridge);
