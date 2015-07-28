@@ -14,12 +14,14 @@
 #include <QList>
 
 #include "cpuprof.h"
+#include "ui/centralwidget.h"
 
 
 RBKit::CpuStoragePtr store(new RBKit::CpuStorage());
 
 void RBKit::CpuProf::parseFrames(QMap<int, QVariant> frames)
 {
+
     if(frames.value(RBKit::CeMethodName).toString().isEmpty()) {
         return;
     }
