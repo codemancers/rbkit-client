@@ -4,6 +4,7 @@
 #include <QList>
 
 #include "cpuprof.h"
+#include "ui/centralwidget.h"
 
 
 RBKit::CpuStoragePtr store(new RBKit::CpuStorage());

@@ -15,6 +15,7 @@
 #include "comparesnapshotform.h"
 #include "diffviewform.h"
 #include "model/appstate.h"
+#include <typeinfo>
 
 void disableCloseButtonOnFirstTab(QTabWidget *tabWidget) {
     QWidget *tabButton = tabWidget->tabBar()->tabButton(0, QTabBar::RightSide);
@@ -163,8 +164,12 @@ CentralWidget::~CentralWidget()
 void CentralWidget::setupCentralView()
 {
     qDebug() << "Adding object charts tab";
-    memoryView = QSharedPointer<RBKit::MemoryView>::create(this);
-    chartingTab->addTab(memoryView.data(), "Object Charts");
+    //memoryView = QSharedPointer<RBKit::MemoryView>::create(this);
+    //chartingTab->addTab(memoryView.data(), "Object Charts");
+
+    cpuView = CpuViewPtr::create(this);
+    chartingTab->addTab(cpuView.data(), "Cpu Tree");
+    //qDebug() << typeid(cpuView).name();
 }
 
 void CentralWidget::showStatusMessage(const QString &message) const
@@ -200,4 +205,3 @@ bool CentralWidget::attemptMemorySnapshot()
         return true;
     }
 }
-
