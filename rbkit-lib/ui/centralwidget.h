@@ -17,6 +17,7 @@ class HeapDumpForm;
 
 #include "memoryview.h"
 #include "model/snapshotstate.h"
+#include "cpuview.h"
 
 class CentralWidget : public QWidget
 {
@@ -25,6 +26,7 @@ class CentralWidget : public QWidget
     QVBoxLayout* mainLayout;
     QSharedPointer<QTabWidget> chartingTab;
     QSharedPointer<RBKit::MemoryView> memoryView;
+    CpuViewPtr cpuView;
     AppMainwindow *mainWindow;
     RBKit::SnapshotState *snapshotState;
     QTimer *snapshotProgressTimer;
