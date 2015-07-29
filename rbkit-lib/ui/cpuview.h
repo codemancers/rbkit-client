@@ -13,15 +13,22 @@ class CpuView : public QWidget
     Q_OBJECT
 
 public:
-    QStandardItemModel *model;
-    QStandardItem *rootNode;
     explicit CpuView(QWidget *parent = 0);
     ~CpuView();
+    void updateCpuModel(QStandardItemModel *model);
+
+private slots:
+    void on_callGraphRadio_clicked();
+
+    void on_flatRadio_clicked();
+
+public:
+signals:
+    void traverseCallGraph();
+    void traverseFlatProfile();
 
 private:
     Ui::CpuView *ui;
 };
-
-typedef QSharedPointer<CpuView> CpuViewPtr;
 
 #endif // CPUVIEW_H

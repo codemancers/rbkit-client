@@ -16,6 +16,7 @@
 #include "diffviewform.h"
 #include "model/appstate.h"
 #include <typeinfo>
+#include "model/cpustorage.h"
 
 void disableCloseButtonOnFirstTab(QTabWidget *tabWidget) {
     QWidget *tabButton = tabWidget->tabBar()->tabButton(0, QTabBar::RightSide);
@@ -145,7 +146,6 @@ CentralWidget::CentralWidget(AppMainwindow *window) : QWidget(window)
     chartingTab->setMinimumHeight(700);
     chartingTab->setMinimumWidth(1100);
 
-
     mainLayout->addWidget(chartingTab.data());
     connect(chartingTab.data(), &QTabWidget::tabCloseRequested, this, &CentralWidget::tabClosed);
     setupCentralView();
@@ -164,12 +164,18 @@ CentralWidget::~CentralWidget()
 void CentralWidget::setupCentralView()
 {
     qDebug() << "Adding object charts tab";
-    //memoryView = QSharedPointer<RBKit::MemoryView>::create(this);
-    //chartingTab->addTab(memoryView.data(), "Object Charts");
+    memoryView = QSharedPointer<RBKit::MemoryView>::create(this);
+    chartingTab->addTab(memoryView.data(), "Object Charts");
 
-    cpuView = CpuViewPtr::create(this);
+    connect(RBKit::CpuStorage::getStorage().data(), SIGNAL(updateTreeModel(QStandardItemModel*)),
+            this, SLOT(updateCpuTree(QStandardItemModel*)));
+    cpuView = QSharedPointer<CpuView>::create(this);
     chartingTab->addTab(cpuView.data(), "Cpu Tree");
-    //qDebug() << typeid(cpuView).name();
+}
+
+void CentralWidget::updateCpuTree(QStandardItemModel *model) {
+    qDebug() << "cpu tree signal";
+    cpuView.data()->updateCpuModel(model);
 }
 
 void CentralWidget::showStatusMessage(const QString &message) const
@@ -205,3 +211,8 @@ bool CentralWidget::attemptMemorySnapshot()
         return true;
     }
 }
+
+/*CpuViewPtr CentralWidget::getCpuViewPtr()
+{
+    return cpuView;
+}*/
