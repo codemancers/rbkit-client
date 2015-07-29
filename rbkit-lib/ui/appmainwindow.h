@@ -19,6 +19,7 @@ public:
     ~AppMainwindow();
     QStatusBar *appStatusBar;
     QProgressBar *progressBar;
+    //CpuViewPtr getCpuView();
 signals:
 
 public slots:
