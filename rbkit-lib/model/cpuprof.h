@@ -16,6 +16,11 @@ namespace RBKit
 
         //handeling traversals
         void startTraversals();
+
+    private:
+        inline CpuStoragePtr store() {
+            return CpuStorage::getStorage();
+        }
     };
 }
 #endif // CPUPROF_H

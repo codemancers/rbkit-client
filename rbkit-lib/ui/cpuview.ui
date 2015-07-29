@@ -6,22 +6,45 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>580</width>
-    <height>542</height>
+    <width>632</width>
+    <height>614</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QTreeView" name="cpuTree">
+  <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>10</y>
-     <width>561</width>
-     <height>521</height>
+     <y>9</y>
+     <width>611</width>
+     <height>591</height>
     </rect>
    </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QRadioButton" name="callGraphRadio">
+        <property name="text">
+         <string>FlatGraph</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="flatRadio">
+        <property name="text">
+         <string>Call Graph</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QTreeView" name="cpuTree"/>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>
