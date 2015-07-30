@@ -20,6 +20,10 @@ void RBKit::CpuStorage::addNewNode(QMap<int, QVariant> data)
 
     CpuStorage::updateNewNodeLocation(methodName, newNode);
 
+    // increment total count
+    newNode->incrementTotalCount();
+    qDebug() << "----------incrementing total count------------";
+
     //add to current frame stack
     if(this->currentStack.empty()) {
         this->currentStack.push_back(data[RBKit::CeMethodName].toString());
@@ -32,6 +36,8 @@ void RBKit::CpuStorage::addNewNode(QMap<int, QVariant> data)
     }
 }
 
+
+// added newly created node & its pointer to the `nodes` hash
 void RBKit::CpuStorage::updateNewNodeLocation(QString methodName, RBKit::CpuNodePtr location)
 {
     this->nodes[methodName] = location;
@@ -97,10 +103,13 @@ void RBKit::CpuStorage::traverseFlatProfile()
 }
 
 void RBKit::CpuStorage::updateExistingMethod(QMap<int, QVariant> data) {
+
+    QString methodName = data[RBKit::CeMethodName].toString();
+
     if(this->currentStack.empty()) {
-        this->currentStack.push_back(data[RBKit::CeMethodName].toString());
+        this->currentStack.push_back(methodName);
     } else {
-        RBKit::CpuNodePtr existingNode = this->nodes[data[RBKit::CeMethodName].toString()];
+        RBKit::CpuNodePtr existingNode = this->nodes[methodName];
         QString currentTop = this->currentStack.back();
 
         if(!this->nodes[currentTop]->existInCalls(existingNode)) {
@@ -118,6 +127,10 @@ void RBKit::CpuStorage::updateExistingMethod(QMap<int, QVariant> data) {
                 data[RBKit::CeLine].toInt(),
                 data[RBKit::CeSingletonMethod].toInt());
     }
+
+    //increment the method's total count
+    this->nodes[methodName]->incrementTotalCount();
+    qDebug() << "--------updating total count---------";
 }
 
 void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode, QStandardItem *parent)
@@ -187,4 +200,13 @@ void RBKit::CpuStorage::changeToCallGraph()
     qDebug() << "got signal to change to call graph";
     //handleCallGraph();
     emit updateTreeModel(callGraphModel);
+}
+
+void RBKit::CpuStorage::updateSelfCount()
+{
+    if(!this->currentStack.isEmpty()) {
+        qDebug() << "-------updating self count--------";
+        QString lastMethod = this->currentStack.back();
+        nodes[lastMethod]->incrementSelfCount();
+    }
 }

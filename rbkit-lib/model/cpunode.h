@@ -22,6 +22,9 @@ namespace RBKit
 
         QList<CpuNodePtr> calledBy;
         QList<CpuNodePtr> calls;
+
+        int selfCount;
+        int totalCount;
     public:
         CpuNode(QString methodName,
                 QString label,
@@ -35,6 +38,9 @@ namespace RBKit
 
         bool existInCalls(CpuNodePtr method);
         bool existInCalledBy(CpuNodePtr method);
+
+        void incrementTotalCount();
+        void incrementSelfCount();
 
         QList<CpuNodePtr> getCalledBy();
         QList<CpuNodePtr> getCalls();
