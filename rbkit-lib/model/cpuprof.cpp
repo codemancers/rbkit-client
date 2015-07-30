@@ -34,6 +34,7 @@ void RBKit::CpuProf::decodeMap(QList<QMap<int, QVariant> > data)
         parseFrames(data[i]);
         store()->incrementSampleCount();
     }
+    store()->updateSelfCount();
     store()->clearFrameStack();
 }
 

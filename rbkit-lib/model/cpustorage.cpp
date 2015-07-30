@@ -20,6 +20,10 @@ void RBKit::CpuStorage::addNewNode(QMap<int, QVariant> data)
 
     CpuStorage::updateNewNodeLocation(methodName, newNode);
 
+    // increment total count
+    newNode->incrementTotalCount();
+    qDebug() << "----------incrementing total count------------";
+
     //add to current frame stack
     if(currentStack.empty()) {
         currentStack.push_back(methodName);
@@ -32,6 +36,8 @@ void RBKit::CpuStorage::addNewNode(QMap<int, QVariant> data)
     }
 }
 
+
+// added newly created node & its pointer to the `nodes` hash
 void RBKit::CpuStorage::updateNewNodeLocation(QString methodName, RBKit::CpuNodePtr location)
 {
     nodes[methodName] = location;
@@ -96,11 +102,14 @@ void RBKit::CpuStorage::traverseFlatProfile()
     //createModel();
 }
 
-void RBKit::CpuStorage::updateExistingMethod(QMap<int, QVariant> data) {
+void RBKit::CpuStorage::updateExistingMethod(QMap<int, QVariant> data)
+{
+    QString methodName = data[RBKit::CeMethodName].toString();
+
     if(currentStack.empty()) {
-        currentStack.push_back(data[RBKit::ECeMethodName].toString());
+        currentStack.push_back(methodName);
     } else {
-        RBKit::CpuNodePtr existingNode = nodes[data[RBKit::ECeMethodName].toString()];
+        RBKit::CpuNodePtr existingNode = nodes[methodName];
         QString currentTop = currentStack.back();
 
         if(!nodes[currentTop]->existInCalls(existingNode)) {
@@ -118,6 +127,10 @@ void RBKit::CpuStorage::updateExistingMethod(QMap<int, QVariant> data) {
                 data[RBKit::ECeLine].toInt(),
                 data[RBKit::ECeSingletonMethod].toInt());
     }
+
+    //increment the method's total count
+    nodes[methodName]->incrementTotalCount();
+    qDebug() << "--------updating total count---------";
 }
 
 void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode, QStandardItem *parent)
@@ -158,7 +171,7 @@ void RBKit::CpuStorage::handleCallGraph()
     notReached = nodes.keys();
     //qDebug() << notReached;
     while(!notReached.empty()) {
-        CpuStorage::traverseCallGraph(this->nodes[this->notReached.front()], cgRootNode);
+        CpuStorage::traverseCallGraph(nodes[notReached.front()], cgRootNode);
     }
 }
 
@@ -187,4 +200,13 @@ void RBKit::CpuStorage::changeToCallGraph()
     qDebug() << "got signal to change to call graph";
     //handleCallGraph();
     emit updateTreeModel(callGraphModel);
+}
+
+void RBKit::CpuStorage::updateSelfCount()
+{
+    if(!currentStack.isEmpty()) {
+        qDebug() << "-------updating self count--------";
+        QString lastMethod = currentStack.back();
+        nodes[lastMethod]->incrementSelfCount();
+    }
 }
