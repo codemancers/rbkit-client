@@ -39,7 +39,6 @@ namespace RBKit
         void traverseFlatProfile();
         void handleCallGraph();
         QHash<QString, RBKit::CpuNodePtr> getNodes();
-        void createModel();
 
         inline void incrementSampleCount() {
             this->sample_count++;
