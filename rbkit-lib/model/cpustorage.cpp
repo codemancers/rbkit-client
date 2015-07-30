@@ -2,7 +2,6 @@
 #include <QVariant>
 #include <QDebug>
 #include "cpumapping.h"
-#include "ui/centralwidget.h"
 
 void RBKit::CpuStorage::addNewNode(QMap<int, QVariant> data)
 {
@@ -71,10 +70,6 @@ void RBKit::CpuStorage::clearFrameStack()
 
 void RBKit::CpuStorage::traverseFlatProfile()
 {
-
-    //connect(CentralWidget.cpuView, SIGNAL(traverseCallGraph()), this, SLOT(changeToCallGraph()));
-    //connect(CentralWidget.cpuView, SIGNAL(traverseFlatProfile()), this, SLOT(changeToFlatProfile()));
-
     int indent;
     char space = ' ';
     for(QHash<QString, RBKit::CpuNodePtr>::iterator node = this->nodes.begin(); node != this->nodes.end(); node++) {
@@ -159,30 +154,6 @@ void RBKit::CpuStorage::handleCallGraph()
     }
 }
 
-void RBKit::CpuStorage::createModel()
-{/*
-    //creating some items
-    QStandardItem *americaItem = new QStandardItem("America");
-    QStandardItem *mexicoItem = new QStandardItem("Mexico");
-    QStandardItem *usaItem = new QStandardItem("USA");
-    QStandardItem *bostonItem = new QStandardItem("Boston");
-    QStandardItem *europeItem = new QStandardItem("Europe");
-    QStandardItem *italyItem = new QStandardItem("Italy");
-    QStandardItem *romeItem = new QStandardItem("Rome");
-    QStandardItem *saItem = new QStandardItem("San Fransisco");
-
-    //building hierarchy
-    rootNode->appendRow(americaItem);
-    rootNode->appendRow(europeItem);
-    americaItem->appendRow(mexicoItem);
-    americaItem->appendRow(usaItem);
-    usaItem->appendRow(bostonItem);
-    europeItem->appendRow(italyItem);
-    italyItem->appendRow(romeItem);
-    usaItem->appendRow(saItem);
-    */
-}
-
 
 void RBKit::CpuStorage::stopCpuProfiling()
 {
@@ -198,10 +169,12 @@ RBKit::CpuStoragePtr RBKit::CpuStorage::getStorage()
 
 void RBKit::CpuStorage::changeToFlatProfile()
 {
+    qDebug() << "got signal to change to flat profile";
     traverseFlatProfile();
 }
 
 void RBKit::CpuStorage::changeToCallGraph()
 {
+    qDebug() << "got signal to change to call graph";
     handleCallGraph();
 }

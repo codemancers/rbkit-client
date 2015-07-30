@@ -1,12 +1,15 @@
 #include "cpuview.h"
 #include "ui_cpuview.h"
 #include <QDebug>
+#include "model/cpustorage.h"
 
 CpuView::CpuView(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CpuView)
 {
     ui->setupUi(this);
+    connect(this, SIGNAL(traverseCallGraph()), RBKit::CpuStorage::getStorage().data(), SLOT(changeToCallGraph()));
+    connect(this, SIGNAL(traverseFlatProfile()), RBKit::CpuStorage::getStorage().data(), SLOT(changeToFlatProfile()));
 }
 
 CpuView::~CpuView()
