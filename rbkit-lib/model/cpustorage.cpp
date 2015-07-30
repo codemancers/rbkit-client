@@ -3,6 +3,15 @@
 #include <QDebug>
 #include "cpumapping.h"
 
+RBKit::CpuStorage::CpuStorage()
+{
+    QStringList headers;
+    headers.append("Methods");
+    headers.append("Self Time");
+    headers.append("Total Time");
+    this->callGraphModel->setHorizontalHeaderLabels(headers);
+}
+
 void RBKit::CpuStorage::addNewNode(QMap<int, QVariant> data)
 {
     //qDebug() << data;
@@ -56,7 +65,7 @@ bool RBKit::CpuStorage::exists(QVariant name)
         }
 }
 
-int RBKit::CpuStorage::getSampleCount()
+unsigned long long RBKit::CpuStorage::getSampleCount()
 {
     return this->sample_count;
 }
@@ -80,26 +89,26 @@ void RBKit::CpuStorage::traverseFlatProfile()
     char space = ' ';
     for(QHash<QString, RBKit::CpuNodePtr>::iterator node = this->nodes.begin(); node != this->nodes.end(); node++) {
         //qDebug() << "\n=====================\n";
-        qDebug() << "\n" + node.value()->getMethodName();
+        //qDebug() << "\n" + node.value()->getMethodName();
 
-        QStandardItem *topLevelMethod = new QStandardItem(node.value()->getMethodName());
+        QList<QStandardItem*> topLevelMethod = prepareRow(node.value()->getMethodName(),
+                                                            node.value()->getSelfCount(),
+                                                            node.value()->getTotalCount());
         fgRootNode->appendRow(topLevelMethod);
 
         QList<RBKit::CpuNodePtr> calledBy = node.value()->getCalledBy();
         indent=4;
         foreach(RBKit::CpuNodePtr node, calledBy) {
-            qDebug() << QString(indent, space) + node->getMethodName();
+            //qDebug() << QString(indent, space) + node->getMethodName();
 
-            QStandardItem *innerMethod = new QStandardItem(node->getMethodName());
-            topLevelMethod->appendRow(innerMethod);
-            //indent+=4;
+            QList<QStandardItem*> innerMethod = prepareRow(node->getMethodName(),
+                                                           node->getSelfCount(),
+                                                           node->getTotalCount());
+            topLevelMethod.first()->appendRow(innerMethod);
         }
         //qDebug() << "\n=====================\n";
         //qDebug() << calledBy.size();
     }
-
-
-    //createModel();
 }
 
 void RBKit::CpuStorage::updateExistingMethod(QMap<int, QVariant> data) {
@@ -133,7 +142,7 @@ void RBKit::CpuStorage::updateExistingMethod(QMap<int, QVariant> data) {
     qDebug() << "--------updating total count---------";
 }
 
-void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode, QStandardItem *parent)
+void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode, QList<QStandardItem *> *parent=NULL)
 {
     char space = ' ';
     QString methodName = startingNode->getMethodName();
@@ -141,20 +150,33 @@ void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode, QStand
     if(!this->notReached.contains(methodName)) {
         //qDebug() << QString(indent, space) + methodName;
 
-        QStandardItem *currentMethod = new QStandardItem(methodName);
-        parent->appendRow(currentMethod);
+        QList<QStandardItem*> currentMethod = prepareRow(methodName,
+                                                         startingNode.data()->getSelfCount(),
+                                                         startingNode.data()->getTotalCount());
+        if(parent == NULL) {
+            cgRootNode->appendRow(currentMethod);
+        } else {
+            parent->first()->appendRow(currentMethod);
+        }
         return;
+
     } else {
         //qDebug() << QString(indent, space) + methodName;
 
-        QStandardItem *currentMethod = new QStandardItem(methodName);
-        parent->appendRow(currentMethod);
+        QList<QStandardItem*> currentMethod = prepareRow(methodName,
+                                                         startingNode.data()->getSelfCount(),
+                                                         startingNode.data()->getTotalCount());
+        if(parent == NULL) {
+            cgRootNode->appendRow(currentMethod);
+        } else {
+            parent->first()->appendRow(currentMethod);
+        }
 
         this->notReached.removeOne(startingNode->getMethodName());
 
         foreach(RBKit::CpuNodePtr node, startingNode->getCalls()) {
             //qDebug() << QString(indent,space) + node->getMethodName();
-            this->traverseCallGraph(node, currentMethod);
+            this->traverseCallGraph(node, &currentMethod);
         }
     }
 
@@ -171,7 +193,7 @@ void RBKit::CpuStorage::handleCallGraph()
     this->notReached = this->nodes.keys();
     //qDebug() << notReached;
     while(!this->notReached.empty()) {
-        CpuStorage::traverseCallGraph(this->nodes[this->notReached.front()], cgRootNode);
+        CpuStorage::traverseCallGraph(this->nodes[this->notReached.front()]);
     }
 }
 
@@ -209,4 +231,16 @@ void RBKit::CpuStorage::updateSelfCount()
         QString lastMethod = this->currentStack.back();
         nodes[lastMethod]->incrementSelfCount();
     }
+}
+
+QList<QStandardItem*> RBKit::CpuStorage::prepareRow(QString methodName, int selfCount, int totalCount)
+{
+    QList<QStandardItem*> row;
+    double selfTime = (selfCount * 100.0) / this->sample_count;
+    double totalTime = (totalCount * 100.0) / this->sample_count;
+    row << new QStandardItem(methodName);
+    row << new QStandardItem(QString::number(selfTime, 'g', 2));     //self time percentage
+    row << new QStandardItem(QString::number(totalTime, 'g', 2));    //total time parcentage
+
+    return row;
 }
