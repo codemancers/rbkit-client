@@ -54,4 +54,7 @@ void RBKit::CpuProf::startTraversals()
     qDebug() << "\n\n Call Graph";
     //callgraph traversal
     store()->handleCallGraph();
+
+    //setting the default view as call graph
+    store()->changeToCallGraph();
 }

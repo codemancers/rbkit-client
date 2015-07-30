@@ -28,14 +28,17 @@
       <item>
        <widget class="QRadioButton" name="callGraphRadio">
         <property name="text">
-         <string>FlatGraph</string>
+         <string>CallGraph</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QRadioButton" name="flatRadio">
         <property name="text">
-         <string>Call Graph</string>
+         <string>Flat Graph</string>
         </property>
        </widget>
       </item>

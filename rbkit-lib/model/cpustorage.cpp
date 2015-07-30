@@ -77,7 +77,7 @@ void RBKit::CpuStorage::traverseFlatProfile()
         qDebug() << "\n" + node.value()->getMethodName();
 
         QStandardItem *topLevelMethod = new QStandardItem(node.value()->getMethodName());
-        rootNode->appendRow(topLevelMethod);
+        fgRootNode->appendRow(topLevelMethod);
 
         QList<RBKit::CpuNodePtr> calledBy = node.value()->getCalledBy();
         indent=4;
@@ -94,7 +94,6 @@ void RBKit::CpuStorage::traverseFlatProfile()
 
 
     //createModel();
-    emit updateTreeModel(standardModel);
 }
 
 void RBKit::CpuStorage::updateExistingMethod(QMap<int, QVariant> data) {
@@ -145,6 +144,8 @@ void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode, QStand
             this->traverseCallGraph(node, currentMethod);
         }
     }
+
+
 }
 
 QHash<QString, RBKit::CpuNodePtr> RBKit::CpuStorage::getNodes()
@@ -157,7 +158,7 @@ void RBKit::CpuStorage::handleCallGraph()
     this->notReached = this->nodes.keys();
     //qDebug() << notReached;
     while(!this->notReached.empty()) {
-        CpuStorage::traverseCallGraph(this->nodes[this->notReached.front()], rootNode);
+        CpuStorage::traverseCallGraph(this->nodes[this->notReached.front()], cgRootNode);
     }
 }
 
@@ -177,11 +178,13 @@ RBKit::CpuStoragePtr RBKit::CpuStorage::getStorage()
 void RBKit::CpuStorage::changeToFlatProfile()
 {
     qDebug() << "got signal to change to flat profile";
-    traverseFlatProfile();
+    //traverseFlatProfile();
+    emit updateTreeModel(flatGraphModel);
 }
 
 void RBKit::CpuStorage::changeToCallGraph()
 {
     qDebug() << "got signal to change to call graph";
-    handleCallGraph();
+    //handleCallGraph();
+    emit updateTreeModel(callGraphModel);
 }
