@@ -24,7 +24,7 @@ namespace RBKit
         //creating invisible root node
         QStandardItem *rootNode = standardModel->invisibleRootItem();
 
-        void traverseCallGraph(RBKit::CpuNodePtr, int indent=1);
+        void traverseCallGraph(RBKit::CpuNodePtr, QStandardItem *parent);
     public:
         QList<QString> currentStack;
 
