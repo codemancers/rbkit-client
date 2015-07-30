@@ -65,3 +65,13 @@ bool RBKit::CpuNode::existInCalledBy(CpuNodePtr method)
 {
     return this->calledBy.indexOf(method) != -1;
 }
+
+void RBKit::CpuNode::incrementSelfCount()
+{
+    this->selfCount += 1;
+}
+
+void RBKit::CpuNode::incrementTotalCount()
+{
+    this->totalCount += 1;
+}

@@ -37,6 +37,7 @@ namespace RBKit
         void traverseNodes();
         void clearFrameStack();
         void updateExistingMethod(QMap<int, QVariant>);
+        void updateSelfCount();
 
         void traverseFlatProfile();
         void handleCallGraph();
