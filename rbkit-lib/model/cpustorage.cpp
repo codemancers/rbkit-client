@@ -121,21 +121,28 @@ void RBKit::CpuStorage::updateExistingMethod(QMap<int, QVariant> data) {
     }
 }
 
-void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode, int indent)
+void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode, QStandardItem *parent)
 {
     char space = ' ';
     QString methodName = startingNode->getMethodName();
 
     if(!this->notReached.contains(methodName)) {
-        qDebug() << QString(indent, space) + methodName;
+        //qDebug() << QString(indent, space) + methodName;
+
+        QStandardItem *currentMethod = new QStandardItem(methodName);
+        parent->appendRow(currentMethod);
         return;
     } else {
-        qDebug() << QString(indent, space) + methodName;        
+        //qDebug() << QString(indent, space) + methodName;
+
+        QStandardItem *currentMethod = new QStandardItem(methodName);
+        parent->appendRow(currentMethod);
+
         this->notReached.removeOne(startingNode->getMethodName());
 
         foreach(RBKit::CpuNodePtr node, startingNode->getCalls()) {
             //qDebug() << QString(indent,space) + node->getMethodName();
-            this->traverseCallGraph(node, indent+4);
+            this->traverseCallGraph(node, currentMethod);
         }
     }
 }
@@ -150,7 +157,7 @@ void RBKit::CpuStorage::handleCallGraph()
     this->notReached = this->nodes.keys();
     //qDebug() << notReached;
     while(!this->notReached.empty()) {
-        CpuStorage::traverseCallGraph(this->nodes[this->notReached.front()]);
+        CpuStorage::traverseCallGraph(this->nodes[this->notReached.front()], rootNode);
     }
 }
 
