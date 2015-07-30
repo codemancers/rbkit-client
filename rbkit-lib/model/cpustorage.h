@@ -16,7 +16,7 @@ namespace RBKit
     {
         Q_OBJECT;
 
-        int sample_count;
+        unsigned long long sample_count;
         QHash<QString, RBKit::CpuNodePtr> nodes;
         QList<QString> notReached;
         QStandardItemModel *callGraphModel = new QStandardItemModel;
@@ -26,14 +26,14 @@ namespace RBKit
         QStandardItem *cgRootNode = callGraphModel->invisibleRootItem();
         QStandardItem *fgRootNode = flatGraphModel->invisibleRootItem();
 
-        void traverseCallGraph(RBKit::CpuNodePtr, QStandardItem *parent);
+        void traverseCallGraph(RBKit::CpuNodePtr, QList<QStandardItem *> *parent);
     public:
         QList<QString> currentStack;
 
         void addNewNode(QMap<int, QVariant>);
         void updateNewNodeLocation(QString methodName, RBKit::CpuNodePtr);
         bool exists(QVariant name);
-        int getSampleCount();
+        unsigned long long getSampleCount();
         void traverseNodes();
         void clearFrameStack();
         void updateExistingMethod(QMap<int, QVariant>);
@@ -43,6 +43,8 @@ namespace RBKit
         void handleCallGraph();
         QHash<QString, RBKit::CpuNodePtr> getNodes();
 
+        QList<QStandardItem*> prepareRow(QString methodName, int selfCount, int totalCount);
+
         inline void incrementSampleCount() {
             sample_count++;
         }
@@ -50,7 +52,7 @@ namespace RBKit
         static CpuStoragePtr getStorage();
 
     private:
-        CpuStorage() {}
+        CpuStorage();
 
     public:
     signals:
