@@ -19,10 +19,12 @@ namespace RBKit
         int sample_count;
         QHash<QString, RBKit::CpuNodePtr> nodes;
         QList<QString> notReached;
-        QStandardItemModel *standardModel = new QStandardItemModel;
+        QStandardItemModel *callGraphModel = new QStandardItemModel;
+        QStandardItemModel *flatGraphModel = new QStandardItemModel;
 
-        //creating invisible root node
-        QStandardItem *rootNode = standardModel->invisibleRootItem();
+        //creating invisible root nodes
+        QStandardItem *cgRootNode = callGraphModel->invisibleRootItem();
+        QStandardItem *fgRootNode = flatGraphModel->invisibleRootItem();
 
         void traverseCallGraph(RBKit::CpuNodePtr, QStandardItem *parent);
     public:
@@ -51,7 +53,7 @@ namespace RBKit
 
     public:
     signals:
-        void updateTreeModel(QStandardItemModel *standardModel);
+        void updateTreeModel(QStandardItemModel*);
 
     public slots:
         void stopCpuProfiling();
