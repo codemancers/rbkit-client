@@ -50,12 +50,12 @@ void RBKit::CpuProf::startTraversals()
 {
     qDebug() << "STARTING TRAVERSALS\n\n";
     //flatprofile traversal
-    store()->traverseFlatProfile();
+    //store()->traverseFlatProfile();
 
     qDebug() << "\n\n Call Graph";
     //callgraph traversal
-    store()->handleCallGraph();
+    //store()->handleCallGraph();
 
     //setting the default view as call graph
-    store()->changeToCallGraph();
+    //store()->changeToCallGraph();
 }

@@ -27,7 +27,6 @@ class CentralWidget : public QWidget
     QVBoxLayout* mainLayout;
     QSharedPointer<QTabWidget> chartingTab;
     QSharedPointer<RBKit::MemoryView> memoryView;
-    QSharedPointer<CpuView> cpuView;
     AppMainwindow *mainWindow;
     RBKit::SnapshotState *snapshotState;
     QTimer *snapshotProgressTimer;
@@ -55,7 +54,7 @@ public slots:
     void receiveOldGenStats(QVariantMap map);
     void objectDumpAvailable(int snapshotVersion);
     void updateProgressBar();
-    void updateCpuTree(QStandardItemModel *model);
+    void newCpuView();
 private slots:
     void tabClosed(int index);
     void onDiffSnapshotsSelected(QList<int> selectedSnapshots);

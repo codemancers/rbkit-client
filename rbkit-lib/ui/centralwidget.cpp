@@ -167,15 +167,16 @@ void CentralWidget::setupCentralView()
     memoryView = QSharedPointer<RBKit::MemoryView>::create(this);
     chartingTab->addTab(memoryView.data(), "Object Charts");
 
-    connect(RBKit::CpuStorage::getStorage().data(), SIGNAL(updateTreeModel(QStandardItemModel*)),
-            this, SLOT(updateCpuTree(QStandardItemModel*)));
-    cpuView = QSharedPointer<CpuView>::create(this);
-    chartingTab->addTab(cpuView.data(), "Cpu Tree");
+    //connect(RBKit::CpuStorage::getStorage().data(), SIGNAL(updateTreeModel(QStandardItemModel*)),
+    //        this, SLOT(updateCpuTree(QStandardItemModel*)));
 }
 
-void CentralWidget::updateCpuTree(QStandardItemModel *model) {
-    qDebug() << "cpu tree signal";
-    cpuView.data()->updateCpuModel(model);
+void CentralWidget::newCpuView()
+{
+    qDebug() << "*****************creating a new cpu view******************************";
+    CpuView *cpuView = new CpuView(this);
+    chartingTab->addTab(cpuView, "Cpu Tree");
+    qDebug() << "*****************added the cpu view to a tab**************************";
 }
 
 void CentralWidget::showStatusMessage(const QString &message) const
