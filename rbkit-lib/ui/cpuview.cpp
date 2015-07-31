@@ -7,13 +7,39 @@ CpuView::CpuView(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CpuView)
 {
+    callGraphModel = new QStandardItemModel;
+    flatGraphModel = new QStandardItemModel;
+
     ui->setupUi(this);
-    connect(this, SIGNAL(traverseCallGraph()), RBKit::CpuStorage::getStorage().data(), SLOT(changeToCallGraph()));
-    connect(this, SIGNAL(traverseFlatProfile()), RBKit::CpuStorage::getStorage().data(), SLOT(changeToFlatProfile()));
+
+    connect(this,
+            SIGNAL(fillCallGraph(QStandardItemModel*)),
+            RBKit::CpuStorage::getStorage().data(),
+            SLOT(fillCallGraphModel(QStandardItemModel*)));
+
+    connect(this,
+            SIGNAL(fillFlatProfile(QStandardItemModel*)),
+            RBKit::CpuStorage::getStorage().data(),
+            SLOT(fillFlatProfileModel(QStandardItemModel*)));
+
+    // generating both the models
+    emit fillCallGraph(callGraphModel);
+    emit fillFlatProfile(flatGraphModel);
+
+    QStringList headers;
+    headers.append("Methods");
+    headers.append("Self Time");
+    headers.append("Total Time");
+    this->callGraphModel->setHorizontalHeaderLabels(headers);
+    this->flatGraphModel->setHorizontalHeaderLabels(headers);
+
+    // setting callgraph as default view
+    updateCpuModel(callGraphModel);
 }
 
 CpuView::~CpuView()
 {
+    qDebug() << "++++++++++++++cpu view destroyed+++++++++++++++++";
     delete ui;
 }
 
@@ -26,10 +52,10 @@ void CpuView::updateCpuModel(QStandardItemModel *model)
 
 void CpuView::on_callGraphRadio_clicked()
 {
-    emit traverseCallGraph();
+    updateCpuModel(callGraphModel);
 }
 
 void CpuView::on_flatRadio_clicked()
 {
-    emit traverseFlatProfile();
+    updateCpuModel(flatGraphModel);
 }

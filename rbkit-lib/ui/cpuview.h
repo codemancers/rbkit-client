@@ -13,19 +13,21 @@ class CpuView : public QWidget
     Q_OBJECT
 
 public:
+    QStandardItemModel *callGraphModel;
+    QStandardItemModel *flatGraphModel;
+
     explicit CpuView(QWidget *parent = 0);
     ~CpuView();
     void updateCpuModel(QStandardItemModel *model);
 
 private slots:
     void on_callGraphRadio_clicked();
-
     void on_flatRadio_clicked();
 
 public:
 signals:
-    void traverseCallGraph();
-    void traverseFlatProfile();
+    void fillCallGraph(QStandardItemModel*);
+    void fillFlatProfile(QStandardItemModel*);
 
 private:
     Ui::CpuView *ui;

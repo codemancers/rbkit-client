@@ -157,6 +157,7 @@ void ActionToolbar::setupToolBar()
                              QIcon(":/icons/Compare-32.png"),
                              "cpu_profiling");
     connect(stopCPUButton, &QToolButton::clicked, this, &ActionToolbar::performStopCPUAction);
+    connect(this, SIGNAL(stopCPUProfiling()), centralWidget, SLOT(newCpuView()));
 
     toolBar->loadStyleSheet(":/icons/style.css");
 }

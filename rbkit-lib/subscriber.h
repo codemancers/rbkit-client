@@ -77,7 +77,6 @@ signals:
     void secondGenStats(QVariantMap map);
     void oldGenStats(QVariantMap map);
     void objectDumpAvailable(int snapshotVersion);
-    //void stopCpuProfiling();
 
 public slots:
     void startListening(QString _commandsUrl, QString _eventsUrl);

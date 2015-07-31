@@ -5,11 +5,7 @@
 
 RBKit::CpuStorage::CpuStorage()
 {
-    QStringList headers;
-    headers.append("Methods");
-    headers.append("Self Time");
-    headers.append("Total Time");
-    this->callGraphModel->setHorizontalHeaderLabels(headers);
+
 }
 
 void RBKit::CpuStorage::addNewNode(QMap<int, QVariant> data)
@@ -83,7 +79,7 @@ void RBKit::CpuStorage::clearFrameStack()
     currentStack.clear();
 }
 
-void RBKit::CpuStorage::traverseFlatProfile()
+void RBKit::CpuStorage::traverseFlatProfile(QStandardItem &fgRootNode)
 {
     int indent;
     char space = ' ';
@@ -94,7 +90,7 @@ void RBKit::CpuStorage::traverseFlatProfile()
         QList<QStandardItem*> topLevelMethod = prepareRow(node.value()->getMethodName(),
                                                             node.value()->getSelfCount(),
                                                             node.value()->getTotalCount());
-        fgRootNode->appendRow(topLevelMethod);
+        fgRootNode.appendRow(topLevelMethod);
 
         QList<RBKit::CpuNodePtr> calledBy = node.value()->getCalledBy();
         indent=4;
@@ -142,7 +138,9 @@ void RBKit::CpuStorage::updateExistingMethod(QMap<int, QVariant> data)
     qDebug() << "--------updating total count---------";
 }
 
-void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode, QList<QStandardItem *> *parent=NULL)
+void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode,
+                                          QStandardItem &cgRootNode,
+                                          QList<QStandardItem *> *parent=NULL)
 {
     char space = ' ';
     QString methodName = startingNode->getMethodName();
@@ -154,7 +152,7 @@ void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode, QList<
                                                          startingNode.data()->getSelfCount(),
                                                          startingNode.data()->getTotalCount());
         if(parent == NULL) {
-            cgRootNode->appendRow(currentMethod);
+            cgRootNode.appendRow(currentMethod);
         } else {
             parent->first()->appendRow(currentMethod);
         }
@@ -167,7 +165,7 @@ void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode, QList<
                                                          startingNode.data()->getSelfCount(),
                                                          startingNode.data()->getTotalCount());
         if(parent == NULL) {
-            cgRootNode->appendRow(currentMethod);
+            cgRootNode.appendRow(currentMethod);
         } else {
             parent->first()->appendRow(currentMethod);
         }
@@ -176,7 +174,7 @@ void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode, QList<
 
         foreach(RBKit::CpuNodePtr node, startingNode->getCalls()) {
             //qDebug() << QString(indent,space) + node->getMethodName();
-            traverseCallGraph(node, &currentMethod);
+            traverseCallGraph(node, cgRootNode, &currentMethod);
         }
     }
 
@@ -188,40 +186,19 @@ QHash<QString, RBKit::CpuNodePtr> RBKit::CpuStorage::getNodes()
     return nodes;
 }
 
-void RBKit::CpuStorage::handleCallGraph()
+void RBKit::CpuStorage::handleCallGraph(QStandardItem &cgRootNode)
 {
     notReached = nodes.keys();
     //qDebug() << notReached;
     while(!notReached.empty()) {
-        CpuStorage::traverseCallGraph(nodes[notReached.front()]);
+        CpuStorage::traverseCallGraph(nodes[notReached.front()], cgRootNode);
     }
 }
-
-
-void RBKit::CpuStorage::stopCpuProfiling()
-{
-    qDebug() << "Profiling stopped";
-}
-
 
 RBKit::CpuStoragePtr RBKit::CpuStorage::getStorage()
 {
     static RBKit::CpuStoragePtr store(new RBKit::CpuStorage());
     return store;
-}
-
-void RBKit::CpuStorage::changeToFlatProfile()
-{
-    qDebug() << "got signal to change to flat profile";
-    //traverseFlatProfile();
-    emit updateTreeModel(flatGraphModel);
-}
-
-void RBKit::CpuStorage::changeToCallGraph()
-{
-    qDebug() << "got signal to change to call graph";
-    //handleCallGraph();
-    emit updateTreeModel(callGraphModel);
 }
 
 void RBKit::CpuStorage::updateSelfCount()
@@ -243,4 +220,17 @@ QList<QStandardItem*> RBKit::CpuStorage::prepareRow(QString methodName, int self
     row << new QStandardItem(QString::number(totalTime, 'g', 2));    //total time parcentage
 
     return row;
+}
+
+void RBKit::CpuStorage::fillCallGraphModel(QStandardItemModel *callGraphModel)
+{
+    QStandardItem *cgRootNode = callGraphModel->invisibleRootItem();
+    handleCallGraph(*cgRootNode);
+}
+
+void RBKit::CpuStorage::fillFlatProfileModel(QStandardItemModel *flatGraphModel)
+{
+    qDebug() << "^^^^^^^^creating flat graph model^^^^^^^^^^^";
+    QStandardItem *fgRootNode = flatGraphModel->invisibleRootItem();
+    traverseFlatProfile(*fgRootNode);
 }
