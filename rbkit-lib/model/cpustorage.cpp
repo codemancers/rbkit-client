@@ -216,8 +216,8 @@ QList<QStandardItem*> RBKit::CpuStorage::prepareRow(QString methodName, int self
     double selfTime = (selfCount * 100.0) / sample_count;
     double totalTime = (totalCount * 100.0) / sample_count;
 
-    QStandardItem *selfPercent = new QStandardItem(QString::number(selfTime, 'f', 2));
-    QStandardItem *totalPercent = new QStandardItem(QString::number(totalTime, 'f', 2));
+    QStandardItem *selfPercent = new QStandardItem(QString::number(selfTime, 'f', 2) + " %");
+    QStandardItem *totalPercent = new QStandardItem(QString::number(totalTime, 'f', 2) + " %");
 
     // setting center alignments
     selfPercent->setTextAlignment(Qt::AlignHCenter);
