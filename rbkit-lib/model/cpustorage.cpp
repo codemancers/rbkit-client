@@ -215,9 +215,17 @@ QList<QStandardItem*> RBKit::CpuStorage::prepareRow(QString methodName, int self
     QList<QStandardItem*> row;
     double selfTime = (selfCount * 100.0) / sample_count;
     double totalTime = (totalCount * 100.0) / sample_count;
+
+    QStandardItem *selfPercent = new QStandardItem(QString::number(selfTime, 'f', 2));
+    QStandardItem *totalPercent = new QStandardItem(QString::number(totalTime, 'f', 2));
+
+    // setting center alignments
+    selfPercent->setTextAlignment(Qt::AlignHCenter);
+    totalPercent->setTextAlignment(Qt::AlignHCenter);
+
     row << new QStandardItem(methodName);
-    row << new QStandardItem(QString::number(selfTime, 'g', 2));     //self time percentage
-    row << new QStandardItem(QString::number(totalTime, 'g', 2));    //total time parcentage
+    row << selfPercent;                                 //self time percentage
+    row << totalPercent;                                //total time parcentage
 
     return row;
 }
