@@ -11,4 +11,4 @@ before_install:
 
 script:
  - source /opt/qt53/bin/qt53-env.sh
- - mkdir build-dir && cd msgpack-c && autoreconf && cd ../build-dir && cmake ../ && make && ./tests/rctests
+ - cd .. && mkdir build-dir && cd msgpack-c && autoreconf && cd ../build-dir && cmake ../ && make && ./tests/rctests
