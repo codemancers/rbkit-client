@@ -19,14 +19,8 @@ namespace RBKit
         unsigned long long sample_count;
         QHash<QString, RBKit::CpuNodePtr> nodes;
         QList<QString> notReached;
-        QStandardItemModel *callGraphModel = new QStandardItemModel;
-        QStandardItemModel *flatGraphModel = new QStandardItemModel;
 
-        //creating invisible root nodes
-        QStandardItem *cgRootNode = callGraphModel->invisibleRootItem();
-        QStandardItem *fgRootNode = flatGraphModel->invisibleRootItem();
-
-        void traverseCallGraph(RBKit::CpuNodePtr, QList<QStandardItem *> *parent);
+        void traverseCallGraph(RBKit::CpuNodePtr, QStandardItem &cgRootNode, QList<QStandardItem *> *parent);
     public:
         QList<QString> currentStack;
 
@@ -39,8 +33,8 @@ namespace RBKit
         void updateExistingMethod(QMap<int, QVariant>);
         void updateSelfCount();
 
-        void traverseFlatProfile();
-        void handleCallGraph();
+        void traverseFlatProfile(QStandardItem &fgRootNode);
+        void handleCallGraph(QStandardItem &cgRootNode);
         QHash<QString, RBKit::CpuNodePtr> getNodes();
 
         QList<QStandardItem*> prepareRow(QString methodName, int selfCount, int totalCount);
@@ -59,9 +53,8 @@ namespace RBKit
         void updateTreeModel(QStandardItemModel*);
 
     public slots:
-        void stopCpuProfiling();
-        void changeToFlatProfile();
-        void changeToCallGraph();
+        void fillCallGraphModel(QStandardItemModel*);
+        void fillFlatProfileModel(QStandardItemModel*);
     };
 
 

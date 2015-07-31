@@ -63,10 +63,8 @@ void Subscriber::startCPUProfiling() {
 
 void Subscriber::stopCPUProfiling() {
     RBKit::CmdStopCPUProfile stopCPUProfile;
-    //emit Subscriber::stopCpuProfiling();
     qDebug() << "Stopping CPU Profiling";
     commandSocket->sendCommand(stopCPUProfile);
-    cpuProf.startTraversals();
 }
 
 void Subscriber::takeSnapshot()
