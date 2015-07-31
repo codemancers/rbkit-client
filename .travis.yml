@@ -3,7 +3,8 @@ before_install:
  - sudo apt-get update -qq
  - sudo apt-get install qt53base qt53svg qt53connectivity qt53declarative libsqlite3-dev
  - sudo apt-get install qt53tools qt53webkit-examples
+ - sudo apt-get install cmake
 
 script:
  - source /opt/qt53/bin/qt53-env.sh
- - cd msgpack-c && autoreconf && cd .. && qmake && make && ./tests/rctests
+ - mkdir build-dir && cd msgpack-c && autoreconf && cd ../build-dir && cmake ../ && make && ./tests/rctests
