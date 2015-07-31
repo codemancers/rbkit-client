@@ -26,10 +26,11 @@ CpuView::CpuView(QWidget *parent) :
     emit fillCallGraph(callGraphModel);
     emit fillFlatProfile(flatGraphModel);
 
+    // column headers for each model
     QStringList headers;
     headers.append("Methods");
-    headers.append("Self Time");
-    headers.append("Total Time");
+    headers.append("Self");
+    headers.append("Total");
     this->callGraphModel->setHorizontalHeaderLabels(headers);
     this->flatGraphModel->setHorizontalHeaderLabels(headers);
 
