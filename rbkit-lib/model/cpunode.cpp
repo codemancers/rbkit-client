@@ -10,11 +10,9 @@ RBKit::CpuNode::CpuNode(QString methodName,
                                     filename(filename),
                                     threadId(threadId),
                                     lineNo(lineNo),
-                                    singletonMethod(singletonMethod)
-{
-    this->selfCount=0;
-    this->totalCount=0;
-}
+                                    singletonMethod(singletonMethod),
+                                    selfCount(0),
+                                    totalCount(0) {}
 
 void RBKit::CpuNode::updateCalls(CpuNodePtr cpuNode)
 {
@@ -72,12 +70,12 @@ bool RBKit::CpuNode::existInCalledBy(CpuNodePtr method)
 
 void RBKit::CpuNode::incrementSelfCount()
 {
-    this->selfCount++;
+    selfCount++;
 }
 
 void RBKit::CpuNode::incrementTotalCount()
 {
-    this->totalCount++;
+    totalCount++;
 }
 
 unsigned long long RBKit::CpuNode::getTotalCount()
