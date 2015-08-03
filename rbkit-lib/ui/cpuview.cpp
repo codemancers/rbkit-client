@@ -12,20 +12,6 @@ CpuView::CpuView(QWidget *parent) :
 
     ui->setupUi(this);
 
-    connect(this,
-            SIGNAL(fillCallGraph(QStandardItemModel*)),
-            RBKit::CpuStorage::getStorage().data(),
-            SLOT(fillCallGraphModel(QStandardItemModel*)));
-
-    connect(this,
-            SIGNAL(fillFlatProfile(QStandardItemModel*)),
-            RBKit::CpuStorage::getStorage().data(),
-            SLOT(fillFlatProfileModel(QStandardItemModel*)));
-
-    // generating both the models
-    emit fillCallGraph(callGraphModel);
-    emit fillFlatProfile(flatGraphModel);
-
     // column headers for each model
     QStringList headers;
     headers.append("Methods");

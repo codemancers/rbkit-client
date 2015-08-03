@@ -173,10 +173,21 @@ void CentralWidget::setupCentralView()
 
 void CentralWidget::newCpuView()
 {
-    qDebug() << "*****************creating a new cpu view******************************";
     CpuView *cpuView = new CpuView(this);
     chartingTab->addTab(cpuView, "Cpu Tree");
-    qDebug() << "*****************added the cpu view to a tab**************************";
+
+    connect(cpuView,
+            SIGNAL(fillCallGraph(QStandardItemModel*)),
+            RBKit::CpuStorage::getStorage().data(),
+            SLOT(fillCallGraphModel(QStandardItemModel*)));
+
+    connect(cpuView,
+            SIGNAL(fillFlatProfile(QStandardItemModel*)),
+            RBKit::CpuStorage::getStorage().data(),
+            SLOT(fillFlatProfileModel(QStandardItemModel*)));
+
+    emit cpuView->fillCallGraph(cpuView->callGraphModel);
+    emit cpuView->fillFlatProfile(cpuView->flatGraphModel);
 }
 
 void CentralWidget::showStatusMessage(const QString &message) const
