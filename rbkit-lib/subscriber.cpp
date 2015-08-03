@@ -65,6 +65,7 @@ void Subscriber::stopCPUProfiling() {
     RBKit::CmdStopCPUProfile stopCPUProfile;
     qDebug() << "Stopping CPU Profiling";
     commandSocket->sendCommand(stopCPUProfile);
+    cpuProf.startTraversals();
 }
 
 void Subscriber::takeSnapshot()
@@ -236,7 +237,8 @@ void Subscriber::processEvent(const RBKit::EvtHandshake &handShake)
 }
 
 void Subscriber::processEvent(const RBKit::EvtCpuSample &cpuSample) {
-    qDebug() << cpuSample.eventType << "===";
+    //qDebug() << cpuSample.payload;
+    cpuProf.decodeMap(cpuSample.payload);
 }
 
 void Subscriber::performHandshake()

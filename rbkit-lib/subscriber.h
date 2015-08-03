@@ -7,6 +7,7 @@
 #include "rbevents.h"
 #include "model/objectstore.h"
 #include "sqlconnectionpool.h"
+#include "model/cpuprof.h"
 
 // forward declaration of nzmqt classes
 namespace nzmqt
@@ -43,6 +44,8 @@ class Subscriber : public QObject
     bool connectionEstablished;
 
     quint64 messageCounter;
+
+    RBKit::CpuProf cpuProf;
 
 public:
     explicit Subscriber(RBKit::JsBridge* jsBridge);
