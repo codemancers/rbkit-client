@@ -31,7 +31,7 @@ namespace RBKit
         QHash<QString, RBKit::CpuNodePtr> getNodes();
 
         inline void incrementSampleCount() {
-            this->sample_count++;
+            sample_count++;
         }
     };
 
