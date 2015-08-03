@@ -24,7 +24,8 @@ QT5_WRAP_UI(RBKIT_UI_HEADERS
     ui/memoryview.ui
     ui/comparesnapshotform.ui
     ui/aboutdialog.ui
-    ui/parentviewform.ui)
+    ui/parentviewform.ui
+    ui/cpuview.ui)
 
 
 QT5_ADD_RESOURCES(RBKIT_UI_RESOURCES
@@ -65,6 +66,7 @@ add_library(rbkit
     ui/appmainwindow.cpp
     ui/centralwidget.cpp
     ui/ribbontoolbar.cpp
+    ui/cpuview.cpp
     model/cpunode.cpp
     model/cpuprof.cpp
     model/cpustorage.cpp
@@ -101,6 +103,7 @@ add_library(rbkit
     ui/appmainwindow.h
     ui/centralwidget.h
     ui/ribbontoolbar.h
+    ui/cpuview.h
     layoututil.hpp
     common.h
 

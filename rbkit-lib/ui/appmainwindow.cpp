@@ -26,6 +26,11 @@ AppMainwindow::AppMainwindow(QWidget *parent) : QMainWindow(parent)
     qRegisterMetaType<RBKit::ObjectDetail>();
 }
 
+/*CpuViewPtr AppMainwindow::getCpuView()
+{
+    return centralWidget->getCpuViewPtr();
+}*/
+
 AppMainwindow::~AppMainwindow()
 {
     delete centralWidget;
