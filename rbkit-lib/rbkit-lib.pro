@@ -29,6 +29,9 @@ SOURCES += \
     model/objectstore.cpp \
     model/snapshotstate.cpp \
     model/sortobjectproxymodel.cpp \
+    model/cpunode.cpp \
+    model/cpuprof.cpp \
+    model/cpustorage.cpp \
     ui/askhost.cpp \
     ui/comparesnapshotform.cpp \
     ui/diffviewform.cpp \
@@ -62,6 +65,10 @@ HEADERS +=  \
     model/objectdetail.h \
     model/objectstore.h \
     model/sortobjectproxymodel.h \
+    model/cpumapping.h \
+    model/cpunode.h \
+    model/cpuprof.h \
+    model/cpustorage.h \
     ui/askhost.h \
     ui/comparesnapshotform.h \
     ui/diffviewform.h \
