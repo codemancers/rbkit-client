@@ -110,6 +110,7 @@ void CentralWidget::tabClosed(int index)
         return;
     chartingTab->removeTab(index);
     snapshotState->removeSnapshot(index);
+    cpuViewHash.remove(index);
 }
 
 void CentralWidget::onDiffSnapshotsSelected(QList<int> selectedSnapshots)
@@ -166,28 +167,26 @@ void CentralWidget::setupCentralView()
     qDebug() << "Adding object charts tab";
     memoryView = QSharedPointer<RBKit::MemoryView>::create(this);
     chartingTab->addTab(memoryView.data(), "Object Charts");
-
-    //connect(RBKit::CpuStorage::getStorage().data(), SIGNAL(updateTreeModel(QStandardItemModel*)),
-    //        this, SLOT(updateCpuTree(QStandardItemModel*)));
 }
 
 void CentralWidget::newCpuView()
 {
-    CpuView *cpuView = new CpuView(this);
-    chartingTab->addTab(cpuView, "Cpu Tree");
+    QSharedPointer<CpuView> cpuView(new CpuView(this));
+    int index = chartingTab->addTab(cpuView.data(), "Cpu Tree");
+    cpuViewHash[index] = cpuView;
 
-    connect(cpuView,
+    connect(cpuView.data(),
             SIGNAL(fillCallGraph(QStandardItemModel*)),
             RBKit::CpuStorage::getStorage().data(),
             SLOT(fillCallGraphModel(QStandardItemModel*)));
 
-    connect(cpuView,
+    connect(cpuView.data(),
             SIGNAL(fillFlatProfile(QStandardItemModel*)),
             RBKit::CpuStorage::getStorage().data(),
             SLOT(fillFlatProfileModel(QStandardItemModel*)));
 
-    emit cpuView->fillCallGraph(cpuView->callGraphModel);
-    emit cpuView->fillFlatProfile(cpuView->flatGraphModel);
+    emit cpuView.data()->fillCallGraph(cpuView->callGraphModel);
+    emit cpuView.data()->fillFlatProfile(cpuView->flatGraphModel);
 }
 
 void CentralWidget::showStatusMessage(const QString &message) const
