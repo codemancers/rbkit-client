@@ -1,15 +1,5 @@
-#include <QCoreApplication>
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonObject>
-#include <QtCore/QJsonArray>
-#include <QFile>
-#include <QTextStream>
-#include <QDebug>
-#include <typeinfo>
 #include "cpustorage.h"
 #include "cpumapping.h"
-#include <iostream>
-#include <string.h>
 #include <QDebug>
 #include <QList>
 
@@ -20,11 +10,13 @@ RBKit::CpuStoragePtr store(new RBKit::CpuStorage());
 
 void RBKit::CpuProf::parseFrames(QMap<int, QVariant> frames)
 {
-    if(frames.value(RBKit::CeMethodName).toString().isEmpty()) {
+    auto methodName = frames.value(RBKit::ECeMethodName).toString();
+
+    if (methodName.isEmpty()) {
         return;
     }
 
-    if(!store->exists(frames.value(RBKit::CeMethodName).toString())) {
+    if (!store->exists(methodName)) {
         //method not yet added to the datastructure, add it
         store->addNewNode(frames);
     } else {

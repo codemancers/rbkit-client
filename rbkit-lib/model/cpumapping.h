@@ -3,14 +3,16 @@
 #ifndef MAPPING
 #define MAPPING
 
-namespace RBKit {
-    enum CpuEvent {
-        CeFile              = 6,
-        CeLine              = 7,
-        CeMethodName        = 12,
-        CeLabel             = 13,
-        CeSingletonMethod   = 14,
-        CeThreadId          = 15
+namespace RBKit
+{
+    enum CpuEvent
+    {
+        ECeFile              = 6,
+        ECeLine              = 7,
+        ECeMethodName        = 12,
+        ECeLabel             = 13,
+        ECeSingletonMethod   = 14,
+        ECeThreadId          = 15
     };
 }
 

@@ -14,27 +14,27 @@ RBKit::CpuNode::CpuNode(QString methodName,
 
 void RBKit::CpuNode::updateCalls(CpuNodePtr cpuNode)
 {
-    this->calls.push_back(cpuNode);
+    calls.push_back(cpuNode);
 }
 
 void RBKit::CpuNode::updateCalledBy(CpuNodePtr cpuNode)
 {
-    this->calledBy.push_back(cpuNode);
+    calledBy.push_back(cpuNode);
 }
 
 QList<RBKit::CpuNodePtr> RBKit::CpuNode::getCalledBy()
 {
-    return this->calledBy;
+    return calledBy;
 }
 
 QList<RBKit::CpuNodePtr> RBKit::CpuNode::getCalls()
 {
-    return this->calls;
+    return calls;
 }
 
 QString RBKit::CpuNode::getMethodName()
 {
-    return this->methodName;
+    return methodName;
 }
 
 
@@ -58,10 +58,10 @@ void RBKit::CpuNode::updateData(QString methodName,
 
 bool RBKit::CpuNode::existInCalls(CpuNodePtr method)
 {
-    return this->calls.indexOf(method) != -1;
+    return calls.indexOf(method) != -1;
 }
 
 bool RBKit::CpuNode::existInCalledBy(CpuNodePtr method)
 {
-    return this->calledBy.indexOf(method) != -1;
+    return calledBy.indexOf(method) != -1;
 }

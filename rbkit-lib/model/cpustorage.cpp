@@ -6,14 +6,14 @@
 void RBKit::CpuStorage::addNewNode(QMap<int, QVariant> data)
 {
     //qDebug() << data;
-    auto methodName = data[RBKit::CeMethodName].toString();
+    auto methodName = data[RBKit::ECeMethodName].toString();
 
     RBKit::CpuNodePtr newNode( new RBKit::CpuNode(methodName,
-                data[RBKit::CeLabel].toString(),
-                data[RBKit::CeFile].toString(),
-                data[RBKit::CeThreadId].toString(),
-                data[RBKit::CeLine].toDouble(),
-                data[RBKit::CeSingletonMethod].toInt())
+                data[RBKit::ECeLabel].toString(),
+                data[RBKit::ECeFile].toString(),
+                data[RBKit::ECeThreadId].toString(),
+                data[RBKit::ECeLine].toDouble(),
+                data[RBKit::ECeSingletonMethod].toInt())
             );
 
     Q_ASSERT(newNode != NULL);
@@ -22,13 +22,13 @@ void RBKit::CpuStorage::addNewNode(QMap<int, QVariant> data)
 
     //add to current frame stack
     if(this->currentStack.empty()) {
-        this->currentStack.push_back(data[RBKit::CeMethodName].toString());
+        this->currentStack.push_back(methodName);
     } else {
         QString currentTop = this->currentStack.back();
         this->nodes[currentTop]->updateCalls(newNode);
         newNode->updateCalledBy(this->nodes[currentTop]);
 
-        this->currentStack.push_back(data[RBKit::CeMethodName].toString());
+        this->currentStack.push_back(methodName);
     }
 }
 
@@ -89,25 +89,25 @@ void RBKit::CpuStorage::traverseFlatProfile()
 
 void RBKit::CpuStorage::updateExistingMethod(QMap<int, QVariant> data) {
     if(this->currentStack.empty()) {
-        this->currentStack.push_back(data[RBKit::CeMethodName].toString());
+        this->currentStack.push_back(data[RBKit::ECeMethodName].toString());
     } else {
-        RBKit::CpuNodePtr existingNode = this->nodes[data[RBKit::CeMethodName].toString()];
+        RBKit::CpuNodePtr existingNode = this->nodes[data[RBKit::ECeMethodName].toString()];
         QString currentTop = this->currentStack.back();
 
         if(!this->nodes[currentTop]->existInCalls(existingNode)) {
             this->nodes[currentTop]->updateCalls(existingNode);
         }
 
-        if(!this->nodes[data[RBKit::CeMethodName].toString()]->existInCalledBy(this->nodes[currentTop])) {
+        if(!this->nodes[data[RBKit::ECeMethodName].toString()]->existInCalledBy(this->nodes[currentTop])) {
             existingNode->updateCalledBy(this->nodes[currentTop]);
         }
 
-        existingNode->updateData(data[RBKit::CeMethodName].toString(),
-                data[RBKit::CeLabel].toString(),
-                data[RBKit::CeFile].toString(),
-                data[RBKit::CeThreadId].toString(),
-                data[RBKit::CeLine].toInt(),
-                data[RBKit::CeSingletonMethod].toInt());
+        existingNode->updateData(data[RBKit::ECeMethodName].toString(),
+                data[RBKit::ECeLabel].toString(),
+                data[RBKit::ECeFile].toString(),
+                data[RBKit::ECeThreadId].toString(),
+                data[RBKit::ECeLine].toInt(),
+                data[RBKit::ECeSingletonMethod].toInt());
     }
 }
 
