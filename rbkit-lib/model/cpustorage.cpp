@@ -109,7 +109,7 @@ void RBKit::CpuStorage::traverseFlatProfile(QStandardItem &fgRootNode)
 
 void RBKit::CpuStorage::updateExistingMethod(QMap<int, QVariant> data)
 {
-    QString methodName = data[RBKit::CeMethodName].toString();
+    QString methodName = data[RBKit::ECeMethodName].toString();
 
     if(currentStack.empty()) {
         currentStack.push_back(methodName);

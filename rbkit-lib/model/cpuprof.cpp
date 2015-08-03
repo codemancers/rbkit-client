@@ -17,7 +17,7 @@ void RBKit::CpuProf::parseFrames(QMap<int, QVariant> frames)
         return;
     }
 
-    if (!store->exists(methodName)) {
+    if (!store()->exists(methodName)) {
         //method not yet added to the datastructure, add it
         store()->addNewNode(frames);
     } else {
