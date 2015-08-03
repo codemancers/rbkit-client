@@ -140,7 +140,7 @@ void RBKit::CpuStorage::updateExistingMethod(QMap<int, QVariant> data) {
 
 void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode,
                                           QStandardItem &cgRootNode,
-                                          QList<QStandardItem *> *parent=NULL)
+                                          QStandardItem *parent = NULL)
 {
     char space = ' ';
     QString methodName = startingNode->getMethodName();
@@ -154,7 +154,7 @@ void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode,
         if(parent == NULL) {
             cgRootNode.appendRow(currentMethod);
         } else {
-            parent->first()->appendRow(currentMethod);
+            parent->appendRow(currentMethod);
         }
         return;
 
@@ -167,14 +167,14 @@ void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode,
         if(parent == NULL) {
             cgRootNode.appendRow(currentMethod);
         } else {
-            parent->first()->appendRow(currentMethod);
+            parent->appendRow(currentMethod);
         }
 
         this->notReached.removeOne(startingNode->getMethodName());
 
         foreach(RBKit::CpuNodePtr node, startingNode->getCalls()) {
             //qDebug() << QString(indent,space) + node->getMethodName();
-            this->traverseCallGraph(node, cgRootNode, &currentMethod);
+            this->traverseCallGraph(node, cgRootNode, currentMethod.first());
         }
     }
 
