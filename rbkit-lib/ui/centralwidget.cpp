@@ -89,7 +89,7 @@ void CentralWidget::objectDumpAvailable(int snapshotVersion)
     QString snapshotName = QString("Heap Dump #%0").arg(snapshotVersion);
     snapshotState->addNewSnapshot(heapUI, snapshotName);
     showStatusMessage("Heap snapshot complete");
-    mainWindow->appStatusBar->clearMessage();
+    //mainWindow->appStatusBar->clearMessage();
     setProgressBarValue(100);
     snapshotProgressTimer->stop();
     snapshotState->setSnapshotProgress(false);
@@ -129,7 +129,7 @@ QList<int> CentralWidget::diffableSnapshotVersions()
     return snapshotState->diffableSnapshotVersions();
 }
 
-CentralWidget::CentralWidget(AppMainwindow *window) : QWidget(window)
+CentralWidget::CentralWidget(QStackedWidget *window) : QWidget(window)
   , mainWindow(window)
 {
     mainLayout = new QVBoxLayout();
@@ -191,17 +191,17 @@ void CentralWidget::newCpuView()
 
 void CentralWidget::showStatusMessage(const QString &message) const
 {
-    mainWindow->appStatusBar->showMessage(message);
+    //mainWindow->appStatusBar->showMessage(message);
 }
 
 void CentralWidget::setProgressBarValue(int value) const
 {
-    mainWindow->progressBar->setValue(value);
+    //mainWindow->progressBar->setValue(value);
 }
 
 void CentralWidget::resetProgressBar() const
 {
-    mainWindow->progressBar->reset();
+    //mainWindow->progressBar->reset();
 }
 
 bool CentralWidget::attemptMemorySnapshot()

@@ -18,6 +18,7 @@ class HeapDumpForm;
 #include "memoryview.h"
 #include "model/snapshotstate.h"
 #include "cpuview.h"
+#include <QStackedWidget>
 
 
 class CentralWidget : public QWidget
@@ -28,13 +29,13 @@ class CentralWidget : public QWidget
     QSharedPointer<QTabWidget> chartingTab;
     QSharedPointer<RBKit::MemoryView> memoryView;
     QHash<int, QSharedPointer<CpuView>> cpuViewHash;
-    AppMainwindow *mainWindow;
+    QStackedWidget *mainWindow;
     RBKit::SnapshotState *snapshotState;
     QTimer *snapshotProgressTimer;
     QList<int> diffableSnapshotVersions();
 
 public:
-    explicit CentralWidget(AppMainwindow *mainWindow);
+    explicit CentralWidget(QStackedWidget *mainWindow);
     ~CentralWidget();
     void setupCentralView();
     void showStatusMessage(const QString &message) const;

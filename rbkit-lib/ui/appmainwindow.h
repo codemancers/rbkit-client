@@ -2,16 +2,20 @@
 #define APPMAINWINDOW_H
 
 #include <QMainWindow>
+#include "stackedwidget.h"
 #include "centralwidget.h"
 
 class QStatusBar;
 class QLabel;
 class QProgressBar;
+class StackedWidget;
 
 class AppMainwindow : public QMainWindow
 {
     Q_OBJECT
-    CentralWidget *centralWidget;
+    StackedWidget *stackedWidget;
+    CentralWidget *centralMemoryWidget;
+    CentralWidget *centralCpuWidget;
     QLabel *statusLabel;
 
 public:
@@ -23,6 +27,7 @@ public:
 signals:
 
 public slots:
+    void tabChanged(int);
 };
 
 #endif // APPMAINWINDOW_H

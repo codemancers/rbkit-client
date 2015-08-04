@@ -8,8 +8,14 @@
 
 AppMainwindow::AppMainwindow(QWidget *parent) : QMainWindow(parent)
 {
-    centralWidget = new CentralWidget(this);
-    setCentralWidget(centralWidget);
+    stackedWidget = new StackedWidget(this);
+    setCentralWidget(stackedWidget);
+
+    centralMemoryWidget = new CentralWidget(stackedWidget);
+    //setCentralWidget(centralWidget);
+    int index = stackedWidget->addWidget(centralMemoryWidget);
+
+    stackedWidget->setCurrentIndex(index);
 
     appStatusBar = new QStatusBar(this);
     setStatusBar(appStatusBar);
@@ -36,3 +42,7 @@ AppMainwindow::~AppMainwindow()
     delete centralWidget;
 }
 
+void AppMainwindow::tabChanged(int tab)
+{
+    stackedWidget->setCurrentIndex(tab);
+}
