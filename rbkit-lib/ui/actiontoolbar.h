@@ -12,10 +12,14 @@
 #include "subscriber.h"
 #include "common.h"
 #include "memoryview.h"
+#include "appmainwindow.h"
+#include "stackedwidget.h"
 
 class QToolButton;
 class CentralWidget;
 class QTimer;
+class AppMainwindow;
+class StackedWidget;
 
 enum ConnectionStates {
     DISCONNECTED = 0,
@@ -35,8 +39,9 @@ class ActionToolbar : public QObject
     Subscriber *subscriber;
     ConnectionStates connectionState;
     QThread subscriberThread;
+    AppMainwindow *window;
 public:
-    explicit ActionToolbar(CentralWidget *widget);
+    explicit ActionToolbar(AppMainwindow *window , CentralWidget *widget);
     void enableProfileActions();
     void disableProfileActions();
     void setupToolBar();
@@ -46,6 +51,7 @@ public:
     RBKit::MemoryView *memoryView() const;
     void disconnectFromSocket();
     void shutDownApp();
+    void connectTabChangedSignal(AppMainwindow *window);
 
 private:
     QToolButton *gcButton;

@@ -5,4 +5,3 @@ StackedWidget::StackedWidget(AppMainwindow *mainWindow)
 {
 
 }
-

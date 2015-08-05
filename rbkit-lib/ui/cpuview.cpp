@@ -26,6 +26,7 @@ CpuView::CpuView(QWidget *parent) :
 
 CpuView::~CpuView()
 {
+    qDebug() << "**************deleting Cpu View*******************";
     delete ui;
 }
 

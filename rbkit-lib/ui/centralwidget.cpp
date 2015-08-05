@@ -133,8 +133,6 @@ CentralWidget::CentralWidget(QStackedWidget *window) : QWidget(window)
   , mainWindow(window)
 {
     mainLayout = new QVBoxLayout();
-    actionToolBar = QSharedPointer<ActionToolbar>::create(this);
-    mainLayout->addWidget(actionToolBar->getToolBar(), 0, Qt::AlignTop);
 
     snapshotProgressTimer = new QTimer(this);
     snapshotState = new RBKit::SnapshotState();
@@ -222,8 +220,3 @@ bool CentralWidget::attemptMemorySnapshot()
         return true;
     }
 }
-
-/*CpuViewPtr CentralWidget::getCpuViewPtr()
-{
-    return cpuView;
-}*/

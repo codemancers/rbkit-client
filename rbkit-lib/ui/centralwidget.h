@@ -14,6 +14,7 @@ class QHBoxLayout;
 class QTabWidget;
 class AppMainwindow;
 class HeapDumpForm;
+class ActionToolbar;
 
 #include "memoryview.h"
 #include "model/snapshotstate.h"

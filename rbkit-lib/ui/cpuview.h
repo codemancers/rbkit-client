@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QStandardItemModel>
+//#include "appmainwindow.h"
 
 namespace Ui {
 class CpuView;
