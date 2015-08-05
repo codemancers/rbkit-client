@@ -29,13 +29,13 @@ class CentralWidget : public QWidget
     QVBoxLayout* mainLayout;
     QSharedPointer<QTabWidget> chartingTab;
     QSharedPointer<RBKit::MemoryView> memoryView;
-    QStackedWidget *mainWindow;
+    AppMainwindow *mainWindow;
     RBKit::SnapshotState *snapshotState;
     QTimer *snapshotProgressTimer;
     QList<int> diffableSnapshotVersions();
 
 public:
-    explicit CentralWidget(QStackedWidget *mainWindow);
+    explicit CentralWidget(StackedWidget *mainWindow, AppMainwindow *window);
     ~CentralWidget();
     void setupCentralView();
     void showStatusMessage(const QString &message) const;

@@ -15,7 +15,7 @@ AppMainwindow::AppMainwindow(QWidget *parent) : QMainWindow(parent)
     stackedWidget = new StackedWidget(this);
     setCentralWidget(mainWidget);
 
-    centralMemoryWidget = new CentralWidget(stackedWidget);
+    centralMemoryWidget = new CentralWidget(stackedWidget, this);
     int index = stackedWidget->addWidget(centralMemoryWidget);
 
     actionToolBar = QSharedPointer<ActionToolbar>::create(this, centralMemoryWidget);
