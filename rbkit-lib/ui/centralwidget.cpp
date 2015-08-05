@@ -154,7 +154,7 @@ CentralWidget::CentralWidget(QStackedWidget *window) : QWidget(window)
     disableCloseButtonOnFirstTab(chartingTab.data());
     makeMarginSpacingZero(mainLayout);
     setLayout(mainLayout);
-    actionToolBar->disableProfileActions();
+    //actionToolBar->disableProfileActions();
 }
 
 CentralWidget::~CentralWidget()

@@ -13,7 +13,10 @@ AppMainwindow::AppMainwindow(QWidget *parent) : QMainWindow(parent)
 
     centralMemoryWidget = new CentralWidget(stackedWidget);
     //setCentralWidget(centralWidget);
-    int index = stackedWidget->addWidget(centralMemoryWidget);
+    stackedWidget->addWidget(centralMemoryWidget);
+
+    centralCpuWidget = new CentralWidget(stackedWidget);
+    int index = stackedWidget->addWidget(centralCpuWidget);
 
     stackedWidget->setCurrentIndex(index);
 
@@ -39,7 +42,7 @@ AppMainwindow::AppMainwindow(QWidget *parent) : QMainWindow(parent)
 
 AppMainwindow::~AppMainwindow()
 {
-    delete centralWidget;
+    delete centralMemoryWidget;
 }
 
 void AppMainwindow::tabChanged(int tab)
