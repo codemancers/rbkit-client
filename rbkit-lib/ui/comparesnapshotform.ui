@@ -20,13 +20,24 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QLabel" name="label">
+         <property name="font">
+          <font>
+           <family>Lucida Grande</family>
+          </font>
+         </property>
          <property name="text">
           <string>Select Snapshot #1</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="snapshot1"/>
+        <widget class="QComboBox" name="snapshot1">
+         <property name="font">
+          <font>
+           <family>Lucida Grande</family>
+          </font>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -34,13 +45,24 @@
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QLabel" name="label_2">
+         <property name="font">
+          <font>
+           <family>Lucida Grande</family>
+          </font>
+         </property>
          <property name="text">
           <string>Select Snapshot #2</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="snapshot2"/>
+        <widget class="QComboBox" name="snapshot2">
+         <property name="font">
+          <font>
+           <family>Lucida Grande</family>
+          </font>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -48,6 +70,11 @@
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QPushButton" name="cancelButton">
+         <property name="font">
+          <font>
+           <family>Lucida Grande</family>
+          </font>
+         </property>
          <property name="text">
           <string>Cancel</string>
          </property>
@@ -55,6 +82,11 @@
        </item>
        <item>
         <widget class="QPushButton" name="okButton">
+         <property name="font">
+          <font>
+           <family>Lucida Grande</family>
+          </font>
+         </property>
          <property name="text">
           <string>Ok</string>
          </property>
