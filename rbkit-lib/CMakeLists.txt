@@ -18,7 +18,6 @@ include_directories(
 
 
 QT5_WRAP_UI(RBKIT_UI_HEADERS
-    ui/rbkitmainwindow.ui
     ui/askhost.ui
     ui/heapdumpform.ui
     ui/memoryview.ui
