@@ -29,7 +29,6 @@ void RBKit::CpuProf::parseFrames(QMap<int, QVariant> frames)
 void RBKit::CpuProf::decodeMap(QList<QMap<int, QVariant> > data)
 {
     for(int i = 0; i < data.size() ; i++) {
-        //qDebug() << data[i];
         //detect starting of new frame
         parseFrames(data[i]);
 
@@ -37,18 +36,4 @@ void RBKit::CpuProf::decodeMap(QList<QMap<int, QVariant> > data)
     store()->incrementSampleCount();
     store()->updateSelfCount();
     store()->clearFrameStack();
-}
-
-void RBKit::CpuProf::startTraversals()
-{
-    qDebug() << "STARTING TRAVERSALS\n\n";
-    //flatprofile traversal
-    //store()->traverseFlatProfile();
-
-    qDebug() << "\n\n Call Graph";
-    //callgraph traversal
-    //store()->handleCallGraph();
-
-    //setting the default view as call graph
-    //store()->changeToCallGraph();
 }

@@ -125,5 +125,7 @@ void RibbonToolBar::tabSelectionChanged(int index)
             containerData->hideWidget(layout1);
         }
     }
+
+    emit changeTab(index);          //for triggring the change in stacked widget
 }
 

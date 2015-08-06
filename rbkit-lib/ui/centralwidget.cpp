@@ -110,7 +110,6 @@ void CentralWidget::tabClosed(int index)
         return;
     chartingTab->removeTab(index);
     snapshotState->removeSnapshot(index);
-    cpuViewHash.remove(index);
 }
 
 void CentralWidget::onDiffSnapshotsSelected(QList<int> selectedSnapshots)
@@ -129,12 +128,10 @@ QList<int> CentralWidget::diffableSnapshotVersions()
     return snapshotState->diffableSnapshotVersions();
 }
 
-CentralWidget::CentralWidget(AppMainwindow *window) : QWidget(window)
+CentralWidget::CentralWidget(StackedWidget *mainWindow, AppMainwindow *window) : QWidget(mainWindow)
   , mainWindow(window)
 {
     mainLayout = new QVBoxLayout();
-    actionToolBar = QSharedPointer<ActionToolbar>::create(this);
-    mainLayout->addWidget(actionToolBar->getToolBar(), 0, Qt::AlignTop);
 
     snapshotProgressTimer = new QTimer(this);
     snapshotState = new RBKit::SnapshotState();
@@ -154,7 +151,7 @@ CentralWidget::CentralWidget(AppMainwindow *window) : QWidget(window)
     disableCloseButtonOnFirstTab(chartingTab.data());
     makeMarginSpacingZero(mainLayout);
     setLayout(mainLayout);
-    actionToolBar->disableProfileActions();
+    //actionToolBar->disableProfileActions();
 }
 
 CentralWidget::~CentralWidget()
@@ -167,26 +164,6 @@ void CentralWidget::setupCentralView()
     qDebug() << "Adding object charts tab";
     memoryView = QSharedPointer<RBKit::MemoryView>::create(this);
     chartingTab->addTab(memoryView.data(), "Object Charts");
-}
-
-void CentralWidget::newCpuView()
-{
-    QSharedPointer<CpuView> cpuView(new CpuView(this));
-    int index = chartingTab->addTab(cpuView.data(), "Cpu Tree");
-    cpuViewHash[index] = cpuView;
-
-    connect(cpuView.data(),
-            SIGNAL(fillCallGraph(QStandardItemModel*)),
-            RBKit::CpuStorage::getStorage().data(),
-            SLOT(fillCallGraphModel(QStandardItemModel*)));
-
-    connect(cpuView.data(),
-            SIGNAL(fillFlatProfile(QStandardItemModel*)),
-            RBKit::CpuStorage::getStorage().data(),
-            SLOT(fillFlatProfileModel(QStandardItemModel*)));
-
-    emit cpuView.data()->fillCallGraph(cpuView->callGraphModel);
-    emit cpuView.data()->fillFlatProfile(cpuView->flatGraphModel);
 }
 
 void CentralWidget::showStatusMessage(const QString &message) const
@@ -222,8 +199,3 @@ bool CentralWidget::attemptMemorySnapshot()
         return true;
     }
 }
-
-/*CpuViewPtr CentralWidget::getCpuViewPtr()
-{
-    return cpuView;
-}*/

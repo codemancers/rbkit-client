@@ -26,8 +26,8 @@ static void toggleConnectButtonState(ConnectionStates state, QToolButton *btn) {
     }
 }
 
-ActionToolbar::ActionToolbar(CentralWidget *widget)
-    : centralWidget(widget)
+ActionToolbar::ActionToolbar(AppMainwindow &window, CentralWidget *widget)
+    : centralWidget(widget), window(window)
 {
     Q_INIT_RESOURCE(tool_icons);
     connectionState = DISCONNECTED;
@@ -157,7 +157,7 @@ void ActionToolbar::setupToolBar()
                              QIcon(":/icons/Compare-32.png"),
                              "cpu_profiling");
     connect(stopCPUButton, &QToolButton::clicked, this, &ActionToolbar::performStopCPUAction);
-    connect(this, SIGNAL(stopCPUProfiling()), centralWidget, SLOT(newCpuView()));
+    connect(this, SIGNAL(stopCPUProfiling()), &window, SLOT(newCpuView()));
 
     toolBar->loadStyleSheet(":/icons/style.css");
 }
@@ -221,4 +221,12 @@ void ActionToolbar::disconnectedFromSocket()
     toggleConnectButtonState(connectionState, connectButton);
     centralWidget->appDisconnected();
     disableProfileActions();
+}
+
+void ActionToolbar::connectTabChangedSignal(AppMainwindow *window)
+{
+    connect(toolBar,
+            SIGNAL(changeTab(int)),
+            window,
+            SLOT(tabChanged(int)));
 }

@@ -14,9 +14,6 @@ namespace RBKit
         void decodeMap(QList<QMap<int, QVariant>> data);
         void parseFrames(QMap<int, QVariant> frames);
 
-        //handeling traversals
-        void startTraversals();
-
     private:
         inline CpuStoragePtr store() {
             return CpuStorage::getStorage();

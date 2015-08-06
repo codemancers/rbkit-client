@@ -18,7 +18,6 @@ include_directories(
 
 
 QT5_WRAP_UI(RBKIT_UI_HEADERS
-    ui/rbkitmainwindow.ui
     ui/askhost.ui
     ui/heapdumpform.ui
     ui/memoryview.ui
@@ -67,6 +66,7 @@ add_library(rbkit
     ui/centralwidget.cpp
     ui/ribbontoolbar.cpp
     ui/cpuview.cpp
+    ui/stackedwidget.cpp
     model/cpunode.cpp
     model/cpuprof.cpp
     model/cpustorage.cpp
@@ -104,6 +104,7 @@ add_library(rbkit
     ui/centralwidget.h
     ui/ribbontoolbar.h
     ui/cpuview.h
+    ui/stackedwidget.h
     layoututil.hpp
     common.h
 

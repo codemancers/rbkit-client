@@ -66,7 +66,7 @@ public:
     QToolButton* addRibbonAction(const QString &actionName, const QString &actionIdentifier,
                          const QIcon &icon, const QString &tabIdentifier);
 signals:
-
+    void changeTab(int index);              //for triggring the change in stacked widget
 public slots:
     void tabSelectionChanged(int index);
 };

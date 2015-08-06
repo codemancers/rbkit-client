@@ -28,7 +28,6 @@ namespace RBKit
         void updateNewNodeLocation(QString methodName, RBKit::CpuNodePtr);
         bool exists(QVariant name);
         unsigned long long getSampleCount();
-        void traverseNodes();
         void clearFrameStack();
         void updateExistingMethod(QMap<int, QVariant>);
         void updateSelfCount();
