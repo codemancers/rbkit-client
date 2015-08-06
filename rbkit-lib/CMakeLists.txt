@@ -67,6 +67,7 @@ add_library(rbkit
     ui/centralwidget.cpp
     ui/ribbontoolbar.cpp
     ui/cpuview.cpp
+    ui/stackedwidget.cpp
     model/cpunode.cpp
     model/cpuprof.cpp
     model/cpustorage.cpp
@@ -104,6 +105,7 @@ add_library(rbkit
     ui/centralwidget.h
     ui/ribbontoolbar.h
     ui/cpuview.h
+    ui/stackedwidget.h
     layoututil.hpp
     common.h
 

@@ -14,10 +14,12 @@ class QHBoxLayout;
 class QTabWidget;
 class AppMainwindow;
 class HeapDumpForm;
+class ActionToolbar;
 
 #include "memoryview.h"
 #include "model/snapshotstate.h"
 #include "cpuview.h"
+#include <QStackedWidget>
 
 
 class CentralWidget : public QWidget
@@ -27,14 +29,13 @@ class CentralWidget : public QWidget
     QVBoxLayout* mainLayout;
     QSharedPointer<QTabWidget> chartingTab;
     QSharedPointer<RBKit::MemoryView> memoryView;
-    QHash<int, QSharedPointer<CpuView>> cpuViewHash;
     AppMainwindow *mainWindow;
     RBKit::SnapshotState *snapshotState;
     QTimer *snapshotProgressTimer;
     QList<int> diffableSnapshotVersions();
 
 public:
-    explicit CentralWidget(AppMainwindow *mainWindow);
+    explicit CentralWidget(StackedWidget *mainWindow, AppMainwindow *window);
     ~CentralWidget();
     void setupCentralView();
     void showStatusMessage(const QString &message) const;
@@ -55,7 +56,6 @@ public slots:
     void receiveOldGenStats(QVariantMap map);
     void objectDumpAvailable(int snapshotVersion);
     void updateProgressBar();
-    void newCpuView();
 private slots:
     void tabClosed(int index);
     void onDiffSnapshotsSelected(QList<int> selectedSnapshots);
