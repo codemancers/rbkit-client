@@ -39,9 +39,9 @@ class ActionToolbar : public QObject
     Subscriber *subscriber;
     ConnectionStates connectionState;
     QThread subscriberThread;
-    AppMainwindow *window;
+    AppMainwindow &window;
 public:
-    explicit ActionToolbar(AppMainwindow *window , CentralWidget *widget);
+    explicit ActionToolbar(AppMainwindow &window , CentralWidget *widget);
     void enableProfileActions();
     void disableProfileActions();
     void setupToolBar();

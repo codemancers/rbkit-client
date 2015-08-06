@@ -26,7 +26,7 @@ static void toggleConnectButtonState(ConnectionStates state, QToolButton *btn) {
     }
 }
 
-ActionToolbar::ActionToolbar(AppMainwindow *window, CentralWidget *widget)
+ActionToolbar::ActionToolbar(AppMainwindow &window, CentralWidget *widget)
     : centralWidget(widget), window(window)
 {
     Q_INIT_RESOURCE(tool_icons);
@@ -157,7 +157,7 @@ void ActionToolbar::setupToolBar()
                              QIcon(":/icons/Compare-32.png"),
                              "cpu_profiling");
     connect(stopCPUButton, &QToolButton::clicked, this, &ActionToolbar::performStopCPUAction);
-    connect(this, SIGNAL(stopCPUProfiling()), window, SLOT(newCpuView()));
+    connect(this, SIGNAL(stopCPUProfiling()), &window, SLOT(newCpuView()));
 
     toolBar->loadStyleSheet(":/icons/style.css");
 }

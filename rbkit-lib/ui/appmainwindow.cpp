@@ -18,7 +18,7 @@ AppMainwindow::AppMainwindow(QWidget *parent) : QMainWindow(parent)
     centralMemoryWidget = new CentralWidget(stackedWidget, this);
     int index = stackedWidget->addWidget(centralMemoryWidget);
 
-    actionToolBar = QSharedPointer<ActionToolbar>::create(this, centralMemoryWidget);
+    actionToolBar = QSharedPointer<ActionToolbar>::create(*this, centralMemoryWidget);
 
     cpuTab = new QTabWidget(stackedWidget);
     cpuTab->setTabsClosable(true);
