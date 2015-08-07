@@ -16,29 +16,17 @@ RBKit::CpuNode::CpuNode(QString methodName,
 
 void RBKit::CpuNode::updateCalls(CpuNodePtr cpuNode)
 {
-    calls.push_back(cpuNode);
+    CpuCallPtr temp(new CpuCall());
+    temp->ptr = cpuNode;
+    calls.insert(temp);
 }
 
 void RBKit::CpuNode::updateCalledBy(CpuNodePtr cpuNode)
 {
-    calledBy.push_back(cpuNode);
+    CpuCalledByPtr temp(new CpuCalledBy());
+    temp->ptr = cpuNode;
+    calledBy.insert(temp);
 }
-
-QList<RBKit::CpuNodePtr> RBKit::CpuNode::getCalledBy()
-{
-    return calledBy;
-}
-
-QList<RBKit::CpuNodePtr> RBKit::CpuNode::getCalls()
-{
-    return calls;
-}
-
-QString RBKit::CpuNode::getMethodName()
-{
-    return methodName;
-}
-
 
 //just a placeholder for now
 //will be useful for updating
@@ -56,34 +44,4 @@ void RBKit::CpuNode::updateData(QString methodName,
     str.toUpper();
     a+10;
 
-}
-
-bool RBKit::CpuNode::existInCalls(CpuNodePtr method)
-{
-    return calls.indexOf(method) != -1;
-}
-
-bool RBKit::CpuNode::existInCalledBy(CpuNodePtr method)
-{
-    return calledBy.indexOf(method) != -1;
-}
-
-void RBKit::CpuNode::incrementSelfCount()
-{
-    selfCount++;
-}
-
-void RBKit::CpuNode::incrementTotalCount()
-{
-    totalCount++;
-}
-
-unsigned long long RBKit::CpuNode::getTotalCount()
-{
-    return this->totalCount;
-}
-
-unsigned long long RBKit::CpuNode::getSelfCount()
-{
-    return this->selfCount;
 }

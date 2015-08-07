@@ -70,6 +70,8 @@ add_library(rbkit
     model/cpunode.cpp
     model/cpuprof.cpp
     model/cpustorage.cpp
+    model/cpucalledby.cpp
+    model/cpucall.cpp
 
     subscriber.h
     zmqsockets.h
@@ -112,6 +114,8 @@ add_library(rbkit
     model/cpustorage.h
     model/cpunode.h
     model/cpumapping.h
+    model/cpucalledby.h
+    model/cpucall.h
 
     ${RBKIT_UI_HEADERS}
     ${RBKIT_UI_RESOURCES})

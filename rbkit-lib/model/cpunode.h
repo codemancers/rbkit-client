@@ -4,6 +4,8 @@
 #include <vector>
 #include <QDebug>
 #include <QSharedPointer>
+#include "cpucalledby.h"
+#include "cpucall.h"
 
 namespace RBKit
 {
@@ -13,18 +15,18 @@ namespace RBKit
     class CpuNode
     {
         QString methodName,
-        label,
-        filename,
-        threadId;
+                label,
+                filename,
+                threadId;
 
         int singletonMethod;
         int lineNo;
 
-        QList<CpuNodePtr> calledBy;
-        QList<CpuNodePtr> calls;
+        QSet<CpuCallPtr> calls;
+        QSet<CpuCalledByPtr> calledBy;
 
-        qint64 selfCount;
-        qint64 totalCount;
+        quint64 selfCount;
+        quint64 totalCount;
     public:
         CpuNode(QString methodName,
                 QString label,
@@ -36,19 +38,45 @@ namespace RBKit
         void updateCalls(CpuNodePtr);
         void updateCalledBy(CpuNodePtr);
 
-        bool existInCalls(CpuNodePtr method);
-        bool existInCalledBy(CpuNodePtr method);
+        inline bool existInCalledBy(CpuNodePtr method) const
+        {
+            return calledBy.contains(method);
+        }
 
-        void incrementTotalCount();
-        void incrementSelfCount();
+        inline void incrementTotalCount()
+        {
+            ++totalCount;
+        }
 
-        unsigned long long getTotalCount();
-        unsigned long long getSelfCount();
+        inline void incrementSelfCount()
+        {
+            ++selfCount;
+        }
 
-        QList<CpuNodePtr> getCalledBy();
-        QList<CpuNodePtr> getCalls();
+        inline quint64 getTotalCount() const
+        {
+            return totalCount;
+        }
 
-        QString getMethodName();
+        inline quint64 getSelfCount() const
+        {
+            return selfCount;
+        }
+
+        inline QSet<CpuCalledByPtr> getCalledBy()
+        {
+            return calledBy;
+        }
+
+        inline QSet<CpuCallPtr> getCalls()
+        {
+            return calls;
+        }
+
+        inline QString getMethodName() const
+        {
+            return methodName;
+        }
 
         void updateData(QString methodName,
                         QString label,

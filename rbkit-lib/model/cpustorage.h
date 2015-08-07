@@ -20,7 +20,7 @@ namespace RBKit
         QHash<QString, RBKit::CpuNodePtr> nodes;
         QList<QString> notReached;
 
-        void traverseCallGraph(RBKit::CpuNodePtr, QStandardItem &cgRootNode, QStandardItem *parent);
+        void traverseCallGraph(CpuCallPtr, QStandardItem &cgRootNode, QStandardItem *parent);
     public:
         QList<QString> currentStack;
 

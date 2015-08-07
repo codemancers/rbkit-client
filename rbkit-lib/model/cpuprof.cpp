@@ -31,8 +31,8 @@ void RBKit::CpuProf::decodeMap(QList<QMap<int, QVariant> > data)
     for(int i = 0; i < data.size() ; i++) {
         //detect starting of new frame
         parseFrames(data[i]);
-        store()->incrementSampleCount();
     }
+    store()->incrementSampleCount();
     store()->updateSelfCount();
     store()->clearFrameStack();
 }

@@ -5,12 +5,17 @@
 
 RBKit::CpuStorage::CpuStorage()
 {
-
+    sample_count = 0;
 }
 
 void RBKit::CpuStorage::addNewNode(QMap<int, QVariant> data)
 {
     auto methodName = data[RBKit::ECeMethodName].toString();
+
+    if (!currentStack.isEmpty()) {
+        QString prefix = currentStack.back();
+        methodName = prefix + ":" + methodName;
+    }
 
     RBKit::CpuNodePtr newNode( new RBKit::CpuNode(methodName,
                 data[RBKit::ECeLabel].toString(),
@@ -49,12 +54,16 @@ void RBKit::CpuStorage::updateNewNodeLocation(QString methodName, RBKit::CpuNode
 bool RBKit::CpuStorage::exists(QVariant name)
 {
     QString methodName = name.toString();
+    if (!currentStack.isEmpty()) {
+        methodName = currentStack.back() + ":" + methodName;
+    }
+
     QHash<QString, RBKit::CpuNodePtr>::iterator iter = nodes.find(methodName);
-        if(iter == nodes.end()) {
-            return false;
-        } else {
-            return true;
-        }
+    if(iter == nodes.end()) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 unsigned long long RBKit::CpuStorage::getSampleCount()
@@ -78,9 +87,9 @@ void RBKit::CpuStorage::traverseFlatProfile(QStandardItem &fgRootNode)
                                                             node.value()->getTotalCount());
         fgRootNode.appendRow(topLevelMethod);
 
-        QList<RBKit::CpuNodePtr> calledBy = node.value()->getCalledBy();
+        QSet<CpuCalledByPtr> calledBy = node.value()->getCalledBy();
         indent=4;
-        foreach(RBKit::CpuNodePtr node, calledBy) {
+        foreach(CpuCalledByPtr node, calledBy) {
 
             QList<QStandardItem*> innerMethod = prepareRow(node->getMethodName(),
                                                            node->getSelfCount(),
@@ -100,13 +109,9 @@ void RBKit::CpuStorage::updateExistingMethod(QMap<int, QVariant> data)
         RBKit::CpuNodePtr existingNode = nodes[methodName];
         QString currentTop = currentStack.back();
 
-        if(!nodes[currentTop]->existInCalls(existingNode)) {
-            nodes[currentTop]->updateCalls(existingNode);
-        }
+        nodes[currentTop]->updateCalls(existingNode);
 
-        if(!nodes[data[RBKit::ECeMethodName].toString()]->existInCalledBy(nodes[currentTop])) {
-            existingNode->updateCalledBy(nodes[currentTop]);
-        }
+        existingNode->updateCalledBy(nodes[currentTop]);
 
         existingNode->updateData(data[RBKit::ECeMethodName].toString(),
                 data[RBKit::ECeLabel].toString(),
@@ -118,9 +123,15 @@ void RBKit::CpuStorage::updateExistingMethod(QMap<int, QVariant> data)
 
     //increment the method's total count
     nodes[methodName]->incrementTotalCount();
+
+    // increment the total count of all methods above the current method
+    // int the current stack
+    //for(int i = 0; i < currentStack.size() - 1; i++) {
+    //  nodes[currentStack[currentStack.size() - 1]]->incrementTotalCount();
+    //}
 }
 
-void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode,
+void RBKit::CpuStorage::traverseCallGraph(CpuCallPtr startingNode,
                                           QStandardItem &cgRootNode,
                                           QStandardItem *parent = NULL)
 {
@@ -152,7 +163,7 @@ void RBKit::CpuStorage::traverseCallGraph(RBKit::CpuNodePtr startingNode,
 
         notReached.removeOne(startingNode->getMethodName());
 
-        foreach(RBKit::CpuNodePtr node, startingNode->getCalls()) {
+        for (auto node : startingNode->getCalls()) {
             traverseCallGraph(node, cgRootNode, currentMethod.first());
         }
     }
@@ -192,6 +203,10 @@ QList<QStandardItem*> RBKit::CpuStorage::prepareRow(QString methodName, int self
     QList<QStandardItem*> row;
     double selfTime = (selfCount * 100.0) / sample_count;
     double totalTime = (totalCount * 100.0) / sample_count;
+
+    qDebug() << "selfTime ------------->" << selfCount;
+    qDebug() << "totalTime -------------->" << totalCount;
+    qDebug() << "sample count ------------->" << sample_count;
 
     QStandardItem *selfPercent = new QStandardItem(QString::number(selfTime, 'f', 2) + " %");
     QStandardItem *totalPercent = new QStandardItem(QString::number(totalTime, 'f', 2) + " %");
