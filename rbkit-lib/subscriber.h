@@ -84,6 +84,7 @@ public slots:
     void startCPUProfiling();
     void stopCPUProfiling();
     void takeSnapshot();
+    void startCPUSnapshot();
     void startSubscriber();
 
 private:
