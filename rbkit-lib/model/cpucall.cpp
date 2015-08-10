@@ -1,6 +1,7 @@
 #include "cpucall.h"
+#include "cpunode.h"
 
-CpuCall::CpuCall()
+RBKit::CpuCall::CpuCall()
 {
 
 }

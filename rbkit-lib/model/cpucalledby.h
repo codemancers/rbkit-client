@@ -1,15 +1,22 @@
 #ifndef CPUCALLEDBY_H
 #define CPUCALLEDBY_H
+
 #include <QSharedPointer>
-#include "cpunode.h"
 
-class CpuCalledBy
+
+namespace RBKit
 {
-public:
-    RBKit::CpuNodePtr ptr;
-    CpuCalledBy();
-};
+    class CpuNode;
 
-typedef QSharedPointer<CpuCalledBy> CpuCalledByPtr;
+    class CpuCalledBy
+    {
+    public:
+        QSharedPointer<RBKit::CpuNode> ptr;
+
+        CpuCalledBy();
+    };
+
+    typedef QSharedPointer<CpuCalledBy> CpuCalledByPtr;
+}
 
 #endif // CPUCALLEDBY_H

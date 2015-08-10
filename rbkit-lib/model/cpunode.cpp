@@ -1,18 +1,22 @@
 #include "cpunode.h"
+#include "cpucall.h"
+#include "cpucalledby.h"
 
 RBKit::CpuNode::CpuNode(QString methodName,
-           QString label,
-           QString filename,
-           QString threadId,
-           int lineNo,
-           int singletonMethod) : methodName(methodName),
-                                    label(label),
-                                    filename(filename),
-                                    threadId(threadId),
-                                    lineNo(lineNo),
-                                    singletonMethod(singletonMethod),
-                                    selfCount(0),
-                                    totalCount(0) {}
+                        QString methodGroup,
+                        QString label,
+                        QString filename,
+                        QString threadId,
+                        int lineNo,
+                        int singletonMethod) : methodName(methodName),
+                                            methodGroup(methodGroup),
+                                            label(label),
+                                            filename(filename),
+                                            threadId(threadId),
+                                            lineNo(lineNo),
+                                            singletonMethod(singletonMethod),
+                                            selfCount(0),
+                                            totalCount(0) {}
 
 void RBKit::CpuNode::updateCalls(CpuNodePtr cpuNode)
 {

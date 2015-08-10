@@ -4,20 +4,25 @@
 #include <vector>
 #include <QDebug>
 #include <QSharedPointer>
-#include "cpucalledby.h"
-#include "cpucall.h"
+
 
 namespace RBKit
 {
     class CpuNode;
+    class CpuCall;
+    class CpuCalledBy;
+
     typedef QSharedPointer<CpuNode> CpuNodePtr;
+    typedef QSharedPointer<CpuCall> CpuCallPtr;
+    typedef QSharedPointer<CpuCalledBy> CpuCalledByPtr;
 
     class CpuNode
     {
         QString methodName,
                 label,
                 filename,
-                threadId;
+                threadId,
+                methodGroup;
 
         int singletonMethod;
         int lineNo;
@@ -29,6 +34,7 @@ namespace RBKit
         quint64 totalCount;
     public:
         CpuNode(QString methodName,
+                QString methodGroup,
                 QString label,
                 QString filename,
                 QString threadId,
@@ -38,7 +44,7 @@ namespace RBKit
         void updateCalls(CpuNodePtr);
         void updateCalledBy(CpuNodePtr);
 
-        inline bool existInCalledBy(CpuNodePtr method) const
+        inline bool existInCalledBy(CpuCalledByPtr method) const
         {
             return calledBy.contains(method);
         }
@@ -76,6 +82,11 @@ namespace RBKit
         inline QString getMethodName() const
         {
             return methodName;
+        }
+
+        inline QString getMethodGroup() const
+        {
+            return methodGroup;
         }
 
         void updateData(QString methodName,

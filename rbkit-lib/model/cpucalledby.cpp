@@ -1,6 +1,6 @@
 #include "cpucalledby.h"
 
-CpuCalledBy::CpuCalledBy()
+RBKit::CpuCalledBy::CpuCalledBy()
 {
 
 }
