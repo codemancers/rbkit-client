@@ -246,8 +246,11 @@ void Subscriber::performHandshake()
     {
         commandSocket->start(commandUrl);
         switch (commandSocket->performHandShake()) {
-        case RBKit::HandShakeResponse::VERSION_MISMATCH:
-            emitConnectionError(QString("RBkit is unable to connect to Server because either Server or Desktop version is too old"));
+        case RBKit::HandShakeResponse::VERSION_MISMATCH_SERVER_OLD:
+            emitConnectionError(QString("RBkit is unable to connect to Server because Server version is too old"));
+            break;
+        case RBKit::HandShakeResponse::VERSION_MISMATCH_CLIENT_OLD:
+            emitConnectionError(QString("RBkit is unable to connect to Server because this client version is too old"));
             break;
         case RBKit::HandShakeResponse::VERSION_MATCH:
             handShakeCompleted();
