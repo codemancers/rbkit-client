@@ -18,7 +18,8 @@ namespace RBKit
     class CommandBase;
     enum HandShakeResponse {
         NO_RESPONSE,
-        VERSION_MISMATCH,
+        VERSION_MISMATCH_SERVER_OLD,
+        VERSION_MISMATCH_CLIENT_OLD,
         VERSION_MATCH
     };
 

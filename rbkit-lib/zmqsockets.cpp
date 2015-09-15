@@ -13,7 +13,14 @@ static const int timerIntervalInMs = 1000;
 
 RBKit::HandShakeResponse verifyHandShakeResponse(RBKit::EvtHandshake* handShake) {
     if (handShake->rbkitProtocolVersion != RBKit::AppState::getInstance()->getProtocolVersion()) {
-        return RBKit::HandShakeResponse::VERSION_MISMATCH;
+        if (handShake->rbkitProtocolVersion.toFloat() < RBKit::AppState::getInstance()->getProtocolVersion().toFloat())
+        {
+            return RBKit::HandShakeResponse::VERSION_MISMATCH_SERVER_OLD;
+        }
+        else
+        {
+            return RBKit::HandShakeResponse::VERSION_MISMATCH_CLIENT_OLD;
+        }
     }
 
     RBKit::AppState::getInstance()->setAppState("process_name", handShake->processName);
