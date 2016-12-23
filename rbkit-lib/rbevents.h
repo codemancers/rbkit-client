@@ -8,9 +8,11 @@
 #include <QString>
 #include "stringutil.h"
 #include "model/objectdetail.h"
+#include "cpu/cpuprof.h"
 
 
 class Subscriber;               // this acts as processor also atm.
+
 
 namespace RBKit
 {
@@ -28,7 +30,6 @@ namespace RBKit
         EtHandshake        = 8,
         EtCpuSample        = 9
     };
-
 
     class EventDataBase
     {
@@ -130,10 +131,12 @@ namespace RBKit
         bool tracingFlag;
     };
 
+    //
     class EvtCpuSample : public EventDataBase
     {
     public:
-        EvtCpuSample(QDateTime ts, EventType eventType, QList<QMap<int, QVariant>> payload);
+        QList<QMap<int, QVariant>> payload;
+        EvtCpuSample(QDateTime ts, EventType eventType, QList<QMap<int, QVariant>> p);
         void process(Subscriber& processor) const;
     };
 }
