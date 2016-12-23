@@ -236,7 +236,8 @@ void Subscriber::processEvent(const RBKit::EvtHandshake &handShake)
 }
 
 void Subscriber::processEvent(const RBKit::EvtCpuSample &cpuSample) {
-    qDebug() << cpuSample.eventType << "===";
+    //qDebug() << cpuSample.payload;
+    cpuProf.decodeMap(cpuSample.payload);
 }
 
 void Subscriber::performHandshake()
